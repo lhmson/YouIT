@@ -1,6 +1,11 @@
 import React from "react";
 import { Card, Avatar, Button, Typography } from "antd";
-import { LikeOutlined, DeleteOutlined, EditOutlined } from "@ant-design/icons";
+import {
+  LikeOutlined,
+  LikeFilled,
+  DeleteOutlined,
+  EditOutlined,
+} from "@ant-design/icons";
 import moment from "moment";
 import { useDispatch } from "react-redux";
 import { likePost, deletePost } from "../../../redux/actions/posts";
@@ -10,6 +15,8 @@ const { Title, Text } = Typography;
 
 function Post({ post, setCurrentId }) {
   const dispatch = useDispatch();
+
+  const user = JSON.parse(localStorage.getItem("user"));
 
   const handleEdit = () => {
     setCurrentId(post._id);
@@ -40,15 +47,38 @@ function Post({ post, setCurrentId }) {
           <>
             <span>Post from </span>
             <a href="#">{post.creator}</a> {moment(post.createdAt).fromNow()}
+            {post.createdAt !== post.updatedAt && (
+              <p>Update {moment(post.updatedAt).fromNow()}</p>
+            )}
           </>
         }
         actions={[
-          <EditOutlined key="edit" onClick={handleEdit} />,
           <>
-            <LikeOutlined key="like" onClick={handleLike} />
-            <Text>{post.likeCount}</Text>
+            {(user?.result?.googleId === post?.creatorId ||
+              user?.result?._id === post?.creatorId) && (
+              <EditOutlined key="edit" onClick={handleEdit} />
+            )}
           </>,
-          <DeleteOutlined key="del" onClick={handleDelete} />,
+          <div
+            style={{ display: "flex", flexDirection: "column" }}
+            onClick={handleLike}
+            key="like"
+          >
+            {post.likes.find(
+              (like) => like === (user?.result?.googleId || user?.result?._id)
+            ) ? (
+              <LikeFilled />
+            ) : (
+              <LikeOutlined />
+            )}
+            <Text>{post.likes.length}</Text>
+          </div>,
+          <>
+            {(user?.result?.googleId === post?.creatorId ||
+              user?.result?._id === post?.creatorId) && (
+              <DeleteOutlined key="del" onClick={handleDelete} />
+            )}
+          </>,
         ]}
         style={{ background: "transparent" }}
       >

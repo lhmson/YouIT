@@ -1,5 +1,10 @@
-export const CREATE = "CREATE";
-export const UPDATE = "UPDATE";
-export const DELETE = "DELETE";
-export const FETCH_ALL = "FETCH_ALL";
-export const LIKE = "LIKE";
+// posts
+export const CREATE_POST = "CREATE_POST";
+export const UPDATE_POST = "UPDATE_POST";
+export const DELETE_POST = "DELETE_POST";
+export const FETCH_ALL_POSTS = "FETCH_ALL_POSTS";
+export const LIKE_POST = "LIKE_POST";
+
+// auth
+export const AUTH = "AUTH";
+export const LOGOUT = "LOGOUT";

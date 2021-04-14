@@ -1,12 +1,19 @@
 import axios from "axios";
 
-// const url = "http://localhost:5000/posts";
+const url = "http://localhost:5000";
 
-const url = "https://youit-social-network.herokuapp.com/posts";
+// const url = "https://youit-social-network.herokuapp.com";
 
-export const fetchPosts = () => axios.get(url);
-export const createPost = (newPost) => axios.post(url, newPost);
-export const updatePost = (id, updatedPost) =>
-  axios.put(`${url}/${id}`, updatedPost);
-export const deletePost = (id) => axios.delete(`${url}/${id}`);
-export const likePost = (id) => axios.put(`${url}/${id}/likePost`);
+const API = axios.create({ baseURL: url });
+
+API.interceptors.request.use((req) => {
+  if (localStorage.getItem("user")) {
+    req.headers.Authorization = `Bearer ${
+      JSON.parse(localStorage.getItem("user")).token
+    }`;
+  }
+
+  return req;
+});
+
+export default API;

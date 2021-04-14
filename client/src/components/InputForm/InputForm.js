@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Form, Input, Button, Checkbox, Upload, Typography } from "antd";
 import styles from "./styles";
 import FileBase from "react-file-base64";
@@ -7,48 +7,66 @@ import { createPost, updatePost } from "../../redux/actions/posts";
 
 const { Title, Text } = Typography;
 
+const initialFieldValues = {
+  title: "",
+  message: "",
+  tags: "",
+  selectedFile: "",
+};
+
 function InputForm({ currentId, setCurrentId }) {
-  const [form] = Form.useForm();
+  const [postData, setPostData] = useState(initialFieldValues);
+  const [errors, setErrors] = useState({});
 
-  const [postData, setPostData] = useState({
-    creator: "",
-    title: "",
-    message: "",
-    tags: "",
-    selectedFile: "",
-  });
+  const user = JSON.parse(localStorage.getItem("user"));
 
-  const post = useSelector((state) =>
+  const selectedPost = useSelector((state) =>
     currentId ? state.posts.find((item) => item._id === currentId) : null
   );
 
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (post) {
-      setPostData(post);
+    if (selectedPost) {
+      setPostData(selectedPost);
     }
-  }, [post]);
+  }, [selectedPost]);
+
+  const validate = useCallback(() => {
+    setErrors((prevErrors) => ({
+      ...prevErrors,
+      title: postData.title ? "" : "Please input title",
+    }));
+    setErrors((prevErrors) => ({
+      ...prevErrors,
+      message: postData.message ? "" : "Please input message",
+    }));
+    return Object.values(errors).every((x) => x === "");
+  }, [postData]);
+
+  useEffect(() => {
+    validate();
+  }, [validate]);
 
   const reset = () => {
     setCurrentId(null);
-    setPostData({
-      creator: "",
-      title: "",
-      message: "",
-      tags: "",
-      selectedFile: "",
-    });
+    setPostData(initialFieldValues);
     // form.resetFields();
   };
 
   const handleSubmit = (values) => {
-    if (!currentId) {
-      dispatch(createPost(postData));
-    } else {
-      dispatch(updatePost(currentId, postData));
+    const isValid = validate();
+    console.log(errors);
+    if (isValid) {
+      if (!currentId) {
+        dispatch(createPost({ ...postData, creator: user?.result?.name }));
+      } else {
+        dispatch(
+          updatePost(currentId, { ...postData, creator: user?.result?.name })
+        );
+      }
+      reset();
     }
-    reset();
 
     console.log("Success:", values);
   };
@@ -67,59 +85,43 @@ function InputForm({ currentId, setCurrentId }) {
   //   return e && e.fileList;
   // };
 
+  if (!user?.result?.name) {
+    return (
+      <Title level="3" align="center">
+        Please Sign In to create a post
+      </Title>
+    );
+  }
+
   return (
     <Form
       {...styles.layout}
       autoComplete="off"
       noValidate
       name="basic"
-      initialValues={{}}
-      form={form}
+      // initialValues={{}}
       onFinish={handleSubmit}
       onFinishFailed={handleFailed}
     >
-      <Form.Item
-        label="Title"
-        rules={[
-          {
-            required: true,
-            message: "Please input title!",
-          },
-        ]}
-      >
+      <Form.Item label="Title" required>
         <Input
           name="title"
           value={postData.title}
           onChange={(e) => setPostData({ ...postData, title: e.target.value })}
+          suffix={errors.title + " "}
         />
       </Form.Item>
 
-      <Form.Item
-        label="Message"
-        rules={[
-          {
-            required: true,
-            message: "Please input message!",
-          },
-        ]}
-      >
+      <Form.Item label="Message" required>
         <Input
           name="message"
           value={postData.message}
           onChange={(e) =>
             setPostData({ ...postData, message: e.target.value })
           }
+          suffix={errors.message + " "}
         />
-      </Form.Item>
-
-      <Form.Item label="Creator">
-        <Input
-          name="creator"
-          value={postData.creator}
-          onChange={(e) =>
-            setPostData({ ...postData, creator: e.target.value })
-          }
-        />
+        {/* <Text type="danger">{errors.message}</Text> */}
       </Form.Item>
 
       {/* <Form.Item
