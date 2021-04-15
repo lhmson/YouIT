@@ -3,6 +3,7 @@ import styles from "./App.module.css";
 import { Switch, Route } from "react-router-dom";
 import MainPage from "./pages/MainPage/MainPage";
 import AuthPage from "./pages/AuthPage/AuthPage";
+import SpecificPost from "./pages/SpecificPost/SpecificPost";
 
 function App() {
   return (
@@ -10,6 +11,7 @@ function App() {
       <Switch>
         <Route path="/" exact component={MainPage} />
         <Route path="/auth" component={AuthPage} />
+        <Route path="/posts" component={SpecificPost} />
       </Switch>
     </div>
   );

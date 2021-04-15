@@ -1,5 +1,6 @@
 import {
   FETCH_ALL_POSTS,
+  FETCH_A_POST,
   CREATE_POST,
   UPDATE_POST,
   DELETE_POST,
@@ -9,6 +10,8 @@ import {
 const postReducer = (posts = [], action) => {
   switch (action.type) {
     case FETCH_ALL_POSTS:
+      return action.payload;
+    case FETCH_A_POST:
       return action.payload;
     case CREATE_POST:
       return [...posts, action.payload];
