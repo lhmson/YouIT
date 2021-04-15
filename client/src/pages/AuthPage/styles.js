@@ -1,3 +1,5 @@
+import COLOR from "../../constants/colors";
+
 const styles = {
   logo: {
     float: "left",
@@ -7,10 +9,10 @@ const styles = {
     float: "right",
   },
   paleBackground: {
-    background: "#fff",
+    background: COLOR.white,
   },
   greenBackground: {
-    background: "#27ae60",
+    background: COLOR.green,
   },
   mainArea: {
     padding: 24,

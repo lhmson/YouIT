@@ -1,10 +1,8 @@
 import axios from "axios";
 
-const url = "http://localhost:5000";
+import { BACKEND_URL } from "../constants/config";
 
-// const url = "https://youit-social-network.herokuapp.com";
-
-const API = axios.create({ baseURL: url });
+const API = axios.create({ baseURL: BACKEND_URL });
 
 API.interceptors.request.use((req) => {
   if (localStorage.getItem("user")) {
