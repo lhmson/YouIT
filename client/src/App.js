@@ -11,7 +11,7 @@ function App() {
       <Switch>
         <Route path="/" exact component={MainPage} />
         <Route path="/auth" component={AuthPage} />
-        <Route path="/posts" component={SpecificPost} />
+        <Route path="/posts/:id" component={SpecificPost} />
       </Switch>
     </div>
   );

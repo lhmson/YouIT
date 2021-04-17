@@ -6,28 +6,24 @@ import { Layout, Typography, Breadcrumb } from "antd";
 import Navbar from "../../components/Navbar/Navbar";
 import { getPosts } from "../../redux/actions/posts.js";
 import FullPost from "../../components/Posts/Post/FullPost.js";
-import { useLocation } from "react-router";
 
 const { Content } = Layout;
-const { Title, Text } = Typography;
 
 function SpecificPost(props) {
   const { match, history } = props;
-  const location = useLocation();
 
   const dispatch = useDispatch();
 
   useEffect(() => {
-    console.log("abc");
     dispatch(getPosts());
-  }, [dispatch]);
+  }, []);
 
   return (
     <>
       <Layout>
-        <Navbar selectedMenu="home" />
+        <Navbar selectedMenu="test" />
         <Layout>
-          <FullPost id="6077cf31466ee01ebc305055" />
+          <FullPost id={match.params.id} />
         </Layout>
       </Layout>
     </>

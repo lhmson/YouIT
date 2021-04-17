@@ -73,6 +73,9 @@ function Navbar({ selectedMenu }) {
               <Link to="/auth">Sign In</Link>
             </Menu.Item>
           )}
+          <Menu.Item key="test">
+            <Link to="/posts/60774246ac807941f418f940">A post</Link>
+          </Menu.Item>
         </Menu>
       </Header>
     </>
