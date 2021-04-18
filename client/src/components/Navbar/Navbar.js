@@ -12,7 +12,6 @@ const { Title, Text } = Typography;
 
 function Navbar({ selectedMenu }) {
   const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")));
-  console.log("user", user);
 
   const dispatch = useDispatch();
   const location = useLocation();
@@ -53,6 +52,9 @@ function Navbar({ selectedMenu }) {
       >
         <Menu.Item key="home">
           <Link to="/">Home</Link>
+        </Menu.Item>
+        <Menu.Item key="feed">
+          <Link to="/feed">Feed</Link>
         </Menu.Item>
         {user ? (
           <>

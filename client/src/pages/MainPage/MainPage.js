@@ -8,7 +8,7 @@ import Navbar from "../../components/Navbar/Navbar";
 
 import { useDispatch } from "react-redux";
 import { getPosts } from "../../redux/actions/posts";
-import Sidebar from "../../components/Sidebar/Sidebar";
+import Sidebar from "../../components/Sidebar/FeedSidebar/FeedSidebar";
 
 const { Content } = Layout;
 const { Title, Text } = Typography;
