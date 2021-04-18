@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link, useHistory, useLocation } from "react-router-dom";
-import { Layout, Menu, Typography, Avatar } from "antd";
+import { Layout, Menu, Typography, Avatar, Button } from "antd";
 import styles from "./styles";
 
 import decode from "jwt-decode";
@@ -39,46 +39,49 @@ function Navbar({ selectedMenu }) {
   }, [location]);
 
   return (
-    <>
-      <Header className="header">
-        <div style={styles.logo}>
-          <Link to="/">
-            <Title type="success">YouIT</Title>
-          </Link>
-        </div>
-        <Menu
-          theme="dark"
-          mode="horizontal"
-          defaultSelectedKeys={[selectedMenu]}
-        >
-          <Menu.Item key="home">
-            <Link to="/">Home</Link>
-          </Menu.Item>
-          {user ? (
-            <>
-              <div style={styles.navItem}>
-                <Avatar alt={user.result.name} src={user.result.imageUrl}>
-                  {user.result.name.charAt(0)}
-                </Avatar>
-                <Text className="text-white m-2">{user.result.name}</Text>
-              </div>
-              <Menu.Item key="logout">
+    <Header style={styles.greenBackground}>
+      <div style={styles.logo}>
+        <Link to="/">
+          <Text style={styles.title}>YouIT</Text>
+        </Link>
+      </div>
+      <Menu
+        style={styles.greenBackground}
+        theme="dark"
+        mode="horizontal"
+        defaultSelectedKeys={[selectedMenu]}
+      >
+        <Menu.Item key="home">
+          <Link to="/">Home</Link>
+        </Menu.Item>
+        {user ? (
+          <>
+            <div style={styles.right}>
+              <Text className="text-white">{user.result.name}</Text>
+              <Avatar
+                className="mx-2"
+                alt={user.result.name}
+                src={user.result.imageUrl}
+              >
+                {user.result.name.charAt(0)}
+              </Avatar>
+              <Button>
                 <Link to="/" onClick={handleLogOut}>
                   Logout
                 </Link>
-              </Menu.Item>
-            </>
-          ) : (
-            <Menu.Item key="auth">
-              <Link to="/auth">Sign In</Link>
-            </Menu.Item>
-          )}
-          <Menu.Item key="test">
-            <Link to="/posts/60774246ac807941f418f940">A post</Link>
+              </Button>
+            </div>
+          </>
+        ) : (
+          <Menu.Item key="auth">
+            <Link to="/auth">Sign In</Link>
           </Menu.Item>
-        </Menu>
-      </Header>
-    </>
+        )}
+        <Menu.Item key="test">
+          <Link to="/posts/60774246ac807941f418f940">A post</Link>
+        </Menu.Item>
+      </Menu>
+    </Header>
   );
 }
 
