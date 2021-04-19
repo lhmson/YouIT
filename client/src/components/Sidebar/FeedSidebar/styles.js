@@ -13,6 +13,13 @@ const styles = {
   transparent: {
     backgroundColor: "transparent",
   },
+  fixedSider: {
+    overflow: "hidden",
+    height: "100vh",
+    position: "fixed",
+    marginTop: 64,
+    left: 0,
+  },
 };
 
 export default styles;

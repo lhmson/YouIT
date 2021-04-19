@@ -22,6 +22,11 @@ const styles = {
     justifyContent: "space-between",
     alignItems: "center",
   },
+  fixedHeader: {
+    position: "fixed",
+    zIndex: 1,
+    width: "100%",
+  },
   greenBackground: {
     background: COLOR.green,
   },

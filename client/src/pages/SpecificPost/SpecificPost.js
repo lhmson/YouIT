@@ -22,7 +22,7 @@ function SpecificPost(props) {
     <>
       <Layout>
         <Navbar selectedMenu="test" />
-        <Layout>
+        <Layout style={styles.mainArea}>
           <FullPost id={match.params.id} />
         </Layout>
       </Layout>

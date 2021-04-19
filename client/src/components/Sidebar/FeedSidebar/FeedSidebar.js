@@ -17,7 +17,13 @@ function FeedSidebar() {
   useEffect(() => {}, []);
 
   return (
-    <Sider width={200} style={styles.paleBackground}>
+    <Sider
+      width={200}
+      style={{
+        ...styles.paleBackground,
+        ...styles.fixedSider,
+      }}
+    >
       <Menu
         mode="inline"
         defaultSelectedKeys={["username"]}
@@ -34,12 +40,12 @@ function FeedSidebar() {
           key="username"
           style={styles.item}
           icon={
-            <Avatar alt={user.result.name} src={user.result.imageUrl}>
-              {user.result.name.charAt(0)}
+            <Avatar alt={user?.result?.name} src={user?.result?.imageUrl}>
+              {user?.result?.name.charAt(0)}
             </Avatar>
           }
         >
-          {user.result.name}
+          {user?.result?.name}
         </Menu.Item>
         <Menu.Item
           key="friends"

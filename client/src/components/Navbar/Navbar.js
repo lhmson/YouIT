@@ -8,7 +8,7 @@ import { useDispatch } from "react-redux";
 import { logout } from "../../redux/actions/auth";
 
 const { Header } = Layout;
-const { Title, Text } = Typography;
+const { Text } = Typography;
 
 function Navbar({ selectedMenu }) {
   const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")));
@@ -38,7 +38,12 @@ function Navbar({ selectedMenu }) {
   }, [location]);
 
   return (
-    <Header style={styles.greenBackground}>
+    <Header
+      style={{
+        ...styles.greenBackground,
+        ...styles.fixedHeader,
+      }}
+    >
       <div style={styles.logo}>
         <Link to="/">
           <Text style={styles.title}>YouIT</Text>

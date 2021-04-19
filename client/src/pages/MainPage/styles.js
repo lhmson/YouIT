@@ -6,8 +6,9 @@ const styles = {
   },
   mainArea: {
     padding: 24,
-    margin: 0,
-    minHeight: 280,
+    minHeight: "100vh",
+    marginTop: 64,
+    marginLeft: 200,
   },
 };
 

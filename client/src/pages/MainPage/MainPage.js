@@ -27,7 +27,7 @@ function MainPage() {
         <Navbar selectedMenu="home" />
         <Layout>
           <Sidebar />
-          <Layout style={{ padding: "24px" }}>
+          <Layout style={{ ...styles.mainArea }}>
             <Breadcrumb style={{ margin: "16px 0" }}>
               <Breadcrumb.Item>Home</Breadcrumb.Item>
               <Breadcrumb.Item>List</Breadcrumb.Item>
@@ -36,9 +36,7 @@ function MainPage() {
             <Posts setCurrentId={setCurrentId} />
             <InputForm currentId={currentId} setCurrentId={setCurrentId} />
 
-            <Content style={{ ...styles.paleBackground, ...styles.mainArea }}>
-              Content
-            </Content>
+            <Content style={{ ...styles.paleBackground }}>Content</Content>
           </Layout>
         </Layout>
       </Layout>
