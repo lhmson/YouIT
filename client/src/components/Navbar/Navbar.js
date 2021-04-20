@@ -73,6 +73,9 @@ function Navbar({ selectedMenu }) {
               <Link to="/auth">Sign In</Link>
             </Menu.Item>
           )}
+          <Menu.Item key="userinfo">
+            <Link to="/userinfo">User Info</Link>
+          </Menu.Item>
         </Menu>
       </Header>
     </>
