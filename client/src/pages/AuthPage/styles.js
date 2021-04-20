@@ -16,8 +16,7 @@ const styles = {
   },
   mainArea: {
     padding: 24,
-    margin: 0,
-    minHeight: 280,
+    marginTop: 64,
   },
 };
 
