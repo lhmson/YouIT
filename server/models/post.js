@@ -12,11 +12,9 @@ const postSchema = mongoose.Schema(
     },
     creator: String,
     creatorId: {
-      type: String,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
     },
-    // tags: {
-    //   type: [String],
-    // },
     selectedFile: {
       type: String,
     },
