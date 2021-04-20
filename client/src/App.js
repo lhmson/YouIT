@@ -3,7 +3,7 @@ import styles from "./styles.js";
 import { Switch, Route } from "react-router-dom";
 import MainPage from "./pages/MainPage/MainPage";
 import AuthPage from "./pages/AuthPage/AuthPage";
-import FeedPage from "./pages/FeedPage.js/FeedPage.js";
+import FeedPage from "./pages/FeedPage/FeedPage";
 import SpecificPost from "./pages/SpecificPost/SpecificPost";
 
 function App() {
