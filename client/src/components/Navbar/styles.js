@@ -3,21 +3,32 @@ import COLOR from "../../constants/colors";
 const styles = {
   logo: {
     float: "left",
-    margin: "0.5rem 1rem",
+    height: 64,
+    width: 110,
+    // margin: "0.5rem 1rem",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: COLOR.green,
   },
-  navItem: {
+  title: {
+    fontSize: "2rem",
+    fontWeight: 500,
+    color: COLOR.white,
+  },
+  right: {
     float: "right",
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
   },
-  paleBackground: {
-    background: COLOR.white,
+  fixedHeader: {
+    position: "fixed",
+    zIndex: 1,
+    width: "100%",
   },
   greenBackground: {
     background: COLOR.green,
-  },
-  mainArea: {
-    padding: 24,
-    margin: 0,
-    minHeight: 280,
   },
 };
 

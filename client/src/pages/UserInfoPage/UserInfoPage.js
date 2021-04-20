@@ -1,15 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { Layout, Typography, Breadcrumb, Row, Col } from "antd";
-import TextEditor from "../../components/TextEditor/TextEditor";
 import styles from "./styles.js";
 
-import Posts from "../../components/Posts/Posts";
-import InputForm from "../../components/InputForm/InputForm";
 import Navbar from "../../components/Navbar/Navbar";
 
 import { useDispatch } from "react-redux";
 import { getPosts } from "../../redux/actions/posts";
-import Sidebar from "../../components/Sidebar/Sidebar";
 import AboutCard from "../../components/AboutCard/AboutCard";
 
 const { Content } = Layout;
