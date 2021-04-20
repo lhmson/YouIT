@@ -4,8 +4,10 @@ const styles = {
   paleBackground: {
     background: COLOR.white,
   },
+  greenBackground: {
+    background: COLOR.green,
+  },
   mainArea: {
-    padding: 24,
     minHeight: "100vh",
     marginTop: 64,
     marginLeft: 200,

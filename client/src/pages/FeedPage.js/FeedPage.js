@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Layout, Typography, Breadcrumb } from "antd";
+import TextEditor from "../../components/TextEditor/TextEditor";
 import styles from "./styles.js";
 
 import Posts from "../../components/Posts/Posts";
@@ -8,12 +9,13 @@ import Navbar from "../../components/Navbar/Navbar";
 
 import { useDispatch } from "react-redux";
 import { getPosts } from "../../redux/actions/posts";
-import Sidebar from "../../components/Sidebar/FeedSidebar/FeedSidebar";
+import FeedSidebar from "../../components/Sidebar/FeedSidebar/FeedSidebar";
+import FeedPosts from "../../components/Posts/FeedPosts/FeedPosts";
 
 const { Content } = Layout;
 const { Title, Text } = Typography;
 
-function MainPage() {
+function FeedPage() {
   const [currentId, setCurrentId] = useState(null);
   const dispatch = useDispatch();
 
@@ -24,19 +26,13 @@ function MainPage() {
   return (
     <>
       <Layout>
-        <Navbar selectedMenu="home" />
+        <Navbar selectedMenu="feed" />
         <Layout>
-          <Sidebar />
-          <Layout style={{ ...styles.mainArea }}>
-            <Breadcrumb style={{ margin: "16px 0" }}>
-              <Breadcrumb.Item>Home</Breadcrumb.Item>
-              <Breadcrumb.Item>List</Breadcrumb.Item>
-              <Breadcrumb.Item>App</Breadcrumb.Item>
-            </Breadcrumb>
-            <Posts setCurrentId={setCurrentId} />
-            <InputForm currentId={currentId} setCurrentId={setCurrentId} />
-
-            <Content style={{ ...styles.paleBackground }}>Content</Content>
+          <FeedSidebar />
+          <Layout style={styles.mainArea}>
+            <Content>
+              <FeedPosts />
+            </Content>
           </Layout>
         </Layout>
       </Layout>
@@ -44,4 +40,4 @@ function MainPage() {
   );
 }
 
-export default MainPage;
+export default FeedPage;
