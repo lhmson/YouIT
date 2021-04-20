@@ -54,6 +54,8 @@ function Navbar({ selectedMenu }) {
           <Menu.Item key="home">
             <Link to="/">Home</Link>
           </Menu.Item>
+
+
           {user ? (
             <>
               <div style={styles.navItem}>
@@ -73,6 +75,11 @@ function Navbar({ selectedMenu }) {
               <Link to="/auth">Sign In</Link>
             </Menu.Item>
           )}
+
+          <Menu.Item key="createPost">
+            <Link to="/post/create">Create post</Link>
+          </Menu.Item>
+
         </Menu>
       </Header>
     </>

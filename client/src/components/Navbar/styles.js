@@ -3,7 +3,7 @@ import COLOR from "../../constants/colors";
 const styles = {
   logo: {
     float: "left",
-    margin: "0.5rem 1rem",
+    margin: "0rem 1rem",
   },
   navItem: {
     float: "right",
