@@ -1,3 +1,7 @@
-const styles = {};
+const styles = {
+  headingView: {
+    marginBottom: 32,
+  },
+};
 
-export default styles
+export default styles;
