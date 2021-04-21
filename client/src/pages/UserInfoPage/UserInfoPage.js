@@ -6,7 +6,7 @@ import Navbar from "../../components/Navbar/Navbar";
 
 import { useDispatch } from "react-redux";
 import { getPosts } from "../../redux/actions/posts";
-import AboutCard from "../../components/AboutCard/AboutCard";
+import AboutCard from "../../components/UserInfo/AboutCard/AboutCard";
 
 const { Content } = Layout;
 const { Title, Text } = Typography;
@@ -24,7 +24,7 @@ function UserInfoPage() {
       <Layout>
         <Navbar selectedMenu="userinfo" />
         <Layout style={styles.mainArea}>
-          <Content style={{ background: "white", padding: 16 }}>
+          <Content style={{ background: "whitesmoke", padding: 16 }}>
             <AboutCard></AboutCard>
           </Content>
         </Layout>

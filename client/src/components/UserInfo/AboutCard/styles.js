@@ -1,4 +1,4 @@
-import COLOR from "../../constants/colors";
+import COLOR from "../../../constants/colors";
 
 const styles = {
   whiteBackground: {
