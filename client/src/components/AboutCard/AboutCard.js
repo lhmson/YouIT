@@ -1,81 +1,32 @@
-import React from "react";
-import { Button, Divider, Typography, Card, Tabs } from "antd";
-import Icon, { HomeFilled } from "@ant-design/icons";
+import React, { useState } from "react";
+import { Button, Divider, Typography, Menu, Layout } from "antd";
+import { FaLaptopCode, MdWork, GrOverview } from "react-icons/all";
 
+import { OverviewPane, ProgrammingPane, WorkAndEducationPane } from "./index";
 import styles from "./styles.js";
 
-const { Title, Text } = Typography;
-const { TabPane } = Tabs;
-
-const OverviewRow = (props) => {
-  return (
-    <>
-      <div className="container" style={{ marginBottom: 32 }}>
-        <div className="row" style={{ alignItems: "center" }}>
-          <div className="col-8">
-            <div
-              className="row"
-              style={{ display: "flex", alignItems: "center" }}
-            >
-              {props.firstIcon}
-              <div>
-                <Text style={{ fontSize: 18, fontWeight: 400 }}>
-                  {props.text}
-                </Text>
-                <br />
-                <Text>{props.subText}</Text>
-              </div>
-            </div>
-          </div>
-          <div
-            className="col-2 offset-1"
-            style={{
-              background: "white",
-              display: "flex",
-              justifyContent: "center",
-            }}
-          >
-            <Button style={{ marginRight: 16 }}>{props.privacyIcon}</Button>
-            <Button>{props.lastIcon}</Button>
-          </div>
-        </div>
-      </div>
-    </>
-  );
-};
-
-const OverviewPane = (props) => {
-  const schoolIcon = () => {
-    return <HomeFilled style={{ marginRight: 16, fontSize: 24 }} />;
-  };
-  const homeIcon = () => {
-    return <HomeFilled style={{ marginRight: 16, fontSize: 24 }} />;
-  };
-
-  return (
-    <div>
-      <OverviewRow
-        firstIcon={schoolIcon()}
-        text="Went to Truong THPT Gia Dinh"
-        subText="Attended from 2015 to 2018"
-        privacyIcon="ZZZ"
-        lastIcon="AAA"
-      />
-      <OverviewRow
-        firstIcon={homeIcon()}
-        text="Went to Truong THPT Gia Dinh"
-        subText="Attended from 2015 to 2018"
-        privacyIcon="ZZZ"
-        lastIcon="AAA"
-      />
-    </div>
-  );
-};
+const { Text } = Typography;
+const { Sider } = Layout;
 
 function AboutCard() {
+  const [selectedItem, setSelectedItem] = useState("1");
+
+  const CustomPane = () => {
+    switch (selectedItem) {
+      case "1":
+        return <OverviewPane />;
+      case "2":
+        return <WorkAndEducationPane />;
+      case "3":
+        return <ProgrammingPane />;
+      default:
+        break;
+    }
+  };
+
   return (
     <>
-      <div style={styles.whiteBackground}>
+      <div className="container" style={styles.whiteBackground}>
         <div className="row">
           <div
             className="col-2"
@@ -102,17 +53,60 @@ function AboutCard() {
           </div>
         </div>
         <Divider />
-        <Tabs tabPosition="left" type="card" tabBarGutter={16}>
-          <TabPane tab="Tab 1" key="1">
-            <OverviewPane />
-          </TabPane>
-          <TabPane tab="Tab 2" key="2">
-            Content of Tab 2
-          </TabPane>
-          <TabPane tab="Tab 3" key="3">
-            Content of Tab 3
-          </TabPane>
-        </Tabs>
+        <div style={{ height: 400, background: "white" }}>
+          <div className="row">
+            <div
+              className="col-4"
+              style={{ flexDirection: "row", display: "flex" }}
+            >
+              <Sider width="95%">
+                <Menu
+                  mode="inline"
+                  style={{
+                    height: "100%",
+                    borderRight: 0,
+                    fontWeight: 500,
+                    fontSize: "1rem",
+                  }}
+                  selectedKeys={selectedItem}
+                >
+                  <Menu.Item
+                    key="1"
+                    style={styles.item}
+                    icon={<GrOverview style={styles.icon} />}
+                    onClick={(e) => setSelectedItem(e.key)}
+                  >
+                    Overview
+                  </Menu.Item>
+                  <Menu.Item
+                    key="2"
+                    style={styles.item}
+                    icon={<MdWork style={styles.icon} />}
+                    onClick={(e) => setSelectedItem(e.key)}
+                  >
+                    Work and Education
+                  </Menu.Item>
+                  <Menu.Item
+                    key="3"
+                    style={styles.item}
+                    icon={<FaLaptopCode style={styles.icon} />}
+                    onClick={(e) => setSelectedItem(e.key)}
+                  >
+                    Programming
+                  </Menu.Item>
+                </Menu>
+              </Sider>
+              <Divider
+                type="vertical"
+                style={{
+                  marginLeft: 8,
+                  height: "100%",
+                }}
+              />
+            </div>
+            <div className="col-8">{CustomPane()}</div>
+          </div>
+        </div>
       </div>
     </>
   );
