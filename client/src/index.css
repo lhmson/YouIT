@@ -6,15 +6,51 @@ body {
   background-attachment: fixed;
   background-size: cover;
   --green: #27ae60;
-  --darkGreen: #219653;
-  --lightGreen: #6fcf97;
-  --greenSmoke: #dbf3e5;
+  --dark-green: #219653;
+  --light-green: #6fcf97;
+  --green-smoke: #dbf3e5;
+  --black: #333333;
 }
 
-.link {
-  color: var(--darkGreen);
-}
-.link:hover {
+.clickable:hover {
   text-decoration: underline;
+  color: var(--green);
+  cursor: pointer;
+}
+
+.bold {
+  font-weight: bold;
+}
+
+.green {
+  color: var(--green);
+}
+
+.dgreen {
+  color: var(--dark-green);
+}
+
+.black {
+  color: var(--black);
+}
+
+.icon {
+  font-size: 24px;
+}
+
+.tag {
+  font-size: 1rem;
+  color: var(--dark-green);
+  background-color: var(--green-smoke);
+  border-color: var(--green-smoke);
+  justify-content: center;
+  padding-bottom: 3px;
+  padding-left: 12px;
+  padding-right: 12px;
+}
+
+.tag:hover {
+  background-color: var(--dark-green);
+  color: white;
   cursor: pointer;
 }
