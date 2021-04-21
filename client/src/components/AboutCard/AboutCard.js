@@ -1,11 +1,76 @@
 import React from "react";
-import { Button, Row, Col, Divider, Form, Typography, Input, Card } from "antd";
-import { SmileOutlined } from "@ant-design/icons";
-import Layout from "antd/lib/layout/layout";
+import { Button, Divider, Typography, Card, Tabs } from "antd";
+import Icon, { HomeFilled } from "@ant-design/icons";
 
 import styles from "./styles.js";
 
 const { Title, Text } = Typography;
+const { TabPane } = Tabs;
+
+const OverviewRow = (props) => {
+  return (
+    <>
+      <div className="container" style={{ marginBottom: 32 }}>
+        <div className="row" style={{ alignItems: "center" }}>
+          <div className="col-8">
+            <div
+              className="row"
+              style={{ display: "flex", alignItems: "center" }}
+            >
+              {props.firstIcon}
+              <div>
+                <Text style={{ fontSize: 18, fontWeight: 400 }}>
+                  {props.text}
+                </Text>
+                <br />
+                <Text>{props.subText}</Text>
+              </div>
+            </div>
+          </div>
+          <div
+            className="col-2 offset-1"
+            style={{
+              background: "white",
+              display: "flex",
+              justifyContent: "center",
+            }}
+          >
+            <Button style={{ marginRight: 16 }}>{props.privacyIcon}</Button>
+            <Button>{props.lastIcon}</Button>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+};
+
+const OverviewPane = (props) => {
+  const schoolIcon = () => {
+    return <HomeFilled style={{ marginRight: 16, fontSize: 24 }} />;
+  };
+  const homeIcon = () => {
+    return <HomeFilled style={{ marginRight: 16, fontSize: 24 }} />;
+  };
+
+  return (
+    <div>
+      <OverviewRow
+        firstIcon={schoolIcon()}
+        text="Went to Truong THPT Gia Dinh"
+        subText="Attended from 2015 to 2018"
+        privacyIcon="ZZZ"
+        lastIcon="AAA"
+      />
+      <OverviewRow
+        firstIcon={homeIcon()}
+        text="Went to Truong THPT Gia Dinh"
+        subText="Attended from 2015 to 2018"
+        privacyIcon="ZZZ"
+        lastIcon="AAA"
+      />
+    </div>
+  );
+};
 
 function AboutCard() {
   return (
@@ -37,39 +102,17 @@ function AboutCard() {
           </div>
         </div>
         <Divider />
-        <Card>
-          <Title
-            level={3}
-            style={{
-              color: "GrayText",
-              display: "flex",
-            }}
-          >
-            Section 1
-          </Title>
-          <Row
-            style={{
-              background: "pink",
-              // flexGrow: 1,
-              display: "flex",
-              flex: 1,
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-            className="text-center"
-          >
-            <Col
-              span={2}
-              style={{
-                background: "yellow",
-              }}
-            >
-              {/* <SmileOutlined />
-              <Title level="3">Text</Title> */}
-              <Button>Button</Button>
-            </Col>
-          </Row>
-        </Card>
+        <Tabs tabPosition="left" type="card" tabBarGutter={16}>
+          <TabPane tab="Tab 1" key="1">
+            <OverviewPane />
+          </TabPane>
+          <TabPane tab="Tab 2" key="2">
+            Content of Tab 2
+          </TabPane>
+          <TabPane tab="Tab 3" key="3">
+            Content of Tab 3
+          </TabPane>
+        </Tabs>
       </div>
     </>
   );

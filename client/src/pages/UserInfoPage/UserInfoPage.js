@@ -23,7 +23,7 @@ function UserInfoPage() {
     <>
       <Layout>
         <Navbar selectedMenu="userinfo" />
-        <Layout style={{ margin: 128, background: "purple" }}>
+        <Layout style={styles.mainArea}>
           <Content style={{ background: "white", padding: 16 }}>
             <AboutCard></AboutCard>
           </Content>
