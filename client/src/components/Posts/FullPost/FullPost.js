@@ -11,6 +11,7 @@ import {
   Input,
   Divider,
 } from "antd";
+import { MdPublic } from "react-icons/md";
 import {
   EllipsisOutlined,
   ArrowUpOutlined,
@@ -28,7 +29,8 @@ import Comment from "../../Comment/Comment";
 const { Title, Text, Paragraph, Link } = Typography;
 const { TextArea } = Input;
 
-function FullPost({ post, setCurrentId }) {
+function FullPost(props) {
+  const { post } = props;
   const dispatch = useDispatch();
 
   const user = JSON.parse(localStorage.getItem("user"));
@@ -60,7 +62,7 @@ function FullPost({ post, setCurrentId }) {
                     strong
                     style={{ fontSize: "1.2rem" }}
                   >
-                    Ngô Công Hậu
+                    {post?.creator}
                   </Text>
                   <CaretRightOutlined
                     style={{ fontSize: 18, paddingBottom: 5 }}
@@ -70,7 +72,7 @@ function FullPost({ post, setCurrentId }) {
                     strong
                     style={{ fontSize: "1.2rem" }}
                   >
-                    Trại Tâm Thần Đa Ngôn Ngữ 2.0
+                    Trại tâm thần đa ngôn ngữ*
                   </Text>
                 </Space>
               </Row>
@@ -78,12 +80,13 @@ function FullPost({ post, setCurrentId }) {
             </div>
           </Row>
           <Row className="justify-content-end align-items-center pb-3">
+            <MdPublic className="gray mr-1" style={{ fontSize: 16 }} />
             <div className="mr-4">
               <Text type="secondary">Public</Text>
             </div>
             <div className="mr-4">
               <Text className="clickable" underline type="secondary">
-                Post 5 days ago
+                Posted {post?.createdAt.toString().slice(0, 10)}
               </Text>
             </div>
 
@@ -98,7 +101,7 @@ function FullPost({ post, setCurrentId }) {
           ))}
         </Row>
         <div>
-          <Title level={2}>Big title</Title>
+          <Title level={2}>{post.title}</Title>
           <div className="pb-2">
             <Paragraph>
               Some word Lorem ipsum dolor sit amet, consectetur adipiscing elit,

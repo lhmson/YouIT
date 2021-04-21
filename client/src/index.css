@@ -10,6 +10,7 @@ body {
   --light-green: #6fcf97;
   --green-smoke: #dbf3e5;
   --black: #333333;
+  --gray: #828282;
 }
 
 .clickable:hover {
@@ -32,6 +33,10 @@ body {
 
 .black {
   color: var(--black);
+}
+
+.gray {
+  color: var(--gray);
 }
 
 .icon {

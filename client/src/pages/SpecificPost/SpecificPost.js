@@ -37,6 +37,10 @@ const { Title, Text } = Typography;
 function SpecificPost(props) {
   const { match, history } = props;
   const posts = useSelector((state) => state.posts);
+  const post = posts.find((p) => p._id === match.params.id);
+  const userPosts = posts
+    .filter((p) => p.creatorId === post.creatorId && p._id !== post._id)
+    .slice(0, 5);
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(getPosts());
@@ -45,16 +49,15 @@ function SpecificPost(props) {
     <>
       <Layout>
         <Navbar selectedMenu="test" />
-
         <Layout style={styles.mainArea}>
           <Content>
             <div className="mr-4  ">
-              <FullPost />
+              <FullPost post={post} />
             </div>
           </Content>
           <FixedRightPanel>
-            <RelatedCard title="From this user" />
-            <RelatedCard title="Related posts" />
+            <RelatedCard title="From this user" posts={userPosts} />
+            <RelatedCard title="Related posts" posts={userPosts} />
           </FixedRightPanel>
         </Layout>
       </Layout>

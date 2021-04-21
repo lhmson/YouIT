@@ -18,7 +18,11 @@ const postSchema = mongoose.Schema(
     selectedFile: {
       type: String,
     },
-    likes: {
+    upvoters: {
+      type: [String],
+      default: [],
+    },
+    downvoters: {
       type: [String],
       default: [],
     },

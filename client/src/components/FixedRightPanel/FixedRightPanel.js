@@ -17,8 +17,8 @@ function FixedRightPanel(props) {
           backgroundColor: "transparent",
         }}
       >
-        <div className="mr-4" style={{ position: "fixed" }}>
-          {children}
+        <div className="site-card-border-less-wrapper mb-4">
+          <div>{children}</div>
         </div>
       </Sider>
     </>
