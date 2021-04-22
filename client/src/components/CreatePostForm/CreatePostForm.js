@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { Button } from 'antd'
 import CreatePostPrivacySelect from './CreatePostPrivacySelect/CreatePostPrivacySelect.js';
 import CreatePostSpaceAutoComplete from './CreatePostSpaceAutoComplete/CreatePostSpaceAutoComplete.js';
 import CreatePostTagSelect from './CreatePostTagSelect/CreatePostTagSelect.js';
@@ -27,6 +28,11 @@ function CreatePostForm() {
         </div>
         <div className="col-2">
           <CreatePostPrivacySelect postSpace={postSpace} postPrivacy={postPrivacy} setPostPrivacy={setPostPrivacy} />
+        </div>
+
+        {/* May us have a common button component to call here? */}
+        <div className="col-1">
+          <Button>Save post</Button>
         </div>
       </div>
     </div>

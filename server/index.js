@@ -32,7 +32,7 @@ app.use(cookieParser());
 // router
 app.use("/", indexRouter);
 app.use("/user", userRouter);
-app.use("/posts", postsRouter);
+app.use("/post", postsRouter);
 
 const PORT = process.env.PORT || 5000;
 

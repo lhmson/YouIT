@@ -7,13 +7,13 @@ import {
   updatePost,
   deletePost,
   likePost,
-} from "../controllers/posts.js";
+} from "../controllers/posts_CuteTN.js";
 
 import auth from "../middleware/auth.js";
 
 const router = express.Router();
 
-router.get("/", getPosts);
+router.get("/list/all", getPosts);
 router.get("/:id", getPost);
 router.post("/", auth, createPost);
 router.put("/:id", auth, updatePost);
