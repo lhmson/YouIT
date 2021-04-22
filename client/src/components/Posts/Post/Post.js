@@ -56,28 +56,28 @@ function Post({ post, setCurrentId }) {
           <>
             {(user?.result?.googleId === post?.creatorId ||
               user?.result?._id === post?.creatorId) && (
-              <EditOutlined key="edit" onClick={handleEdit} />
-            )}
+                <EditOutlined key="edit" onClick={handleEdit} />
+              )}
           </>,
           <div
             style={{ display: "flex", flexDirection: "column" }}
             onClick={handleLike}
             key="like"
           >
-            {post.likes.find(
+            {post.likes?.find(
               (like) => like === (user?.result?.googleId || user?.result?._id)
             ) ? (
               <LikeFilled />
             ) : (
               <LikeOutlined />
             )}
-            <Text>{post.likes.length}</Text>
+            <Text>{post.likes?.length}</Text>
           </div>,
           <>
             {(user?.result?.googleId === post?.creatorId ||
               user?.result?._id === post?.creatorId) && (
-              <DeleteOutlined key="del" onClick={handleDelete} />
-            )}
+                <DeleteOutlined key="del" onClick={handleDelete} />
+              )}
           </>,
         ]}
         style={{ background: "transparent" }}
