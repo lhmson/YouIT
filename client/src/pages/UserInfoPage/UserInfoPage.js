@@ -9,6 +9,7 @@ import { getPosts } from "../../redux/actions/posts";
 import AboutCard from "../../components/UserInfo/AboutCard/AboutCard";
 import AvatarView from "../../components/UserInfo/AvatarView/AvatarView.js";
 import ListButtons from "../../components/UserInfo/ListButtons/ListButtons.js";
+import FriendManager from "../../components/UserInfo/FriendManager/FriendManager.js";
 
 const { Content } = Layout;
 const { Title, Text } = Typography;
@@ -38,6 +39,7 @@ function UserInfoPage() {
             </div>
             <ListButtons />
             <AboutCard></AboutCard>
+            <FriendManager />
           </Content>
         </Layout>
       </Layout>

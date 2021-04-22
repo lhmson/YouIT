@@ -3,20 +3,20 @@ import COLOR from "../../../constants/colors";
 const styles = {
   editImageBtn: {
     position: "absolute",
-    top: "30%",
+    top: "17%",
     left: "90%",
     transform: "translate(-50%, -50%)",
   },
   avatar: {
     position: "absolute",
-    top: "30%",
+    top: "16%",
     left: "50%",
     transform: "translate(-50%, -50%)",
     background: COLOR.white,
   },
   editAvatarBtn: {
     position: "absolute",
-    top: "36%",
+    top: "19%",
     left: "54%",
     transform: "translate(-50%, -50%)",
     justifyContent: "center",
@@ -24,7 +24,7 @@ const styles = {
   },
   displayName: {
     position: "absolute",
-    top: "40%",
+    top: "22%",
     left: "50%",
     transform: "translate(-50%, -50%)",
     fontWeight: "bold",
