@@ -12,7 +12,7 @@ const userSchema = mongoose.Schema(
     Status: { type: String },
     UserType: { type: String },
 
-    InfoUser: {
+    userInfo: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "UserInfo",
     },
@@ -68,4 +68,6 @@ const userSchema = mongoose.Schema(
   { timestamps: true }
 );
 
-export default mongoose.model("User", userSchema);
+var User = mongoose.model("User", userSchema);
+
+export default User;
