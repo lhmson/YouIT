@@ -101,7 +101,7 @@ function FullPost(props) {
           ))}
         </Row>
         <div>
-          <Title level={2}>{post.title}</Title>
+          <Title level={2}>{post?.title}</Title>
           <div className="pb-2">
             <Paragraph>
               Some word Lorem ipsum dolor sit amet, consectetur adipiscing elit,

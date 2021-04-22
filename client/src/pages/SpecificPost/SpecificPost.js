@@ -29,22 +29,28 @@ import COLOR from "../../constants/colors.js";
 import { PresetColorTypes } from "antd/lib/_util/colors";
 import RelatedCard from "../../components/RelatedCard/RelatedCard.js";
 import FixedRightPanel from "../../components/FixedRightPanel/FixedRightPanel.js";
+import * as api from "../../api/posts";
 
 const { SubMenu } = Menu;
 const { Header, Content, Sider } = Layout;
 const { Title, Text } = Typography;
 
 function SpecificPost(props) {
-  const { match, history } = props;
-  const posts = useSelector((state) => state.posts);
-  const post = posts.find((p) => p._id === match.params.id);
-  const userPosts = posts
-    .filter((p) => p.creatorId === post.creatorId && p._id !== post._id)
-    .slice(0, 5);
-  const dispatch = useDispatch();
+  const { id } = props.match.params;
+  const [post, setPost] = useState(null);
+  const [otherPosts, setOtherPosts] = useState(null);
   useEffect(() => {
-    dispatch(getPosts());
-  }, [dispatch]);
+    const fetchPost = async () => {
+      const { data } = await api.fetchAPost(id);
+      setPost(data);
+    };
+    const fetchOtherPosts = async () => {
+      const { data } = await api.fetchOtherPosts(id);
+      setOtherPosts(data);
+    };
+    fetchPost();
+    fetchOtherPosts();
+  }, []);
   return (
     <>
       <Layout>
@@ -56,8 +62,8 @@ function SpecificPost(props) {
             </div>
           </Content>
           <FixedRightPanel>
-            <RelatedCard title="From this user" posts={userPosts} />
-            <RelatedCard title="Related posts" posts={userPosts} />
+            <RelatedCard title="From this user" posts={otherPosts} />
+            <RelatedCard title="Related posts" posts={otherPosts} />
           </FixedRightPanel>
         </Layout>
       </Layout>

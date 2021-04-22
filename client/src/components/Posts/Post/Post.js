@@ -59,20 +59,6 @@ function Post({ post, setCurrentId }) {
               <EditOutlined key="edit" onClick={handleEdit} />
             )}
           </>,
-          <div
-            style={{ display: "flex", flexDirection: "column" }}
-            onClick={handleLike}
-            key="like"
-          >
-            {post.likes.find(
-              (like) => like === (user?.result?.googleId || user?.result?._id)
-            ) ? (
-              <LikeFilled />
-            ) : (
-              <LikeOutlined />
-            )}
-            <Text>{post.likes.length}</Text>
-          </div>,
           <>
             {(user?.result?.googleId === post?.creatorId ||
               user?.result?._id === post?.creatorId) && (
