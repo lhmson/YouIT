@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Row, Col, Layout } from "antd";
 import Loading from "../../Loading/Loading";
 import styles from "./styles";
@@ -6,19 +6,60 @@ import styles from "./styles";
 import useInfiniteScroll from "../../../hooks/useInfiniteScroll";
 import { useSelector } from "react-redux";
 
+import axios from "axios";
+import * as api from "../../../api/posts";
+
 import FeedPost from "./FeedPost/FeedPost";
 
 const { Content } = Layout;
 
 function FeedPosts({ setCurrentId }) {
   // const posts = useSelector((state) => state.posts);
-  const [posts, setPosts] = useState(["test", "test", "test"]);
+  const [posts, setPosts] = useState([]);
+
+  //setting tha initial page
+  const [page, setPage] = useState(0);
+  //we need to know if there is more data
+  const [hasMore, setHasMore] = useState(true);
+
+  const handleFetchPosts = (res) => {
+    setPosts((prev) => {
+      return [...new Set([...prev, ...res.data.map((b) => b)])];
+    });
+    setPage((prevPageNumber) => prevPageNumber + 1);
+    setHasMore(res.data.length !== 0);
+    setIsFetching(false);
+  };
+
+  useEffect(() => {
+    console.log("start");
+    api
+      .fetchPostsPagination(0, 2)
+      .then((res) => {
+        console.log(res.data);
+        handleFetchPosts(res);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  }, []);
 
   const fetchMorePosts = () => {
-    setTimeout(() => {
-      setPosts((prevState) => [...prevState, "test"]);
-      setIsFetching(false);
-    }, 2000);
+    // setTimeout(() => {
+    //   setPosts((prevState) => [...prevState, "test"]);
+    //   setIsFetching(false);
+    // }, 2000);
+    if (hasMore) {
+      api
+        .fetchPostsPagination(page, 2)
+        .then((res) => {
+          console.log(res.data);
+          handleFetchPosts(res);
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+    }
   };
 
   const [isFetching, setIsFetching] = useInfiniteScroll(fetchMorePosts);
@@ -38,7 +79,7 @@ function FeedPosts({ setCurrentId }) {
               />
             ))}
           </Row>
-          {isFetching && (
+          {isFetching && hasMore && (
             <div className="d-flex justify-content-center pb-2">
               <Loading />
             </div>

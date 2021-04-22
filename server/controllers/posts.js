@@ -3,12 +3,29 @@ import mongoose from "mongoose";
 
 import Post from "../models/post.js";
 
-export const getPosts = async (req, res) => {
+// export const getPosts = async (req, res) => {
+//   try {
+//     const posts = await Post.find();
+//     res.status(200).json(posts);
+//   } catch (error) {
+//     res.status(404).json({ message: error.message });
+//   }
+// };
+
+export const getPostsPagination = async (req, res) => {
+  //get _page and _limit params from url
+  let { _page, _limit } = req.query;
+  _page = parseInt(_page);
+  _limit = parseInt(_limit);
   try {
-    const posts = await Post.find();
-    res.status(200).json(posts);
+    const posts = await Post.find()
+      .sort({ createdAt: -1 })
+      .skip(_page > 0 ? _page * _limit : 0)
+      .limit(_limit);
+
+    return res.status(200).json(posts);
   } catch (error) {
-    res.status(404).json({ message: error.message });
+    return res.status(500).send(error.message);
   }
 };
 

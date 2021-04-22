@@ -66,13 +66,13 @@ function FeedPost({ post, setCurrentId }) {
       </Row>
       <Row style={styles.row}>
         {tagList.map((item) => (
-          <Tag color={COLOR.greenSmoke} style={styles.tag}>
+          <Tag key={item} color={COLOR.greenSmoke} style={styles.tag}>
             {item}
           </Tag>
         ))}
       </Row>
       <div style={styles.row}>
-        <Title level={2}>Big title</Title>
+        <Title level={2}>{post.title}</Title>
       </div>
       <div className="pb-2" style={styles.row}>
         <Paragraph>
