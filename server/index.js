@@ -13,6 +13,7 @@ import { fileURLToPath } from "url";
 import indexRouter from "./routes/index.js";
 import postsRouter from "./routes/posts.js";
 import userRouter from "./routes/user.js";
+import userInfoRouter from "./routes/user_info.js";
 
 const app = express();
 dotenv.config();
@@ -33,6 +34,7 @@ app.use(cookieParser());
 app.use("/", indexRouter);
 app.use("/user", userRouter);
 app.use("/posts", postsRouter);
+app.use("/userInfo", userInfoRouter);
 
 const PORT = process.env.PORT || 5000;
 

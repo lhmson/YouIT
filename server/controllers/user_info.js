@@ -1,11 +1,11 @@
 import express from "express";
 import mongoose from "mongoose";
-import User from "../models/user";
+import User from "../models/user.js";
 
-import UserInfo from "../models/user_info";
+import UserInfo from "../models/user_info.js";
 
 // GET userinfo/
-export const getUserInfo = async (req, res) => {
+export const getMyUserInfo = async (req, res) => {
   // auth
   if (!req.userId) {
     return res.json({ message: "Unauthenticated" });
@@ -20,10 +20,50 @@ export const getUserInfo = async (req, res) => {
       return;
     }
 
-    const userInfo = UserInfo.findById(infoId);
+    const { userInfo } = currentUser;
 
     res.status(200).json(userInfo);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
+};
+
+// POST userinfo/
+export const createUserInfo = async (req, res) => {
+  const userInfo = req.body;
+
+  const newUserInfo = new UserInfo({
+    ...userInfo,
+  });
+
+  try {
+    await newUserInfo.save();
+
+    res.status(201).json(newUserInfo);
+  } catch (error) {
+    res.status(409).json({ message: error.message });
+  }
+};
+
+// PUT userinfo/
+export const updateUserInfo = async (req, res) => {
+  const { id } = req.params;
+  const { title, message, creatorId, selectedFile, tags, likes } = req.body;
+
+  if (!mongoose.Types.ObjectId.isValid(id))
+    return res.status(404).send(`No user info with id: ${id}`);
+
+  const updatedUserInfo = {
+    creatorId,
+    title,
+    message,
+    tags,
+    selectedFile,
+    likes,
+    _id: id,
+  };
+
+  await UserInfo.findByIdAndUpdate(id, updatedUserInfo, { new: true });
+
+  res.json(updatedUserInfo);
 };

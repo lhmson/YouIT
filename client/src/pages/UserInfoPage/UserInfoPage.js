@@ -30,9 +30,7 @@ function UserInfoPage() {
           <Content
             className="container"
             style={{
-              background: "red",
               padding: 16,
-              // position: "relative",
             }}
           >
             <AvatarView displayName="Thao cute dang yeu"></AvatarView>

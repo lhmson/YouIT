@@ -11,8 +11,8 @@ const styles = {
   },
   editAvatarBtn: {
     position: "absolute",
-    right: "-10%",
-    bottom: "10%",
+    right: "5%",
+    bottom: "0%",
   },
   displayName: {
     // position: "absolute",

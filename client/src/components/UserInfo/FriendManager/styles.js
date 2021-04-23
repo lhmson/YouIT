@@ -5,7 +5,6 @@ const styles = {
     padding: 16,
     marginBottom: 64,
     height: "auto",
-    backgroundColor: "blue",
   },
   heading: {
     fontSize: 36,

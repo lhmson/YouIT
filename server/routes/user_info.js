@@ -1,8 +1,9 @@
 import express from "express";
-import { getUserInfo } from "../controllers/user_info";
+import { getMyUserInfo } from "../controllers/user_info.js";
+import auth from "../middleware/auth.js";
 
 const router = express.Router();
 
-router.post("/userinfo", getUserInfo);
+router.get("/my", auth, getMyUserInfo);
 
 export default router;

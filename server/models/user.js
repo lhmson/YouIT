@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import userInfoSchema, { defaultUserInfoValue } from "./user_info.js";
 
 const userSchema = mongoose.Schema(
   {
@@ -13,8 +14,9 @@ const userSchema = mongoose.Schema(
     UserType: { type: String },
 
     userInfo: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "UserInfo",
+      type: userInfoSchema,
+      required: true,
+      default: defaultUserInfoValue,
     },
 
     UsageStatistics: {
