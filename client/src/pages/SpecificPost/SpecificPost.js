@@ -29,7 +29,7 @@ import COLOR from "../../constants/colors.js";
 import { PresetColorTypes } from "antd/lib/_util/colors";
 import RelatedCard from "../../components/RelatedCard/RelatedCard.js";
 import FixedRightPanel from "../../components/FixedRightPanel/FixedRightPanel.js";
-import * as postsApi from "../../api/posts";
+import * as postsApi from "../../api/post";
 import * as commentsApi from "../../api/comments";
 
 const { SubMenu } = Menu;

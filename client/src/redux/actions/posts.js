@@ -6,7 +6,7 @@ import {
   LIKE_POST,
 } from "../actionTypes";
 
-import * as api from "../../api/posts";
+import * as api from "../../api/post";
 
 export const getPosts = () => async (dispatch) => {
   try {

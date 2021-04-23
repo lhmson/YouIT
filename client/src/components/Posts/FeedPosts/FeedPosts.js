@@ -7,7 +7,7 @@ import useInfiniteScroll from "../../../hooks/useInfiniteScroll";
 import { useSelector } from "react-redux";
 
 import axios from "axios";
-import * as api from "../../../api/posts";
+import * as api from "../../../api/post";
 
 import FeedPost from "./FeedPost/FeedPost";
 

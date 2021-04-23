@@ -1,32 +1,43 @@
 import mongoose from "mongoose";
-import Comment from "./comment.js";
+import {
+  interactionInfoSchema,
+  defaultInteractionInfoValue,
+} from "./interactionInfo.js";
 
 const postSchema = mongoose.Schema(
   {
+    userId: {
+      type: String,
+      required: true,
+    },
+
     title: {
       type: String,
       required: true,
     },
-    message: {
+
+    content: {
       type: String,
       required: true,
     },
-    creator: String,
-    creatorId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-    },
-    selectedFile: {
+
+    privacy: {
       type: String,
+      enum: ["Group", "Public", "Private", "Friend"],
+      required: true,
     },
-    upvoters: {
-      type: [String],
-      default: [],
+
+    // groupPostInfo: {
+    //     type: mongoose.Schema.Types.ObjectId,
+    //     ref: "GroupPostInfo"
+    // }
+
+    interactionInfo: {
+      type: interactionInfoSchema,
+      required: true,
+      default: defaultInteractionInfoValue,
     },
-    downvoters: {
-      type: [String],
-      default: [],
-    },
+
     comments: {
       type: [
         {
