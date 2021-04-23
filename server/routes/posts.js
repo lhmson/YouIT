@@ -21,7 +21,7 @@ router.get("/:id/", getAPost);
 router.get("/:id/others", getOtherPosts);
 
 router.post("/", auth, createPost);
-router.post("/:id/comments", createComment);
+router.post("/:id/comments", auth, createComment);
 router.get("/:id/comments", getComments);
 
 router.put("/:id", auth, updatePost);

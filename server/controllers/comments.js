@@ -6,9 +6,11 @@ import Comment from "../models/comment.js";
 
 export const createComment = async (req, res) => {
   const { id } = req.params;
-  if (!mongoose.Types.ObjectId.isValid(id))
-    return res.status(404).send(`No post with id: ${id}`);
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(400).send(`Id ${id} is invalid.`);
+  }
   const comment = new Comment(req.body);
+  comment.userId = req.userId;
   await comment.save();
   await Post.findById(id)
     .then((post) => {
@@ -23,8 +25,9 @@ export const createComment = async (req, res) => {
 
 export const getComments = async (req, res) => {
   const { id } = req.params;
-  if (!mongoose.Types.ObjectId.isValid(id))
-    return res.status(404).send(`No post with id: ${id}`);
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(400).send(`Id ${id} is invalid.`);
+  }
   (await Post.findById(id))
     .populate({
       path: "comments",

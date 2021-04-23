@@ -4,6 +4,7 @@ import {
   UPDATE_POST,
   DELETE_POST,
   LIKE_POST,
+  CREATE_COMMENT,
 } from "../actionTypes";
 
 const postReducer = (posts = [], action) => {
@@ -22,6 +23,10 @@ const postReducer = (posts = [], action) => {
       );
     case DELETE_POST:
       return posts.filter((post) => post._id !== action.payload);
+    case CREATE_COMMENT:
+      return posts.map((post) =>
+        post._id === action.payload._id ? action.payload : post
+      );
     default:
       return posts;
   }

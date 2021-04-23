@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Card,
   Avatar,
@@ -25,6 +25,8 @@ import { useDispatch } from "react-redux";
 import { likePost, deletePost } from "../../../redux/actions/posts";
 import COLOR from "../../../constants/colors";
 import Comment from "../../Comment/Comment";
+import CommentForm from "../../CommentForm/CommentForm";
+import { getComments } from "../../../redux/actions/comments";
 
 const { Title, Text, Paragraph, Link } = Typography;
 const { TextArea } = Input;
@@ -32,14 +34,16 @@ const { TextArea } = Input;
 function FullPost(props) {
   const { post, comments } = props;
 
-  const user = JSON.parse(localStorage.getItem("user"));
-
   const handleMore = () => {
     alert("more");
   };
 
   const tagList = ["Tag 1", "Tag 2", "Tag 3", "Tag 4", "Tag 5"];
 
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(getComments());
+  }, [dispatch]);
   return (
     <Card style={{ padding: 16 }}>
       <div>
@@ -124,7 +128,7 @@ function FullPost(props) {
           </Row>
         </Row>
       </div>
-      <TextArea rows={8} className="mb-4" />
+      <CommentForm postId={post?._id} />
       {comments?.map((c) => (
         <Comment comment={c} />
       ))}

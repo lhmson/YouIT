@@ -58,6 +58,12 @@ function SpecificPost(props) {
     fetchOtherPosts();
     fetchComments();
   }, []);
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(getPosts());
+  }, [dispatch]);
   return (
     <>
       <Layout>
