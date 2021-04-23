@@ -1,6 +1,6 @@
 import { CREATE_COMMENT, FETCH_COMMENTS } from "../actionTypes";
 
-import * as api from "../../api/comments";
+import * as api from "../../api/comment";
 
 export const createComment = (postId, comment, onDone) => async (dispatch) => {
   try {

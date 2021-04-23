@@ -30,7 +30,7 @@ import { PresetColorTypes } from "antd/lib/_util/colors";
 import RelatedCard from "../../components/RelatedCard/RelatedCard.js";
 import FixedRightPanel from "../../components/FixedRightPanel/FixedRightPanel.js";
 import * as postsApi from "../../api/post";
-import * as commentsApi from "../../api/comments";
+import * as commentsApi from "../../api/comment";
 import CommentForm from "../../components/CommentForm/CommentForm.js";
 import Comment from "../../components/Comment/Comment.js";
 
