@@ -4,7 +4,8 @@ const styles = {
   whiteBackground: {
     padding: 16,
     marginBottom: 64,
-    height: 600,
+    height: "auto",
+    backgroundColor: "blue",
   },
   heading: {
     fontSize: 36,

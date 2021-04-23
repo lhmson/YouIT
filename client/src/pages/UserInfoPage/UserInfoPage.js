@@ -28,15 +28,14 @@ function UserInfoPage() {
         <Navbar selectedMenu="userinfo" />
         <Layout style={styles.mainArea}>
           <Content
+            className="container"
             style={{
-              background: "whitesmoke",
+              background: "red",
               padding: 16,
-              position: "relative",
+              // position: "relative",
             }}
           >
-            <div className="row">
-              <AvatarView displayName="Thao cute dang yeu"></AvatarView>
-            </div>
+            <AvatarView displayName="Thao cute dang yeu"></AvatarView>
             <ListButtons />
             <AboutCard></AboutCard>
             <FriendManager />

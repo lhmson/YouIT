@@ -31,11 +31,7 @@ const FriendManager = () => {
         </div>
       </div>
       <div className="row" style={styles.searchBar}>
-        <Search
-          placeholder="Type your friend's name"
-          style={{ width: "90%", height: 500 }}
-          enterButton
-        />
+        <Search placeholder="Type your friend's name" style={{}} enterButton />
       </div>
     </div>
   );
