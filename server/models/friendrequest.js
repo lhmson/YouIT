@@ -2,13 +2,13 @@ import mongoose from "mongoose";
 
 const friendRequestSchema = mongoose.Schema(
   {
-    UserConfirmID : { 
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
+    userConfirmId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
     },
-    UserSendRequestID : { 
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
+    userSendRequestId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
     },
   },
   { timestamps: true }

@@ -2,12 +2,12 @@ import mongoose from "mongoose";
 
 const activityLogItemSchema = mongoose.Schema(
   {
-    Content: { type: String},
-    PostID : { 
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Post",
+    content: { type: String },
+    postId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Post",
     },
-    Kind : { type: String},
+    kind: { type: String },
   },
   { timestamps: true }
 );

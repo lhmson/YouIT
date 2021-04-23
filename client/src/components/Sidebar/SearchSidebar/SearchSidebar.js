@@ -11,7 +11,7 @@ const { SubMenu } = Menu;
 const { Sider } = Layout;
 const { Title, Text } = Typography;
 
-function SearchSidebar() {
+function SearchSidebar(props) {
   const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")));
 
   useEffect(() => {}, []);
@@ -56,6 +56,7 @@ function SearchSidebar() {
           Bài viết
         </Menu.Item>
         <Menu.Item
+          onClick = {() => props.setModeSearch("User")}
           key="user"
           style={styles.item}
           icon={<Avatar style={styles.transparent} />}
@@ -65,6 +66,7 @@ function SearchSidebar() {
         {/* </SubMenu> */}
 
         <Menu.Item
+          onClick = {() => props.setModeSearch("Group")}
           key="group"
           style={styles.item}
           icon={<Avatar style={styles.transparent} />}

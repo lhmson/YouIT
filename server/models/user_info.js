@@ -1,13 +1,13 @@
 import mongoose from "mongoose";
 
-const userInfoSchema = mongoose.Schema(
+export const userInfoSchema = mongoose.Schema(
   {
     firstName: { type: String, required: true },
     lastName: { type: String, required: true },
     dateOfBirth: { type: Date, required: true },
     gender: { type: String, required: true },
-    workLocation: String,
-    address: String,
+    workLocation: { type: String },
+    address: { type: String },
     languageProgrammingHashtags: [
       {
         type: mongoose.Schema.Types.ObjectId,
@@ -20,13 +20,13 @@ const userInfoSchema = mongoose.Schema(
         ref: "Hashtag",
       },
     ],
-    educations: [String],
-    works: [String],
-    description: String,
+    educations: [{ type: String }],
+    works: [{ type: String }],
+    description: { type: String },
   },
   { timestamps: true }
 );
 
-var UserInfo = mongoose.model("UserInfo", userInfoSchema);
+// var UserInfo = mongoose.model("UserInfo", userInfoSchema);
 
-export default UserInfo;
+// export default UserInfo;
