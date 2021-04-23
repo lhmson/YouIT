@@ -8,7 +8,7 @@ import Navbar from "./components/Navbar/Navbar";
 import FeedPage from "./pages/FeedPage/FeedPage";
 import UserInfoPage from "./pages/UserInfoPage/UserInfoPage";
 import SpecificPost from "./pages/SpecificPost/SpecificPost";
-
+import UserResultSearchPage from "./pages/UserResultSearch/UserResultSearchPage";
 function App() {
   return (
     <div className={styles.App}>
@@ -19,6 +19,7 @@ function App() {
         <Route path="/post/create" component={CreatePostPage} />
         <Route path="/userinfo" component={UserInfoPage} />
         <Route path="/posts/:id" component={SpecificPost} />
+        <Route path="/search" component={UserResultSearchPage}/>
       </Switch>
     </div>
   );

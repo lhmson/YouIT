@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import userInfoSchema, { defaultUserInfoValue } from "./user_info.js";
+import { userInfoSchema, defaultUserInfoValue } from "./user_info.js";
 
 const userSchema = mongoose.Schema(
   {
@@ -9,9 +9,9 @@ const userSchema = mongoose.Schema(
     // id: Schema.Types.ObjectId,
 
     //SanhCute
-    AvatarURL: { type: String },
-    Status: { type: String },
-    UserType: { type: String },
+    avatarURL: { type: String },
+    status: { type: String },
+    userType: { type: String },
 
     userInfo: {
       type: userInfoSchema,
@@ -19,48 +19,48 @@ const userSchema = mongoose.Schema(
       default: defaultUserInfoValue,
     },
 
-    UsageStatistics: {
+    usageStatistics: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "UsageStatistics",
     },
 
-    ListFriends: [
+    listFriends: [
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
       },
     ],
-    ListFriendRequests: [
+    listFriendRequests: [
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: "FriendRequest",
       },
     ],
-    ListFriendSendRequests: [
+    listFriendSendRequests: [
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: "FriendRequest",
       },
     ],
-    ListFriendFollows: [
+    listFriendFollows: [
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
       },
     ],
-    ListBlockings: [
+    listBlockings: [
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
       },
     ],
-    ListBlockers: [
+    listBlockers: [
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
       },
     ],
-    ListActivityLogItems: [
+    listActivityLogItems: [
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: "ActivityLogItem",

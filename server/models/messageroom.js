@@ -1,22 +1,28 @@
 import mongoose from "mongoose";
-import messageSchema from "./message.js"
+import messageSchema from "./message.js";
 
 const messageRoomSchema = mongoose.Schema(
   {
-    Type : { type: String, default: "friend" },
-    Members : [{ 
+    kind: { type: String, default: "friend" },
+    members: [
+      {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
-    }],
-    SeenMembers : [{ 
+      },
+    ],
+    seenMembers: [
+      {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
-    }],
-    SeenMembers : [{ 
+      },
+    ],
+    seenMembers: [
+      {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
-    }],
-    Message : [messageSchema],
+      },
+    ],
+    message: [messageSchema],
   },
   { timestamps: true }
 );

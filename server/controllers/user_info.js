@@ -2,8 +2,6 @@ import express from "express";
 import mongoose from "mongoose";
 import User from "../models/user.js";
 
-import UserInfo from "../models/user_info.js";
-
 // GET userinfo/
 export const getMyUserInfo = async (req, res) => {
   // auth
@@ -28,42 +26,42 @@ export const getMyUserInfo = async (req, res) => {
   }
 };
 
-// POST userinfo/
-export const createUserInfo = async (req, res) => {
-  const userInfo = req.body;
+// // POST userinfo/
+// export const createUserInfo = async (req, res) => {
+//   const userInfo = req.body;
 
-  const newUserInfo = new UserInfo({
-    ...userInfo,
-  });
+//   const newUserInfo = new UserInfo({
+//     ...userInfo,
+//   });
 
-  try {
-    await newUserInfo.save();
+//   try {
+//     await newUserInfo.save();
 
-    res.status(201).json(newUserInfo);
-  } catch (error) {
-    res.status(409).json({ message: error.message });
-  }
-};
+//     res.status(201).json(newUserInfo);
+//   } catch (error) {
+//     res.status(409).json({ message: error.message });
+//   }
+// };
 
-// PUT userinfo/
-export const updateUserInfo = async (req, res) => {
-  const { id } = req.params;
-  const { title, message, creatorId, selectedFile, tags, likes } = req.body;
+// // PUT userinfo/
+// export const updateUserInfo = async (req, res) => {
+//   const { id } = req.params;
+//   const { title, message, creatorId, selectedFile, tags, likes } = req.body;
 
-  if (!mongoose.Types.ObjectId.isValid(id))
-    return res.status(404).send(`No user info with id: ${id}`);
+//   if (!mongoose.Types.ObjectId.isValid(id))
+//     return res.status(404).send(`No user info with id: ${id}`);
 
-  const updatedUserInfo = {
-    creatorId,
-    title,
-    message,
-    tags,
-    selectedFile,
-    likes,
-    _id: id,
-  };
+//   const updatedUserInfo = {
+//     creatorId,
+//     title,
+//     message,
+//     tags,
+//     selectedFile,
+//     likes,
+//     _id: id,
+//   };
 
-  await UserInfo.findByIdAndUpdate(id, updatedUserInfo, { new: true });
+//   await UserInfo.findByIdAndUpdate(id, updatedUserInfo, { new: true });
 
-  res.json(updatedUserInfo);
-};
+//   res.json(updatedUserInfo);
+// };

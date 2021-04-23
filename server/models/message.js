@@ -2,19 +2,19 @@ import mongoose from "mongoose";
 
 const messageSchema = mongoose.Schema(
   {
-    UserIDReceive : { 
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
+    userIdReceive: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
     },
-    UserIDSendMess : { 
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
+    userIdSendMess: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
     },
-    Status : { 
-        type: String,
-        default : "Sending",
+    status: {
+      type: String,
+      default: "Sending",
     },
-    Message : String,
+    message: { type: String },
   },
   { timestamps: true }
 );

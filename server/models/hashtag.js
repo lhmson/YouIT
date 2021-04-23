@@ -2,9 +2,9 @@ import mongoose from "mongoose";
 
 const hashtagSchema = mongoose.Schema({
   name: { type: String, require: true },
-  iconUrl: String,
-  count: Number,
-  kind: String,
+  iconUrl: { type: String },
+  count: { type: Number },
+  kind: { type: String },
 });
 
 export default mongoose.model("Hashtag", hashtagSchema);
