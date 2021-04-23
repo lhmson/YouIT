@@ -2,7 +2,15 @@ import mongoose from "mongoose";
 
 const mongooseObjId = mongoose.Schema.Types.ObjectId
 
-const interactionInfoSchema = mongoose.Schema(
+export const defaultInteractionInfoValue = {
+    listUpvotes: [],
+    listDownvotes: [],
+    listReactions: new mongoose.Types.Map(),
+    listUsersHiding: [],
+    listUsersFollowing: [],
+}
+
+export const interactionInfoSchema = mongoose.Schema(
     {
         listUpvotes: {
             type: [mongooseObjId],
@@ -18,7 +26,7 @@ const interactionInfoSchema = mongoose.Schema(
         },
         listReactions: {
             type: Map,
-            of: string,
+            of: String,
             required: true,
         },
         listUsersHiding: {
@@ -33,11 +41,8 @@ const interactionInfoSchema = mongoose.Schema(
             default: [],
             ref: "User",
         },
+    },
     {
         timestamps: true,
     }
 );
-
-var InteractionInfo = mongoose.model("InteractionInfo", interactionInfoSchema);
-
-export default InteractionInfo;

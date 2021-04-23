@@ -2,8 +2,10 @@ import express from "express";
 import mongoose from "mongoose";
 
 import Post from "../models/post_CuteTN.js";
+import { httpStatusCodes } from "../utils/httpStatusCode.js";
 
-// GET posts
+//#region CRUD 
+// GET post/list/all
 export const getPosts = async (req, res) => {
     try {
         const posts = await Post.find();
@@ -14,7 +16,7 @@ export const getPosts = async (req, res) => {
     }
 };
 
-// GET posts/:id
+// GET post/:id
 export const getPost = async (req, res) => {
     const { id } = req.params;
 
@@ -22,7 +24,7 @@ export const getPost = async (req, res) => {
         const post = await Post.findById(id);
 
         if (!post) {
-            res.status(404).json(`Cannot find a post with id ${id}`);
+            res.status(404).json(`Cannot find a post with id: ${id}`);
             return;
         }
 
@@ -32,7 +34,7 @@ export const getPost = async (req, res) => {
     }
 };
 
-// POST posts/
+// POST post/
 export const createPost = async (req, res) => {
     const post = req.body;
 
@@ -56,41 +58,120 @@ export const createPost = async (req, res) => {
     }
 };
 
-// PUT posts/
+// PUT post/:id
 export const updatePost = async (req, res) => {
     const { id } = req.params;
-    const { title, message, creatorId, selectedFile, tags, likes } = req.body;
+    try {
 
-    if (!mongoose.Types.ObjectId.isValid(id))
-        return res.status(404).send(`No post with id: ${id}`);
+        const newPost = req.body;
 
-    const updatedPost = {
-        creatorId,
-        title,
-        message,
-        tags,
-        selectedFile,
-        likes,
-        _id: id,
-    };
+        if (!mongoose.Types.ObjectId.isValid(id))
+            return res.status(404).send(`Cannot find a post with id: ${id}`);
 
-    await Post.findByIdAndUpdate(id, updatedPost, { new: true });
+        if (!newPost)
+            return res.status(400).send(`New post information is required`)
 
-    res.json(updatedPost);
+        const updatedPost = {
+            ...newPost,
+            _id: id,
+        };
+
+        await Post.findByIdAndUpdate(id, updatedPost, { new: true });
+        res.json(updatedPost);
+    }
+    catch (error) {
+        return res.status(500).json({ message: error.message });
+    }
 };
 
+// DELETE post/:id
 export const deletePost = async (req, res) => {
     const { id } = req.params;
 
-    if (!mongoose.Types.ObjectId.isValid(id))
-        return res.status(404).send(`No post with id: ${id}`);
+    if (mongoose.Types.ObjectId.isValid(id)) {
+        if (!await Post.findById(id)) {
+            return res.status(404).send(`No post with id: ${id}`);
+        }
+    }
+    else
+        return res.status(httpStatusCodes.badContent).send(`id ${id} is invalid`)
 
     await Post.findByIdAndRemove(id);
-
-    res.json({ message: "Post deleted successfully." });
+    res.status(200).json({ message: "Post deleted successfully." });
 };
+//#endregion
 
-export const likePost = async (req, res) => {
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//#region post interactions
+
+// currying function for different type of adding interaction, such as: upvote, downvote, follow, hide
+// only work for list of user
+const handleAddInteraction = (listInteractionName) => async (req, res) => {
+    const { id } = req.params;
+
+    // auth
+    if (!req.userId) {
+        return res.json({ message: "Unauthenticated" });
+    }
+
+    if (!mongoose.Types.ObjectId.isValid(id))
+        return res.status(httpStatusCodes.notFound).send(`No post with id: ${id}`);
+
+    const post = await Post.findById(id);
+
+    const { interactionInfo } = post;
+    const listInteraction = interactionInfo[listInteractionName];
+
+    if (!listInteraction.find(u => u === userId)) {
+        listInteraction.push(userId)
+    }
+    post.save();
+
+    // const updatedPost = await Post.findByIdAndUpdate(id, post, {
+    //     new: true,
+    // });
+
+    // res.json(updatedPost);
+}
+
+
+// PUT post/:id/unvote
+export const unvotePost = async (req, res, next) => {
+    const { id } = req.params;
+    const { userId } = req;
+
+    try {
+        // auth
+        if (!userId) {
+            return res.status(httpStatusCodes.unauthorized).json({ message: "Unauthenticated" });
+        }
+
+        const post = await Post.findById(id);
+        if (!post)
+            return res.status(httpStatusCodes.notFound).send(`No post with id: ${id}`);
+
+        const { interactionInfo } = post;
+        const { listUpvotes, listDownvotes } = interactionInfo;
+        listUpvotes = listUpvotes.filter(u => u !== userId);
+        listDownvotes = listDownvotes.filter(u => u !== userId);
+        post.save();
+
+        if (next) {
+            return next?.();
+        }
+        else {
+            res.status(httpStatusCodes.ok);
+        }
+    } catch (error) {
+
+    }
+}
+
+// PUT post/:id/upvote
+export const upvotePost = handleAddInteraction("listUpvotes");
+
+export const downvotePost = async (req, res) => {
     const { id } = req.params;
 
     // auth
@@ -117,3 +198,4 @@ export const likePost = async (req, res) => {
 
     res.json(updatedPost);
 };
+//#endregion
