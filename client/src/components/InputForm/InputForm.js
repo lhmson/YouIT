@@ -12,6 +12,7 @@ const initialFieldValues = {
   message: "",
   tags: "",
   selectedFile: "",
+  comments: [],
 };
 
 function InputForm({ currentId, setCurrentId }) {

@@ -48,15 +48,15 @@ function FeedPost({ post, setCurrentId }) {
           </div>
         </Row>
         <Row
-          className="justify-content-between align-items-center"
+          className="justify-content-end align-items-center"
           style={{ flex: 2 }}
         >
-          <div>
+          <div className="mr-4">
             <Text underline type="secondary">
               Post 5 days ago
             </Text>
           </div>
-          <div>
+          <div className="mr-4">
             <Text type="secondary">Public</Text>
           </div>
           <div style={styles.pointer} onClick={handleMore}>

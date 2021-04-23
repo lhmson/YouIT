@@ -143,7 +143,7 @@ function Navbar({ selectedMenu }) {
           </Menu.Item>
         )}
         <Menu.Item key="test">
-          <Link to="/posts/60774246ac807941f418f940">A post</Link>
+          <Link to="/posts/60821adcd9bd84174cecee9f">A post</Link>
         </Menu.Item>
         <Menu.Item key="userinfo">
           <Link to="/userinfo">User Info</Link>

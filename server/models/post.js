@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import Comment from "./comment.js";
 
 const postSchema = mongoose.Schema(
   {
@@ -12,16 +13,27 @@ const postSchema = mongoose.Schema(
     },
     creator: String,
     creatorId: {
-      type: String,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
     },
-    // tags: {
-    //   type: [String],
-    // },
     selectedFile: {
       type: String,
     },
-    likes: {
+    upvoters: {
       type: [String],
+      default: [],
+    },
+    downvoters: {
+      type: [String],
+      default: [],
+    },
+    comments: {
+      type: [
+        {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Comment",
+        },
+      ],
       default: [],
     },
   },
