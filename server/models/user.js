@@ -1,13 +1,75 @@
 import mongoose from "mongoose";
+import { userInfoSchema, defaultUserInfoValue } from "./user_info.js";
 
 const userSchema = mongoose.Schema(
   {
     name: { type: String, required: true },
     email: { type: String, required: true },
     password: { type: String, required: true },
-    id: { type: String },
+    // id: Schema.Types.ObjectId,
+
+    //SanhCute
+    avatarURL: { type: String },
+    status: { type: String },
+    userType: { type: String },
+
+    userInfo: {
+      type: userInfoSchema,
+      required: true,
+      default: defaultUserInfoValue,
+    },
+
+    usageStatistics: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "UsageStatistics",
+    },
+
+    listFriends: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
+    listFriendRequests: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "FriendRequest",
+      },
+    ],
+    listFriendSendRequests: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "FriendRequest",
+      },
+    ],
+    listFriendFollows: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
+    listBlockings: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
+    listBlockers: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
+    listActivityLogItems: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "ActivityLogItem",
+      },
+    ],
   },
   { timestamps: true }
 );
 
-export default mongoose.model("User", userSchema);
+var User = mongoose.model("User", userSchema);
+
+export default User;

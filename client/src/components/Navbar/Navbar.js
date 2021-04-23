@@ -1,21 +1,41 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Link, useHistory, useLocation } from "react-router-dom";
-import { Layout, Menu, Typography, Avatar, Button } from "antd";
+import { Layout, Menu, Typography, Row, Input, Avatar, Button } from "antd";
 import styles from "./styles";
+import {
+  SearchOutlined,
+  BellFilled,
+  EditFilled,
+  MessageFilled,
+  EllipsisOutlined,
+} from "@ant-design/icons";
 
 import decode from "jwt-decode";
 import { useDispatch } from "react-redux";
 import { logout } from "../../redux/actions/auth";
+import COLOR from "../../constants/colors";
 
 const { Header } = Layout;
 const { Text } = Typography;
+const { Search } = Input;
 
 function Navbar({ selectedMenu }) {
   const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")));
+  const inputRef = useRef();
 
   const dispatch = useDispatch();
   const location = useLocation();
   const history = useHistory();
+
+  const handleSearch = () => console.log(inputRef.current.state.value);
+
+  const handleNoti = () => alert("handle noti");
+
+  const handlePost = () => alert("handle post");
+
+  const handleMessage = () => alert("handle message");
+
+  const handleMore = () => alert("handle lot");
 
   const handleLogOut = () => {
     dispatch(logout());
@@ -44,12 +64,50 @@ function Navbar({ selectedMenu }) {
         ...styles.fixedHeader,
       }}
     >
-      <div style={styles.logo}>
-        <Link to="/">
-          <Text style={styles.title}>YouIT</Text>
-        </Link>
-      </div>
-      <Menu
+      <Row className="align-items-center justify-content-around">
+        <div style={styles.logo}>
+          <Link to="/">
+            <Text style={styles.title}>YouIT</Text>
+          </Link>
+        </div>
+
+        <Input
+          onPressEnter={handleSearch}
+          allowClear
+          suffix={
+            <SearchOutlined
+              onClick={handleSearch}
+              style={{ fontSize: 24, color: COLOR.white }}
+            />
+          }
+          ref={inputRef}
+          bordered={false}
+          style={{ backgroundColor: COLOR.lightGreen, width: "40vw" }}
+        />
+
+        <BellFilled
+          onClick={handleNoti}
+          style={{ fontSize: 24, color: COLOR.white }}
+        />
+        <EditFilled
+          onClick={handlePost}
+          style={{ fontSize: 24, color: COLOR.white }}
+        />
+        <MessageFilled
+          onClick={handleMessage}
+          style={{ fontSize: 24, color: COLOR.white }}
+        />
+
+        <Avatar alt={user?.result?.name} src={user?.result?.imageUrl}>
+          {user?.result?.name.charAt(0)}
+        </Avatar>
+
+        <EllipsisOutlined
+          onClick={handleMore}
+          style={{ fontSize: 24, color: COLOR.white }}
+        />
+      </Row>
+      {/* <Menu
         style={styles.greenBackground}
         theme="dark"
         mode="horizontal"
@@ -87,7 +145,14 @@ function Navbar({ selectedMenu }) {
         <Menu.Item key="test">
           <Link to="/posts/60821adcd9bd84174cecee9f">A post</Link>
         </Menu.Item>
-      </Menu>
+        <Menu.Item key="userinfo">
+          <Link to="/userinfo">User Info</Link>
+        </Menu.Item>
+
+        <Menu.Item key="createPost">
+          <Link to="/post/create">Create post</Link>
+        </Menu.Item>
+      </Menu> */}
     </Header>
   );
 }

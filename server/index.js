@@ -11,8 +11,9 @@ import logger from "morgan";
 import { fileURLToPath } from "url";
 
 import indexRouter from "./routes/index.js";
-import postsRouter from "./routes/posts.js";
+import postRouter from "./routes/post.js";
 import userRouter from "./routes/user.js";
+import userInfoRouter from "./routes/user_info.js";
 
 const app = express();
 dotenv.config();
@@ -32,7 +33,8 @@ app.use(cookieParser());
 // router
 app.use("/", indexRouter);
 app.use("/user", userRouter);
-app.use("/posts", postsRouter);
+app.use("/post", postRouter);
+app.use("/userInfo", userInfoRouter);
 
 const PORT = process.env.PORT || 5000;
 

@@ -1,45 +1,16 @@
 import express from "express";
 import mongoose from "mongoose";
 
-import Post from "../models/post.js";
+import User from "../models/user.js";
 
-export const getPosts = async (req, res) => {
-  try {
-    const posts = await Post.find();
-    res.status(200).json(posts);
-  } catch (error) {
-    res.status(404).json({ message: error.message });
-  }
-};
-
-export const getAPost = async (req, res) => {
+export const getNumberofFriends = async (req, res) => {
   const { id } = req.params;
+
   try {
-    const post = await Post.findById(id);
+    const post = await User.findById(id);
     res.status(200).json(post);
   } catch (error) {
     res.status(404).json({ message: error.message });
-  }
-};
-
-export const getOtherPosts = async (req, res) => {
-  const { id } = req.params;
-  try {
-    const excludedPost = await Post.findById(id);
-    if (!excludedPost) {
-      res.status(404).json({ message: error.message });
-      return;
-    }
-    const posts = await (await Post.find())
-      .filter(
-        (p) =>
-          p.creatorId.equals(excludedPost.creatorId) &&
-          !p._id.equals(excludedPost._id)
-      )
-      .slice(0, 5);
-    res.status(200).json(posts);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
   }
 };
 
