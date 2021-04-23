@@ -5,7 +5,7 @@ import styles from "./styles.js";
 
 const { Title, Text } = Typography;
 
-function UserCard() {
+function GroupCard() {
   return (
     <>
       <div style={styles.card}>
@@ -16,12 +16,12 @@ function UserCard() {
               display: "flex",
               justifyContent: "center",
             }}>
-            <Avatar size = {72} src="https://vtv1.mediacdn.vn/thumb_w/650/2020/10/20/blackpink-lisa-mac-160316252527410005928.jpg" />
+            <Avatar size = {72} src="https://i.pinimg.com/originals/00/5b/36/005b36c78f2ba0585416fccd55d58439.jpg" />
             
             <div className ="col-8" style= {{alignSelf:"center",}}>
-              <Text style={styles.textUser}>Lalisa Manobal</Text>
+              <Text style={styles.textUser}>BlackPink</Text>
               <div style={{marginTop : 0}}></div>
-              <Text>React Native Developer</Text>
+              <Text>"BlackPink in your area"</Text>
             </div>
             <div style={{marginLeft:0, justifyContent:"center", flex : 1, display: "flex"}}>
               
@@ -36,20 +36,21 @@ function UserCard() {
               alignSelf :"center",
             }}>
             <Button type="primary" style={{ background: "#27AE60", borderColor: "#27AE60", color :"white", fontWeight:500 }}>
-              Kết bạn
+              Tham gia
             </Button>
             <div>
-              <Text style={styles.text}>12 bạn chung</Text>
+              <Text style={styles.text}>10M thành viên</Text>
             </div>
             
             </div>
         </div>
         <div className="row" style={{marginTop:8}}>
           <div className = "col-10">
-             <Tag style={styles.tag}>C#</Tag>
-             <Tag style={styles.tag}>Javascript</Tag>
-             <Tag style={styles.tag}>Unity 3D</Tag>
-             <Text style={{...styles.text,fontWeight:600}}>15 bài viết</Text>
+             <Tag style={styles.tag}>Lisa</Tag>
+             <Tag style={styles.tag}>Rosé</Tag>
+             <Tag style={styles.tag}>Jennie</Tag>
+             <Tag style={styles.tag}>Jisoo</Tag>
+             <Text style={{...styles.text,fontWeight:600}}>23 bài viết</Text>
           </div>
         </div>
       </div>
@@ -57,4 +58,4 @@ function UserCard() {
   );
 }
 
-export default UserCard;
+export default GroupCard;
