@@ -6,36 +6,38 @@ const { TextArea } = Input;
 
 const { Option } = Select;
 
-function CommentForm(props) {
-  const { postId } = props;
+function CommentForm({ postId, onSubmit }) {
+  const dispatch = useDispatch();
   const [form] = Form.useForm();
-
   const [commentData, setCommentData] = useState(null);
   const [errors, setErrors] = useState({});
-  const dispatch = useDispatch();
-  const validate = useCallback(() => {
-    setErrors((prevErrors) => ({
-      ...prevErrors,
-      title: commentData?.content ? "" : "Please input content",
-    }));
-    return Object.values(errors).every((x) => x === "");
-  }, [commentData]);
+  // const validate = useCallback(() => {
+  //   setErrors((prevErrors) => ({
+  //     ...prevErrors,
+  //     title: commentData?.content ? "" : "Please input content",
+  //   }));
+  //   return Object.values(errors).every((x) => x === "");
+  // }, [commentData]);
 
-  useEffect(() => {
-    validate();
-  }, [validate]);
+  // useEffect(() => {
+  //   validate();
+  // }, [validate]);
 
   const onReset = () => {
+    form.resetFields();
     setCommentData(null);
   };
 
   const handleSubmit = () => {
-    const isValid = validate();
-    console.log(errors);
-    if (isValid) {
-      dispatch(createComment(postId, { ...commentData }));
-
-      onReset();
+    console.log("submit");
+    //const isValid = validate();
+    if (1) {
+      dispatch(
+        createComment(postId, { ...commentData }, () => {
+          onSubmit();
+          onReset();
+        })
+      );
     }
   };
 
@@ -46,26 +48,27 @@ function CommentForm(props) {
       name="control-hooks"
       onFinish={handleSubmit}
     >
-      <Form.Item name="userComment" label="Your comment">
+      <Form.Item name="userComment" label="Comment to this post">
         <TextArea
           style={{ height: 200 }}
           onChange={(e) =>
             setCommentData({ ...commentData, content: e.target.value })
           }
+          value={commentData}
         />
       </Form.Item>
 
       <Form.Item>
         <Row justify="end">
-          <Button
+          <btn
             htmlType="button"
             className="mr-3"
             size="large"
             onClick={onReset}
           >
             Reset
-          </Button>
-          <Button className="green-button" size="large" htmlType="submit">
+          </btn>
+          <Button type="primary" htmlType="submit">
             Submit
           </Button>
         </Row>

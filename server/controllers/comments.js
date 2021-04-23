@@ -28,15 +28,20 @@ export const getComments = async (req, res) => {
   if (!mongoose.Types.ObjectId.isValid(id)) {
     return res.status(400).send(`Id ${id} is invalid.`);
   }
-  (await Post.findById(id))
+  Post.findById(id)
     .populate({
       path: "comments",
       populate: {
         path: "quotedCommentId",
       },
     })
-    .execPopulate(function (err, post) {
-      if (err) return res.status(500).json({ message: err.message });
-      res.status(200).json(post.comments);
-    });
+    .then(
+      (post) => {
+        console.log(post.comments.length);
+        res.status(200).json(post.comments);
+      },
+      (err) => {
+        res.status(500).json({ message: err.message });
+      }
+    );
 };
