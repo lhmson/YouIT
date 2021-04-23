@@ -6,7 +6,10 @@ import Navbar from "../../components/Navbar/Navbar";
 
 import { useDispatch } from "react-redux";
 import { getPosts } from "../../redux/actions/posts";
-import AboutCard from "../../components/AboutCard/AboutCard";
+import AboutCard from "../../components/UserInfo/AboutCard/AboutCard";
+import AvatarView from "../../components/UserInfo/AvatarView/AvatarView.js";
+import ListButtons from "../../components/UserInfo/ListButtons/ListButtons.js";
+import FriendManager from "../../components/UserInfo/FriendManager/FriendManager.js";
 
 const { Content } = Layout;
 const { Title, Text } = Typography;
@@ -23,9 +26,20 @@ function UserInfoPage() {
     <>
       <Layout>
         <Navbar selectedMenu="userinfo" />
-        <Layout style={{ margin: 128, background: "purple" }}>
-          <Content style={{ background: "white", padding: 16 }}>
+        <Layout style={styles.mainArea}>
+          <Content
+            style={{
+              background: "whitesmoke",
+              padding: 16,
+              position: "relative",
+            }}
+          >
+            <div className="row">
+              <AvatarView displayName="Thao cute dang yeu"></AvatarView>
+            </div>
+            <ListButtons />
             <AboutCard></AboutCard>
+            <FriendManager />
           </Content>
         </Layout>
       </Layout>

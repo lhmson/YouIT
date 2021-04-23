@@ -5,11 +5,9 @@ const styles = {
     float: "left",
     height: 64,
     width: 110,
-    // margin: "0.5rem 1rem",
     display: "flex",
-    alignItems: "center",
     justifyContent: "center",
-    backgroundColor: COLOR.green,
+    marginRight: 24,
   },
   title: {
     fontSize: "2rem",

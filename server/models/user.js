@@ -8,50 +8,66 @@ const userSchema = mongoose.Schema(
     // id: Schema.Types.ObjectId,
 
     //SanhCute
-    AvatarURL: { type: String},
-    Status : { type: String},
-    UserType : { type: String},
+    AvatarURL: { type: String },
+    Status: { type: String },
+    UserType: { type: String },
 
-    InfoUser: {
+    userInfo: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "UserInfo",
     },
 
-    UsageStatistics : {
+    UsageStatistics: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "UsageStatistics",
     },
 
-    ListFriends: [{
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-    }],
-    ListFriendRequests: [{
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "FriendRequest",
-    }],
-    ListFriendSendRequests: [{
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "FriendRequest",
-    }],
-    ListFriendFollows: [{
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-    }],
-    ListBlockings: [{
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-    }],
-    ListBlockers: [{
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-    }],
-    ListtActivityLogItems: [{
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "ActivityLogItem",
-    }],
+    ListFriends: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
+    ListFriendRequests: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "FriendRequest",
+      },
+    ],
+    ListFriendSendRequests: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "FriendRequest",
+      },
+    ],
+    ListFriendFollows: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
+    ListBlockings: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
+    ListBlockers: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
+    ListActivityLogItems: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "ActivityLogItem",
+      },
+    ],
   },
   { timestamps: true }
 );
 
-export default mongoose.model("User", userSchema);
+var User = mongoose.model("User", userSchema);
+
+export default User;
