@@ -10,7 +10,7 @@ import {
   getOtherPosts,
 } from "../controllers/posts.js";
 
-import { createComment } from "../controllers/comments.js";
+import { createComment, getComments } from "../controllers/comments.js";
 
 import auth from "../middleware/auth.js";
 
@@ -22,6 +22,7 @@ router.get("/:id/others", getOtherPosts);
 
 router.post("/", auth, createPost);
 router.post("/:id/comments", createComment);
+router.get("/:id/comments", getComments);
 
 router.put("/:id", auth, updatePost);
 router.put("/:id/likePost", auth, likePost);

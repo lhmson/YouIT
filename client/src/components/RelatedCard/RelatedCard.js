@@ -24,7 +24,9 @@ function RelatedCard(props) {
             </Col>
 
             <Col span={20} align="start" justify="center">
-              <a className="clickable dgreen">{p.title}</a>
+              <a href={`/posts/${p._id}`} className="clickable dgreen">
+                {p.title}
+              </a>
             </Col>
           </Row>
         ))}

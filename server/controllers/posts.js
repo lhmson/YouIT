@@ -30,11 +30,13 @@ export const getOtherPosts = async (req, res) => {
       res.status(404).json({ message: error.message });
       return;
     }
-    const posts = await (await Post.find()).filter(
-      (p) =>
-        p.creatorId.equals(excludedPost.creatorId) &&
-        !p._id.equals(excludedPost._id)
-    );
+    const posts = await (await Post.find())
+      .filter(
+        (p) =>
+          p.creatorId.equals(excludedPost.creatorId) &&
+          !p._id.equals(excludedPost._id)
+      )
+      .slice(0, 5);
     res.status(200).json(posts);
   } catch (error) {
     res.status(500).json({ message: error.message });

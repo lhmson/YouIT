@@ -10,11 +10,10 @@ export const commentSchema = mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
     },
-    // quotedCommentId: {
-    //   type: mongoose.Schema.Types.ObjectId,
-    //   ref: "Comment",
-    //   default: null,
-    // },
+    quotedCommentId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Comment",
+    },
   },
   {
     timestamps: true,

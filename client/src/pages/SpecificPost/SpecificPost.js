@@ -29,7 +29,8 @@ import COLOR from "../../constants/colors.js";
 import { PresetColorTypes } from "antd/lib/_util/colors";
 import RelatedCard from "../../components/RelatedCard/RelatedCard.js";
 import FixedRightPanel from "../../components/FixedRightPanel/FixedRightPanel.js";
-import * as api from "../../api/posts";
+import * as postsApi from "../../api/posts";
+import * as commentsApi from "../../api/comments";
 
 const { SubMenu } = Menu;
 const { Header, Content, Sider } = Layout;
@@ -38,18 +39,24 @@ const { Title, Text } = Typography;
 function SpecificPost(props) {
   const { id } = props.match.params;
   const [post, setPost] = useState(null);
+  const [comments, setComments] = useState(null);
   const [otherPosts, setOtherPosts] = useState(null);
   useEffect(() => {
     const fetchPost = async () => {
-      const { data } = await api.fetchAPost(id);
+      const { data } = await postsApi.fetchAPost(id);
       setPost(data);
     };
     const fetchOtherPosts = async () => {
-      const { data } = await api.fetchOtherPosts(id);
+      const { data } = await postsApi.fetchOtherPosts(id);
       setOtherPosts(data);
+    };
+    const fetchComments = async () => {
+      const { data } = await commentsApi.fetchComments(id);
+      setComments(data);
     };
     fetchPost();
     fetchOtherPosts();
+    fetchComments();
   }, []);
   return (
     <>
@@ -58,7 +65,7 @@ function SpecificPost(props) {
         <Layout style={styles.mainArea}>
           <Content>
             <div className="mr-4  ">
-              <FullPost post={post} />
+              <FullPost post={post} comments={comments} />
             </div>
           </Content>
           <FixedRightPanel>
