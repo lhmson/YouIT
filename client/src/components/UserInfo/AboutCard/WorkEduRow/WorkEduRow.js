@@ -24,7 +24,7 @@ function WorkEduRow(props) {
           justifyContent: "center",
         }}
       >
-        <Button type="link" size="large">
+        <Button className="clickable" type="link" size="large">
           <GrAddCircle style={styles.icon} color="blue" />
           {props.addingText}
         </Button>
