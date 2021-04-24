@@ -12,6 +12,8 @@ import { Button } from "antd";
 import SearchSidebar from "../../components/Sidebar/SearchSidebar/SearchSidebar";
 import SearchUserResult from "../../components/SearchResults/SearchUserResult/SearchUserResult";
 import SearchGroupResult from "../../components/SearchResults/SearchGroupResult/SearchGroupResult";
+import MemberRequest from "../../components/MemberRequest/MemberRequest";
+import SearchPostResult from "../../components/SearchResults/SearchPostResult/SearchPostResult";
 
 const { Content } = Layout;
 const { Title, Text } = Typography;
@@ -35,6 +37,8 @@ function UserResultSearchPage() {
             <Content>
               {modeSearch === "User" ? (
                 <SearchUserResult></SearchUserResult>
+              ) : modeSearch === "Post" ? (
+                <SearchPostResult></SearchPostResult>
               ) : (
                 <SearchGroupResult></SearchGroupResult>
               )}
