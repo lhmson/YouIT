@@ -15,17 +15,15 @@ function CreatePostSpaceAutoComplete({ setPostSpace }) {
   }
 
   return (
-    <>
-      <div className="">
-        <AutoComplete
-          options={options}
-          style={{ width: "15vw" }}
-          placeholder="News feed"
-          filterOption={filterOption}
-          onChange={handlePostSpaceChange}
-        />
-      </div>
-    </>
+    <div>
+      <AutoComplete
+        options={options}
+        style={{ width: "15vw" }}
+        placeholder="News feed"
+        filterOption={filterOption}
+        onChange={handlePostSpaceChange}
+      />
+    </div>
   )
 }
 

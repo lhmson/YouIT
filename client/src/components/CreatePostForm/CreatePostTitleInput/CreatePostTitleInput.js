@@ -1,6 +1,6 @@
 import React from 'react'
 import styles from './styles.js';
-import { Col, Input, Row } from 'antd';
+import { Input } from 'antd';
 
 function CreatePostTitleInput({ title, setTitle }) {
   const handleTextChange = (value) => {
