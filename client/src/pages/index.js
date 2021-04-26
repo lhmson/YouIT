@@ -6,6 +6,7 @@ import MainPage from "./MainPage/MainPage";
 import SpecificPost from "./SpecificPost/SpecificPost";
 import UserInfoPage from "./UserInfoPage/UserInfoPage";
 import UserResultSearchPage from "./UserResultSearch/UserResultSearchPage";
+import GroupPage from "./GroupPage/GroupPage";
 
 export {
   AboutPage,
@@ -16,4 +17,5 @@ export {
   SpecificPost,
   UserInfoPage,
   UserResultSearchPage,
+  GroupPage,
 };

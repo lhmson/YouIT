@@ -11,6 +11,7 @@ import {
   SpecificPost,
   UserResultSearchPage,
   AboutPage,
+  GroupPage,
 } from "./pages/index";
 
 function App() {
@@ -25,6 +26,7 @@ function App() {
         <Route path="/posts/:id" component={SpecificPost} />
         <Route path="/search" component={UserResultSearchPage} />
         <Route path="/userinfo/about" component={AboutPage} />
+        <Route path="/group" component={GroupPage} />
       </Switch>
     </div>
   );

@@ -33,6 +33,10 @@ import FriendManager from "./UserInfo/FriendManager/FriendManager";
 import IntroCard from "./UserInfo/IntroCard/IntroCard";
 import ListButtons from "./UserInfo/ListButtons/ListButtons";
 
+import AdminGroupSidebar from "./Sidebar/AdminGroupSidebar/AdminGroupSidebar";
+import CoverPhoto from "./GroupPage/CoverPhoto/CoverPhoto";
+import GroupBasicInfo from "./GroupPage/GroupBasicInfo/GroupBasicInfo";
+
 export {
   SignInForm,
   SignUpForm,
@@ -61,4 +65,7 @@ export {
   FriendManager,
   IntroCard,
   ListButtons,
+  AdminGroupSidebar,
+  CoverPhoto,
+  GroupBasicInfo,
 };
