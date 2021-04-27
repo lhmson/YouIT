@@ -56,7 +56,7 @@ function CreatePostForm() {
 
       <div className="d-flex justify-content-start">
         <div className="col-12">
-          <PostEditor />
+          <PostEditor postContent={postContent} setPostContent={setPostContent} />
         </div>
       </div>
     </div>
