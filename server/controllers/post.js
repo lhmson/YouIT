@@ -50,10 +50,12 @@ export const createPost = async (req, res) => {
   });
 
   try {
+    console.log("still go here", newPost);
     await newPost.save();
 
     res.status(201).json(newPost);
   } catch (error) {
+    console.log({ message: error.message });
     res.status(500).json({ message: error.message });
   }
 };
@@ -231,16 +233,14 @@ export const getOtherPosts = async (req, res) => {
   try {
     const excludedPost = await Post.findById(id);
     if (!excludedPost) {
-      res.status(404).json({ message: error.message });
+      res.status(404).json("Invalid ID");
       return;
     }
-    const posts = await (await Post.find())
-      .filter(
-        (p) =>
-          p.creatorId.equals(excludedPost.creatorId) &&
-          !p._id.equals(excludedPost._id)
-      )
-      .slice(0, 5);
+    const posts = await (await Post.find()).filter(
+      (p) =>
+        p.userId.toString() === excludedPost.userId.toString() &&
+        p._id.toString() !== excludedPost._id.toString()
+    );
     res.status(200).json(posts);
   } catch (error) {
     res.status(500).json({ message: error.message });

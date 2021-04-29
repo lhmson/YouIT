@@ -4,6 +4,7 @@ import mongoose from "mongoose";
 import Post from "../models/post.js";
 import Comment from "../models/comment.js";
 
+import { httpStatusCodes } from "../utils/httpStatusCode.js";
 export const createComment = async (req, res) => {
   const { id } = req.params;
   if (!mongoose.Types.ObjectId.isValid(id)) {
@@ -44,4 +45,58 @@ export const getComments = async (req, res) => {
         res.status(500).json({ message: err.message });
       }
     );
+};
+
+export const editComment = async (req, res) => {
+  const { id, commentId } = req.params;
+  const { userId } = req;
+  try {
+    if (!userId) {
+      return res
+        .status(httpStatusCodes.unauthorized)
+        .json({ message: "Unauthenticated" });
+    }
+    await Post.findById(id).catch((err) => {
+      return res.status(404).json({ message: err.message });
+    });
+    await Comment.findByIdAndUpdate(
+      commentId,
+      {
+        content: req.body.content,
+      },
+      { new: true }
+    )
+      .then((comment) => {
+        return res.status(200).json(comment);
+      })
+      .catch((err) => {
+        return res.status(404).json({ message: err.message });
+      });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+export const deleteComment = async (req, res) => {
+  const { id, commentId } = req.params;
+  const { userId } = req;
+  try {
+    if (!userId) {
+      return res
+        .status(httpStatusCodes.unauthorized)
+        .json({ message: "Unauthenticated" });
+    }
+    await Post.findById(id).catch((err) => {
+      return res.status(404).json({ message: err.message });
+    });
+    await Comment.findByIdAndDelete(commentId)
+      .then((comment) => {
+        return res.status(200).json(comment);
+      })
+      .catch((err) => {
+        return res.status(404).json({ message: err.message });
+      });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
 };
