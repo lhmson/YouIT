@@ -6,6 +6,7 @@ import CreatePostTagSelect from './CreatePostTagSelect/CreatePostTagSelect.js';
 import CreatePostTitleInput from './CreatePostTitleInput/CreatePostTitleInput.js';
 import styles from './styles.js';
 import { createPost } from '../../api/post.js';
+import PostEditor from './PostEditor/PostEditor.js';
 
 function CreatePostForm() {
   const [postTitle, setPostTitle] = useState("")
@@ -28,19 +29,19 @@ function CreatePostForm() {
   }
 
   return (
-    <div className="container-fluid" style={{ background: "yellow" }}>
+    <div className="container-fluid">
 
       <div className="d-flex justify-content-start">
-        <div className="col-4">
+        <div className="col-8">
           <CreatePostTitleInput title={postTitle} setTitle={setPostTitle} />
         </div>
-        <div className="col-2">
+        <div className="col-4">
           <CreatePostSpaceAutoComplete setPostSpace={setPostSpace} />
         </div>
       </div>
 
       <div className="d-flex justify-content-start">
-        <div className="col-4">
+        <div className="col-8">
           <CreatePostTagSelect />
         </div>
         <div className="col-2">
@@ -48,8 +49,14 @@ function CreatePostForm() {
         </div>
 
         {/* May us have a common button component to call here? */}
-        <div className="col-1">
+        <div className="col-2">
           <Button onClick={handleSavePostButtonClick}>Save post</Button>
+        </div>
+      </div>
+
+      <div className="d-flex justify-content-start">
+        <div className="col-12">
+          <PostEditor postContent={postContent} setPostContent={setPostContent} />
         </div>
       </div>
     </div>
