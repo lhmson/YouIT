@@ -21,6 +21,7 @@ const styles = {
   },
   searchBar: {
     marginLeft: 20,
+    marginRight: 20,
     marginBottom: 16,
     marginTop: 16,
   },

@@ -8,7 +8,7 @@ const { Title } = Typography;
 
 const AvatarView = (props) => {
   const avatarUrl =
-    "https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png";
+    "https://pbs.twimg.com/profile_images/1247161286518964226/m92qVTIT_400x400.jpg";
 
   return (
     <div style={{ position: "relative", height: "60vh" }}>
