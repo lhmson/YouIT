@@ -2,8 +2,8 @@ import express from "express";
 import mongoose from "mongoose";
 import User from "../models/user.js";
 
-// GET userinfo/my
-export const getMyUserInfo = async (req, res) => {
+// GET userinfo/:id
+export const getUserInfo = async (req, res) => {
   // auth
   if (!req.userId) {
     return res.json({ message: "Unauthenticated" });
@@ -11,16 +11,7 @@ export const getMyUserInfo = async (req, res) => {
 
   try {
     const currentUser = await User.findById(req.userId);
-    const infoId = currentUser.userInfo._id;
-
-    if (!infoId) {
-      res.status(404).json(`Cannot find an user's info with id ${infoId}`);
-      return;
-    }
-
-    const { userInfo } = currentUser;
-
-    res.status(200).json(userInfo);
+    res.status(200).json(currentUser);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

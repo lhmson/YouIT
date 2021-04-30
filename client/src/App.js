@@ -22,7 +22,7 @@ function App() {
         <Route path="/feed" exact component={FeedPage} />
         <Route path="/auth" component={AuthPage} />
         <Route path="/post/create" component={CreatePostPage} />
-        <Route path="/userinfo" component={UserInfoPage} />
+        <Route path="/userinfo" exact component={UserInfoPage} />
         <Route path="/posts/:id" component={SpecificPost} />
         <Route path="/search" component={UserResultSearchPage} />
         <Route path="/userinfo/about" component={AboutPage} />

@@ -1,5 +1,5 @@
 import React from "react";
-import { Layout, Typography } from "antd";
+import { Layout, Row, Typography, Col } from "antd";
 import styles from "./styles.js";
 
 import Navbar from "../../components/Navbar/Navbar";
@@ -16,7 +16,7 @@ function AboutPage() {
   return (
     <>
       <Layout>
-        <Navbar selectedMenu="userinfo" />
+        <Navbar />
         <Layout style={styles.mainArea}>
           <Content
             className="container"
@@ -25,9 +25,12 @@ function AboutPage() {
             }}
           >
             <AvatarView displayName="Thao cute dang yeu"></AvatarView>
-            <ListButtons />
+            <Row>
+              <Col span={12}>
+                <ListButtons />
+              </Col>
+            </Row>
             <AboutCard></AboutCard>
-            <FriendManager />
           </Content>
         </Layout>
       </Layout>

@@ -58,7 +58,7 @@ function GroupPage() {
                   alignItems: "center",
                 }}
               >
-                <GoSearch size={24} style={styles.icon} />
+                <GoSearch size={24} style={styles.icon} onClick={() => {}} />
                 <BsThreeDots size={24} style={styles.icon} />
               </Col>
             </Row>
