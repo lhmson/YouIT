@@ -38,10 +38,15 @@ function SearchSidebar(props) {
         {/* <SubMenu key="sub1" title="subnav 1"> */}
         <Menu.Item
           key="username"
-          style={{...styles.item,fontWeight:700, fontSize: 20}}
-          disabled = {true}
+          style={{ ...styles.item, fontWeight: 700, fontSize: 20 }}
+          disabled={true}
           icon={
-            <Avatar alt={user?.result?.name} src={"https://icons-for-free.com/iconfiles/png/512/look+magnifying+glass+search+icon-1320196720531471752.png"}>
+            <Avatar
+              alt={user?.result?.name}
+              src={
+                "https://icons-for-free.com/iconfiles/png/512/look+magnifying+glass+search+icon-1320196720531471752.png"
+              }
+            >
               {user?.result?.name.charAt(0)}
             </Avatar>
           }
@@ -50,13 +55,14 @@ function SearchSidebar(props) {
         </Menu.Item>
         <Menu.Item
           key="post"
+          onClick={() => props.setModeSearch("Post")}
           style={styles.item}
           icon={<Avatar style={styles.transparent} />}
         >
           Bài viết
         </Menu.Item>
         <Menu.Item
-          onClick = {() => props.setModeSearch("User")}
+          onClick={() => props.setModeSearch("User")}
           key="user"
           style={styles.item}
           icon={<Avatar style={styles.transparent} />}
@@ -66,7 +72,7 @@ function SearchSidebar(props) {
         {/* </SubMenu> */}
 
         <Menu.Item
-          onClick = {() => props.setModeSearch("Group")}
+          onClick={() => props.setModeSearch("Group")}
           key="group"
           style={styles.item}
           icon={<Avatar style={styles.transparent} />}
@@ -74,7 +80,6 @@ function SearchSidebar(props) {
           Nhóm
         </Menu.Item>
       </Menu>
-      
     </Sider>
   );
 }

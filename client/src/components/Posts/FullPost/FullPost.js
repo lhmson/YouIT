@@ -32,7 +32,7 @@ const { Title, Text, Paragraph, Link } = Typography;
 const { TextArea } = Input;
 
 function FullPost(props) {
-  const { post, comments } = props;
+  const { post } = props;
 
   const handleMore = () => {
     alert("more");
@@ -40,12 +40,8 @@ function FullPost(props) {
 
   const tagList = ["Tag 1", "Tag 2", "Tag 3", "Tag 4", "Tag 5"];
 
-  const dispatch = useDispatch();
-  useEffect(() => {
-    dispatch(getComments());
-  }, [dispatch]);
   return (
-    <Card style={{ padding: 16 }}>
+    <div>
       <div>
         <Row
           className="pb-2"
@@ -117,7 +113,6 @@ function FullPost(props) {
                 <Text strong>150</Text>
                 <ArrowDownOutlined className="clickable icon" />
               </Space>
-              <Text strong>{`Comments (${comments?.length})`}</Text>
             </Space>
           </Row>
           <Row>
@@ -128,11 +123,7 @@ function FullPost(props) {
           </Row>
         </Row>
       </div>
-      <CommentForm postId={post?._id} />
-      {comments?.map((c) => (
-        <Comment comment={c} />
-      ))}
-    </Card>
+    </div>
   );
 }
 

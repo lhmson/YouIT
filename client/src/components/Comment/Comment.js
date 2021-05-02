@@ -21,6 +21,7 @@ import {
 } from "@ant-design/icons";
 import styles from "./styles";
 import COLOR from "../../constants/colors";
+import CommentForm from "../CommentForm/CommentForm";
 
 const { Title, Text, Paragraph, Link } = Typography;
 
@@ -96,6 +97,7 @@ function Comment(props) {
               <Text strong>150</Text>
               <ArrowDownOutlined className="clickable icon" />
             </Space>
+            <Text className="clickable" strong>{`Reply`}</Text>
           </Space>
         </Row>
         <Row>
@@ -104,6 +106,7 @@ function Comment(props) {
           </Space>
         </Row>
       </Row>
+      <CommentForm />
       <Divider />
     </div>
   );
