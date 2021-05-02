@@ -1,18 +1,37 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Layout, Row, Typography, Col } from "antd";
 import styles from "./styles.js";
 
 import Navbar from "../../components/Navbar/Navbar";
 
-import AboutCard from "../../components/UserInfo/AboutCard/AboutCard";
-import AvatarView from "../../components/UserInfo/AvatarView/AvatarView.js";
-import ListButtons from "../../components/UserInfo/ListButtons/ListButtons.js";
-import FriendManager from "../../components/UserInfo/FriendManager/FriendManager.js";
+import {
+  AboutCard,
+  AvatarView,
+  ListButtons,
+  FriendManager,
+} from "../../components/index";
+
+import * as api from "../../api/user_info";
 
 const { Content } = Layout;
-const { Title, Text } = Typography;
 
 function AboutPage() {
+  const [user, setUser] = useState(null);
+
+  const handleFetchUserInfo = (user) => {
+    setUser(user);
+  };
+
+  useEffect(async () => {
+    console.log("start fetching user");
+
+    const localUserInfo = JSON.parse(localStorage.getItem("user"));
+    const user = await api.fetchUserInfo(localUserInfo?.result?._id);
+
+    console.log("user:: ", user.data);
+    handleFetchUserInfo(user.data);
+  }, []);
+
   return (
     <>
       <Layout>
@@ -24,13 +43,14 @@ function AboutPage() {
               padding: 16,
             }}
           >
-            <AvatarView displayName="Thao cute dang yeu"></AvatarView>
+            <AvatarView user={user}></AvatarView>
             <Row>
               <Col span={12}>
                 <ListButtons />
               </Col>
             </Row>
-            <AboutCard></AboutCard>
+            <AboutCard user={user}></AboutCard>
+            <FriendManager></FriendManager>
           </Content>
         </Layout>
       </Layout>

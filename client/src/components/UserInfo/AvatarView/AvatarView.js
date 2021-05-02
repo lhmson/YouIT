@@ -8,31 +8,14 @@ import * as api from "../../../api/user_info";
 
 const { Title } = Typography;
 
-const AvatarView = () => {
-  const [avatarUrl, setAvatarUrl] = useState(
-    "https://pbs.twimg.com/profile_images/1247161286518964226/m92qVTIT_400x400.jpg"
-  );
+const AvatarView = ({ user }) => {
+  const avatarUrl =
+    user?.avatarUrl ??
+    "https://pbs.twimg.com/profile_images/1247161286518964226/m92qVTIT_400x400.jpg";
 
-  const [displayName, setDisplayName] = useState("Nguoi dung YouIT");
+  // const backgroundUrl = ""
 
-  const handleFetchUserInfo = (user) => {
-    setAvatarUrl(user.avatarUrl);
-    console.log("userName: " + user.name);
-    setDisplayName(user.name);
-  };
-
-  useEffect(async () => {
-    console.log("start fetching user");
-
-    const localUserInfo = JSON.parse(localStorage.getItem("user"));
-    console.log("local: " + localUserInfo);
-    console.log("localId: " + localUserInfo?.result?._id);
-
-    const user = await api.fetchUserInfo(localUserInfo?.result?._id);
-
-    console.log("user:: ", user.data);
-    handleFetchUserInfo(user.data);
-  }, []);
+  const displayName = user?.name ?? "Nguoi dung YouIT";
 
   return (
     <div style={{ position: "relative", height: "60vh" }}>
