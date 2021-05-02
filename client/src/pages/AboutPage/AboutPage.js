@@ -1,4 +1,8 @@
 import React, { useEffect, useState } from "react";
+
+import { useDispatch, useSelector } from "react-redux";
+import { getUser } from "../../redux/actions/user.js";
+
 import { Layout, Row, Typography, Col } from "antd";
 import styles from "./styles.js";
 
@@ -11,25 +15,26 @@ import {
   FriendManager,
 } from "../../components/index";
 
-import * as api from "../../api/user_info";
-
 const { Content } = Layout;
 
 function AboutPage() {
-  const [user, setUser] = useState(null);
+  //const [user, setUser] = useState(null);
+  const user = useSelector((state) => state.user);
 
-  const handleFetchUserInfo = (user) => {
-    setUser(user);
-  };
+  const dispatch = useDispatch();
+
+  // const handleFetchUserInfo = (user) => {
+  //   setUser(user);
+  // };
 
   useEffect(async () => {
     console.log("start fetching user");
 
     const localUserInfo = JSON.parse(localStorage.getItem("user"));
-    const user = await api.fetchUserInfo(localUserInfo?.result?._id);
+    dispatch(getUser(localUserInfo?.result?._id));
 
-    console.log("user:: ", user.data);
-    handleFetchUserInfo(user.data);
+    //console.log("user:: ", user);
+    //handleFetchUserInfo(user.data);
   }, []);
 
   return (
