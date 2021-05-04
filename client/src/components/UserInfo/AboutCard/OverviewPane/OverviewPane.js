@@ -1,4 +1,5 @@
 import React from "react";
+import { useSelector } from "react-redux";
 
 import {
   IoSchoolSharp,
@@ -13,13 +14,20 @@ import {
 import OverviewRow from "../OverviewRow/OverviewRow.js";
 import styles from "./styles.js";
 
-const OverviewPane = (props) => {
-  const schoolIcon = () => {
-    return <IoSchoolSharp style={styles.icon} />;
-  };
-  const homeIcon = () => {
-    return <IoHome style={styles.icon} />;
-  };
+const OverviewPane = () => {
+  const user = useSelector((state) => state.user);
+
+  const dateOfBirth = user?.userInfo?.dateOfBirth;
+  const address = user?.userInfo?.address ?? "VietNam";
+  const workLocation = user?.userInfo?.workLocation ?? "VietNam";
+  // const dateOfBirth = {
+  //   $convert: {
+  //     input: user?.userInfo?.dateOfBirth,
+  //     to: "date",
+  //   },
+  // };
+  //const dateOfBirth = Number(moment(d).tz(timezone).format("YYYYMMDD"));
+
   const publicIcon = () => {
     return <MdPublic style={styles.icon} />;
   };
@@ -27,34 +35,34 @@ const OverviewPane = (props) => {
   return (
     <div>
       <OverviewRow
-        firstIcon={schoolIcon()}
+        firstIcon={<IoSchoolSharp style={styles.icon} />}
         text="Went to Truong THPT Gia Dinh"
         subText="Attended from 2015 to 2018"
         privacyIcon={publicIcon()}
         lastIcon={<BsThreeDots style={styles.icon} />}
       />
       <OverviewRow
-        firstIcon={homeIcon()}
-        text="Lives in Ho Chi Minh City, Vietnam"
+        firstIcon={<IoHome style={styles.icon} />}
+        text={address}
         privacyIcon={publicIcon()}
         lastIcon={<BsThreeDots style={styles.icon} />}
       />
       <OverviewRow
         firstIcon={<MdLocationOn style={styles.icon} />}
-        text="From Ho Chi Minh City, Vietnam"
+        text={workLocation}
         privacyIcon={publicIcon()}
         lastIcon={<BsThreeDots style={styles.icon} />}
       />
       <OverviewRow
         firstIcon={<FaMale style={styles.icon} />}
-        text="Male"
+        text={user?.userInfo?.gender}
         subText="Gender"
         privacyIcon={publicIcon()}
         lastIcon={<BsThreeDots style={styles.icon} />}
       />
       <OverviewRow
         firstIcon={<FaBirthdayCake style={styles.icon} />}
-        text="04/21/2021"
+        text={dateOfBirth}
         subText="Birthday"
         privacyIcon={publicIcon()}
         lastIcon={<BsThreeDots style={styles.icon} />}

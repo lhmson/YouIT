@@ -48,7 +48,7 @@ function AboutPage() {
               padding: 16,
             }}
           >
-            <AvatarView user={user}></AvatarView>
+            <AvatarView></AvatarView>
             <Row>
               <Col span={12}>
                 <ListButtons />

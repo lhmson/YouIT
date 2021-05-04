@@ -5,10 +5,13 @@ import { FaCamera } from "react-icons/fa";
 import styles from "./styles.js";
 
 import * as api from "../../../api/user_info";
+import { useSelector } from "react-redux";
 
 const { Title } = Typography;
 
-const AvatarView = ({ user }) => {
+const AvatarView = () => {
+  const user = useSelector((state) => state.user);
+
   const avatarUrl =
     user?.avatarUrl ??
     "https://pbs.twimg.com/profile_images/1247161286518964226/m92qVTIT_400x400.jpg";
