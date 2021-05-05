@@ -1,15 +1,12 @@
 import { Form, Input, Button, Select, Row, Space } from "antd";
 import { useCallback, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { createComment } from "../../redux/actions/comments";
 const { TextArea } = Input;
 
 const { Option } = Select;
 
-function CommentForm({ postId, onSubmit }) {
-  const dispatch = useDispatch();
+function CommentForm({ setInputComment, inputComment, onSubmit }) {
   const [form] = Form.useForm();
-  const [commentData, setCommentData] = useState(null);
   const [errors, setErrors] = useState({});
   // const validate = useCallback(() => {
   //   setErrors((prevErrors) => ({
@@ -25,50 +22,39 @@ function CommentForm({ postId, onSubmit }) {
 
   const onReset = () => {
     form.resetFields();
-    setCommentData(null);
+    setInputComment({ content: "" });
   };
 
-  const handleSubmit = () => {
-    console.log("submit");
-    //const isValid = validate();
-    if (1) {
-      dispatch(
-        createComment(postId, { ...commentData }, () => {
-          onSubmit();
-          onReset();
-        })
-      );
-    }
+  const handleFinish = () => {
+    onReset();
+    onSubmit();
   };
-
   return (
     <Form
       layout="vertical"
       form={form}
       name="control-hooks"
-      onFinish={handleSubmit}
+      onFinish={handleFinish}
     >
       <Form.Item name="userComment" label="Comment to this post">
         <TextArea
           style={{ height: 200 }}
-          onChange={(e) =>
-            setCommentData({ ...commentData, content: e.target.value })
-          }
-          value={commentData}
+          onChange={(e) => setInputComment({ content: e.target.value })}
+          value={inputComment}
         />
       </Form.Item>
 
       <Form.Item>
         <Row justify="end">
-          <btn
+          <Button
             htmlType="button"
             className="mr-3"
             size="large"
             onClick={onReset}
           >
             Reset
-          </btn>
-          <Button type="primary" htmlType="submit">
+          </Button>
+          <Button className="green-button" size="large" htmlType="submit">
             Submit
           </Button>
         </Row>

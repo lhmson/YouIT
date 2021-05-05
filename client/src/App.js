@@ -18,8 +18,8 @@ function App() {
         <Route path="/auth" component={AuthPage} />
         <Route path="/post/create" component={CreatePostPage} />
         <Route path="/userinfo" component={UserInfoPage} />
-        <Route path="/posts/:id" component={SpecificPost} />
-        <Route path="/search" component={UserResultSearchPage}/>
+        <Route path="/post/:id" component={SpecificPost} />
+        <Route path="/search" component={UserResultSearchPage} />
       </Switch>
     </div>
   );

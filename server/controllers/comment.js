@@ -5,6 +5,7 @@ import Post from "../models/post.js";
 import Comment from "../models/comment.js";
 
 import { httpStatusCodes } from "../utils/httpStatusCode.js";
+
 export const createComment = async (req, res) => {
   const { id } = req.params;
   if (!mongoose.Types.ObjectId.isValid(id)) {

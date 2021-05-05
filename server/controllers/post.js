@@ -21,16 +21,20 @@ export const getPost = async (req, res) => {
   const { id } = req.params;
 
   try {
-    const post = await Post.findById(id);
+    const post = await Post.findById(id)
+      .populate("userId")
+      .then((post) => {
+        return res.status(200).json("yey");
+      })
+      .catch((err) => {
+        return res.status(404).json(`Cannot find a post with id: ${id}`);
+      });
 
     if (!post) {
-      res.status(404).json(`Cannot find a post with id: ${id}`);
       return;
     }
-
-    res.status(200).json(post);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    return res.status(500).json({ message: error.message });
   }
 };
 
@@ -48,14 +52,13 @@ export const createPost = async (req, res) => {
     ...post,
     userId: req.userId,
   });
+  console.log("userid", req.userId);
 
   try {
-    console.log("still go here", newPost);
     await newPost.save();
 
     res.status(201).json(newPost);
   } catch (error) {
-    console.log({ message: error.message });
     res.status(500).json({ message: error.message });
   }
 };
@@ -220,11 +223,18 @@ export const getPostsPagination = async (req, res) => {
 
 export const getAPost = async (req, res) => {
   const { id } = req.params;
+
   try {
-    const post = await Post.findById(id);
-    res.status(200).json(post);
+    const post = await Post.findById(id)
+      .populate("userId", "name")
+      .then((post) => {
+        return res.status(200).json(post);
+      })
+      .catch((err) => {
+        return res.status(404).json(`Cannot find a post with id: ${id}`);
+      });
   } catch (error) {
-    res.status(404).json({ message: error.message });
+    return res.status(500).json({ message: error.message });
   }
 };
 

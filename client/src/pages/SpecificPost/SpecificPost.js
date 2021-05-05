@@ -43,6 +43,7 @@ function SpecificPost(props) {
   const [post, setPost] = useState(null);
   const [comments, setComments] = useState(null);
   const [otherPosts, setOtherPosts] = useState(null);
+  const [inputComment, setInputComment] = useState(null);
   const dispatch = useDispatch();
   const fetchPost = async () => {
     const { data } = await postsApi.fetchAPost(id);
@@ -57,19 +58,28 @@ function SpecificPost(props) {
     console.log("fetchcomment", data);
     setComments(data);
   };
-  useEffect(() => {
+  const pageRefetch = () => {
     fetchPost();
     fetchOtherPosts();
     fetchComments();
+  };
+  useEffect(() => {
+    pageRefetch();
   }, []);
+
+  useEffect(() => {
+    console.log(inputComment);
+  }, [inputComment]);
 
   useEffect(() => {
     dispatch(getPosts());
   }, [dispatch]);
 
-  const handleSubmit = () => {
-    fetchComments();
+  const handleSubmit = async () => {
+    await commentsApi.createComment(post._id, inputComment);
+    pageRefetch();
   };
+
   return (
     <>
       <Layout>
@@ -79,7 +89,11 @@ function SpecificPost(props) {
             <div className="mr-4  ">
               <Card style={{ padding: 16 }}>
                 <FullPost post={post} />
-                <CommentForm postId={post?._id} onSubmit={handleSubmit} />
+                <CommentForm
+                  setInputComment={setInputComment}
+                  inputComment={inputComment}
+                  onSubmit={handleSubmit}
+                />
                 {comments?.map((c) => (
                   <Comment comment={c} />
                 ))}
