@@ -44,7 +44,6 @@ function SpecificPost(props) {
   const [comments, setComments] = useState(null);
   const [otherPosts, setOtherPosts] = useState(null);
   const [inputComment, setInputComment] = useState(null);
-  const dispatch = useDispatch();
   const fetchPost = async () => {
     const { data } = await postsApi.fetchAPost(id);
     setPost(data);
@@ -55,29 +54,18 @@ function SpecificPost(props) {
   };
   const fetchComments = async () => {
     const { data } = await commentsApi.fetchComments(id);
-    console.log("fetchcomment", data);
     setComments(data);
   };
-  const pageRefetch = () => {
+
+  useEffect(() => {
     fetchPost();
     fetchOtherPosts();
     fetchComments();
-  };
-  useEffect(() => {
-    pageRefetch();
   }, []);
-
-  useEffect(() => {
-    console.log(inputComment);
-  }, [inputComment]);
-
-  useEffect(() => {
-    dispatch(getPosts());
-  }, [dispatch]);
 
   const handleSubmit = async () => {
     await commentsApi.createComment(post._id, inputComment);
-    pageRefetch();
+    fetchComments();
   };
 
   return (
