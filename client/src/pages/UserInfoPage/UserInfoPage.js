@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Layout } from "antd";
+import { Col, Layout, Row } from "antd";
 import styles from "./styles.js";
 
 import Navbar from "../../components/Navbar/Navbar";
@@ -30,7 +30,11 @@ function UserInfoPage() {
         <Layout style={styles.mainArea}>
           <Content className="container" style={{ padding: 16 }}>
             <AvatarView displayName="Thao cute dang yeu"></AvatarView>
-            <ListButtons />
+            <Row>
+              <Col span={12}>
+                <ListButtons />
+              </Col>
+            </Row>
             <AboutCard></AboutCard>
             <FriendManager />
           </Content>

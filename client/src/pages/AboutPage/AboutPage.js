@@ -41,6 +41,21 @@ function AboutPage() {
     <>
       <Layout>
         <Navbar />
+        <Layout style={styles.avatarView}>
+          <Content
+            className="container"
+            style={{
+              padding: 8,
+            }}
+          >
+            <AvatarView></AvatarView>
+            <Row style={{ marginLeft: 16, marginTop: 32 }}>
+              <Col span={12}>
+                <ListButtons />
+              </Col>
+            </Row>
+          </Content>
+        </Layout>
         <Layout style={styles.mainArea}>
           <Content
             className="container"
@@ -48,12 +63,6 @@ function AboutPage() {
               padding: 16,
             }}
           >
-            <AvatarView></AvatarView>
-            <Row>
-              <Col span={12}>
-                <ListButtons />
-              </Col>
-            </Row>
             <AboutCard user={user}></AboutCard>
             <FriendManager></FriendManager>
           </Content>

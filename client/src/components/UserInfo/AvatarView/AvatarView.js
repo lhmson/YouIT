@@ -21,7 +21,7 @@ const AvatarView = () => {
   const displayName = user?.name ?? "Nguoi dung YouIT";
 
   return (
-    <div style={{ position: "relative", height: "60vh" }}>
+    <div style={{ position: "relative", height: "50vh" }}>
       <Row
         className="container justify-content-center"
         style={{ height: "40vh" }}
@@ -38,16 +38,20 @@ const AvatarView = () => {
             }}
           ></Image>
         </div>
-        <Button type="primary" style={styles.editImageBtn}>
+        <Button className="green-button mr-2" style={styles.editImageBtn}>
           Edit image
         </Button>
         <div
           className="d-flex justify-content-center flex-column align-items-center"
-          style={{ position: "absolute", bottom: "10%" }}
+          style={{ position: "absolute", bottom: "-10%" }}
         >
           <div style={{ position: "relative", marginBottom: 8 }}>
             <Avatar src={avatarUrl} size={150} style={styles.avatar} />
-            <Button type="primary" shape="circle" style={styles.editAvatarBtn}>
+            <Button
+              className="green-button"
+              shape="circle"
+              style={styles.editAvatarBtn}
+            >
               <FaCamera />
             </Button>
           </div>
