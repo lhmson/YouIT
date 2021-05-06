@@ -9,6 +9,7 @@ import UserResultSearchPage from "./UserResultSearch/UserResultSearchPage";
 import GroupPage from "./GroupPage/GroupPage";
 import GroupAboutPage from "./GroupAboutPage/GroupAboutPage";
 import RequestsInGroupsPage from "./RequestsInGroupsPage/RequestsInGroupsPage";
+import CreateAGroupPage from "./CreateAGroupPage/CreateAGroupPage";
 
 export {
   AboutPage,
@@ -22,4 +23,5 @@ export {
   GroupPage,
   GroupAboutPage,
   RequestsInGroupsPage,
+  CreateAGroupPage,
 };

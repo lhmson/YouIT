@@ -18,6 +18,7 @@ import {
   GroupPage,
   GroupAboutPage,
   RequestsInGroupsPage,
+  CreateAGroupPage,
 } from "./pages/index";
 
 import FriendMangementPage from "./pages/FriendMangementPage/FriendMangementPage";
@@ -39,6 +40,7 @@ function App() {
         <Route path="/group" exact component={GroupPage} />
         <Route path="/group/about" component={GroupAboutPage} />
         <Route path="/friends" component={FriendMangementPage}></Route>
+        <Route path="/createagroup" component={CreateAGroupPage} />
       </Switch>
     </div>
   );

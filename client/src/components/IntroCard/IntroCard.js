@@ -14,7 +14,7 @@ import {
 import { Form, Input, Button, Checkbox, Upload, Typography } from "antd";
 import styles from "./styles.js";
 import { Layout } from "antd";
-
+import { Link } from "react-router-dom";
 const { Header, Footer, Sider, Content } = Layout;
 // function InfoCard() {
 //   const [selectedItem, setSelectedItem] = useState("1");
@@ -66,9 +66,11 @@ const IntroCard = (props) => {
         />
       </div>
       <div className="row">
-        <Button type="primary" style={styles.editinfo}>
-          Edit
-        </Button>
+        <Link to="/userinfo/about">
+          <Button type="primary" style={styles.editinfo}>
+            Edit
+          </Button>
+        </Link>
       </div>
     </div>
     // <Layout style={{ backgroundColor: "white", width: 350, height: 350 }}>
