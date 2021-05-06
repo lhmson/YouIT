@@ -24,9 +24,6 @@ import moment from "moment";
 import { useDispatch } from "react-redux";
 import { likePost, deletePost } from "../../../redux/actions/posts";
 import COLOR from "../../../constants/colors";
-import Comment from "../../Comment/Comment";
-import CommentForm from "../../CommentForm/CommentForm";
-import { getComments } from "../../../redux/actions/comments";
 
 const { Title, Text, Paragraph, Link } = Typography;
 const { TextArea } = Input;
@@ -61,7 +58,7 @@ function FullPost(props) {
                     strong
                     style={{ fontSize: "1.2rem" }}
                   >
-                    {post?.creator}
+                    {post?.userId?.name}
                   </Text>
                   <CaretRightOutlined
                     style={{ fontSize: 18, paddingBottom: 5 }}
@@ -85,7 +82,7 @@ function FullPost(props) {
             </div>
             <div className="mr-4">
               <Text className="clickable" underline type="secondary">
-                Posted {post?.createdAt.toString().slice(0, 10)}
+                Last edited {post?.updatedAt.toString().slice(0, 10)}
               </Text>
             </div>
 
@@ -102,7 +99,7 @@ function FullPost(props) {
         <div>
           <Title level={2}>{post?.title}</Title>
           <div className="pb-2">
-            <Paragraph>{post?.message}</Paragraph>
+            <Paragraph>{post?.content}</Paragraph>
           </div>
         </div>
         <Row className="justify-content-between mb-4">

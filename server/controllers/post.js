@@ -27,7 +27,14 @@ export const getAPost = async (req, res) => {
   const { id } = req.params;
 
   try {
-    const post = await Post.findById(id);
+    const post = await Post.findById(id)
+      .populate("userId")
+      .then((post) => {
+        return res.status(200).json("yey");
+      })
+      .catch((err) => {
+        return res.status(404).json(`Cannot find a post with id: ${id}`);
+      });
 
     if (!post)
       return res
@@ -55,6 +62,7 @@ export const createPost = async (req, res) => {
     ...post,
     userId: req.userId,
   });
+  console.log("userid", req.userId);
 
   try {
     console.log(newPost);
@@ -250,21 +258,36 @@ export const getPostsPagination = async (req, res) => {
   }
 };
 
+export const getAPost = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const post = await Post.findById(id)
+      .populate("userId", "name")
+      .then((post) => {
+        return res.status(200).json(post);
+      })
+      .catch((err) => {
+        return res.status(404).json(`Cannot find a post with id: ${id}`);
+      });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
 export const getOtherPosts = async (req, res) => {
   const { id } = req.params;
   try {
     const excludedPost = await Post.findById(id);
     if (!excludedPost) {
-      res.status(404).json({ message: error.message });
+      res.status(404).json("Invalid ID");
       return;
     }
-    const posts = await (await Post.find())
-      .filter(
-        (p) =>
-          p.creatorId.equals(excludedPost.creatorId) &&
-          !p._id.equals(excludedPost._id)
-      )
-      .slice(0, 5);
+    const posts = await (await Post.find()).filter(
+      (p) =>
+        p.userId.toString() === excludedPost.userId.toString() &&
+        p._id.toString() !== excludedPost._id.toString()
+    );
     res.status(200).json(posts);
   } catch (error) {
     res.status(500).json({ message: error.message });

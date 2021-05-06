@@ -4,6 +4,8 @@ import mongoose from "mongoose";
 import Post from "../models/post.js";
 import Comment from "../models/comment.js";
 
+import { httpStatusCodes } from "../utils/httpStatusCode.js";
+
 export const createComment = async (req, res) => {
   const { id } = req.params;
   if (!mongoose.Types.ObjectId.isValid(id)) {
@@ -12,15 +14,41 @@ export const createComment = async (req, res) => {
   const comment = new Comment(req.body);
   comment.userId = req.userId;
   await comment.save();
-  await Post.findById(id)
-    .then((post) => {
-      post.comments.push(comment._id);
-      post.save();
-      res.status(201).json(post);
-    })
-    .catch((error) => {
-      res.status(500).json({ message: error.message });
-    });
+  try {
+    await Post.findById(id)
+      .then((post) => {
+        post.comments.push(comment._id);
+        post.save();
+        res.status(201).json(post);
+      })
+      .catch((error) => {
+        res.status(404).json({ message: error.message });
+      });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+export const replyComment = async (req, res) => {
+  const { postId, commentId } = req.params;
+  const { userID } = req;
+  try {
+    const comment = new Comment(req.body);
+    comment.userId = userID;
+    comment.quotedCommentId = commentId;
+    if (!comment) return res.status(400).json({ message: err.message });
+    await comment.save();
+
+    await Post.findById(postId)
+      .then((post) => {
+        post.comments.push(comment._id);
+        post.save();
+        res.status(201).json(comment);
+      })
+      .catch((error) => {
+        res.status(404).json({ message: error.message });
+      });
+  } catch (error) {}
 };
 
 export const getComments = async (req, res) => {
@@ -32,7 +60,18 @@ export const getComments = async (req, res) => {
     .populate({
       path: "comments",
       populate: {
+        path: "userId",
+        select: "name",
+      },
+    })
+    .populate({
+      path: "comments",
+      populate: {
         path: "quotedCommentId",
+        populate: {
+          path: "userId",
+          select: "name",
+        },
       },
     })
     .then(
@@ -44,4 +83,58 @@ export const getComments = async (req, res) => {
         res.status(500).json({ message: err.message });
       }
     );
+};
+
+export const editComment = async (req, res) => {
+  const { id, commentId } = req.params;
+  const { userId } = req;
+  try {
+    if (!userId) {
+      return res
+        .status(httpStatusCodes.unauthorized)
+        .json({ message: "Unauthenticated" });
+    }
+    await Post.findById(id).catch((err) => {
+      return res.status(404).json({ message: err.message });
+    });
+    await Comment.findByIdAndUpdate(
+      commentId,
+      {
+        content: req.body.content,
+      },
+      { new: true }
+    )
+      .then((comment) => {
+        return res.status(200).json(comment);
+      })
+      .catch((err) => {
+        return res.status(404).json({ message: err.message });
+      });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+export const deleteComment = async (req, res) => {
+  const { id, commentId } = req.params;
+  const { userId } = req;
+  try {
+    if (!userId) {
+      return res
+        .status(httpStatusCodes.unauthorized)
+        .json({ message: "Unauthenticated" });
+    }
+    await Post.findById(id).catch((err) => {
+      return res.status(404).json({ message: err.message });
+    });
+    await Comment.findByIdAndDelete(commentId)
+      .then((comment) => {
+        return res.status(200).json(comment);
+      })
+      .catch((err) => {
+        return res.status(404).json({ message: err.message });
+      });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
 };

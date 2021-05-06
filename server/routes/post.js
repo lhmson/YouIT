@@ -19,7 +19,13 @@ import {
   unfollowPost,
 } from "../controllers/post.js";
 
-import { createComment, getComments } from "../controllers/comment.js";
+import {
+  createComment,
+  getComments,
+  editComment,
+  deleteComment,
+  replyComment,
+} from "../controllers/comment.js";
 
 import auth from "../middleware/auth.js";
 
@@ -30,12 +36,13 @@ router.get("/", getPostsPagination);
 // router.get("/", getPosts);
 router.get("/:id", getAPost);
 router.get("/:id/others", getOtherPosts);
-router.get("/:id/comment/list/all", getComments);
+router.get("/:id/comment", getComments);
 router.get("/list/all", getPosts);
 router.get("/:id/myInteractions/", auth, getMyPostInteractions);
 
 router.post("/", auth, createPost);
 router.post("/:id/comment", auth, createComment);
+router.post("/:postId/comment/:commentId", auth, replyComment);
 
 router.put("/:id", auth, updatePost);
 router.put("/:id/likePost", auth, likePost);
@@ -46,7 +53,9 @@ router.put("/:id/hide", auth, hidePost);
 router.put("/:id/unhide", auth, unhidePost);
 router.put("/:id/follow", auth, followPost);
 router.put("/:id/unfollow", auth, unfollowPost);
+router.put("/:id/comment/:commentId", auth, editComment);
 
 router.delete("/:id", auth, deletePost);
+router.delete("/:id/comment/:commentId", auth, deleteComment);
 
 export default router;
