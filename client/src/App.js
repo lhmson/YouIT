@@ -3,6 +3,7 @@ import styles from "./styles.js";
 import { Switch, Route } from "react-router-dom";
 
 import Navbar from "./components/Navbar/Navbar";
+
 import WallPage from "./pages/WallPage/WallPage";
 
 import {
@@ -17,6 +18,8 @@ import {
   GroupPage,
   GroupAboutPage,
 } from "./pages/index";
+
+import FriendMangementPage from "./pages/FriendMangementPage/FriendMangementPage";
 
 function App() {
   return (
@@ -33,6 +36,7 @@ function App() {
         <Route path="/userinfo/about" component={AboutPage} />
         <Route path="/group" exact component={GroupPage} />
         <Route path="/group/about" component={GroupAboutPage} />
+        <Route path="/friends" component={FriendMangementPage}></Route>
       </Switch>
     </div>
   );
