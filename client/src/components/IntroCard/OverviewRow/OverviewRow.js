@@ -10,8 +10,8 @@ const OverviewRow = (props) => {
     <>
       <div className="container" style={styles.whiteBackground}>
         <div className="row">
-          <div className="col-3">{props.firstIcon}</div>
-          <div className="auto"> {props.text}</div>
+          <div className="col-md-2">{props.firstIcon}</div>
+          <div className="col-md-10"> {props.text}</div>
         </div>
 
         {/* <div className="row" style={{ alignItems: "center" }}>

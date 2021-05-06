@@ -26,10 +26,6 @@ const IntroCard = (props) => {
     return <IoHome style={styles.icon} />;
   };
 
-  const AiFillHeartIcon = () => {
-    return <AiFillHeart style={styles.icon} />;
-  };
-
   return (
     <div style={styles.backgroundheader}>
       <div className="row">
@@ -37,12 +33,12 @@ const IntroCard = (props) => {
       </div>
       <div className="row" style={styles.lineinfo}>
         <OverviewRow
-          firstIcon={schoolIcon()}
+          firstIcon={<IoSchoolSharp style={styles.icon}/>}
           text="Went to Truong THPT Gia Dinh"
         />
 
         <OverviewRow
-          firstIcon={homeIcon()}
+          firstIcon={<MdLocationOn style={styles.icon} />}
           text="Lives in Ho Chi Minh City, Vietnam"
         />
         <OverviewRow
@@ -50,7 +46,7 @@ const IntroCard = (props) => {
           text="From Ho Chi Minh City, Vietnam"
         />
         <OverviewRow
-          firstIcon={schoolIcon()}
+          firstIcon={<MdLocationOn style={styles.icon} />}
           text="Went to Truong THPT Gia Dinh"
         />
         <OverviewRow
@@ -59,7 +55,7 @@ const IntroCard = (props) => {
         />
         <OverviewRow
           firstIcon={<AiOutlineInstagram style={styles.icon} />}
-          text="hellangel_kimthao_108"
+          text="hell_angel_108"
         />
       </div>
     </div>

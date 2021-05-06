@@ -30,7 +30,9 @@ import { PresetColorTypes } from "antd/lib/_util/colors";
 import RelatedCard from "../../components/RelatedCard/RelatedCard.js";
 import FixedRightPanel from "../../components/FixedRightPanel/FixedRightPanel.js";
 import * as postsApi from "../../api/post";
-import * as commentsApi from "../../api/comments";
+import * as commentsApi from "../../api/comment";
+import CommentForm from "../../components/CommentForm/CommentForm.js";
+import Comment from "../../components/Comment/Comment.js";
 
 const { SubMenu } = Menu;
 const { Header, Content, Sider } = Layout;
@@ -41,29 +43,33 @@ function SpecificPost(props) {
   const [post, setPost] = useState(null);
   const [comments, setComments] = useState(null);
   const [otherPosts, setOtherPosts] = useState(null);
+  const dispatch = useDispatch();
+  const fetchPost = async () => {
+    const { data } = await postsApi.fetchAPost(id);
+    setPost(data);
+  };
+  const fetchOtherPosts = async () => {
+    const { data } = await postsApi.fetchOtherPosts(id);
+    setOtherPosts(data);
+  };
+  const fetchComments = async () => {
+    const { data } = await commentsApi.fetchComments(id);
+    console.log("fetchcomment", data);
+    setComments(data);
+  };
   useEffect(() => {
-    const fetchPost = async () => {
-      const { data } = await postsApi.fetchAPost(id);
-      setPost(data);
-    };
-    const fetchOtherPosts = async () => {
-      const { data } = await postsApi.fetchOtherPosts(id);
-      setOtherPosts(data);
-    };
-    const fetchComments = async () => {
-      const { data } = await commentsApi.fetchComments(id);
-      setComments(data);
-    };
     fetchPost();
     fetchOtherPosts();
     fetchComments();
   }, []);
 
-  const dispatch = useDispatch();
-
   useEffect(() => {
     dispatch(getPosts());
   }, [dispatch]);
+
+  const handleSubmit = () => {
+    fetchComments();
+  };
   return (
     <>
       <Layout>
@@ -71,7 +77,13 @@ function SpecificPost(props) {
         <Layout style={styles.mainArea}>
           <Content>
             <div className="mr-4  ">
-              <FullPost post={post} comments={comments} />
+              <Card style={{ padding: 16 }}>
+                <FullPost post={post} />
+                <CommentForm postId={post?._id} onSubmit={handleSubmit} />
+                {comments?.map((c) => (
+                  <Comment comment={c} />
+                ))}
+              </Card>
             </div>
           </Content>
           <FixedRightPanel>
