@@ -29,6 +29,10 @@ const styles = {
     width: 350,
     height: 350,
   },
+  editinfo: {
+    width: 200,
+    marginLeft: 90,
+  },
 };
 
 export default styles;

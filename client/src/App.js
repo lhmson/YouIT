@@ -17,6 +17,7 @@ import {
   AboutPage,
   GroupPage,
   GroupAboutPage,
+  RequestsInGroupsPage,
 } from "./pages/index";
 
 import FriendMangementPage from "./pages/FriendMangementPage/FriendMangementPage";
@@ -32,6 +33,7 @@ function App() {
         <Route path="/userinfo" exact component={UserInfoPage} />
         <Route path="/post/:id" component={SpecificPost} />
         <Route path="/search" component={UserResultSearchPage} />
+        <Route path="/requests" component={RequestsInGroupsPage} />
         <Route path="/wall" component={WallPage} />
         <Route path="/userinfo/about" component={AboutPage} />
         <Route path="/group" exact component={GroupPage} />

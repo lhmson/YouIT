@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import OverviewRow from "../IntroCard/OverviewRow/OverviewRow.js";
+import { useSelector } from "react-redux";
 
 import {
   IoSchoolSharp,
@@ -26,6 +27,13 @@ const IntroCard = (props) => {
     return <IoHome style={styles.icon} />;
   };
 
+  const user = useSelector((state) => state.user);
+
+  const dateOfBirth = user?.userInfo?.dateOfBirth;
+  const address = user?.userInfo?.address ?? "Quang Nam, Viet Nam";
+  const workLocation = user?.userInfo?.workLocation ?? "Quang Nam, Viet Nam";
+  const Education =
+    user?.userInfo?.Education ?? "Trường ĐH Công nghệ Thông tin";
   return (
     <div style={styles.backgroundheader}>
       <div className="row">
@@ -33,30 +41,34 @@ const IntroCard = (props) => {
       </div>
       <div className="row" style={styles.lineinfo}>
         <OverviewRow
-          firstIcon={<IoSchoolSharp style={styles.icon}/>}
-          text="Went to Truong THPT Gia Dinh"
-        />
-
-        <OverviewRow
-          firstIcon={<MdLocationOn style={styles.icon} />}
-          text="Lives in Ho Chi Minh City, Vietnam"
+          firstIcon={<IoSchoolSharp style={styles.icon} />}
+          text={Education}
         />
         <OverviewRow
-          firstIcon={<MdLocationOn style={styles.icon} />}
-          text="From Ho Chi Minh City, Vietnam"
+          firstIcon={<IoSchoolSharp style={styles.icon} />}
+          text={Education}
         />
         <OverviewRow
           firstIcon={<MdLocationOn style={styles.icon} />}
-          text="Went to Truong THPT Gia Dinh"
+          text={workLocation}
+        />
+        <OverviewRow
+          firstIcon={<MdLocationOn style={styles.icon} />}
+          text={workLocation}
         />
         <OverviewRow
           firstIcon={<AiFillHeart style={styles.icon} />}
-          text="Single"
+          text={workLocation}
         />
         <OverviewRow
           firstIcon={<AiOutlineInstagram style={styles.icon} />}
-          text="hell_angel_108"
+          text={workLocation}
         />
+      </div>
+      <div className="row">
+        <Button type="primary" style={styles.editinfo}>
+          Edit
+        </Button>
       </div>
     </div>
     // <Layout style={{ backgroundColor: "white", width: 350, height: 350 }}>
