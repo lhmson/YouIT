@@ -58,7 +58,7 @@ function FullPost(props) {
                     strong
                     style={{ fontSize: "1.2rem" }}
                   >
-                    {post?.userId.name}
+                    {post?.userId?.name}
                   </Text>
                   <CaretRightOutlined
                     style={{ fontSize: 18, paddingBottom: 5 }}
@@ -82,7 +82,7 @@ function FullPost(props) {
             </div>
             <div className="mr-4">
               <Text className="clickable" underline type="secondary">
-                Posted {post?.createdAt.toString().slice(0, 10)}
+                Last edited {post?.updatedAt.toString().slice(0, 10)}
               </Text>
             </div>
 

@@ -19,6 +19,7 @@ import {
   getComments,
   editComment,
   deleteComment,
+  replyComment,
 } from "../controllers/comment.js";
 
 import auth from "../middleware/auth.js";
@@ -35,6 +36,7 @@ router.get("/list/all", getPosts);
 
 router.post("/", auth, createPost);
 router.post("/:id/comment", auth, createComment);
+router.post("/:postId/comment/:commentId", auth, replyComment);
 
 router.put("/:id", auth, updatePost);
 router.put("/:id/likePost", auth, likePost);

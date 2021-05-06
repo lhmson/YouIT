@@ -13,6 +13,7 @@ import {
   Card,
   Tag,
   Space,
+  Divider,
 } from "antd";
 import {
   UserOutlined,
@@ -43,7 +44,6 @@ function SpecificPost(props) {
   const [post, setPost] = useState(null);
   const [comments, setComments] = useState(null);
   const [otherPosts, setOtherPosts] = useState(null);
-  const [inputComment, setInputComment] = useState(null);
   const fetchPost = async () => {
     const { data } = await postsApi.fetchAPost(id);
     setPost(data);
@@ -63,8 +63,13 @@ function SpecificPost(props) {
     fetchComments();
   }, []);
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (inputComment) => {
     await commentsApi.createComment(post._id, inputComment);
+    fetchComments();
+  };
+
+  const handleReplySubmit = async (commentId, inputComment) => {
+    await commentsApi.replyComment(post._id, commentId, inputComment);
     fetchComments();
   };
 
@@ -77,13 +82,13 @@ function SpecificPost(props) {
             <div className="mr-4  ">
               <Card style={{ padding: 16 }}>
                 <FullPost post={post} />
-                <CommentForm
-                  setInputComment={setInputComment}
-                  inputComment={inputComment}
-                  onSubmit={handleSubmit}
-                />
+                <CommentForm onSubmit={handleSubmit} />
+                <Title className="mb-4" level={2}>
+                  {`Comments (${comments?.length})`}
+                </Title>
+
                 {comments?.map((c) => (
-                  <Comment comment={c} />
+                  <Comment comment={c} onReplySubmit={handleReplySubmit} />
                 ))}
               </Card>
             </div>

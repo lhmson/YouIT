@@ -14,15 +14,41 @@ export const createComment = async (req, res) => {
   const comment = new Comment(req.body);
   comment.userId = req.userId;
   await comment.save();
-  await Post.findById(id)
-    .then((post) => {
-      post.comments.push(comment._id);
-      post.save();
-      res.status(201).json(post);
-    })
-    .catch((error) => {
-      res.status(500).json({ message: error.message });
-    });
+  try {
+    await Post.findById(id)
+      .then((post) => {
+        post.comments.push(comment._id);
+        post.save();
+        res.status(201).json(post);
+      })
+      .catch((error) => {
+        res.status(404).json({ message: error.message });
+      });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+export const replyComment = async (req, res) => {
+  const { postId, commentId } = req.params;
+  const { userID } = req;
+  try {
+    const comment = new Comment(req.body);
+    comment.userId = userID;
+    comment.quotedCommentId = commentId;
+    if (!comment) return res.status(400).json({ message: err.message });
+    await comment.save();
+
+    await Post.findById(postId)
+      .then((post) => {
+        post.comments.push(comment._id);
+        post.save();
+        res.status(201).json(comment);
+      })
+      .catch((error) => {
+        res.status(404).json({ message: error.message });
+      });
+  } catch (error) {}
 };
 
 export const getComments = async (req, res) => {
@@ -34,7 +60,18 @@ export const getComments = async (req, res) => {
     .populate({
       path: "comments",
       populate: {
+        path: "userId",
+        select: "name",
+      },
+    })
+    .populate({
+      path: "comments",
+      populate: {
         path: "quotedCommentId",
+        populate: {
+          path: "userId",
+          select: "name",
+        },
       },
     })
     .then(

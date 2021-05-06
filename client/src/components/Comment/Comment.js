@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   Card,
   Avatar,
@@ -22,13 +22,21 @@ import {
 import styles from "./styles";
 import COLOR from "../../constants/colors";
 import CommentForm from "../CommentForm/CommentForm";
+import ReplyCommentForm from "../CommentForm/ReplyCommentForm/ReplyCommentForm";
 
 const { Title, Text, Paragraph, Link } = Typography;
 
-function Comment(props) {
-  const { comment: commentData } = props;
+function Comment({ comment, onReplySubmit }) {
+  const [isReply, setIsReply] = useState(false);
   const handleMore = () => {
     alert("more");
+  };
+  const handleReply = () => {
+    setIsReply(1 - isReply);
+    console.log("comment", comment);
+  };
+  const handleSubmit = (inputComment) => {
+    onReplySubmit(comment?._id, inputComment);
   };
 
   return (
@@ -51,7 +59,7 @@ function Comment(props) {
                   strong
                   style={{ fontSize: "1.2rem" }}
                 >
-                  Quản Tiến Nghĩa
+                  {comment?.userId?.name}
                 </Text>
               </Space>
             </Row>
@@ -61,7 +69,7 @@ function Comment(props) {
         <Row className="justify-content-end align-items-center pb-3">
           <div className="mr-4">
             <Text className="clickable" underline type="secondary">
-              Post 5 days ago
+              Last edited {comment?.updatedAt.toString().slice(0, 10)}
             </Text>
           </div>
           <div className="clickable" onClick={handleMore}>
@@ -69,25 +77,30 @@ function Comment(props) {
           </div>
         </Row>
       </Row>
-      <div className="p-4 mb-3" style={{ backgroundColor: COLOR.whiteSmoke }}>
-        <Row style={{ justifyContent: "space-between", alignItems: "center" }}>
-          <a className="black bold clickable" strong>
-            {`Lương Lý Công Thắng's comment`}
-          </a>
-          <Text className="clickable" underline type="secondary">
-            7 days ago
-          </Text>
-        </Row>
-        <Paragraph style={{ color: COLOR.gray, marginBottom: 0 }}>
-          Facade pattern có lẽ là pattern đơn giản nhất.
-        </Paragraph>
-        <br />
-        <a className="clickable green bold" href="#" target="_blank" strong>
-          See full comment
-        </a>
-      </div>
+      {comment?.quotedCommentId ? (
+        <div className="p-3 mb-3" style={{ backgroundColor: COLOR.whiteSmoke }}>
+          <Row
+            style={{ justifyContent: "space-between", alignItems: "center" }}
+          >
+            <a className="black bold clickable" strong>
+              {`${comment?.quotedCommentId?.userId?.name}'s comment`}
+            </a>
+            <Text className="clickable" underline type="secondary">
+              Last edited{" "}
+              {comment?.quotedCommentId?.updatedAt?.toString().slice(0, 10)}
+            </Text>
+          </Row>
+          <Paragraph style={{ color: COLOR.gray, marginBottom: 0 }}>
+            {comment?.quotedCommentId?.content}
+          </Paragraph>
+          {/* <br />
+          <a className="clickable green bold" href="#" target="_blank" strong>
+            See full comment
+          </a> */}
+        </div>
+      ) : null}
       <div className="pb-2">
-        <Paragraph>{commentData?.content}</Paragraph>
+        <Paragraph>{comment?.content}</Paragraph>
       </div>
       <Row className="justify-content-between mb-4">
         <Row>
@@ -97,7 +110,11 @@ function Comment(props) {
               <Text strong>150</Text>
               <ArrowDownOutlined className="clickable icon" />
             </Space>
-            <Text className="clickable" strong>{`Reply`}</Text>
+            <Text
+              onClick={handleReply}
+              className="clickable"
+              strong
+            >{`Reply`}</Text>
           </Space>
         </Row>
         <Row>
@@ -106,7 +123,12 @@ function Comment(props) {
           </Space>
         </Row>
       </Row>
-      <CommentForm />
+      {isReply ? (
+        <ReplyCommentForm
+          onSubmit={handleSubmit}
+          targetName={comment?.userId?.name}
+        />
+      ) : null}
       <Divider />
     </div>
   );
