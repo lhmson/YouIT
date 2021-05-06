@@ -8,6 +8,7 @@ import { useDispatch } from "react-redux";
 import { getPosts } from "../../../redux/actions/posts";
 import MemberRequest from "../../../components/MemberRequest/MemberRequest";
 import MemberRequests from "../../../components/MemberRequests/MemberRequests";
+import PostRequests from "../../../components/PostRequests/PostRequests";
 
 const { Content } = Layout;
 const { Title, Text } = Typography;
@@ -27,7 +28,7 @@ const SearchPostResult = () => {
       >
         <div className="col-10 offset-1">
           <MemberRequest></MemberRequest>
-          <MemberRequest></MemberRequest>
+          <PostRequests></PostRequests>
           <MemberRequests></MemberRequests>
         </div>
       </div>
