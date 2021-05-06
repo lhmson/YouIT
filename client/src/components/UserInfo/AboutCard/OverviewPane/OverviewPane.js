@@ -14,6 +14,7 @@ import {
 import OverviewRow from "../OverviewRow/OverviewRow.js";
 import styles from "./styles.js";
 import EditableTimePeriod from "./EditableTimePeriod/EditableTimePeriod.js";
+import EditableText from "./EditableText/EditableText.js";
 
 const OverviewPane = () => {
   const user = useSelector((state) => state.user);
@@ -37,15 +38,15 @@ const OverviewPane = () => {
         subText="Attended from 2015 to 2018"
         placeholder="School"
       />
-      <OverviewRow
+      <EditableText
         firstIcon={<IoHome style={styles.icon} />}
         text={address}
-        lastIcon={<BsThreeDots style={styles.icon} />}
+        placeholder="Current city"
       />
-      <OverviewRow
+      <EditableText
         firstIcon={<MdLocationOn style={styles.icon} />}
         text={workLocation}
-        lastIcon={<BsThreeDots style={styles.icon} />}
+        placeholder="Hometown"
       />
       <OverviewRow
         firstIcon={<FaMale style={styles.icon} />}
