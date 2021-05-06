@@ -36,6 +36,7 @@ import ListButtons from "./UserInfo/ListButtons/ListButtons";
 import AdminGroupSidebar from "./Sidebar/AdminGroupSidebar/AdminGroupSidebar";
 import CoverPhoto from "./GroupPage/CoverPhoto/CoverPhoto";
 import GroupBasicInfo from "./GroupPage/GroupBasicInfo/GroupBasicInfo";
+import GroupAboutCard from "./GroupPage/GroupAboutCard/GroupAboutCard";
 
 export {
   SignInForm,
@@ -68,4 +69,5 @@ export {
   AdminGroupSidebar,
   CoverPhoto,
   GroupBasicInfo,
+  GroupAboutCard,
 };
