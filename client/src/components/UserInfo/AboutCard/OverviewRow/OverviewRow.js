@@ -33,7 +33,6 @@ const OverviewRow = (props) => {
               justifyContent: "center",
             }}
           >
-            {props.privacyIcon}
             {props.lastIcon}
           </div>
         </div>

@@ -28,43 +28,34 @@ const OverviewPane = () => {
   // };
   //const dateOfBirth = Number(moment(d).tz(timezone).format("YYYYMMDD"));
 
-  const publicIcon = () => {
-    return <MdPublic style={styles.icon} />;
-  };
-
   return (
     <div>
       <OverviewRow
         firstIcon={<IoSchoolSharp style={styles.icon} />}
         text="Went to Truong THPT Gia Dinh"
         subText="Attended from 2015 to 2018"
-        privacyIcon={publicIcon()}
         lastIcon={<BsThreeDots style={styles.icon} />}
       />
       <OverviewRow
         firstIcon={<IoHome style={styles.icon} />}
         text={address}
-        privacyIcon={publicIcon()}
         lastIcon={<BsThreeDots style={styles.icon} />}
       />
       <OverviewRow
         firstIcon={<MdLocationOn style={styles.icon} />}
         text={workLocation}
-        privacyIcon={publicIcon()}
         lastIcon={<BsThreeDots style={styles.icon} />}
       />
       <OverviewRow
         firstIcon={<FaMale style={styles.icon} />}
         text={user?.userInfo?.gender}
         subText="Gender"
-        privacyIcon={publicIcon()}
         lastIcon={<BsThreeDots style={styles.icon} />}
       />
       <OverviewRow
         firstIcon={<FaBirthdayCake style={styles.icon} />}
         text={dateOfBirth}
         subText="Birthday"
-        privacyIcon={publicIcon()}
         lastIcon={<BsThreeDots style={styles.icon} />}
       />
     </div>

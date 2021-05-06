@@ -1,6 +1,11 @@
 import React, { useState } from "react";
 import { Button, Divider, Typography, Menu, Layout } from "antd";
-import { FaLaptopCode, MdWork, GrOverview } from "react-icons/all";
+import {
+  FaLaptopCode,
+  MdWork,
+  GrOverview,
+  FaStackOverflow,
+} from "react-icons/all";
 
 import { OverviewPane, ProgrammingPane, WorkAndEducationPane } from "./index";
 import styles from "./styles.js";
@@ -66,7 +71,7 @@ function AboutCard() {
                   <Menu.Item
                     key="1"
                     style={styles.item}
-                    icon={<GrOverview style={styles.icon} />}
+                    icon={<FaStackOverflow style={styles.icon} />}
                     onClick={(e) => setSelectedItem(e.key)}
                   >
                     Overview
