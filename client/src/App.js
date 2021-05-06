@@ -2,6 +2,9 @@ import React from "react";
 import styles from "./styles.js";
 import { Switch, Route } from "react-router-dom";
 
+import Navbar from "./components/Navbar/Navbar";
+import WallPage from "./pages/WallPage/WallPage";
+
 import {
   MainPage,
   AuthPage,
@@ -26,6 +29,7 @@ function App() {
         <Route path="/userinfo" exact component={UserInfoPage} />
         <Route path="/posts/:id" component={SpecificPost} />
         <Route path="/search" component={UserResultSearchPage} />
+        <Route path="/wall" component={WallPage} />
         <Route path="/userinfo/about" component={AboutPage} />
         <Route path="/group" exact component={GroupPage} />
         <Route path="/group/about" component={GroupAboutPage} />
