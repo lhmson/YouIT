@@ -4,7 +4,7 @@ import { Avatar, Image, Tag } from "antd";
 import styles from "./styles.js";
 import COLOR from "../../constants/colors";
 import OverviewRow from "../IntroCard/OverviewRow/OverviewRow.js";
-
+import { useSelector } from "react-redux";
 import {
   IoSchoolSharp,
   IoHome,
@@ -24,8 +24,14 @@ const homeIcon = () => {
   return <IoHome style={styles.icon} />;
 };
 
-
 function MemberRequests() {
+  const user = useSelector((state) => state.user);
+
+  const dateOfBirth = user?.userInfo?.dateOfBirth;
+  const address = user?.userInfo?.address ?? "Quang Nam, Viet Nam";
+  const workLocation = user?.userInfo?.workLocation ?? "Quang Nam, Viet Nam";
+  const Education =
+    user?.userInfo?.Education ?? "Trường ĐH Công nghệ Thông tin";
   return (
     <>
       <div style={styles.card}>
@@ -110,7 +116,7 @@ function MemberRequests() {
           </div>
         </div>
 
-        <div className="row" style={{marginTop:10, marginLeft:0 }}>
+        <div className="row" style={{ marginTop: 10, marginLeft: 0 }}>
           {/* <Paragraph>
             Some word Lorem ipsum dolor sit amet, consectetur adipiscing elit,
             sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
@@ -132,26 +138,32 @@ function MemberRequests() {
             firstIcon={homeIcon()}
             text="Lives in Ho Chi Minh City, Vietnam"
           /> */}
-          <div className="col-7" style ={{marginTop:10}}>
-          <OverviewRow
-            firstIcon={<MdLocationOn style={styles.icon} />}
-            text="Em chỉ sợ rồi trời sẽ mưa"
-          />
-          <OverviewRow
-            firstIcon={<AiFillHeart style={styles.icon} />}
-            text="Xóa hết đi những gì anh hứa"
-          />
-           <OverviewRow
-          firstIcon={schoolIcon()}
-          text="Mây đen đến trời không còn xanh nữa"
-        />
-
-        <OverviewRow
-          firstIcon={homeIcon()}
-          text="Nắng không trong như nắng buổi ban đầu"
-        />
-            </div>
-
+          <div className="col-7" style={{ marginTop: 10 }}>
+            <OverviewRow
+              firstIcon={<IoSchoolSharp style={styles.icon} />}
+              text={Education}
+            />
+            <OverviewRow
+              firstIcon={<IoSchoolSharp style={styles.icon} />}
+              text={Education}
+            />
+            <OverviewRow
+              firstIcon={<MdLocationOn style={styles.icon} />}
+              text={workLocation}
+            />
+            <OverviewRow
+              firstIcon={<MdLocationOn style={styles.icon} />}
+              text={workLocation}
+            />
+            <OverviewRow
+              firstIcon={<AiFillHeart style={styles.icon} />}
+              text={workLocation}
+            />
+            <OverviewRow
+              firstIcon={<AiOutlineInstagram style={styles.icon} />}
+              text={workLocation}
+            />
+          </div>
         </div>
       </div>
     </>

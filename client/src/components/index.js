@@ -30,7 +30,6 @@ import UserCard from "./UserCard/UserCard";
 import AboutCard from "./UserInfo/AboutCard/AboutCard";
 import AvatarView from "./UserInfo/AvatarView/AvatarView";
 import FriendManager from "./UserInfo/FriendManager/FriendManager";
-import IntroCard from "./UserInfo/IntroCard/IntroCard";
 import ListButtons from "./UserInfo/ListButtons/ListButtons";
 
 import AdminGroupSidebar from "./Sidebar/AdminGroupSidebar/AdminGroupSidebar";
@@ -64,7 +63,6 @@ export {
   AboutCard,
   AvatarView,
   FriendManager,
-  IntroCard,
   ListButtons,
   AdminGroupSidebar,
   CoverPhoto,
