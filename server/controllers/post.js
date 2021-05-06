@@ -23,29 +23,21 @@ export const getPosts = async (req, res) => {
 };
 
 // GET post/:id
+
 export const getAPost = async (req, res) => {
   const { id } = req.params;
 
   try {
-    const post = await Post.findById(id)
-      .populate("userId")
+    await Post.findById(id)
+      .populate("userId", "name")
       .then((post) => {
-        return res.status(200).json("yey");
+        return res.status(200).json(post);
       })
       .catch((err) => {
         return res.status(404).json(`Cannot find a post with id: ${id}`);
       });
-
-    if (!post)
-      return res
-        .status(httpStatusCodes.notFound)
-        .json(`Cannot find a post with id: ${id}`);
-
-    return res.status(httpStatusCodes.ok).json(post);
   } catch (error) {
-    res
-      .status(httpStatusCodes.internalServerError)
-      .json({ message: error.message });
+    return res.status(500).json({ message: error.message });
   }
 };
 
@@ -255,23 +247,6 @@ export const getPostsPagination = async (req, res) => {
     return res.status(200).json(posts);
   } catch (error) {
     return res.status(500).send(error.message);
-  }
-};
-
-export const getAPost = async (req, res) => {
-  const { id } = req.params;
-
-  try {
-    const post = await Post.findById(id)
-      .populate("userId", "name")
-      .then((post) => {
-        return res.status(200).json(post);
-      })
-      .catch((err) => {
-        return res.status(404).json(`Cannot find a post with id: ${id}`);
-      });
-  } catch (error) {
-    return res.status(500).json({ message: error.message });
   }
 };
 

@@ -1,25 +1,25 @@
 import COLOR from "../../constants/colors";
 
 const styles = {
-  card : {
-    background : "white",
-    padding : 16,
-    margin : 16,
+  card: {
+    background: "white",
+    padding: 16,
+    margin: 16,
   },
-  tag : {
-    color : "#219653",
-    fontSize : 12,
+  tag: {
+    color: "#219653",
+    fontSize: 12,
     background: "#6FCF97",
     borderColor: "#6FCF97",
-    marginRight : 8,
+    marginRight: 8,
   },
-  text :{
-    fontweight : 300,
-    color : "#27AE60",
+  text: {
+    fontweight: 300,
+    color: "#27AE60",
   },
-  textUser : {
-    fontweight : 700,
-    fontSize : 20,
+  textUser: {
+    fontweight: 700,
+    fontSize: 20,
   },
 
   paleBackground: {
@@ -41,10 +41,8 @@ const styles = {
     marginTop: 64,
     left: 0,
   },
-   
-  button : {
 
-  },
+  button: {},
 };
 
 export default styles;

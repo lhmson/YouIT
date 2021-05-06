@@ -37,6 +37,7 @@ function Comment({ comment, onReplySubmit }) {
   };
   const handleSubmit = (inputComment) => {
     onReplySubmit(comment?._id, inputComment);
+    setIsReply(false);
   };
 
   return (

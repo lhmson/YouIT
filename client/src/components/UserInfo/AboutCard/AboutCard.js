@@ -43,14 +43,7 @@ function AboutCard() {
               display: "flex",
               justifyContent: "center",
             }}
-          >
-            <Button
-              type="primary"
-              style={{ margin: 8, width: 128, borderRadius: 4 }}
-            >
-              Edit
-            </Button>
-          </div>
+          ></div>
         </div>
         <Divider />
         <div style={{ height: 400, background: "white" }}>

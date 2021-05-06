@@ -31,10 +31,10 @@ export const createComment = async (req, res) => {
 
 export const replyComment = async (req, res) => {
   const { postId, commentId } = req.params;
-  const { userID } = req;
+  const { userId } = req;
   try {
     const comment = new Comment(req.body);
-    comment.userId = userID;
+    comment.userId = userId;
     comment.quotedCommentId = commentId;
     if (!comment) return res.status(400).json({ message: err.message });
     await comment.save();
