@@ -13,6 +13,7 @@ import {
 
 import OverviewRow from "../OverviewRow/OverviewRow.js";
 import styles from "./styles.js";
+import EditableTimePeriod from "./EditableTimePeriod/EditableTimePeriod.js";
 
 const OverviewPane = () => {
   const user = useSelector((state) => state.user);
@@ -30,11 +31,11 @@ const OverviewPane = () => {
 
   return (
     <div>
-      <OverviewRow
+      <EditableTimePeriod
         firstIcon={<IoSchoolSharp style={styles.icon} />}
         text="Went to Truong THPT Gia Dinh"
         subText="Attended from 2015 to 2018"
-        lastIcon={<BsThreeDots style={styles.icon} />}
+        placeholder="School"
       />
       <OverviewRow
         firstIcon={<IoHome style={styles.icon} />}
