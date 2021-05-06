@@ -1,6 +1,10 @@
 import express from "express";
 import mongoose from "mongoose";
-import { addInteraction, getInteractionOfAUser, removeInteraction } from "../businessLogics/post.js";
+import {
+  addInteraction,
+  getInteractionOfAUser,
+  removeInteraction,
+} from "../businessLogics/post.js";
 
 import Post from "../models/post.js";
 import { httpStatusCodes } from "../utils/httpStatusCode.js";
@@ -12,7 +16,9 @@ export const getPosts = async (req, res) => {
     const posts = await Post.find();
     return res.status(httpStatusCodes.ok).json(posts);
   } catch (error) {
-    return res.status(httpStatusCodes.internalServerError).json({ message: error.message });
+    return res
+      .status(httpStatusCodes.internalServerError)
+      .json({ message: error.message });
   }
 };
 
@@ -24,11 +30,15 @@ export const getAPost = async (req, res) => {
     const post = await Post.findById(id);
 
     if (!post)
-      return res.status(httpStatusCodes.notFound).json(`Cannot find a post with id: ${id}`);
+      return res
+        .status(httpStatusCodes.notFound)
+        .json(`Cannot find a post with id: ${id}`);
 
     return res.status(httpStatusCodes.ok).json(post);
   } catch (error) {
-    res.status(httpStatusCodes.internalServerError).json({ message: error.message });
+    res
+      .status(httpStatusCodes.internalServerError)
+      .json({ message: error.message });
   }
 };
 
@@ -47,10 +57,14 @@ export const createPost = async (req, res) => {
   });
 
   try {
+    console.log(newPost);
     await newPost.save();
+
     res.status(httpStatusCodes.created).json(newPost);
   } catch (error) {
-    res.status(httpStatusCodes.internalServerError).json({ message: error.message });
+    res
+      .status(httpStatusCodes.internalServerError)
+      .json({ message: error.message });
   }
 };
 
@@ -61,10 +75,14 @@ export const updatePost = async (req, res) => {
     const newPost = req.body;
 
     if (!newPost)
-      return res.status(httpStatusCodes.badContent).send(`New post information is required`);
+      return res
+        .status(httpStatusCodes.badContent)
+        .send(`New post information is required`);
 
     if (!Post.findById(id))
-      return res.status(httpStatusCodes.notFound).send(`Cannot find a post with id: ${id}`);
+      return res
+        .status(httpStatusCodes.notFound)
+        .send(`Cannot find a post with id: ${id}`);
 
     const updatedPost = {
       ...newPost,
@@ -74,7 +92,9 @@ export const updatePost = async (req, res) => {
     await Post.findByIdAndUpdate(id, updatedPost, { new: true });
     return res.status(httpStatusCodes.ok).json(updatedPost);
   } catch (error) {
-    return res.status(httpStatusCodes.internalServerError).json({ message: error.message });
+    return res
+      .status(httpStatusCodes.internalServerError)
+      .json({ message: error.message });
   }
 };
 
@@ -83,14 +103,25 @@ export const deletePost = async (req, res) => {
   const { id } = req.params;
 
   try {
+    // auth
+    if (!req.userId) {
+      return res.json({ message: "Unauthenticated" });
+    }
+
     if (!(await Post.findById(id))) {
-      return res.status(httpStatusCodes.notFound).send(`No post with id: ${id}`);
+      return res
+        .status(httpStatusCodes.notFound)
+        .send(`No post with id: ${id}`);
     }
 
     await Post.findByIdAndRemove(id);
-    res.status(httpStatusCodes.ok).json({ message: "Post deleted successfully." });
+    res
+      .status(httpStatusCodes.ok)
+      .json({ message: "Post deleted successfully." });
   } catch (error) {
-    res.status(httpStatusCodes.internalServerError).json({ message: error.message })
+    res
+      .status(httpStatusCodes.internalServerError)
+      .json({ message: error.message });
   }
 };
 //#endregion
@@ -104,7 +135,7 @@ export const getMyPostInteractions = async (req, res) => {
 
   try {
     // auth
-    const { userId } = req
+    const { userId } = req;
     if (!userId) {
       return res.json({ message: "Unauthenticated" });
     }
@@ -112,14 +143,16 @@ export const getMyPostInteractions = async (req, res) => {
     let filterJson = undefined;
     try {
       filterJson = JSON.parse(filter);
-    } catch { }
+    } catch {}
 
     const interactions = await getInteractionOfAUser(id, userId, filterJson);
     return res.status(httpStatusCodes.ok).json(interactions);
   } catch (error) {
-    return res.status(httpStatusCodes.internalServerError).json({ message: error.message });
+    return res
+      .status(httpStatusCodes.internalServerError)
+      .json({ message: error.message });
   }
-}
+};
 
 // currying function for different type of adding interaction, such as: upvote, downvote, follow, hide
 /**
@@ -130,19 +163,23 @@ const handleUpdateInteraction = (actions) => async (req, res) => {
 
   try {
     // auth
-    const { userId } = req
+    const { userId } = req;
     if (!userId) {
       return res.json({ message: "Unauthenticated" });
     }
 
     if (!mongoose.Types.ObjectId.isValid(id))
-      return res.status(httpStatusCodes.badContent).send(`post id ${id} is invalid`);
+      return res
+        .status(httpStatusCodes.badContent)
+        .send(`post id ${id} is invalid`);
 
     const post = await Post.findById(id);
     if (!post)
-      return res.status(httpStatusCodes.notFound).json(`Cannot find a post with id: ${id}`);
+      return res
+        .status(httpStatusCodes.notFound)
+        .json(`Cannot find a post with id: ${id}`);
 
-    let newPost = post
+    let newPost = post;
     actions.forEach((a) => {
       switch (a.actionType) {
         case "add":
@@ -152,46 +189,46 @@ const handleUpdateInteraction = (actions) => async (req, res) => {
           newPost = removeInteraction(newPost, userId, a.interactionType);
           break;
       }
-    })
+    });
 
     newPost = await Post.findByIdAndUpdate(id, newPost, { new: true });
     return res.status(httpStatusCodes.ok).json(newPost);
   } catch (error) {
     // return res.status(httpStatusCodes.internalServerError).json({ message: error.message });
-    throw error
+    throw error;
   }
 };
 
 export const unvotePost = handleUpdateInteraction([
   { actionType: "remove", interactionType: "upvote" },
-  { actionType: "remove", interactionType: "downvote" }
-])
+  { actionType: "remove", interactionType: "downvote" },
+]);
 
 export const upvotePost = handleUpdateInteraction([
   { actionType: "remove", interactionType: "downvote" },
-  { actionType: "add", interactionType: "upvote" }
-])
+  { actionType: "add", interactionType: "upvote" },
+]);
 
 export const downvotePost = handleUpdateInteraction([
   { actionType: "remove", interactionType: "upvote" },
-  { actionType: "add", interactionType: "downvote" }
-])
+  { actionType: "add", interactionType: "downvote" },
+]);
 
 export const hidePost = handleUpdateInteraction([
-  { actionType: "add", interactionType: "hide" }
-])
+  { actionType: "add", interactionType: "hide" },
+]);
 
 export const unhidePost = handleUpdateInteraction([
-  { actionType: "remove", interactionType: "hide" }
-])
+  { actionType: "remove", interactionType: "hide" },
+]);
 
 export const followPost = handleUpdateInteraction([
-  { actionType: "add", interactionType: "follow" }
-])
+  { actionType: "add", interactionType: "follow" },
+]);
 
 export const unfollowPost = handleUpdateInteraction([
-  { actionType: "remove", interactionType: "follow" }
-])
+  { actionType: "remove", interactionType: "follow" },
+]);
 //#endregion
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -212,8 +249,6 @@ export const getPostsPagination = async (req, res) => {
     return res.status(500).send(error.message);
   }
 };
-
-
 
 export const getOtherPosts = async (req, res) => {
   const { id } = req.params;

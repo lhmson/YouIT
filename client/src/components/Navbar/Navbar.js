@@ -103,7 +103,7 @@ function Navbar({ selectedMenu }) {
         </Avatar>
 
         <EllipsisOutlined
-          onClick={handleMore}
+          onClick={handleLogOut}
           style={{ fontSize: 24, color: COLOR.white }}
         />
       </Row>
