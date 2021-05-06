@@ -10,6 +10,8 @@ import {
   Space,
   Input,
   Divider,
+  Menu,
+  Dropdown,
 } from "antd";
 import { MdPublic } from "react-icons/md";
 import {
@@ -19,6 +21,8 @@ import {
   LinkOutlined,
   ShareAltOutlined,
   CaretRightOutlined,
+  DeleteFilled,
+  BellOutlined,
 } from "@ant-design/icons";
 import moment from "moment";
 import { useDispatch } from "react-redux";
@@ -28,12 +32,27 @@ import COLOR from "../../../constants/colors";
 const { Title, Text, Paragraph, Link } = Typography;
 const { TextArea } = Input;
 
+const menuMore = (
+  <Menu>
+    <Menu.Item key="0">
+      <Row align="middle">
+        <BellOutlined className="mr-2" />
+        <Text>Follow post</Text>
+      </Row>
+    </Menu.Item>
+    <Menu.Item key="1">
+      <Row align="middle">
+        <DeleteFilled className="red mr-2" />
+        <Text className="red">Delete post</Text>
+      </Row>
+    </Menu.Item>
+  </Menu>
+);
+
 function FullPost(props) {
   const { post } = props;
 
-  const handleMore = () => {
-    alert("more");
-  };
+  const handleMore = () => {};
 
   const tagList = ["Tag 1", "Tag 2", "Tag 3", "Tag 4", "Tag 5"];
 
@@ -85,10 +104,15 @@ function FullPost(props) {
                 Last edited {post?.updatedAt.toString().slice(0, 10)}
               </Text>
             </div>
-
-            <div className="clickable" onClick={handleMore}>
-              <EllipsisOutlined className="clickable icon" />
-            </div>
+            <Dropdown
+              overlay={menuMore}
+              trigger={["click"]}
+              placement="bottomRight"
+            >
+              <div className="clickable" onClick={handleMore}>
+                <EllipsisOutlined className="clickable icon" />
+              </div>
+            </Dropdown>
           </Row>
         </Row>
         <Row className="mb-1">

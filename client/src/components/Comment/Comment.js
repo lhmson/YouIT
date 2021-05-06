@@ -10,6 +10,8 @@ import {
   Space,
   Input,
   Divider,
+  Menu,
+  Dropdown,
 } from "antd";
 import {
   EllipsisOutlined,
@@ -18,19 +20,38 @@ import {
   LinkOutlined,
   ShareAltOutlined,
   CaretRightOutlined,
+  BellOutlined,
+  DeleteFilled,
+  EditOutlined,
 } from "@ant-design/icons";
 import styles from "./styles";
 import COLOR from "../../constants/colors";
 import CommentForm from "../CommentForm/CommentForm";
 import ReplyCommentForm from "../CommentForm/ReplyCommentForm/ReplyCommentForm";
+import { Link } from "react-router-dom";
 
-const { Title, Text, Paragraph, Link } = Typography;
+const { Title, Text, Paragraph } = Typography;
+
+const menuMore = (
+  <Menu>
+    <Menu.Item key="0">
+      <Row align="middle">
+        <EditOutlined className="mr-2" />
+        <Text>Edit comment</Text>
+      </Row>
+    </Menu.Item>
+    <Menu.Item key="1">
+      <Row align="middle">
+        <DeleteFilled className="red mr-2" />
+        <Text className="red">Delete comment</Text>
+      </Row>
+    </Menu.Item>
+  </Menu>
+);
 
 function Comment({ comment, onReplySubmit }) {
   const [isReply, setIsReply] = useState(false);
-  const handleMore = () => {
-    alert("more");
-  };
+  const handleMore = () => {};
   const handleReply = () => {
     setIsReply(1 - isReply);
     console.log("comment", comment);
@@ -73,9 +94,15 @@ function Comment({ comment, onReplySubmit }) {
               Last edited {comment?.updatedAt.toString().slice(0, 10)}
             </Text>
           </div>
-          <div className="clickable" onClick={handleMore}>
-            <EllipsisOutlined className="icon" />
-          </div>
+          <Dropdown
+            overlay={menuMore}
+            trigger={["click"]}
+            placement="bottomRight"
+          >
+            <div className="clickable" onClick={handleMore}>
+              <EllipsisOutlined className="clickable icon" />
+            </div>
+          </Dropdown>
         </Row>
       </Row>
       {comment?.quotedCommentId ? (
