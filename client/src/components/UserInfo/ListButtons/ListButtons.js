@@ -9,7 +9,7 @@ const ListButtons = () => {
   return (
     <div className="container" style={{ marginBottom: 32 }}>
       <div className="row">
-        <Link to="/userinfo" style={styles.linkView}>
+        <Link to="/wall" style={styles.linkView}>
           <Button style={styles.button}>Posts</Button>
         </Link>
         <Link to="/userinfo/about" style={styles.linkView}>
