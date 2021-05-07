@@ -19,6 +19,7 @@ import {
   GroupAboutPage,
   RequestsInGroupsPage,
   LoginPage,
+  RegisterPage,
 } from "./pages/index";
 
 import FriendMangementPage from "./pages/FriendMangementPage/FriendMangementPage";
@@ -31,6 +32,7 @@ function App() {
         <Route path="/feed" exact component={FeedPage} />
         <Route path="/auth" component={AuthPage} />
         <Route path="/login" component={LoginPage} />
+        <Route path="/register" component={RegisterPage} />
         <Route path="/post/create" component={CreatePostPage} />
         <Route path="/userinfo" exact component={UserInfoPage} />
         <Route path="/post/:id" component={SpecificPost} />

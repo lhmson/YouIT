@@ -10,6 +10,7 @@ import GroupPage from "./GroupPage/GroupPage";
 import GroupAboutPage from "./GroupAboutPage/GroupAboutPage";
 import RequestsInGroupsPage from "./RequestsInGroupsPage/RequestsInGroupsPage";
 import LoginPage from "./LoginPage/LoginPage";
+import RegisterPage from "./RegisterPage/RegisterPage";
 
 export {
   AboutPage,
@@ -24,4 +25,5 @@ export {
   GroupAboutPage,
   RequestsInGroupsPage,
   LoginPage,
+  RegisterPage,
 };

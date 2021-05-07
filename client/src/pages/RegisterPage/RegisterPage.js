@@ -9,20 +9,22 @@ import {
   Input,
   Form,
   Checkbox,
+  Select,
 } from "antd";
 import { FacebookFilled } from "@ant-design/icons";
 
-import { ReactComponent as ReactLogo } from "../../assets/login-bro.svg";
+import { ReactComponent as ReactLogo } from "../../assets/add-user.svg";
 import logo from "../../assets/lightlogo.png";
 
 import styles from "./styles";
 import { FaFacebookF, FaFacebookSquare } from "react-icons/fa";
 import { GrFacebook } from "react-icons/gr";
 import { SiGithub } from "react-icons/si";
+import { Option } from "antd/lib/mentions";
 
 const { Title, Text, Paragraph } = Typography;
 
-function LoginPage() {
+function RegisterPage() {
   const onFinish = (values) => {
     console.log("Success:", values);
   };
@@ -44,12 +46,12 @@ function LoginPage() {
             <Col span={12} style={{ paddingRight: 24, marginBottom: 24 }}>
               <Row>
                 <img src={logo} alt="Logo" height="58" className="mr-2" />
-                <Title style={{ marginBottom: 8 }}>Login</Title>
+                <Title style={{ marginBottom: 8 }}>Register</Title>
               </Row>
               <div style={{ marginBottom: 16 }}>
                 <Text>
-                  No account?{" "}
-                  <Text className="clickable green bold">Create one</Text>
+                  Already have an account?{" "}
+                  <Text className="clickable green bold">Sign in</Text>
                 </Text>
               </div>
               <Form
@@ -86,12 +88,51 @@ function LoginPage() {
                 >
                   <Input.Password placeholder="Password" />
                 </Form.Item>
-                <Row justify="space-between">
-                  <Form.Item name="remember" valuePropName="checked">
-                    <Checkbox>Remember me</Checkbox>
-                  </Form.Item>
-                  <Text className="clickable green mt-2">Forgot password?</Text>
-                </Row>
+
+                <Form.Item
+                  name="confirmPassword"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Password does not mach!",
+                    },
+                  ]}
+                  style={styles.formItem}
+                >
+                  <Input.Password placeholder="Confirm password" />
+                </Form.Item>
+                <Form.Item
+                  name="gender"
+                  style={styles.formItem}
+                  rules={[
+                    {
+                      required: true,
+                      message: "Gender is required",
+                    },
+                  ]}
+                >
+                  <Select
+                    size="large"
+                    placeholder="Sex"
+                    // onChange={handleChange}
+                  >
+                    <Option value="others">Rather not to say</Option>
+                    <Option value="male">Male</Option>
+                    <Option value="female">Female</Option>
+                  </Select>
+                </Form.Item>
+                <Form.Item
+                  name="phone"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Invalid phone number",
+                    },
+                  ]}
+                  style={styles.formItem}
+                >
+                  <Input placeholder="Phone number" />
+                </Form.Item>
 
                 <Form.Item style={styles.formItem}>
                   <Button
@@ -102,42 +143,6 @@ function LoginPage() {
                     Sign in
                   </Button>
                 </Form.Item>
-                <div
-                  className="d-flex justify-content-center"
-                  style={styles.formItem}
-                >
-                  <Text>Or login with</Text>
-                </div>
-                <Row>
-                  <Col span={12} style={{ paddingRight: 8 }}>
-                    <Button
-                      className="facebook-container"
-                      htmlType="submit"
-                      icon={
-                        <GrFacebook
-                          style={{ marginBottom: 2.5, marginRight: 12 }}
-                        />
-                      }
-                      style={{ width: "100%" }}
-                    >
-                      Facebook
-                    </Button>
-                  </Col>
-                  <Col span={12} style={{ paddingLeft: 8 }}>
-                    <Button
-                      className="github-container"
-                      htmlType="submit"
-                      icon={
-                        <SiGithub
-                          style={{ marginBottom: 2.5, marginRight: 12 }}
-                        />
-                      }
-                      style={{ width: "100%" }}
-                    >
-                      Github
-                    </Button>
-                  </Col>
-                </Row>
               </Form>
             </Col>
             <Col span={12}>
@@ -152,4 +157,4 @@ function LoginPage() {
   );
 }
 
-export default LoginPage;
+export default RegisterPage;
