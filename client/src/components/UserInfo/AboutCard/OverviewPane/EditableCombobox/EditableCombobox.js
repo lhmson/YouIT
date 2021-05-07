@@ -9,7 +9,7 @@ import styles from "./styles.js";
 
 const { Text } = Typography;
 
-function EditableCombobox({ firstIcon, text, subText, options }) {
+function EditableCombobox({ firstIcon, text, subText, options, onSave }) {
   const [isEditing, setIsEditing] = useState(false);
 
   const EditIcon = () => {
@@ -17,8 +17,6 @@ function EditableCombobox({ firstIcon, text, subText, options }) {
       <AiOutlineEdit style={styles.icon} onClick={() => setIsEditing(true)} />
     );
   };
-
-  const saveGender = () => {};
 
   if (isEditing) {
     return (
@@ -31,7 +29,7 @@ function EditableCombobox({ firstIcon, text, subText, options }) {
           <Button
             className="green-button"
             style={styles.button}
-            onClick={saveGender()}
+            onClick={onSave()}
           >
             Save
           </Button>

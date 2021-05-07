@@ -1,5 +1,5 @@
-import React from "react";
-import { useSelector } from "react-redux";
+import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 import {
   IoSchoolSharp,
@@ -17,12 +17,20 @@ import EditableText from "./EditableText/EditableText.js";
 import EditableCombobox from "./EditableCombobox/EditableCombobox.js";
 import EditableTime from "./EditableTime/EditableTime.js";
 
+import { updateUser } from "../../../../redux/actions/user";
+
 const OverviewPane = () => {
   const user = useSelector((state) => state.user);
+  const dispatch = useDispatch();
 
-  const dateOfBirth = user?.userInfo?.dateOfBirth;
-  const address = user?.userInfo?.address ?? "VietNam";
-  const workLocation = user?.userInfo?.workLocation ?? "VietNam";
+  const [dateOfBirth, setDateOfBirth] = useState(user?.userInfo?.dateOfBirth);
+  const [address, setAddress] = useState(user?.userInfo?.address ?? "VietNam");
+  const [workLocation, setWorkLocation] = useState(
+    user?.userInfo?.workLocation ?? "VietNam"
+  );
+  // tai sao text change ma van chay console log o dau do
+  // tai sao update db trong mongo roi ma load lai van lay VN
+  console.log("adr: ", address);
   // const dateOfBirth = {
   //   $convert: {
   //     input: user?.userInfo?.dateOfBirth,
@@ -46,6 +54,20 @@ const OverviewPane = () => {
     },
   ];
 
+  const saveSchool = () => {};
+
+  const saveAddress = () => {
+    const updatedUser = { ...user, userInfo: { ...user.userInfo, address } };
+    console.log(updatedUser);
+    dispatch(updateUser(updatedUser));
+  };
+
+  const saveWorkLocation = () => {};
+
+  const saveGender = () => {};
+
+  const saveBirthday = () => {};
+
   return (
     <div>
       <EditableTimePeriod
@@ -57,12 +79,14 @@ const OverviewPane = () => {
       <EditableText
         firstIcon={<IoHome style={styles.icon} />}
         text={address}
-        placeholder="Current city"
+        placeholder="Address"
+        onChange={(value) => setAddress(value.target.value)}
+        onSave={saveAddress}
       />
       <EditableText
         firstIcon={<MdLocationOn style={styles.icon} />}
         text={workLocation}
-        placeholder="Hometown"
+        placeholder="Work location"
       />
       <EditableCombobox
         firstIcon={<FaMale style={styles.icon} />}

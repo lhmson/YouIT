@@ -9,7 +9,14 @@ import styles from "./styles.js";
 
 const { Text } = Typography;
 
-function EditableText({ firstIcon, text, subText, placeholder }) {
+function EditableText({
+  firstIcon,
+  text,
+  subText,
+  placeholder,
+  onSave,
+  onChange,
+}) {
   const [isEditing, setIsEditing] = useState(false);
 
   const EditIcon = () => {
@@ -18,15 +25,20 @@ function EditableText({ firstIcon, text, subText, placeholder }) {
     );
   };
 
-  const saveCurrentCity = () => {};
+  const handleSaving = () => {
+    onSave();
+    setIsEditing(false);
+  };
 
   if (isEditing) {
     return (
       <Layout style={styles.whiteBackground}>
+        <Text style={styles.text}>{placeholder}</Text>
         <Input
           placeholder={placeholder}
           style={styles.input}
           defaultValue={text}
+          onChange={(value) => onChange(value)}
         ></Input>
         <Row style={{ justifyContent: "flex-end" }}>
           <Button style={styles.button} onClick={() => setIsEditing(false)}>
@@ -35,7 +47,7 @@ function EditableText({ firstIcon, text, subText, placeholder }) {
           <Button
             className="green-button"
             style={styles.button}
-            onClick={saveCurrentCity()}
+            onClick={handleSaving}
           >
             Save
           </Button>

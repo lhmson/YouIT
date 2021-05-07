@@ -17,7 +17,7 @@ import styles from "./styles.js";
 
 const { Text } = Typography;
 
-function EditableTime({ firstIcon, text, subText, options }) {
+function EditableTime({ firstIcon, text, subText, onSave }) {
   const [isEditing, setIsEditing] = useState(false);
 
   const EditIcon = () => {
@@ -25,8 +25,6 @@ function EditableTime({ firstIcon, text, subText, options }) {
       <AiOutlineEdit style={styles.icon} onClick={() => setIsEditing(true)} />
     );
   };
-
-  const saveGender = () => {};
 
   const onDateChanged = () => {};
 
@@ -41,7 +39,7 @@ function EditableTime({ firstIcon, text, subText, options }) {
           <Button
             className="green-button"
             style={styles.button}
-            onClick={saveGender()}
+            onClick={onSave()}
           >
             Save
           </Button>

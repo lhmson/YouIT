@@ -9,6 +9,10 @@ const styles = {
   button: {
     marginLeft: 16,
   },
+  text: {
+    marginBottom: 4,
+    fontWeight: 600,
+  },
   whiteBackground: {
     background: "white",
     marginBottom: 32,

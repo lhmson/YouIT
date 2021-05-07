@@ -9,7 +9,7 @@ import styles from "./styles.js";
 
 const { Text } = Typography;
 
-function EditableTimePeriod({ firstIcon, text, subText, placeholder }) {
+function EditableTimePeriod({ firstIcon, text, subText, placeholder, onSave }) {
   const [isEditing, setIsEditing] = useState(false);
 
   var yearOptions = [];
@@ -25,8 +25,6 @@ function EditableTimePeriod({ firstIcon, text, subText, placeholder }) {
       <AiOutlineEdit style={styles.icon} onClick={() => setIsEditing(true)} />
     );
   };
-
-  const saveSchool = () => {};
 
   if (isEditing) {
     return (
@@ -52,7 +50,7 @@ function EditableTimePeriod({ firstIcon, text, subText, placeholder }) {
           <Button
             className="green-button"
             style={styles.button}
-            onClick={saveSchool()}
+            onClick={onSave()}
           >
             Save
           </Button>
