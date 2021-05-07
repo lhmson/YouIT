@@ -27,6 +27,7 @@ import { Link } from "react-router-dom";
 import { signup } from "../../redux/actions/auth";
 import { useDispatch } from "react-redux";
 import { useHistory } from "react-router";
+import moment from "moment";
 
 const { Title, Text, Paragraph } = Typography;
 
@@ -44,7 +45,7 @@ const initialState = {
 
 function RegisterPage() {
   const [form, setForm] = useState(initialState);
-
+  const [dobError, setDobError] = useState(null);
   const dispatch = useDispatch();
   const history = useHistory();
 
@@ -53,6 +54,14 @@ function RegisterPage() {
   };
 
   const handleChangeDob = (date) => {
+    // var now = moment();
+    // var input = moment(date);
+    // if (now.diff(input, "years") < 18) {
+    //   setDobError("You must be 18 or older.");
+    // } else {
+    //   setDobError(null);
+    //   setForm({ ...form, dob: date });
+    // }
     setForm({ ...form, dob: date });
   };
 
@@ -209,7 +218,7 @@ function RegisterPage() {
                   </Col>
                 </Row>
                 <Row gutter={8}>
-                  <Col span={12}>
+                  <Col span={10}>
                     <Form.Item
                       name="gender"
                       rules={[
@@ -231,7 +240,7 @@ function RegisterPage() {
                       </Select>
                     </Form.Item>
                   </Col>
-                  <Col span={12}>
+                  <Col span={14}>
                     <Form.Item
                       name="dob"
                       rules={[
@@ -239,6 +248,19 @@ function RegisterPage() {
                           required: true,
                           message: "Date of birth is required.",
                         },
+                        ({ getFieldValue }) => ({
+                          validator(_, value) {
+                            var now = moment();
+                            var input = moment(value);
+                            console.log("dob valid", now.diff(input, "years"));
+                            if (!value || now.diff(input, "years") >= 13) {
+                              return Promise.resolve();
+                            }
+                            return Promise.reject(
+                              new Error("You must be at least 13 years old.")
+                            );
+                          },
+                        }),
                       ]}
                     >
                       <DatePicker
