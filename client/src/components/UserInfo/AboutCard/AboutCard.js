@@ -51,7 +51,7 @@ function AboutCard() {
           ></div>
         </div>
         <Divider />
-        <div style={{ height: 500, background: "white" }}>
+        <div style={{ height: "auto", background: "white" }}>
           <div className="row">
             <div
               className="col-4"

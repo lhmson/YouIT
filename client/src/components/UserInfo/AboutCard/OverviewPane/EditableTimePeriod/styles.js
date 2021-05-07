@@ -15,11 +15,12 @@ const styles = {
     marginBottom: 16,
   },
   button: {
-    marginLeft: 8,
+    marginLeft: 16,
   },
   whiteBackground: {
     background: "white",
     marginBottom: 32,
+    marginRight: 16,
   },
 };
 

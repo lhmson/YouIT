@@ -11,10 +11,11 @@ import {
   FaBirthdayCake,
 } from "react-icons/all";
 
-import OverviewRow from "../OverviewRow/OverviewRow.js";
 import styles from "./styles.js";
 import EditableTimePeriod from "./EditableTimePeriod/EditableTimePeriod.js";
 import EditableText from "./EditableText/EditableText.js";
+import EditableCombobox from "./EditableCombobox/EditableCombobox.js";
+import EditableTime from "./EditableTime/EditableTime.js";
 
 const OverviewPane = () => {
   const user = useSelector((state) => state.user);
@@ -29,6 +30,21 @@ const OverviewPane = () => {
   //   },
   // };
   //const dateOfBirth = Number(moment(d).tz(timezone).format("YYYYMMDD"));
+
+  const genderOptions = [
+    {
+      value: "Male",
+      label: "Male",
+    },
+    {
+      value: "Female",
+      label: "Female",
+    },
+    {
+      value: "Others",
+      label: "Others",
+    },
+  ];
 
   return (
     <div>
@@ -48,13 +64,13 @@ const OverviewPane = () => {
         text={workLocation}
         placeholder="Hometown"
       />
-      <OverviewRow
+      <EditableCombobox
         firstIcon={<FaMale style={styles.icon} />}
         text={user?.userInfo?.gender}
         subText="Gender"
-        lastIcon={<BsThreeDots style={styles.icon} />}
+        options={genderOptions}
       />
-      <OverviewRow
+      <EditableTime
         firstIcon={<FaBirthdayCake style={styles.icon} />}
         text={dateOfBirth}
         subText="Birthday"
