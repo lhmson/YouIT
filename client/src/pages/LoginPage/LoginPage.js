@@ -9,6 +9,7 @@ import {
   Input,
   Form,
   Checkbox,
+  message,
 } from "antd";
 import { FacebookFilled } from "@ant-design/icons";
 
@@ -29,6 +30,7 @@ const { Title, Text, Paragraph } = Typography;
 const initialState = {
   email: "",
   password: "",
+  remember: "",
 };
 
 function LoginPage() {
@@ -40,13 +42,14 @@ function LoginPage() {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleFinish = (values) => {
-    console.log("form data", form);
-    dispatch(signin(form, history));
+  const handleFinish = async (values) => {
+    await dispatch(signin(form, history));
   };
 
   const handleFinishFailed = (errorInfo) => {
-    console.log("Failed:", errorInfo);
+    errorInfo.errorFields.map((err) => {
+      message.error(err.errors[0]);
+    });
   };
 
   return (
@@ -54,7 +57,7 @@ function LoginPage() {
       <div
         style={{
           width: 900,
-          paddingBottom: 50,
+          paddingBottom: 0,
         }}
       >
         <Row style={{ justifyContent: "center" }}> </Row>
@@ -69,29 +72,28 @@ function LoginPage() {
                 <Text>
                   No account?{" "}
                   <Link to="/register">
-                    <Text className="clickable green bold">Create one</Text>
+                    <Text className="clickable green bold">Create one!</Text>
                   </Link>
                 </Text>
               </div>
               <Form
                 name="basic"
-                initialValues={{
-                  remember: true,
-                }}
                 size="large"
                 onFinish={handleFinish}
                 onFinishFailed={handleFinishFailed}
-                autoComplete="off"
               >
                 <Form.Item
                   name="email"
                   rules={[
                     {
+                      type: "email",
+                      message: "Invalid email.",
+                    },
+                    {
                       required: true,
-                      message: "Please input your email!",
+                      message: "Email is required.",
                     },
                   ]}
-                  style={styles.formItem}
                 >
                   <Input
                     name="email"
@@ -105,10 +107,9 @@ function LoginPage() {
                   rules={[
                     {
                       required: true,
-                      message: "Please input your password!",
+                      message: "Password is required.",
                     },
                   ]}
-                  style={styles.formItem}
                 >
                   <Input.Password
                     name="password"
@@ -116,14 +117,14 @@ function LoginPage() {
                     onChange={handleChange}
                   />
                 </Form.Item>
-                <Row justify="space-between">
-                  <Form.Item name="remember" valuePropName="checked">
-                    <Checkbox>Remember me</Checkbox>
-                  </Form.Item>
-                  <Text className="clickable green mt-2">Forgot password?</Text>
+                <Row justify="space-between" style={{ marginBottom: 24 }}>
+                  <Checkbox name="remember" onChange={handleChange}>
+                    Remember me
+                  </Checkbox>
+                  <Text className="clickable green ">Forgot password?</Text>
                 </Row>
 
-                <Form.Item style={styles.formItem}>
+                <Form.Item style={{ marginBottom: 16 }}>
                   <Button
                     style={{ width: "100%" }}
                     className="green-container"
@@ -134,7 +135,7 @@ function LoginPage() {
                 </Form.Item>
                 <div
                   className="d-flex justify-content-center"
-                  style={styles.formItem}
+                  style={{ marginBottom: 16 }}
                 >
                   <Text>Or login with</Text>
                 </div>

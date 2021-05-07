@@ -33,14 +33,14 @@ function App() {
   return (
     <div className={styles.App}>
       <Switch>
-        <Route exact path="/">
-          {loggedIn() ? <Redirect to="/feed" /> : <Redirect to="/login" />}
-        </Route>
+        <Route exact path="/" component={MainPage} />
         <Route exact path="/login">
-          {loggedIn() ? <Redirect to="/feed" /> : <LoginPage />}
+          {loggedIn() ? <Redirect to="/" /> : <LoginPage />}
+        </Route>
+        <Route exact path="/register">
+          {loggedIn() ? <Redirect to="/" /> : <RegisterPage />}
         </Route>
         <Route exact path="/feed" component={FeedPage} />
-        <Route exact path="/register" component={RegisterPage} />
         <Route exact path="/post/create" component={CreatePostPage} />
         <Route exact path="/userinfo" exct component={UserInfoPage} />
         <Route exact path="/post/:id" component={SpecificPost} />

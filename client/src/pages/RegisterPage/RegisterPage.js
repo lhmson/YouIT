@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Card,
   Button,
@@ -10,6 +10,8 @@ import {
   Form,
   Checkbox,
   Select,
+  DatePicker,
+  message,
 } from "antd";
 import { FacebookFilled } from "@ant-design/icons";
 
@@ -22,29 +24,72 @@ import { GrFacebook } from "react-icons/gr";
 import { SiGithub } from "react-icons/si";
 import { Option } from "antd/lib/mentions";
 import { Link } from "react-router-dom";
+import { signup } from "../../redux/actions/auth";
+import { useDispatch } from "react-redux";
+import { useHistory } from "react-router";
 
 const { Title, Text, Paragraph } = Typography;
 
+const dateFormat = "DD/MM/YYYY";
+
+const initialState = {
+  newEmail: "",
+  newPassword: "",
+  confirmPassword: "",
+  firstName: "",
+  lastName: "",
+  gender: "",
+  dob: "",
+};
+
 function RegisterPage() {
-  const onFinish = (values) => {
-    console.log("Success:", values);
+  const [form, setForm] = useState(initialState);
+
+  const dispatch = useDispatch();
+  const history = useHistory();
+
+  const handleChange = (e) => {
+    setForm({ ...form, [e?.target.name]: e?.target.value });
   };
 
-  const onFinishFailed = (errorInfo) => {
-    console.log("Failed:", errorInfo);
+  const handleChangeDob = (date) => {
+    setForm({ ...form, dob: date });
   };
+
+  const handleChangeGender = (value) => {
+    setForm({ ...form, gender: value });
+  };
+
+  const handleFinish = (values) => {
+    const data = {
+      email: form.newEmail,
+      password: form.newPassword,
+      firstName: form.firstName,
+      lastName: form.lastName,
+      gender: form.gender,
+      dob: form.dob,
+    };
+    dispatch(signup(data, history));
+  };
+
+  const handleFinishFailed = (errorInfo) => {
+    errorInfo.errorFields.map((err) => {
+      message.error(err.errors[0]);
+    });
+  };
+
   return (
     <div className="full d-flex align-items-center justify-content-center">
       <div
         style={{
-          width: 900,
-          paddingBottom: 50,
+          width: 1000,
+          paddingBottom: 0,
         }}
       >
         <Row style={{ justifyContent: "center" }}> </Row>
         <Card className="shadow-lg rounded" bordered={false}>
           <Row>
-            <Col span={12} style={{ paddingRight: 24, marginBottom: 24 }}>
+            <Col span={12} style={{ paddingRight: 24, marginBottom: 0 }}>
               <Row>
                 <img src={logo} alt="Logo" height="58" className="mr-2" />
                 <Title style={{ marginBottom: 8 }}>Register</Title>
@@ -59,85 +104,155 @@ function RegisterPage() {
               </div>
               <Form
                 name="basic"
-                initialValues={{
-                  remember: true,
-                }}
                 size="large"
-                onFinish={onFinish}
-                onFinishFailed={onFinishFailed}
+                onFinish={handleFinish}
+                onFinishFailed={handleFinishFailed}
               >
                 <Form.Item
-                  name="username"
+                  name="newEmail"
                   rules={[
                     {
+                      type: "email",
+                      message: "Invalid email.",
+                    },
+                    {
                       required: true,
-                      message: "Please input your email!",
+                      message: "Email is required.",
                     },
                   ]}
-                  style={styles.formItem}
                 >
-                  <Input autoComplete="off" placeholder="Email" />
+                  <Input
+                    name="newEmail"
+                    placeholder="Email"
+                    onChange={handleChange}
+                  />
                 </Form.Item>
 
                 <Form.Item
-                  name="password"
+                  name="newPassword"
                   rules={[
                     {
                       required: true,
-                      message: "Please input your password!",
+                      message: "Password is required.",
                     },
                   ]}
-                  style={styles.formItem}
                 >
-                  <Input.Password autoComplete="off" placeholder="Password" />
+                  <Input.Password
+                    name="newPassword"
+                    autoComplete="newPassword"
+                    placeholder="Password"
+                    onChange={handleChange}
+                  />
                 </Form.Item>
 
                 <Form.Item
                   name="confirmPassword"
+                  dependencies={["newPassword"]}
                   rules={[
                     {
                       required: true,
-                      message: "Password does not mach!",
+                      message: "Password confirm is required.",
                     },
+                    ({ getFieldValue }) => ({
+                      validator(_, value) {
+                        if (!value || getFieldValue("newPassword") === value) {
+                          return Promise.resolve();
+                        }
+                        return Promise.reject(
+                          new Error(
+                            "The two passwords that you entered do not match!"
+                          )
+                        );
+                      },
+                    }),
                   ]}
-                  style={styles.formItem}
                 >
-                  <Input.Password placeholder="Confirm password" />
+                  <Input.Password
+                    placeholder="Confirm password"
+                    suffix={null}
+                  />
                 </Form.Item>
-                <Form.Item
-                  name="gender"
-                  style={styles.formItem}
-                  rules={[
-                    {
-                      required: true,
-                      message: "Gender is required",
-                    },
-                  ]}
-                >
-                  <Select
-                    size="large"
-                    placeholder="Sex"
-                    // onChange={handleChange}
-                  >
-                    <Option value="others">Rather not to say</Option>
-                    <Option value="male">Male</Option>
-                    <Option value="female">Female</Option>
-                  </Select>
-                </Form.Item>
-                <Form.Item
-                  name="phone"
-                  rules={[
-                    {
-                      required: true,
-                      message: "Invalid phone number",
-                    },
-                  ]}
-                  style={styles.formItem}
-                >
-                  <Input placeholder="Phone number" />
-                </Form.Item>
+                <Row gutter={8}>
+                  <Col span={12}>
+                    <Form.Item
+                      name="firstName"
+                      rules={[
+                        {
+                          required: true,
+                          message: "First name is required.",
+                        },
+                      ]}
+                    >
+                      <Input
+                        name="firstName"
+                        placeholder="First name"
+                        onChange={handleChange}
+                      />
+                    </Form.Item>
+                  </Col>
+                  <Col span={12}>
+                    <Form.Item
+                      name="lastName"
+                      rules={[
+                        {
+                          required: true,
+                          message: "Last name is required.",
+                        },
+                      ]}
+                    >
+                      <Input
+                        name="lastName"
+                        placeholder="Last name"
+                        onChange={handleChange}
+                      />
+                    </Form.Item>
+                  </Col>
+                </Row>
+                <Row gutter={8}>
+                  <Col span={12}>
+                    <Form.Item
+                      name="gender"
+                      rules={[
+                        {
+                          required: true,
+                          message: "Gender is required.",
+                        },
+                      ]}
+                    >
+                      <Select
+                        placeholder="Gender"
+                        name="gender"
+                        onChange={handleChangeGender}
+                        style={{ width: "100%" }}
+                      >
+                        <Option value="Male">Male</Option>
+                        <Option value="Female">Female</Option>
+                        <Option value="Other">Other</Option>
+                      </Select>
+                    </Form.Item>
+                  </Col>
+                  <Col span={12}>
+                    <Form.Item
+                      name="dob"
+                      rules={[
+                        {
+                          required: true,
+                          message: "Date of birth is required.",
+                        },
+                      ]}
+                    >
+                      <DatePicker
+                        name="dob"
+                        placeholder="Date of birth"
+                        onChange={handleChangeDob}
+                        style={{ width: "100%" }}
+                        format={dateFormat}
+                      />
+                    </Form.Item>
+                  </Col>
+                </Row>
 
-                <Form.Item style={styles.formItem}>
+                <Form.Item style={{}}>
                   <Button
                     style={{ width: "100%" }}
                     className="green-container"
@@ -148,7 +263,7 @@ function RegisterPage() {
                 </Form.Item>
               </Form>
             </Col>
-            <Col span={12}>
+            <Col span={12} style={{ marginTop: 0 }}>
               <div>
                 <ReactLogo />
               </div>

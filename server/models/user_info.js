@@ -1,10 +1,10 @@
 import mongoose from "mongoose";
 
 export const defaultUserInfoValue = {
-  firstName: "a",
-  lastName: "a",
+  firstName: "default",
+  lastName: "default",
   dateOfBirth: new Date(),
-  gender: "a",
+  gender: "Male",
 };
 
 export const userInfoSchema = mongoose.Schema(
@@ -13,6 +13,7 @@ export const userInfoSchema = mongoose.Schema(
     lastName: { type: String, required: true },
     dateOfBirth: { type: Date, required: true },
     gender: { type: String, required: true },
+    phone: { type: String },
     workLocation: { type: String },
     address: { type: String },
     languageProgrammingHashtags: [
@@ -33,3 +34,7 @@ export const userInfoSchema = mongoose.Schema(
   },
   { timestamps: true }
 );
+
+var UserInfo = mongoose.model("UserInfo", userInfoSchema);
+
+export default UserInfo;

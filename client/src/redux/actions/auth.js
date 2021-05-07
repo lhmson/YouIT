@@ -1,5 +1,6 @@
 import { AUTH, LOGOUT } from "../actionTypes";
 import * as api from "../../api/auth";
+import { message } from "antd";
 
 export const signin = (formData, router) => async (dispatch) => {
   try {
@@ -7,8 +8,10 @@ export const signin = (formData, router) => async (dispatch) => {
     const { data } = await api.signIn(formData);
     dispatch({ type: AUTH, data });
     router.push("/feed");
+    message.success("Login successfully!");
   } catch (error) {
     console.log(error);
+    message.error("Wrong email or password, try again!");
   }
 };
 
@@ -17,7 +20,7 @@ export const signup = (formData, router) => async (dispatch) => {
     console.log("signup");
     const { data } = await api.signUp(formData);
     dispatch({ type: AUTH, data });
-    router.push("/");
+    router.push("/login");
   } catch (error) {
     console.log(error);
   }
