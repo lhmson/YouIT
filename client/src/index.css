@@ -47,6 +47,10 @@ body {
   color: var(--red);
 }
 
+.white {
+  color: white;
+}
+
 .icon {
   font-size: 24px;
 }
@@ -68,13 +72,80 @@ body {
   cursor: pointer;
 }
 
-.green-button {
+.green-container {
   background-color: var(--green);
+  border-color: var(--green);
   color: white;
+}
+
+.green-container:hover {
+  background-color: var(--green-smoke);
+  border-color: var(--green);
+  color: var(--green);
+}
+
+.green-container:focus {
+  background-color: var(--green-smoke);
+  border-color: var(--green);
+  color: var(--green);
 }
 
 .full {
   height: 100vh;
   width: 100vw;
-  background-color: var(--light-green);
+  background-color: var(--green-smoke);
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 30px white inset !important;
+}
+
+/* test area */
+.pink {
+  background-color: pink;
+}
+
+/* Ant Design modification */
+.ant-checkbox-checked .ant-checkbox-inner {
+  background-color: var(--green);
+  border-color: var(--green);
+}
+
+.facebook-container {
+  background-color: #4267b2;
+  border-color: #4267b2;
+  color: white;
+}
+
+.facebook-container:hover {
+  background-color: rgba(66, 103, 178, 0.15);
+  border-color: #4267b2;
+  color: #4267b2;
+}
+
+.facebook-container:focus {
+  background-color: rgba(66, 103, 178, 0.15);
+  border-color: #4267b2;
+  color: #4267b2;
+}
+
+.github-container {
+  background-color: rgb(43, 49, 55);
+  border-color: rgb(43, 49, 55);
+  color: white;
+}
+
+.github-container:hover {
+  background-color: rgba(43, 49, 55, 0.15);
+  border-color: rgb(43, 49, 55);
+  color: rgb(43, 49, 55);
+}
+
+.github-container:focus {
+  background-color: rgba(43, 49, 55, 0.15);
+  border-color: rgb(43, 49, 55);
+  color: rgb(43, 49, 55);
 }

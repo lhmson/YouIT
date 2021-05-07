@@ -22,7 +22,9 @@ const FriendManager = () => {
         </div>
         <div className="col-4 offset-6" style={styles.buttonRow}>
           <div className="row">
-            <Button className="green-button mr-2">Friend requests (0)</Button>
+            <Button className="green-container mr-2">
+              Friend requests (0)
+            </Button>
             <Button type="primary" style={styles.button}>
               Ban be (999)
             </Button>

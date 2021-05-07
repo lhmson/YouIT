@@ -56,7 +56,7 @@ function CommentForm({ onSubmit }) {
           >
             Reset
           </Button>
-          <Button className="green-button" size="large" htmlType="submit">
+          <Button className="green-container" size="large" htmlType="submit">
             Submit
           </Button>
         </Row>
