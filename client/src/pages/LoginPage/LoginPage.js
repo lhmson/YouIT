@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Card,
   Button,
@@ -19,17 +19,36 @@ import styles from "./styles";
 import { FaFacebookF, FaFacebookSquare } from "react-icons/fa";
 import { GrFacebook } from "react-icons/gr";
 import { SiGithub } from "react-icons/si";
+import { signin } from "../../redux/actions/auth";
+import { useDispatch } from "react-redux";
+import { useHistory } from "react-router";
+import { Link } from "react-router-dom";
 
 const { Title, Text, Paragraph } = Typography;
 
+const initialState = {
+  email: "",
+  password: "",
+};
+
 function LoginPage() {
-  const onFinish = (values) => {
-    console.log("Success:", values);
+  const [form, setForm] = useState(initialState);
+  const dispatch = useDispatch();
+  const history = useHistory();
+
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const onFinishFailed = (errorInfo) => {
+  const handleFinish = (values) => {
+    console.log("form data", form);
+    dispatch(signin(form, history));
+  };
+
+  const handleFinishFailed = (errorInfo) => {
     console.log("Failed:", errorInfo);
   };
+
   return (
     <div className="full d-flex align-items-center justify-content-center">
       <div
@@ -49,7 +68,9 @@ function LoginPage() {
               <div style={{ marginBottom: 16 }}>
                 <Text>
                   No account?{" "}
-                  <Text className="clickable green bold">Create one</Text>
+                  <Link to="/register">
+                    <Text className="clickable green bold">Create one</Text>
+                  </Link>
                 </Text>
               </div>
               <Form
@@ -58,11 +79,12 @@ function LoginPage() {
                   remember: true,
                 }}
                 size="large"
-                onFinish={onFinish}
-                onFinishFailed={onFinishFailed}
+                onFinish={handleFinish}
+                onFinishFailed={handleFinishFailed}
+                autoComplete="off"
               >
                 <Form.Item
-                  name="username"
+                  name="email"
                   rules={[
                     {
                       required: true,
@@ -71,7 +93,11 @@ function LoginPage() {
                   ]}
                   style={styles.formItem}
                 >
-                  <Input placeholder="Email" />
+                  <Input
+                    name="email"
+                    placeholder="Email"
+                    onChange={handleChange}
+                  />
                 </Form.Item>
 
                 <Form.Item
@@ -84,7 +110,11 @@ function LoginPage() {
                   ]}
                   style={styles.formItem}
                 >
-                  <Input.Password placeholder="Password" />
+                  <Input.Password
+                    name="password"
+                    placeholder="Password"
+                    onChange={handleChange}
+                  />
                 </Form.Item>
                 <Row justify="space-between">
                   <Form.Item name="remember" valuePropName="checked">

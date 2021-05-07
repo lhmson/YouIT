@@ -37,9 +37,9 @@ function Navbar({ selectedMenu }) {
 
   const handleMore = () => alert("handle lot");
 
-  const handleLogOut = () => {
-    dispatch(logout());
-    history.push("/auth");
+  const handleLogOut = async () => {
+    await dispatch(logout());
+    history.push("/login");
     setUser(null);
   };
 

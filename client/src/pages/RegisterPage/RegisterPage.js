@@ -21,6 +21,7 @@ import { FaFacebookF, FaFacebookSquare } from "react-icons/fa";
 import { GrFacebook } from "react-icons/gr";
 import { SiGithub } from "react-icons/si";
 import { Option } from "antd/lib/mentions";
+import { Link } from "react-router-dom";
 
 const { Title, Text, Paragraph } = Typography;
 
@@ -51,7 +52,9 @@ function RegisterPage() {
               <div style={{ marginBottom: 16 }}>
                 <Text>
                   Already have an account?{" "}
-                  <Text className="clickable green bold">Sign in</Text>
+                  <Link to="/login">
+                    <Text className="clickable green bold">Log in</Text>
+                  </Link>
                 </Text>
               </div>
               <Form
@@ -73,7 +76,7 @@ function RegisterPage() {
                   ]}
                   style={styles.formItem}
                 >
-                  <Input placeholder="Email" />
+                  <Input autoComplete="off" placeholder="Email" />
                 </Form.Item>
 
                 <Form.Item
@@ -86,7 +89,7 @@ function RegisterPage() {
                   ]}
                   style={styles.formItem}
                 >
-                  <Input.Password placeholder="Password" />
+                  <Input.Password autoComplete="off" placeholder="Password" />
                 </Form.Item>
 
                 <Form.Item
@@ -140,7 +143,7 @@ function RegisterPage() {
                     className="green-container"
                     htmlType="submit"
                   >
-                    Sign in
+                    Create account
                   </Button>
                 </Form.Item>
               </Form>
