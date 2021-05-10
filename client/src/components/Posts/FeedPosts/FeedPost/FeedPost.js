@@ -28,7 +28,7 @@ function FeedPost({ post, setCurrentId }) {
 
   return (
     <div style={styles.item}>
-      <Row className="pb-2 px-2">
+      {/* <Row className="pb-2 px-2">
         <Row
           className="align-items-center"
           style={{
@@ -108,7 +108,7 @@ function FeedPost({ post, setCurrentId }) {
           <LinkOutlined style={{ ...styles.icon, ...styles.pointer }} />
           <ShareAltOutlined style={{ ...styles.icon, ...styles.pointer }} />
         </Row>
-      </Row>
+      </Row> */}
     </div>
   );
 }

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Button } from 'antd'
 import CreatePostPrivacySelect from './CreatePostPrivacySelect/CreatePostPrivacySelect.js';
 import CreatePostSpaceAutoComplete from './CreatePostSpaceAutoComplete/CreatePostSpaceAutoComplete.js';
@@ -7,12 +7,14 @@ import CreatePostTitleInput from './CreatePostTitleInput/CreatePostTitleInput.js
 import styles from './styles.js';
 import { createPost } from '../../api/post.js';
 import PostEditor from './PostEditor/PostEditor.js';
+import { io } from 'socket.io-client'
 
 function CreatePostForm() {
   const [postTitle, setPostTitle] = useState("")
   const [postContent, setPostContent] = useState("Chun cuteeeee")
   const [postSpace, setPostSpace] = useState("")
   const [postPrivacy, setPostPrivacy] = useState("")
+  const [socket, setSocket] = useState(io("http://localhost:5000"));
 
   const wrapPostData = () => {
     const result = {
@@ -49,9 +51,13 @@ function CreatePostForm() {
         </div>
 
         {/* May us have a common button component to call here? */}
-        <div className="col-2">
+        <div className="col-1">
           <Button onClick={handleSavePostButtonClick}>Save post</Button>
         </div>
+
+        {/* <div className="col-1">
+          <Button onClick={unSubNotification}>stop notif</Button>
+        </div> */}
       </div>
 
       <div className="d-flex justify-content-start">

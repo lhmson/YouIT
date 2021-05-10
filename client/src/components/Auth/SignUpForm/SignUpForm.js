@@ -5,6 +5,7 @@ import FileBase from "react-file-base64";
 import { useDispatch, useSelector } from "react-redux";
 import { signup } from "../../../redux/actions/auth";
 import { useHistory } from "react-router-dom";
+import { useLocalStorage } from "../../../hooks/useLocalStorage.js";
 
 const { Title, Text } = Typography;
 
@@ -19,6 +20,7 @@ const initialState = {
 
 function SignUpForm({ setIsSignIn }) {
   const [form, setForm] = useState(initialState);
+  const [user, setUser] = useLocalStorage("user");
 
   const dispatch = useDispatch();
   const history = useHistory();
@@ -35,7 +37,7 @@ function SignUpForm({ setIsSignIn }) {
 
   const handleSubmit = (values) => {
     console.log("form data", form);
-    dispatch(signup(form, history));
+    dispatch(signup(form, history, setUser));
     console.log("Success:", values);
   };
 
