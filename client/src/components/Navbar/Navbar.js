@@ -27,7 +27,9 @@ function Navbar({ selectedMenu }) {
   const location = useLocation();
   const history = useHistory();
 
-  const handleSearch = () => console.log(inputRef.current.state.value);
+  const handleSearch = () => {
+    console.log(inputRef.current.state.value);
+  };
 
   const handleNoti = () => alert("handle noti");
 
@@ -75,10 +77,12 @@ function Navbar({ selectedMenu }) {
           onPressEnter={handleSearch}
           allowClear
           suffix={
-            <SearchOutlined
-              onClick={handleSearch}
-              style={{ fontSize: 24, color: COLOR.white }}
-            />
+            <Link to="/search">
+              <SearchOutlined
+                onClick={handleSearch}
+                style={{ fontSize: 24, color: COLOR.white }}
+              />
+            </Link>
           }
           ref={inputRef}
           bordered={false}
