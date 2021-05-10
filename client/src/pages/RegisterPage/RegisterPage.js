@@ -29,6 +29,7 @@ import { useDispatch } from "react-redux";
 import { useHistory } from "react-router";
 import moment from "moment";
 import COLOR from "../../constants/colors";
+import { useLocalStorage } from "../../hooks/useLocalStorage";
 
 const { Title, Text, Paragraph } = Typography;
 
@@ -46,6 +47,7 @@ const initialState = {
 
 function RegisterPage() {
   const [form, setForm] = useState(initialState);
+  const [user, setUser] = useLocalStorage("user");
   const [dobError, setDobError] = useState(null);
   const dispatch = useDispatch();
   const history = useHistory();
@@ -79,7 +81,7 @@ function RegisterPage() {
       gender: form.gender,
       dob: form.dob,
     };
-    dispatch(signup(data, history));
+    dispatch(signup(data, history, setUser));
   };
 
   const handleFinishFailed = (errorInfo) => {

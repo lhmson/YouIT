@@ -25,6 +25,7 @@ import { useDispatch } from "react-redux";
 import { useHistory } from "react-router";
 import { Link } from "react-router-dom";
 import COLOR from "../../constants/colors";
+import { useLocalStorage } from "../../hooks/useLocalStorage";
 
 const { Title, Text, Paragraph } = Typography;
 
@@ -36,6 +37,7 @@ const initialState = {
 
 function LoginPage() {
   const [form, setForm] = useState(initialState);
+  const [user, setUser] = useLocalStorage("user");
   const dispatch = useDispatch();
   const history = useHistory();
 
@@ -44,7 +46,7 @@ function LoginPage() {
   };
 
   const handleFinish = async (values) => {
-    await dispatch(signin(form, history));
+    await dispatch(signin(form, history, setUser));
   };
 
   const handleFinishFailed = (errorInfo) => {
