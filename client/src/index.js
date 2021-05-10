@@ -10,6 +10,7 @@ import App from "./App";
 import { BrowserRouter } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./index.css";
+import { CuteClientIOProvider } from "./socket/CuteClientIOProvider";
 
 const store = createStore(reducers, compose(applyMiddleware(thunk)));
 
