@@ -9,6 +9,8 @@ import styles from "./styles.js";
 
 const { Text } = Typography;
 
+// setPreviousState is used after changing your state via onChange and then cancel, don't save
+
 function EditableText({
   firstIcon,
   text,
@@ -16,6 +18,7 @@ function EditableText({
   placeholder,
   onSave,
   onChange,
+  setPreviousState,
 }) {
   const [isEditing, setIsEditing] = useState(false);
 
@@ -30,6 +33,11 @@ function EditableText({
     setIsEditing(false);
   };
 
+  const handleCancel = () => {
+    setPreviousState();
+    setIsEditing(false);
+  };
+
   if (isEditing) {
     return (
       <Layout style={styles.whiteBackground}>
@@ -41,7 +49,7 @@ function EditableText({
           onChange={(value) => onChange(value)}
         ></Input>
         <Row style={{ justifyContent: "flex-end" }}>
-          <Button style={styles.button} onClick={() => setIsEditing(false)}>
+          <Button style={styles.button} onClick={handleCancel}>
             Cancel
           </Button>
           <Button

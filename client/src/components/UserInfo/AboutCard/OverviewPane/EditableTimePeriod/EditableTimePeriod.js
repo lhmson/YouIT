@@ -26,6 +26,16 @@ function EditableTimePeriod({ firstIcon, text, subText, placeholder, onSave }) {
     );
   };
 
+  const handleSaving = () => {
+    onSave();
+    setIsEditing(false);
+  };
+
+  const handleCancel = () => {
+    //setPreviousState();
+    setIsEditing(false);
+  };
+
   if (isEditing) {
     return (
       <Layout style={styles.whiteBackground}>
@@ -44,13 +54,13 @@ function EditableTimePeriod({ firstIcon, text, subText, placeholder, onSave }) {
           ></Cascader>
         </Row>
         <Row style={{ justifyContent: "flex-end" }}>
-          <Button style={styles.button} onClick={() => setIsEditing(false)}>
+          <Button style={styles.button} onClick={handleCancel}>
             Cancel
           </Button>
           <Button
             className="green-button"
             style={styles.button}
-            onClick={onSave()}
+            onClick={handleSaving}
           >
             Save
           </Button>

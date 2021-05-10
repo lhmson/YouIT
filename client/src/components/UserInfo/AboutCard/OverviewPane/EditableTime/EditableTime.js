@@ -12,12 +12,20 @@ import {
 
 import { OverviewRow } from "../../index.js";
 import { AiOutlineEdit } from "react-icons/all";
+import moment from "moment";
 
 import styles from "./styles.js";
 
 const { Text } = Typography;
 
-function EditableTime({ firstIcon, text, subText, onSave }) {
+function EditableTime({
+  firstIcon,
+  text,
+  subText,
+  onSave,
+  onChange,
+  setPreviousState,
+}) {
   const [isEditing, setIsEditing] = useState(false);
 
   const EditIcon = () => {
@@ -26,20 +34,32 @@ function EditableTime({ firstIcon, text, subText, onSave }) {
     );
   };
 
-  const onDateChanged = () => {};
+  const handleSaving = () => {
+    onSave();
+    setIsEditing(false);
+  };
+
+  const handleCancel = () => {
+    setPreviousState();
+    setIsEditing(false);
+  };
 
   if (isEditing) {
+    //console.log("md: ", text);
     return (
       <Layout style={styles.whiteBackground}>
-        <DatePicker style={styles.datePicker} onChange={onDateChanged()} />
+        <DatePicker
+          style={styles.datePicker}
+          onChange={(date) => onChange(date)}
+        />
         <Row style={{ justifyContent: "flex-end" }}>
-          <Button style={styles.button} onClick={() => setIsEditing(false)}>
+          <Button style={styles.button} onClick={handleCancel}>
             Cancel
           </Button>
           <Button
             className="green-button"
             style={styles.button}
-            onClick={onSave()}
+            onClick={handleSaving}
           >
             Save
           </Button>
