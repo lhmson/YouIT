@@ -12,6 +12,7 @@ import { fileURLToPath } from "url";
 
 import indexRouter from "./routes/index.js";
 import postRouter from "./routes/post.js";
+import commentRouter from "./routes/comment.js";
 import userRouter from "./routes/user.js";
 import userInfoRouter from "./routes/user_info.js";
 
@@ -34,6 +35,7 @@ app.use(cookieParser());
 app.use("/", indexRouter);
 app.use("/user", userRouter);
 app.use("/post", postRouter);
+app.use("/comment", commentRouter);
 app.use("/userInfo", userInfoRouter);
 
 const PORT = process.env.PORT || 5000;

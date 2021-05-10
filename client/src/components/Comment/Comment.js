@@ -32,31 +32,34 @@ import { Link } from "react-router-dom";
 
 const { Title, Text, Paragraph } = Typography;
 
-function Comment({ comment, onReplySubmit }) {
+function Comment({ comment, onReply, onEdit, onDelete }) {
   const [isReply, setIsReply] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
 
-  const handleReply = () => {
+  const toggleReply = () => {
     setIsReply(1 - isReply);
     console.log("comment", comment);
   };
-  const handleSubmit = (inputComment) => {
-    onReplySubmit(comment?._id, inputComment);
+  const handleSubmit = (newComment) => {
+    onReply(comment?._id, newComment);
     setIsReply(false);
   };
   const onMoreSelect = ({ key }) => {
     switch (key) {
-      case 0:
+      case "0":
+        console.log("edit");
         setIsEdit(true);
         break;
-      case 1:
+      case "1":
         handleDelete();
         break;
       default:
         break;
     }
   };
-  const handleDelete = () => {};
+  const handleDelete = () => {
+    onDelete(comment?._id);
+  };
   const menuMore = (
     <Menu onClick={onMoreSelect}>
       <Menu.Item key="0">
@@ -73,6 +76,13 @@ function Comment({ comment, onReplySubmit }) {
       </Menu.Item>
     </Menu>
   );
+  const renderEdit = () => {
+    return <CommentForm label="Edit comment" onSubmit={handleEdit} />;
+  };
+  const handleEdit = (newComment) => {
+    setIsEdit(false);
+    onEdit(comment?._id, newComment);
+  };
 
   return (
     <div>
@@ -118,9 +128,9 @@ function Comment({ comment, onReplySubmit }) {
           </Dropdown>
         </Row>
       </Row>
-      {
+      {!isEdit ? (
         <div>
-          {comment?.quotedCommentId ? (
+          {comment?.quotedCommentId !== undefined ? (
             <div
               className="p-3 mb-3"
               style={{ backgroundColor: COLOR.whiteSmoke }}
@@ -131,9 +141,11 @@ function Comment({ comment, onReplySubmit }) {
                   alignItems: "center",
                 }}
               >
-                <a className="black bold clickable" strong>
-                  {`${comment?.quotedCommentId?.userId?.name}'s comment`}
-                </a>
+                {comment?.quotedCommentId === null ? (
+                  <Text className="italic">Deleted comment</Text>
+                ) : (
+                  <Text className="black bold clickable">{`${comment?.quotedCommentId?.userId?.name}'s comment`}</Text>
+                )}
                 <Text className="clickable" underline type="secondary">
                   Last edited{" "}
                   {comment?.quotedCommentId?.updatedAt?.toString().slice(0, 10)}
@@ -159,7 +171,7 @@ function Comment({ comment, onReplySubmit }) {
                   <Text strong>150</Text>
                   <ArrowDownOutlined className="clickable icon" />
                 </Space>
-                <Text onClick={handleReply} className="clickable" strong>
+                <Text onClick={toggleReply} className="clickable" strong>
                   {isReply ? `Discard` : `Reply`}
                 </Text>
               </Space>
@@ -177,7 +189,9 @@ function Comment({ comment, onReplySubmit }) {
             />
           ) : null}
         </div>
-      }
+      ) : (
+        renderEdit()
+      )}
       <Divider />
     </div>
   );

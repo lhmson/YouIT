@@ -63,13 +63,23 @@ function SpecificPost(props) {
     fetchComments();
   }, []);
 
-  const handleSubmit = async (inputComment) => {
-    await commentsApi.createComment(post._id, inputComment);
+  const handleSubmitComment = async (newComment) => {
+    await commentsApi.createComment(post._id, newComment);
     fetchComments();
   };
 
-  const handleReplySubmit = async (commentId, inputComment) => {
+  const handleReplyComment = async (commentId, inputComment) => {
     await commentsApi.replyComment(post._id, commentId, inputComment);
+    fetchComments();
+  };
+
+  const handleEditComment = async (commentId, newComment) => {
+    await commentsApi.editComment(commentId, newComment);
+    fetchComments();
+  };
+
+  const handleDeleteComment = async (commentId) => {
+    await commentsApi.deleteComment(commentId);
     fetchComments();
   };
 
@@ -83,7 +93,7 @@ function SpecificPost(props) {
               <Card style={{ padding: 16 }}>
                 <FullPost post={post} />
                 <CommentForm
-                  onSubmit={handleSubmit}
+                  onSubmit={handleSubmitComment}
                   label="Comment to this post"
                 />
                 <Title className="mb-4" level={2}>
@@ -91,7 +101,12 @@ function SpecificPost(props) {
                 </Title>
 
                 {comments?.map((c) => (
-                  <Comment comment={c} onReplySubmit={handleReplySubmit} />
+                  <Comment
+                    comment={c}
+                    onReply={handleReplyComment}
+                    onEdit={handleEditComment}
+                    onDelete={handleDeleteComment}
+                  />
                 ))}
               </Card>
             </div>
