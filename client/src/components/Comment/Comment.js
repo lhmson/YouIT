@@ -47,7 +47,6 @@ function Comment({ comment, onReply, onEdit, onDelete }) {
   const onMoreSelect = ({ key }) => {
     switch (key) {
       case "0":
-        console.log("edit");
         setIsEdit(true);
         break;
       case "1":

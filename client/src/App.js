@@ -20,6 +20,7 @@ import {
   RequestsInGroupsPage,
   LoginPage,
   RegisterPage,
+  ErrorPage,
 } from "./pages/index";
 
 import FriendMangementPage from "./pages/FriendMangementPage/FriendMangementPage";
@@ -50,7 +51,11 @@ function App() {
         <Route exact path="/userinfo/about" component={AboutPage} />
         <Route exact path="/group" component={GroupPage} />
         <Route exact path="/group/about" component={GroupAboutPage} />
-        <Route exact path="/friends" component={FriendMangementPage}></Route>
+        <Route exact path="/friends" component={FriendMangementPage} />
+
+        <Route>
+          <ErrorPage code="500" />
+        </Route>
       </Switch>
     </div>
   );

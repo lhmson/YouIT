@@ -24,6 +24,7 @@ import { signin } from "../../redux/actions/auth";
 import { useDispatch } from "react-redux";
 import { useHistory } from "react-router";
 import { Link } from "react-router-dom";
+import COLOR from "../../constants/colors";
 
 const { Title, Text, Paragraph } = Typography;
 
@@ -53,7 +54,10 @@ function LoginPage() {
   };
 
   return (
-    <div className="full d-flex align-items-center justify-content-center">
+    <div
+      className="full d-flex align-items-center justify-content-center"
+      style={{ backgroundColor: COLOR.greenSmoke }}
+    >
       <div
         style={{
           width: 900,

@@ -11,6 +11,7 @@ import GroupAboutPage from "./GroupAboutPage/GroupAboutPage";
 import RequestsInGroupsPage from "./RequestsInGroupsPage/RequestsInGroupsPage";
 import LoginPage from "./LoginPage/LoginPage";
 import RegisterPage from "./RegisterPage/RegisterPage";
+import ErrorPage from "./ErrorPage/ErrorPage";
 
 export {
   AboutPage,
@@ -26,4 +27,5 @@ export {
   RequestsInGroupsPage,
   LoginPage,
   RegisterPage,
+  ErrorPage,
 };

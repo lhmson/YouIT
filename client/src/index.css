@@ -131,7 +131,6 @@ body {
 .full {
   height: 100vh;
   width: 100vw;
-  background-color: var(--green-smoke);
 }
 
 input:-webkit-autofill,

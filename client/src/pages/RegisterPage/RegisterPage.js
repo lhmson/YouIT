@@ -28,6 +28,7 @@ import { signup } from "../../redux/actions/auth";
 import { useDispatch } from "react-redux";
 import { useHistory } from "react-router";
 import moment from "moment";
+import COLOR from "../../constants/colors";
 
 const { Title, Text, Paragraph } = Typography;
 
@@ -88,7 +89,10 @@ function RegisterPage() {
   };
 
   return (
-    <div className="full d-flex align-items-center justify-content-center">
+    <div
+      className="full d-flex align-items-center justify-content-center"
+      style={{ backgroundColor: COLOR.greenSmoke }}
+    >
       <div
         style={{
           width: 1000,
