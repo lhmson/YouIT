@@ -15,3 +15,6 @@ export const LOGOUT = "LOGOUT";
 
 // user
 export const FETCH_USER = "FETCH_USER";
+
+// Search
+export const FETCH_SEARCH_USER = "FETCH_SEARCH_USER";

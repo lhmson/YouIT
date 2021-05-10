@@ -22,33 +22,6 @@ export const getPosts = async (req, res) => {
   }
 };
 
-// GET post/:id
-export const getAPost = async (req, res) => {
-  const { id } = req.params;
-
-  try {
-    const post = await Post.findById(id)
-      .populate("userId")
-      .then((post) => {
-        return res.status(200).json("yey");
-      })
-      .catch((err) => {
-        return res.status(404).json(`Cannot find a post with id: ${id}`);
-      });
-
-    if (!post)
-      return res
-        .status(httpStatusCodes.notFound)
-        .json(`Cannot find a post with id: ${id}`);
-
-    return res.status(httpStatusCodes.ok).json(post);
-  } catch (error) {
-    res
-      .status(httpStatusCodes.internalServerError)
-      .json({ message: error.message });
-  }
-};
-
 // POST post/
 export const createPost = async (req, res) => {
   const post = req.body;
