@@ -12,6 +12,7 @@ import {
   Divider,
   Menu,
   Dropdown,
+  message,
 } from "antd";
 import {
   EllipsisOutlined,
@@ -27,31 +28,14 @@ import {
 import styles from "./styles";
 import COLOR from "../../constants/colors";
 import CommentForm from "../CommentForm/CommentForm";
-import ReplyCommentForm from "../CommentForm/ReplyCommentForm/ReplyCommentForm";
 import { Link } from "react-router-dom";
 
 const { Title, Text, Paragraph } = Typography;
 
-const menuMore = (
-  <Menu>
-    <Menu.Item key="0">
-      <Row align="middle">
-        <EditOutlined className="mr-2" />
-        <Text>Edit comment</Text>
-      </Row>
-    </Menu.Item>
-    <Menu.Item key="1">
-      <Row align="middle">
-        <DeleteFilled className="red mr-2" />
-        <Text className="red">Delete comment</Text>
-      </Row>
-    </Menu.Item>
-  </Menu>
-);
-
 function Comment({ comment, onReplySubmit }) {
   const [isReply, setIsReply] = useState(false);
-  const handleMore = () => {};
+  const [isEdit, setIsEdit] = useState(false);
+
   const handleReply = () => {
     setIsReply(1 - isReply);
     console.log("comment", comment);
@@ -60,6 +44,35 @@ function Comment({ comment, onReplySubmit }) {
     onReplySubmit(comment?._id, inputComment);
     setIsReply(false);
   };
+  const onMoreSelect = ({ key }) => {
+    switch (key) {
+      case 0:
+        setIsEdit(true);
+        break;
+      case 1:
+        handleDelete();
+        break;
+      default:
+        break;
+    }
+  };
+  const handleDelete = () => {};
+  const menuMore = (
+    <Menu onClick={onMoreSelect}>
+      <Menu.Item key="0">
+        <Row align="middle">
+          <EditOutlined className="mr-2" />
+          <Text>Edit comment</Text>
+        </Row>
+      </Menu.Item>
+      <Menu.Item key="1">
+        <Row align="middle">
+          <DeleteFilled className="red mr-2" />
+          <Text className="red">Delete comment</Text>
+        </Row>
+      </Menu.Item>
+    </Menu>
+  );
 
   return (
     <div>
@@ -99,64 +112,72 @@ function Comment({ comment, onReplySubmit }) {
             trigger={["click"]}
             placement="bottomRight"
           >
-            <div className="clickable" onClick={handleMore}>
+            <div className="clickable">
               <EllipsisOutlined className="clickable icon" />
             </div>
           </Dropdown>
         </Row>
       </Row>
-      {comment?.quotedCommentId ? (
-        <div className="p-3 mb-3" style={{ backgroundColor: COLOR.whiteSmoke }}>
-          <Row
-            style={{ justifyContent: "space-between", alignItems: "center" }}
-          >
-            <a className="black bold clickable" strong>
-              {`${comment?.quotedCommentId?.userId?.name}'s comment`}
-            </a>
-            <Text className="clickable" underline type="secondary">
-              Last edited{" "}
-              {comment?.quotedCommentId?.updatedAt?.toString().slice(0, 10)}
-            </Text>
-          </Row>
-          <Paragraph style={{ color: COLOR.gray, marginBottom: 0 }}>
-            {comment?.quotedCommentId?.content}
-          </Paragraph>
-          {/* <br />
+      {
+        <div>
+          {comment?.quotedCommentId ? (
+            <div
+              className="p-3 mb-3"
+              style={{ backgroundColor: COLOR.whiteSmoke }}
+            >
+              <Row
+                style={{
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                }}
+              >
+                <a className="black bold clickable" strong>
+                  {`${comment?.quotedCommentId?.userId?.name}'s comment`}
+                </a>
+                <Text className="clickable" underline type="secondary">
+                  Last edited{" "}
+                  {comment?.quotedCommentId?.updatedAt?.toString().slice(0, 10)}
+                </Text>
+              </Row>
+              <Paragraph style={{ color: COLOR.gray, marginBottom: 0 }}>
+                {comment?.quotedCommentId?.content}
+              </Paragraph>
+              {/* <br />
           <a className="clickable green bold" href="#" target="_blank" strong>
             See full comment
           </a> */}
+            </div>
+          ) : null}
+          <div className="pb-2">
+            <Paragraph>{comment?.content}</Paragraph>
+          </div>
+          <Row className="justify-content-between mb-4">
+            <Row>
+              <Space size="large">
+                <Space>
+                  <ArrowUpOutlined className="clickable icon" />
+                  <Text strong>150</Text>
+                  <ArrowDownOutlined className="clickable icon" />
+                </Space>
+                <Text onClick={handleReply} className="clickable" strong>
+                  {isReply ? `Discard` : `Reply`}
+                </Text>
+              </Space>
+            </Row>
+            <Row>
+              <Space size="large">
+                <LinkOutlined className="clickable icon" />
+              </Space>
+            </Row>
+          </Row>
+          {isReply ? (
+            <CommentForm
+              onSubmit={handleSubmit}
+              label={`Replying to ${comment?.userId?.name}'s comment`}
+            />
+          ) : null}
         </div>
-      ) : null}
-      <div className="pb-2">
-        <Paragraph>{comment?.content}</Paragraph>
-      </div>
-      <Row className="justify-content-between mb-4">
-        <Row>
-          <Space size="large">
-            <Space>
-              <ArrowUpOutlined className="clickable icon" />
-              <Text strong>150</Text>
-              <ArrowDownOutlined className="clickable icon" />
-            </Space>
-            <Text
-              onClick={handleReply}
-              className="clickable"
-              strong
-            >{`Reply`}</Text>
-          </Space>
-        </Row>
-        <Row>
-          <Space size="large">
-            <LinkOutlined className="clickable icon" />
-          </Space>
-        </Row>
-      </Row>
-      {isReply ? (
-        <ReplyCommentForm
-          onSubmit={handleSubmit}
-          targetName={comment?.userId?.name}
-        />
-      ) : null}
+      }
       <Divider />
     </div>
   );

@@ -5,7 +5,7 @@ const { TextArea } = Input;
 
 const { Option } = Select;
 
-function CommentForm({ onSubmit }) {
+function CommentForm({ onSubmit, label }) {
   const [inputComment, setInputComment] = useState(null);
   const [errors, setErrors] = useState({});
   const [form] = Form.useForm();
@@ -38,7 +38,7 @@ function CommentForm({ onSubmit }) {
       name="control-hooks"
       onFinish={handleFinish}
     >
-      <Form.Item name="userComment" label="Comment to this post">
+      <Form.Item name="userComment" label={label}>
         <TextArea
           style={{ height: 200 }}
           onChange={(e) => setInputComment({ content: e.target.value })}

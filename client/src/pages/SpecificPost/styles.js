@@ -1,6 +1,6 @@
 const styles = {
   mainArea: {
-    padding: 24,
+    padding: 32,
     marginTop: 64,
   },
   relatedPanel: {

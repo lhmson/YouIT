@@ -82,7 +82,10 @@ function SpecificPost(props) {
             <div className="mr-4  ">
               <Card style={{ padding: 16 }}>
                 <FullPost post={post} />
-                <CommentForm onSubmit={handleSubmit} />
+                <CommentForm
+                  onSubmit={handleSubmit}
+                  label="Comment to this post"
+                />
                 <Title className="mb-4" level={2}>
                   {`Comments (${comments?.length})`}
                 </Title>
