@@ -132,6 +132,17 @@ function RegisterPage() {
                       required: true,
                       message: "Email is required.",
                     },
+                    ({ getFieldValue }) => ({
+                      validator(_, value) {
+                        console.log("value", value.length);
+                        if (value.length >= 6) {
+                          return Promise.resolve();
+                        }
+                        return Promise.reject(
+                          new Error("Password must be at least 6 characters.")
+                        );
+                      },
+                    }),
                   ]}
                 >
                   <Input
@@ -148,6 +159,17 @@ function RegisterPage() {
                       required: true,
                       message: "Password is required.",
                     },
+                    ({ getFieldValue }) => ({
+                      validator(_, value) {
+                        console.log("value", value.length);
+                        if (value.length >= 6) {
+                          return Promise.resolve();
+                        }
+                        return Promise.reject(
+                          new Error("Password must be at least 6 characters.")
+                        );
+                      },
+                    }),
                   ]}
                 >
                   <Input.Password
@@ -172,9 +194,7 @@ function RegisterPage() {
                           return Promise.resolve();
                         }
                         return Promise.reject(
-                          new Error(
-                            "The two passwords that you entered do not match!"
-                          )
+                          new Error("Password does not match!")
                         );
                       },
                     }),

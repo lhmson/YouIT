@@ -23,6 +23,7 @@ export const signup = (formData, router) => async (dispatch) => {
     router.push("/login");
   } catch (error) {
     console.log(error);
+    message.error("This email has already been used.");
   }
 };
 
