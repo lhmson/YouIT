@@ -77,11 +77,23 @@ function Comment({ comment, onReply, onEdit, onDelete }) {
     </Menu>
   );
   const renderEdit = () => {
-    return <CommentForm label="Edit comment" onSubmit={handleEdit} />;
+    const handleDiscard = () => {
+      setIsEdit(false);
+    };
+    return (
+      <CommentForm
+        label="Edit comment"
+        onSubmit={handleEdit}
+        onDiscard={handleDiscard}
+      />
+    );
   };
   const handleEdit = (newComment) => {
     setIsEdit(false);
     onEdit(comment?._id, newComment);
+  };
+  const handleDiscardReply = () => {
+    setIsReply(false);
   };
 
   return (
@@ -186,6 +198,7 @@ function Comment({ comment, onReply, onEdit, onDelete }) {
             <CommentForm
               onSubmit={handleSubmit}
               label={`Replying to ${comment?.userId?.name}'s comment`}
+              onDiscard={handleDiscardReply}
             />
           ) : null}
         </div>

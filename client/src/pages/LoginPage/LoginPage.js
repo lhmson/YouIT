@@ -127,7 +127,7 @@ function LoginPage() {
                 <Form.Item style={{ marginBottom: 16 }}>
                   <Button
                     style={{ width: "100%" }}
-                    className="green-container"
+                    className="green-button"
                     htmlType="submit"
                   >
                     Sign in

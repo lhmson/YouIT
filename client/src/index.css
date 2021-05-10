@@ -76,20 +76,54 @@ body {
   cursor: pointer;
 }
 
-.green-container {
+.green-button {
   background-color: var(--green);
   border-color: var(--green);
   color: white;
 }
 
-.green-container:hover {
+.green-button:hover {
   background-color: var(--green-smoke);
   border-color: var(--green);
   color: var(--green);
 }
 
-.green-container:focus {
+.green-button:focus {
   background-color: var(--green-smoke);
+  border-color: var(--green);
+  color: var(--green);
+}
+
+.greensmoke-button {
+  background-color: var(--green-smoke);
+  border-color: var(--green-smoke);
+  color: var(--dark-green);
+}
+
+.greensmoke-button:hover {
+  background-color: white;
+  border-color: var(--green);
+  color: var(--dark-green);
+}
+
+.greensmoke-button:focus {
+  background-color: white;
+  border-color: var(--green);
+  color: var(--dark-green);
+}
+
+.white-button {
+  background-color: white;
+  border-color: Gainsboro;
+  color: var(--black);
+}
+
+.white-button:hover {
+  border-color: var(--green);
+  color: var(--green);
+}
+
+.white-button:focus {
   border-color: var(--green);
   color: var(--green);
 }

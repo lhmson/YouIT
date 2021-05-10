@@ -96,10 +96,10 @@ function SpecificPost(props) {
                   onSubmit={handleSubmitComment}
                   label="Comment to this post"
                 />
+
                 <Title className="mb-4" level={2}>
                   {`Comments (${comments?.length})`}
                 </Title>
-
                 {comments?.map((c) => (
                   <Comment
                     comment={c}

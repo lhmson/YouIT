@@ -277,7 +277,7 @@ function RegisterPage() {
                 <Form.Item style={{}}>
                   <Button
                     style={{ width: "100%" }}
-                    className="green-container"
+                    className="green-button"
                     htmlType="submit"
                   >
                     Create account
