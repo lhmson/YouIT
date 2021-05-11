@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Card,
   Button,
@@ -41,14 +41,16 @@ function LoginPage() {
   const [user, setUser] = useLocalStorage("user");
   const dispatch = useDispatch();
   const history = useHistory();
+
   const [token, setToken] = useToken();
+
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
   const handleFinish = async (values) => {
-    await dispatch(signin(form, history, setUser, setToken));
+    dispatch(signin(form, history, setUser, token, setToken));
   };
 
   const handleFinishFailed = (errorInfo) => {

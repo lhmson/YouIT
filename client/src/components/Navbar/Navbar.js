@@ -40,9 +40,8 @@ function Navbar({ selectedMenu }) {
   const handleMessage = () => alert("handle message");
 
   const handleLogOut = async () => {
-    await dispatch(logout(setUser, setToken));
+    await dispatch(logout(setUser, token, setToken));
     history.push("/login");
-    setUser(null);
   };
 
   // useEffect(() => {

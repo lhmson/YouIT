@@ -51,9 +51,7 @@ export default class CuteClientIO {
     this.#socket.on("connect", () => {
       this.#socketId = this.#socket.id;
       console.log(
-        `[IO] Connected to server token ${token}. Socket ID: ${
-          this.#socketId
-        } at ${this.#uri}`
+        `[IO] Connected to server with token ${token}. Socket ID: ${this.#socketId} at ${this.#uri}`
       );
 
       this.onReceiveMulti(this.#queueEventHandlersOnConnection);
