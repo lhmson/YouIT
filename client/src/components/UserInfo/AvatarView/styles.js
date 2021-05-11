@@ -4,7 +4,7 @@ const styles = {
   editImageBtn: {
     position: "absolute",
     right: "5%",
-    bottom: "40%",
+    bottom: "30%",
   },
   avatar: {
     background: COLOR.white,

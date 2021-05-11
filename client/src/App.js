@@ -50,16 +50,17 @@ function App() {
           </Route>
           <PrivateRoute exact path="/feed" component={FeedPage} />
           <PrivateRoute exact path="/post/create" component={CreatePostPage} />
-          <Route exact path="/userinfo" exct component={UserInfoPage} />
+          <Route path="/userinfo/:id" exact component={UserInfoPage} />
           <Route exact path="/post/:id" component={SpecificPost} />
           <Route exact path="/search" component={UserResultSearchPage} />
           <Route exact path="/requests" component={RequestsInGroupsPage} />
           <Route exact path="/wall" component={WallPage} />
-          <Route exact path="/userinfo/about" component={AboutPage} />
+          <Route path="/userinfo/:id/about" component={AboutPage} />
           <Route exact path="/group" component={GroupPage} />
           <Route exact path="/group/about" component={GroupAboutPage} />
           <Route exact path="/friends" component={FriendMangementPage} />
           <Route path="/demoSocketIO" component={DemoSocket} />
+
           <Route>
             <ErrorPage code="500" />
           </Route>

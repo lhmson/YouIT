@@ -1,23 +1,33 @@
 import React, { useState, useEffect } from "react";
-import { Layout } from "antd";
+import { Col, Layout, Row } from "antd";
 import styles from "./styles.js";
 
 import Navbar from "../../components/Navbar/Navbar";
 import {
-  AboutCard,
   AvatarView,
   ListButtons,
-  FriendManager,
+  IntroCard,
+  FeedPosts,
 } from "../../components/index";
 
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { getPosts } from "../../redux/actions/posts";
+import { useParams } from "react-router";
+import { getUser } from "../../redux/actions/user.js";
 
 const { Content } = Layout;
 
 function UserInfoPage() {
+  let { id } = useParams();
+
   const [currentId, setCurrentId] = useState(null);
+
+  const user = useSelector((state) => state.user);
   const dispatch = useDispatch();
+
+  useEffect(async () => {
+    dispatch(getUser(id));
+  }, []);
 
   useEffect(() => {
     dispatch(getPosts());
@@ -27,12 +37,31 @@ function UserInfoPage() {
     <>
       <Layout>
         <Navbar />
+        <Layout style={styles.avatarView}>
+          <Content
+            className="container"
+            style={{
+              padding: 8,
+            }}
+          >
+            <AvatarView></AvatarView>
+            <Row style={{ marginLeft: 16, marginTop: 32 }}>
+              <Col span={12}>
+                <ListButtons />
+              </Col>
+            </Row>
+          </Content>
+        </Layout>
         <Layout style={styles.mainArea}>
-          <Content className="container" style={{ padding: 16 }}>
-            <AvatarView displayName="Thao cute dang yeu"></AvatarView>
-            <ListButtons />
-            <AboutCard></AboutCard>
-            <FriendManager />
+          <Content className="container">
+            <Row>
+              <Col span={8}>
+                <IntroCard />
+              </Col>
+              <Col span={16}>
+                <FeedPosts />
+              </Col>
+            </Row>
           </Content>
         </Layout>
       </Layout>

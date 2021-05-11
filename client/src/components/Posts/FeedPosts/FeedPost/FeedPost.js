@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   Avatar,
   Typography,
@@ -23,6 +23,12 @@ import moment from "moment";
 import { useDispatch } from "react-redux";
 import { useLocalStorage } from "../../../../hooks/useLocalStorage";
 import styles from "./styles";
+import {
+  upvotePost,
+  unvotePost,
+  getMyInteractions,
+} from "../../../../api/post";
+import COLOR from "../../../../constants/colors";
 
 const { Title, Text, Paragraph, Link } = Typography;
 
@@ -48,7 +54,40 @@ function FeedPost({ post, setCurrentId }) {
 
   const [user, setUser] = useLocalStorage("user");
 
+  const [myInteractions, setMyInteractions] = useState({});
+
   const tagList = ["tag 1", "tag 2", "tag 3", "tag 4"];
+
+  const handleUpvoteClick = async (id) => {
+    if (myInteractions?.upvote) {
+      await unvotePost(id)
+        .then((res) => {
+          alert("unvote", JSON.stringify(res.data));
+          fetchMyInteractions();
+        })
+        .catch((error) => alert(error.message));
+    } else {
+      await upvotePost(id)
+        .then((res) => {
+          alert("upvote", JSON.stringify(res.data));
+          fetchMyInteractions();
+        })
+        .catch((error) => alert(error.message));
+    }
+  };
+
+  const fetchMyInteractions = () => {
+    getMyInteractions(post._id)
+      .then((res) => setMyInteractions(res.data))
+      .catch((error) => {
+        alert("Something goes wrong with post interactions");
+        console.log(error);
+      });
+  };
+
+  useEffect(() => {
+    fetchMyInteractions();
+  }, []);
 
   const copyLink = (id) => {
     navigator.clipboard
@@ -73,13 +112,15 @@ function FeedPost({ post, setCurrentId }) {
             <div className="d-inline-flex flex-column ml-3">
               <Row className="align-items-center">
                 <Space size={4}>
-                  <Text
-                    className="clickable"
-                    strong
-                    style={{ fontSize: "1.2rem" }}
-                  >
-                    {post?.userId?.name}
-                  </Text>
+                  <Link href={`/userinfo/${post?.userId._id}`} target="_blank">
+                    <Text
+                      className="clickable"
+                      strong
+                      style={{ fontSize: "1.2rem" }}
+                    >
+                      {post?.userId?.name}
+                    </Text>
+                  </Link>
                 </Space>
               </Row>
               <Text>Fullstack Developer</Text>
@@ -88,7 +129,7 @@ function FeedPost({ post, setCurrentId }) {
           <Row className="justify-content-end align-items-center pb-3">
             <MdPublic className="gray mr-1" style={{ fontSize: 16 }} />
             <div className="mr-4">
-              <Text type="secondary">Public</Text>
+              <Text type="secondary">{post?.privacy}</Text>
             </div>
             <div className="mr-4">
               <Text className="clickable" underline type="secondary">
@@ -138,7 +179,13 @@ function FeedPost({ post, setCurrentId }) {
           <Row>
             <Space size="large">
               <Space>
-                <ArrowUpOutlined className="clickable icon" />
+                <ArrowUpOutlined
+                  className="clickable icon"
+                  style={{
+                    color: myInteractions?.upvote ? COLOR.green : COLOR.black,
+                  }}
+                  onClick={() => handleUpvoteClick(post._id)}
+                />
                 <Text strong>{post.interactionInfo?.listUpvotes.length}</Text>
                 <Text strong>{post.interactionInfo?.listDownvotes.length}</Text>
                 <ArrowDownOutlined className="clickable icon" />

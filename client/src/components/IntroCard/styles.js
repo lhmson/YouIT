@@ -26,8 +26,9 @@ const styles = {
   },
   backgroundheader: {
     background: "white",
-    width: 350,
-    height: 350,
+    // width: 350,
+    minHeight: 300,
+    marginTop: 24,
   },
   editinfo: {
     width: 200,

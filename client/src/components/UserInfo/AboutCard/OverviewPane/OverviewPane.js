@@ -1,5 +1,5 @@
-import React from "react";
-import { useSelector } from "react-redux";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 import {
   IoSchoolSharp,
@@ -10,16 +10,43 @@ import {
   FaMale,
   FaBirthdayCake,
 } from "react-icons/all";
+import moment from "moment";
 
-import OverviewRow from "../OverviewRow/OverviewRow.js";
 import styles from "./styles.js";
+import EditableTimePeriod from "./EditableTimePeriod/EditableTimePeriod.js";
+import EditableText from "./EditableText/EditableText.js";
+import EditableCombobox from "./EditableCombobox/EditableCombobox.js";
+import EditableTime from "./EditableTime/EditableTime.js";
+
+import { updateUser } from "../../../../redux/actions/user";
+import { isLoginUser } from "../../../../utils/user.js";
 
 const OverviewPane = () => {
   const user = useSelector((state) => state.user);
+  const dispatch = useDispatch();
 
-  const dateOfBirth = user?.userInfo?.dateOfBirth;
-  const address = user?.userInfo?.address ?? "VietNam";
-  const workLocation = user?.userInfo?.workLocation ?? "VietNam";
+  const isMyProfile = isLoginUser(user);
+  console.log("imp ", isMyProfile);
+
+  const [dateOfBirth, setDateOfBirth] = useState(
+    moment(user?.userInfo?.dateOfBirth).format("DD/MM/YYYY")
+  );
+
+  const [address, setAddress] = useState(user?.userInfo?.address ?? "VietNam");
+
+  const [workLocation, setWorkLocation] = useState(
+    user?.userInfo?.workLocation ?? "VietNam"
+  );
+
+  const [gender, setGender] = useState(user?.userInfo?.gender);
+
+  useEffect(() => {
+    setAddress(user?.userInfo?.address ?? "VietNam");
+    setWorkLocation(user?.userInfo?.workLocation ?? "VietNam");
+    setGender(user?.userInfo?.gender);
+    setDateOfBirth(moment(user?.userInfo?.dateOfBirth).format("DD/MM/YYYY"));
+  }, [user]);
+
   // const dateOfBirth = {
   //   $convert: {
   //     input: user?.userInfo?.dateOfBirth,
@@ -28,44 +55,115 @@ const OverviewPane = () => {
   // };
   //const dateOfBirth = Number(moment(d).tz(timezone).format("YYYYMMDD"));
 
-  const publicIcon = () => {
-    return <MdPublic style={styles.icon} />;
+  const genderOptions = [
+    {
+      value: "Male",
+      label: "Male",
+    },
+    {
+      value: "Female",
+      label: "Female",
+    },
+    {
+      value: "Others",
+      label: "Others",
+    },
+  ];
+
+  const saveSchool = () => {};
+
+  const saveAddress = () => {
+    const updatedUser = { ...user, userInfo: { ...user.userInfo, address } };
+    //console.log(updatedUser);
+    dispatch(updateUser(updatedUser));
+  };
+
+  const saveWorkLocation = () => {
+    const updatedUser = {
+      ...user,
+      userInfo: { ...user.userInfo, workLocation },
+    };
+    //console.log(updatedUser);
+    dispatch(updateUser(updatedUser));
+  };
+
+  const saveGender = () => {
+    const updatedUser = {
+      ...user,
+      userInfo: { ...user.userInfo, gender },
+    };
+    //console.log(updatedUser);
+    dispatch(updateUser(updatedUser));
+  };
+
+  const saveBirthday = () => {
+    const updatedUser = {
+      ...user,
+      userInfo: { ...user.userInfo, dateOfBirth },
+    };
+    //console.log(updatedUser);
+    dispatch(updateUser(updatedUser));
   };
 
   return (
     <div>
-      <OverviewRow
+      {/* <EditableTimePeriod
         firstIcon={<IoSchoolSharp style={styles.icon} />}
         text="Went to Truong THPT Gia Dinh"
         subText="Attended from 2015 to 2018"
-        privacyIcon={publicIcon()}
-        lastIcon={<BsThreeDots style={styles.icon} />}
-      />
-      <OverviewRow
+        placeholder="School"
+        onSave={saveSchool}
+      /> */}
+      <EditableText
         firstIcon={<IoHome style={styles.icon} />}
         text={address}
-        privacyIcon={publicIcon()}
-        lastIcon={<BsThreeDots style={styles.icon} />}
+        placeholder="Address"
+        onChange={(value) => setAddress(value.target.value)}
+        onSave={saveAddress}
+        setPreviousState={() => {
+          setAddress(user?.userInfo?.address ?? "VietNam");
+        }}
+        editable={isMyProfile}
       />
-      <OverviewRow
+      <EditableText
         firstIcon={<MdLocationOn style={styles.icon} />}
         text={workLocation}
-        privacyIcon={publicIcon()}
-        lastIcon={<BsThreeDots style={styles.icon} />}
+        placeholder="Work location"
+        onChange={(value) => setWorkLocation(value.target.value)}
+        onSave={saveWorkLocation}
+        setPreviousState={() => {
+          setWorkLocation(user?.userInfo?.workLocation ?? "VietNam");
+        }}
+        editable={isMyProfile}
       />
-      <OverviewRow
+      <EditableCombobox
         firstIcon={<FaMale style={styles.icon} />}
-        text={user?.userInfo?.gender}
+        text={gender}
         subText="Gender"
-        privacyIcon={publicIcon()}
-        lastIcon={<BsThreeDots style={styles.icon} />}
+        options={genderOptions}
+        onSave={saveGender}
+        onChange={(value) => {
+          setGender(value[0]);
+        }}
+        setPreviousState={() => {
+          setGender(user?.userInfo?.gender);
+        }}
+        editable={isMyProfile}
       />
-      <OverviewRow
+      <EditableTime
         firstIcon={<FaBirthdayCake style={styles.icon} />}
         text={dateOfBirth}
         subText="Birthday"
-        privacyIcon={publicIcon()}
-        lastIcon={<BsThreeDots style={styles.icon} />}
+        onSave={saveBirthday}
+        onChange={(date) => {
+          setDateOfBirth(moment(date).format());
+        }}
+        setPreviousState={() => {
+          setDateOfBirth(
+            moment(user?.userInfo?.dateOfBirth).format("DD/MM/YYYY")
+          );
+        }}
+        editable={isMyProfile}
       />
     </div>
   );
