@@ -1901,7 +1901,7 @@
   dependencies:
     "@types/react" "*"
 
-"@types/react@*", "@types/react@>=16", "@types/react@>=16.9.11", "@types/react@>=16.9.35":
+"@types/react@*", "@types/react@>=16.9.11", "@types/react@>=16.9.35":
   "integrity" "sha512-wYOUxIgs2HZZ0ACNiIayItyluADNbONl7kt8lkLjVK8IitMH5QMyAh75Fwhmo37r1m7L2JaFj03sIfxBVDvRAg=="
   "resolved" "https://registry.npmjs.org/@types/react/-/react-17.0.3.tgz"
   "version" "17.0.3"
@@ -10415,7 +10415,7 @@
   "resolved" "https://registry.npmjs.org/react-dom-factories/-/react-dom-factories-1.0.2.tgz"
   "version" "1.0.2"
 
-"react-dom@^17.0.2", "react-dom@>=16.8.0":
+"react-dom@^17.0.2":
   "integrity" "sha512-s4h96KtLDUQlsENhMn1ar8t2bEa+q/YAtj8pPPdIjPDGBDIVNsrD9aXNWqspUe6AzKCIG0C1HZZLqLV7qpOBGA=="
   "resolved" "https://registry.npmjs.org/react-dom/-/react-dom-17.0.2.tgz"
   "version" "17.0.2"
@@ -10639,7 +10639,7 @@
     "object-assign" "^4.1.0"
     "prop-types" "^15.5.10"
 
-"react@^16.0 || ^17.0", "react@^17.0.2", "react@>=16", "react@>=16.8.0":
+"react@^17.0.2":
   "integrity" "sha512-gnhPt75i/dq/z3/6q/0asP78D0u592D5L1pd7M8P+dck6Fu/jJeL6iVVK23fptSUZj8Vjf++7wXA8UNclGQcbA=="
   "resolved" "https://registry.npmjs.org/react/-/react-17.0.2.tgz"
   "version" "17.0.2"
@@ -11625,9 +11625,9 @@
     "use" "^3.1.0"
 
 "socket.io-client@^4.0.1":
-  "integrity" "sha512-6AkaEG5zrVuSVW294cH1chioag9i1OqnCYjKwTc3EBGXbnyb98Lw7yMa40ifLjFj3y6fsFKsd0llbUZUCRf3Qw=="
-  "resolved" "https://registry.npmjs.org/socket.io-client/-/socket.io-client-4.0.1.tgz"
-  "version" "4.0.1"
+  "integrity" "sha512-z6Hw9Cs+cc7BEkSPlDrtHFpAI++xXMklG9iEEyPJdK4WcFcVrhrXcczYVDZmV3GIpFed5hL3LEXhpnmMy8DqDg=="
+  "resolved" "https://registry.npmjs.org/socket.io-client/-/socket.io-client-4.0.2.tgz"
+  "version" "4.0.2"
   dependencies:
     "@types/component-emitter" "^1.2.10"
     "backo2" "~1.0.2"
