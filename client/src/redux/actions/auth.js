@@ -11,7 +11,7 @@ export const signin = (formData, router) => async (dispatch) => {
     message.success("Login successfully!");
   } catch (error) {
     console.log(error);
-    message.error("Wrong email or password, try again!");
+    message.error("Something went wrong, try again!");
   }
 };
 

@@ -101,7 +101,7 @@ function FullPost(props) {
             </div>
             <div className="mr-4">
               <Text className="clickable" underline type="secondary">
-                Last edited {post?.updatedAt.toString().slice(0, 10)}
+                Last edited {post?.updatedAt?.toString().slice(0, 10)}
               </Text>
             </div>
             <Dropdown

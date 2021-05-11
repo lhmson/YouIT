@@ -53,9 +53,9 @@ function SpecificPost(props) {
   ];
 
   const { id } = props.match.params;
-  const [post, setPost] = useState(null);
-  const [comments, setComments] = useState(null);
-  const [otherPosts, setOtherPosts] = useState(null);
+  const [post, setPost] = useState([]);
+  const [comments, setComments] = useState([]);
+  const [otherPosts, setOtherPosts] = useState([]);
   const [sort, setSort] = useState(sorts[0]);
 
   const fetchPost = async () => {
@@ -93,7 +93,6 @@ function SpecificPost(props) {
 
   const handleSubmitComment = async (newComment) => {
     await commentsApi.createComment(post._id, newComment);
-    console.log("handle submit comment", newComment);
     fetchComments();
   };
 
