@@ -12,17 +12,21 @@ import GroupCard from "../../../components/GroupCard/GroupCard";
 const { Content } = Layout;
 const { Title, Text } = Typography;
 
-const SearchUserResult = (props) => {
-  // const { listFriends } = props;
-
-  let listUser = [
+function SearchUserResult({ userNameSearch }) {
+  let listAllUser = [
     { userName: "Sanh" },
+    { userName: "Sanh cute" },
+    { userName: "Sanh đẹp trai" },
     { userName: "Thảo" },
     { userName: "Tiến" },
     { userName: "Sơn" },
     { userName: "Hậu" },
     { userName: "Nghĩa" },
   ];
+
+  let txtSearch = userNameSearch ?? "";
+
+  let listUser = listAllUser.filter((x) => x.userName.includes(txtSearch));
 
   const listUserCardLeft = listUser.map((user, i) => {
     if (i % 2 == 0) return <UserCard name={user.userName}></UserCard>;
@@ -52,6 +56,6 @@ const SearchUserResult = (props) => {
       </div>
     </div>
   );
-};
+}
 
 export default SearchUserResult;

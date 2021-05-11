@@ -19,7 +19,7 @@ const { Header } = Layout;
 const { Text } = Typography;
 const { Search } = Input;
 
-function Navbar({ selectedMenu }) {
+function Navbar({ selectedMenu, setTxtSearch }) {
   const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")));
   const inputRef = useRef();
 
@@ -28,7 +28,7 @@ function Navbar({ selectedMenu }) {
   const history = useHistory();
 
   const handleSearch = () => {
-    console.log(inputRef.current.state.value);
+    setTxtSearch(inputRef.current.state.value);
   };
 
   const handleNoti = () => alert("handle noti");

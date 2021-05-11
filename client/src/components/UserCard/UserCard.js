@@ -7,7 +7,9 @@ const { Title, Text } = Typography;
 
 function UserCard(props) {
   const { name } = props;
-
+  const [txtButton, setTxtButton] = React.useState(
+    props.relationship ?? "Add friend"
+  );
   return (
     <>
       <div style={styles.card}>
@@ -49,6 +51,10 @@ function UserCard(props) {
           >
             <Button
               type="primary"
+              onClick={() => {
+                if (txtButton === "Add friend") setTxtButton("Cancel Request");
+                else setTxtButton("Add friend");
+              }}
               style={{
                 background: "#27AE60",
                 borderColor: "#27AE60",
@@ -56,7 +62,7 @@ function UserCard(props) {
                 fontWeight: 500,
               }}
             >
-              Kết bạn
+              {txtButton}
             </Button>
             <div>
               <Text style={styles.text}>12 bạn chung</Text>
