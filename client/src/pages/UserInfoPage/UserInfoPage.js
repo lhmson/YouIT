@@ -26,7 +26,7 @@ function UserInfoPage() {
   return (
     <>
       <Layout>
-        <Navbar selectedMenu="userinfo" />
+        <Navbar />
         <Layout style={styles.mainArea}>
           <Content className="container" style={{ padding: 16 }}>
             <AvatarView displayName="Thao cute dang yeu"></AvatarView>

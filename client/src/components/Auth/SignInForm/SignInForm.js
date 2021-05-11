@@ -1,15 +1,14 @@
 import React, { useState, useEffect } from "react";
-import { Form, Input, Button, Checkbox, Upload, Typography } from "antd";
+import { Form, Input, Button, Typography } from "antd";
 import styles from "./styles";
-import FileBase from "react-file-base64";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { signin } from "../../../redux/actions/auth";
 import { useHistory } from "react-router-dom";
 import { useLocalStorage } from "../../../hooks/useLocalStorage.js";
 
 import { GoogleLogIn } from "react-google-login";
 
-const { Title, Text } = Typography;
+const { Title } = Typography;
 
 const initialState = {
   email: "",

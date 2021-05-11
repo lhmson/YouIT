@@ -30,6 +30,7 @@ import { useHistory } from "react-router";
 import moment from "moment";
 import COLOR from "../../constants/colors";
 import { useLocalStorage } from "../../hooks/useLocalStorage";
+import { useToken } from "../../context/TokenContext";
 
 const { Title, Text, Paragraph } = Typography;
 
@@ -51,6 +52,7 @@ function RegisterPage() {
   const [dobError, setDobError] = useState(null);
   const dispatch = useDispatch();
   const history = useHistory();
+  const [token, setToken] = useToken();
 
   const handleChange = (e) => {
     setForm({ ...form, [e?.target.name]: e?.target.value });
@@ -106,7 +108,9 @@ function RegisterPage() {
           <Row>
             <Col span={12} style={{ paddingRight: 24, marginBottom: 0 }}>
               <Row>
-                <img src={logo} alt="Logo" height="58" className="mr-2" />
+                <Link to="/">
+                  <img src={logo} alt="Logo" height="58" className="mr-2" />
+                </Link>
                 <Title style={{ marginBottom: 8 }}>Register</Title>
               </Row>
               <div style={{ marginBottom: 16 }}>
@@ -134,6 +138,17 @@ function RegisterPage() {
                       required: true,
                       message: "Email is required.",
                     },
+                    ({ getFieldValue }) => ({
+                      validator(_, value) {
+                        console.log("value", value.length);
+                        if (value.length >= 6) {
+                          return Promise.resolve();
+                        }
+                        return Promise.reject(
+                          new Error("Password must be at least 6 characters.")
+                        );
+                      },
+                    }),
                   ]}
                 >
                   <Input
@@ -150,6 +165,17 @@ function RegisterPage() {
                       required: true,
                       message: "Password is required.",
                     },
+                    ({ getFieldValue }) => ({
+                      validator(_, value) {
+                        console.log("value", value.length);
+                        if (value.length >= 6) {
+                          return Promise.resolve();
+                        }
+                        return Promise.reject(
+                          new Error("Password must be at least 6 characters.")
+                        );
+                      },
+                    }),
                   ]}
                 >
                   <Input.Password
@@ -174,9 +200,7 @@ function RegisterPage() {
                           return Promise.resolve();
                         }
                         return Promise.reject(
-                          new Error(
-                            "The two passwords that you entered do not match!"
-                          )
+                          new Error("Password does not match!")
                         );
                       },
                     }),

@@ -10,7 +10,7 @@ import App from "./App";
 import { BrowserRouter } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./index.css";
-import { CuteClientIOProvider } from "./socket/CuteClientIOProvider";
+import { TokenProvider } from "./context/TokenContext";
 
 const store = createStore(reducers, compose(applyMiddleware(thunk)));
 
@@ -18,7 +18,9 @@ ReactDOM.render(
   <React.StrictMode>
     <BrowserRouter>
       <Provider store={store}>
-        <App />
+        <TokenProvider>
+          <App />
+        </TokenProvider>
       </Provider>
     </BrowserRouter>
   </React.StrictMode>,

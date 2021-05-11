@@ -25,6 +25,7 @@ import { useDispatch } from "react-redux";
 import { useHistory } from "react-router";
 import { Link } from "react-router-dom";
 import COLOR from "../../constants/colors";
+import { useToken } from "../../context/TokenContext";
 import { useLocalStorage } from "../../hooks/useLocalStorage";
 
 const { Title, Text, Paragraph } = Typography;
@@ -40,13 +41,14 @@ function LoginPage() {
   const [user, setUser] = useLocalStorage("user");
   const dispatch = useDispatch();
   const history = useHistory();
+  const [token, setToken] = useToken();
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
   const handleFinish = async (values) => {
-    await dispatch(signin(form, history, setUser));
+    await dispatch(signin(form, history, setUser, setToken));
   };
 
   const handleFinishFailed = (errorInfo) => {
@@ -71,7 +73,9 @@ function LoginPage() {
           <Row>
             <Col span={12} style={{ paddingRight: 24, marginBottom: 24 }}>
               <Row>
-                <img src={logo} alt="Logo" height="58" className="mr-2" />
+                <Link to="/">
+                  <img src={logo} alt="Logo" height="58" className="mr-2" />
+                </Link>
                 <Title style={{ marginBottom: 8 }}>Login</Title>
               </Row>
               <div style={{ marginBottom: 16 }}>
