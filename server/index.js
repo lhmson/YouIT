@@ -3,9 +3,8 @@ import bodyParser from "body-parser";
 import mongoose from "mongoose";
 import cors from "cors";
 import dotenv from "dotenv";
-import http from 'http'
-import { Server } from 'socket.io'
-
+import http from "http";
+import { Server } from "socket.io";
 
 import createError from "http-errors";
 import path, { dirname } from "path";
@@ -18,6 +17,7 @@ import postRouter from "./routes/post.js";
 import commentRouter from "./routes/comment.js";
 import userRouter from "./routes/user.js";
 import userInfoRouter from "./routes/user_info.js";
+import searchRouter from "./routes/search.js";
 import CuteServerIO from "./socket/CuteServerIO.js";
 import { setUpCuteIO } from "./socket/handlers/allHandlers.js";
 
@@ -29,9 +29,9 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: "*",//"http://localhost:3000",
-    methods: ["GET", "POST"]
-  }
+    origin: "*", //"http://localhost:3000",
+    methods: ["GET", "POST"],
+  },
 });
 
 export const cuteIO = new CuteServerIO(io);
@@ -56,6 +56,7 @@ app.use("/user", userRouter);
 app.use("/post", postRouter);
 app.use("/comment", commentRouter);
 app.use("/userInfo", userInfoRouter);
+app.use("/search", searchRouter);
 
 const PORT = process.env.PORT || 5000;
 

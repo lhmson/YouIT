@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Link, useHistory, useLocation } from "react-router-dom";
 import { Layout, Typography, Row, Input, Avatar, Button } from "antd";
 import styles from "./styles";
@@ -20,7 +20,8 @@ import { useToken } from "../../context/TokenContext";
 const { Header } = Layout;
 const { Text } = Typography;
 
-function Navbar({ selectedMenu }) {
+function Navbar({ selectedMenu, setTxtSearch }) {
+  // const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")));
   const [user, setUser] = useLocalStorage("user");
   const [token, setToken] = useToken();
   const inputRef = useRef();
@@ -29,7 +30,9 @@ function Navbar({ selectedMenu }) {
   const location = useLocation();
   const history = useHistory();
 
-  const handleSearch = () => console.log(inputRef.current.state.value);
+  const handleSearch = () => {
+    setTxtSearch(inputRef.current.state.value);
+  };
 
   const handleNoti = () => alert("handle noti");
 
@@ -60,9 +63,9 @@ function Navbar({ selectedMenu }) {
   // }, [location]);
 
   useEffect(() => {
-    return () => {
-      inputRef.current = false;
-    };
+    // return () => {
+    //   inputRef.current = false;
+    // };
   }, []);
 
   return (
@@ -83,10 +86,12 @@ function Navbar({ selectedMenu }) {
           onPressEnter={handleSearch}
           allowClear
           suffix={
-            <SearchOutlined
-              onClick={handleSearch}
-              style={{ fontSize: 24, color: COLOR.white }}
-            />
+            <Link to="/search">
+              <SearchOutlined
+                onClick={handleSearch}
+                style={{ fontSize: 24, color: COLOR.white }}
+              />
+            </Link>
           }
           ref={inputRef}
           bordered={false}

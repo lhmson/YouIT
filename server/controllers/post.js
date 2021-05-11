@@ -258,7 +258,9 @@ export const getOtherPosts = async (req, res) => {
       res.status(404).json("Invalid ID");
       return;
     }
-    const posts = await (await Post.find()).filter(
+    const posts = await (
+      await Post.find()
+    ).filter(
       (p) =>
         p.userId.toString() === excludedPost.userId.toString() &&
         p._id.toString() !== excludedPost._id.toString()
