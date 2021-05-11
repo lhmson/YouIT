@@ -31,6 +31,7 @@ function Navbar({ selectedMenu, setTxtSearch }) {
   const history = useHistory();
 
   const handleSearch = () => {
+    if (setTxtSearch === undefined) return;
     setTxtSearch(inputRef.current.state.value);
   };
 
