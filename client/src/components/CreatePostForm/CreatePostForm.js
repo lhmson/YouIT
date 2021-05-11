@@ -30,8 +30,12 @@ function CreatePostForm() {
 
   const handleSavePostButtonClick = () => {
     const newPost = wrapPostData();
-    createPost(newPost);
-    history.push("/feed");
+    createPost(newPost)
+      .then((res) => history.push(`/post/${res.data._id}`))
+      .catch((error) => {
+        alert("Something goes wrong");
+        console.log(error);
+      });
   };
 
   return (

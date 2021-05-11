@@ -11,13 +11,6 @@ import FeedPosts from "../../components/Posts/FeedPosts/FeedPosts";
 const { Content } = Layout;
 
 function FeedPage() {
-  const [currentId, setCurrentId] = useState(null);
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    dispatch(getPosts());
-  }, [currentId, dispatch]);
-
   return (
     <>
       <Layout>

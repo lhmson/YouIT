@@ -1,5 +1,14 @@
 import React, { useEffect } from "react";
-import { Avatar, Typography, Row, Tag, Space, Menu, Dropdown } from "antd";
+import {
+  Avatar,
+  Typography,
+  Row,
+  Tag,
+  Space,
+  Menu,
+  Dropdown,
+  message,
+} from "antd";
 import { MdPublic } from "react-icons/md";
 import {
   EllipsisOutlined,
@@ -38,6 +47,16 @@ function FullPost(props) {
   const handleMore = () => {};
 
   const tagList = ["Tag 1", "Tag 2", "Tag 3", "Tag 4", "Tag 5"];
+
+  const copyLink = (id) => {
+    navigator.clipboard
+      .writeText(`localhost:3000/post/${id}`) // change to deployment link later
+      .then(() => message.success("Link copy successfully!"))
+      .catch((error) => {
+        message.error("Something goes wrong");
+        console.log(id);
+      });
+  };
 
   return (
     <div>
@@ -121,7 +140,10 @@ function FullPost(props) {
           </Row>
           <Row>
             <Space size="large">
-              <LinkOutlined className="clickable icon" />
+              <LinkOutlined
+                className="clickable icon"
+                onClick={() => copyLink(post._id)}
+              />
               <ShareAltOutlined className="clickable icon" />
             </Space>
           </Row>

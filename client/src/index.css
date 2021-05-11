@@ -14,7 +14,7 @@ body {
   --gray: #828282;
   --red: #eb5757;
 
-  overflow: auto;
+  /* overflow: auto; */
   /* height: 100vh;
   width: 100vw; */
 }

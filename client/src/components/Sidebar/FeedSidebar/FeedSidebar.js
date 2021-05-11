@@ -13,7 +13,7 @@ const { Sider } = Layout;
 const { Title, Text } = Typography;
 
 function FeedSidebar() {
-  const [user, setUser] = useLocalStorage("user");
+  const [user] = useLocalStorage("user");
 
   useEffect(() => {}, []);
 

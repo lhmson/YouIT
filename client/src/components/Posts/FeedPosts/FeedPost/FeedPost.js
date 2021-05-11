@@ -1,5 +1,14 @@
 import React from "react";
-import { Avatar, Typography, Space, Row, Menu, Dropdown, Tag } from "antd";
+import {
+  Avatar,
+  Typography,
+  Space,
+  Row,
+  Menu,
+  Dropdown,
+  Tag,
+  message,
+} from "antd";
 import {
   EllipsisOutlined,
   ArrowUpOutlined,
@@ -40,6 +49,16 @@ function FeedPost({ post, setCurrentId }) {
   const [user, setUser] = useLocalStorage("user");
 
   const tagList = ["tag 1", "tag 2", "tag 3", "tag 4"];
+
+  const copyLink = (id) => {
+    navigator.clipboard
+      .writeText(`localhost:3000/post/${id}`) // change to deployment link later
+      .then(() => message.success("Link copy successfully!"))
+      .catch((error) => {
+        message.error("Something goes wrong");
+        console.log(id);
+      });
+  };
 
   return (
     <div style={styles.item}>
@@ -107,7 +126,8 @@ function FeedPost({ post, setCurrentId }) {
               nulla pariatur. Excepteur sint occaecat cupidatat non proident,
               sunt in culpa qui officia deserunt mollit anim id est laborum.
             </Paragraph>
-            <Link href="#" target="_blank">
+            <Paragraph>{post?.content}</Paragraph>
+            <Link href={`/post/${post._id}`} target="_blank">
               <Text strong className="clickable">
                 Click here to read more
               </Text>
@@ -119,14 +139,18 @@ function FeedPost({ post, setCurrentId }) {
             <Space size="large">
               <Space>
                 <ArrowUpOutlined className="clickable icon" />
-                <Text strong>150</Text>
+                <Text strong>{post.interactionInfo?.listUpvotes.length}</Text>
+                <Text strong>{post.interactionInfo?.listDownvotes.length}</Text>
                 <ArrowDownOutlined className="clickable icon" />
               </Space>
             </Space>
           </Row>
           <Row>
             <Space size="large">
-              <LinkOutlined className="clickable icon" />
+              <LinkOutlined
+                className="clickable icon"
+                onClick={() => copyLink(post._id)}
+              />
               <ShareAltOutlined className="clickable icon" />
             </Space>
           </Row>

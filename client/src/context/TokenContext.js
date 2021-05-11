@@ -4,7 +4,7 @@ import { useLocalStorage } from "../hooks/useLocalStorage";
 const TokenContext = createContext();
 
 function TokenProvider(props) {
-  const [user, setUser] = useLocalStorage("user");
+  const [user] = useLocalStorage("user");
   const [token, setToken] = useState(user?.token);
   const value = useMemo(() => [token, setToken], [token]);
   return <TokenContext.Provider value={value} {...props} />;
