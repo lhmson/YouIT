@@ -30,12 +30,12 @@ function App() {
         <Route path="/feed" exact component={FeedPage} />
         <Route path="/auth" component={AuthPage} />
         <Route path="/post/create" component={CreatePostPage} />
-        <Route path="/userinfo" exact component={UserInfoPage} />
+        <Route path="/userinfo/:id" exact component={UserInfoPage} />
         <Route path="/post/:id" component={SpecificPost} />
         <Route path="/search" component={UserResultSearchPage} />
         <Route path="/requests" component={RequestsInGroupsPage} />
         <Route path="/wall" component={WallPage} />
-        <Route path="/userinfo/about" component={AboutPage} />
+        <Route path="/userinfo/:id/about" component={AboutPage} />
         <Route path="/group" exact component={GroupPage} />
         <Route path="/group/about" component={GroupAboutPage} />
         <Route path="/friends" component={FriendMangementPage}></Route>

@@ -19,20 +19,20 @@ import EditableCombobox from "./EditableCombobox/EditableCombobox.js";
 import EditableTime from "./EditableTime/EditableTime.js";
 
 import { updateUser } from "../../../../redux/actions/user";
+import { isLoginUser } from "../../../../utils/user.js";
 
 const OverviewPane = () => {
   const user = useSelector((state) => state.user);
   const dispatch = useDispatch();
 
-  // before: 2021-04-27T07:39:23.250+00:00
-  // after:  2021-04-27
+  const isMyProfile = isLoginUser(user);
+  console.log("imp ", isMyProfile);
+
   const [dateOfBirth, setDateOfBirth] = useState(
     moment(user?.userInfo?.dateOfBirth).format("DD/MM/YYYY")
   );
 
-  //console.log("ua ", user?.userInfo?.address);
   const [address, setAddress] = useState(user?.userInfo?.address ?? "VietNam");
-  //console.log("adr: ", address);
 
   const [workLocation, setWorkLocation] = useState(
     user?.userInfo?.workLocation ?? "VietNam"
@@ -123,6 +123,7 @@ const OverviewPane = () => {
         setPreviousState={() => {
           setAddress(user?.userInfo?.address ?? "VietNam");
         }}
+        editable={isMyProfile}
       />
       <EditableText
         firstIcon={<MdLocationOn style={styles.icon} />}
@@ -133,6 +134,7 @@ const OverviewPane = () => {
         setPreviousState={() => {
           setWorkLocation(user?.userInfo?.workLocation ?? "VietNam");
         }}
+        editable={isMyProfile}
       />
       <EditableCombobox
         firstIcon={<FaMale style={styles.icon} />}
@@ -146,6 +148,7 @@ const OverviewPane = () => {
         setPreviousState={() => {
           setGender(user?.userInfo?.gender);
         }}
+        editable={isMyProfile}
       />
       <EditableTime
         firstIcon={<FaBirthdayCake style={styles.icon} />}
@@ -160,6 +163,7 @@ const OverviewPane = () => {
             moment(user?.userInfo?.dateOfBirth).format("DD/MM/YYYY")
           );
         }}
+        editable={isMyProfile}
       />
     </div>
   );

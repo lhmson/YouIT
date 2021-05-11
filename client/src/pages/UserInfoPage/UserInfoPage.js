@@ -10,14 +10,26 @@ import {
   FriendManager,
 } from "../../components/index";
 
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { getPosts } from "../../redux/actions/posts";
+import { useParams } from "react-router";
+import { getUser } from "../../redux/actions/user.js";
 
 const { Content } = Layout;
 
 function UserInfoPage() {
+  let { id } = useParams();
+
   const [currentId, setCurrentId] = useState(null);
+
+  const user = useSelector((state) => state.user);
   const dispatch = useDispatch();
+
+  useEffect(async () => {
+    console.log("ZZZ");
+    dispatch(getUser(id));
+    console.log("u ", user);
+  }, []);
 
   useEffect(() => {
     dispatch(getPosts());
@@ -26,17 +38,20 @@ function UserInfoPage() {
   return (
     <>
       <Layout>
-        <Navbar selectedMenu="userinfo" />
-        <Layout style={styles.mainArea}>
-          <Content className="container" style={{ padding: 16 }}>
-            <AvatarView displayName="Thao cute dang yeu"></AvatarView>
-            <Row>
+        <Navbar />
+        <Layout style={styles.avatarView}>
+          <Content
+            className="container"
+            style={{
+              padding: 8,
+            }}
+          >
+            <AvatarView></AvatarView>
+            <Row style={{ marginLeft: 16, marginTop: 32 }}>
               <Col span={12}>
                 <ListButtons />
               </Col>
             </Row>
-            <AboutCard></AboutCard>
-            <FriendManager />
           </Content>
         </Layout>
       </Layout>

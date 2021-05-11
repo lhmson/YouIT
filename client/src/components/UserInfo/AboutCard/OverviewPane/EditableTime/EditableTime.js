@@ -25,13 +25,17 @@ function EditableTime({
   onSave,
   onChange,
   setPreviousState,
+  editable,
 }) {
   const [isEditing, setIsEditing] = useState(false);
 
   const EditIcon = () => {
-    return (
-      <AiOutlineEdit style={styles.icon} onClick={() => setIsEditing(true)} />
-    );
+    if (editable) {
+      return (
+        <AiOutlineEdit style={styles.icon} onClick={() => setIsEditing(true)} />
+      );
+    }
+    return <></>;
   };
 
   const handleSaving = () => {

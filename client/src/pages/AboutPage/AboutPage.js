@@ -14,27 +14,18 @@ import {
   ListButtons,
   FriendManager,
 } from "../../components/index";
+import { useParams } from "react-router";
 
 const { Content } = Layout;
 
 function AboutPage() {
-  //const [user, setUser] = useState(null);
-  const user = useSelector((state) => state.user);
+  let { id } = useParams();
 
   const dispatch = useDispatch();
 
-  // const handleFetchUserInfo = (user) => {
-  //   setUser(user);
-  // };
-
   useEffect(async () => {
     console.log("start fetching user");
-
-    const localUserInfo = JSON.parse(localStorage.getItem("user"));
-    dispatch(getUser(localUserInfo?.result?._id));
-
-    //console.log("user:: ", user);
-    //handleFetchUserInfo(user.data);
+    dispatch(getUser(id));
   }, []);
 
   return (
@@ -63,7 +54,7 @@ function AboutPage() {
               padding: 16,
             }}
           >
-            <AboutCard user={user}></AboutCard>
+            <AboutCard></AboutCard>
             <FriendManager></FriendManager>
           </Content>
         </Layout>
