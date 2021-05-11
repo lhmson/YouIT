@@ -29,6 +29,8 @@ import { useDispatch } from "react-redux";
 import { useHistory } from "react-router";
 import moment from "moment";
 import COLOR from "../../constants/colors";
+import { useLocalStorage } from "../../hooks/useLocalStorage";
+import { useToken } from "../../context/TokenContext";
 
 const { Title, Text, Paragraph } = Typography;
 
@@ -49,6 +51,8 @@ function RegisterPage() {
   const [dobError, setDobError] = useState(null);
   const dispatch = useDispatch();
   const history = useHistory();
+  const [user, setUser] = useLocalStorage("user");
+  const [token, setToken] = useToken();
 
   const handleChange = (e) => {
     setForm({ ...form, [e?.target.name]: e?.target.value });

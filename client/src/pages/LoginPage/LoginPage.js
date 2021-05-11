@@ -25,6 +25,8 @@ import { useDispatch } from "react-redux";
 import { useHistory } from "react-router";
 import { Link } from "react-router-dom";
 import COLOR from "../../constants/colors";
+import { useToken } from "../../context/TokenContext";
+import { useLocalStorage } from "../../hooks/useLocalStorage";
 
 const { Title, Text, Paragraph } = Typography;
 
@@ -38,13 +40,15 @@ function LoginPage() {
   const [form, setForm] = useState(initialState);
   const dispatch = useDispatch();
   const history = useHistory();
+  const [user, setUser] = useLocalStorage("user");
+  const [token, setToken] = useToken();
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
   const handleFinish = async (values) => {
-    await dispatch(signin(form, history));
+    await dispatch(signin(form, history, setUser, setToken));
   };
 
   const handleFinishFailed = (errorInfo) => {

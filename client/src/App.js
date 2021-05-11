@@ -7,8 +7,6 @@ import Navbar from "./components/Navbar/Navbar";
 import WallPage from "./pages/WallPage/WallPage";
 
 import {
-  MainPage,
-  AuthPage,
   CreatePostPage,
   FeedPage,
   UserInfoPage,
@@ -21,12 +19,14 @@ import {
   LoginPage,
   RegisterPage,
   ErrorPage,
+  HomePage,
 } from "./pages/index";
 
 import FriendMangementPage from "./pages/FriendMangementPage/FriendMangementPage";
 import { CuteClientIOProvider } from "./socket/CuteClientIOProvider.js";
 import { useLocalStorage } from "./hooks/useLocalStorage.js";
 import DemoSocket from "./socket/DemoComponent/DemoSocket.js";
+import { useToken } from "./context/TokenContext.js";
 
 const loggedIn = () => {
   const user = JSON.parse(localStorage.getItem("user"));
@@ -35,15 +35,13 @@ const loggedIn = () => {
 
 function App() {
   const [user, setUser] = useLocalStorage("user");
+  const [token, setToken] = useToken();
 
   return (
     <div className={styles.App}>
-      <CuteClientIOProvider
-        serverUri={"http://localhost:5000"}
-        token={user?.token}
-      >
+      <CuteClientIOProvider serverUri={"http://localhost:5000"} token={token}>
         <Switch>
-          <Route exact path="/" component={MainPage} />
+          <Route exact path="/" component={HomePage} />
           <Route exact path="/login">
             {loggedIn() ? <Redirect to="/" /> : <LoginPage />}
           </Route>

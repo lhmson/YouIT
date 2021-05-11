@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Layout, Typography, Breadcrumb } from "antd";
+import { Layout, Breadcrumb } from "antd";
 import styles from "./styles.js";
 
 import Posts from "../../components/Posts/Posts";
@@ -11,9 +11,8 @@ import { getPosts } from "../../redux/actions/posts";
 import Sidebar from "../../components/Sidebar/FeedSidebar/FeedSidebar";
 
 const { Content } = Layout;
-const { Title, Text } = Typography;
 
-function MainPage() {
+function HomePage() {
   const [currentId, setCurrentId] = useState(null);
   const dispatch = useDispatch();
 
@@ -24,7 +23,7 @@ function MainPage() {
   return (
     <>
       <Layout>
-        <Navbar selectedMenu="home" />
+        <Navbar />
         <Layout>
           <Sidebar />
           <Layout style={{ ...styles.mainArea }}>
@@ -44,4 +43,4 @@ function MainPage() {
   );
 }
 
-export default MainPage;
+export default HomePage;

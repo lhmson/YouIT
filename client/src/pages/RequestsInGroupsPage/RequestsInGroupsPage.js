@@ -31,7 +31,7 @@ function UserResultSearchPage() {
   return (
     <>
       <Layout>
-        <Navbar selectedMenu="userinfo" />
+        <Navbar />
         <Layout>
           <GroupSidebar setModeSearch={setModeSearch} />
           <Layout style={styles.mainArea}>

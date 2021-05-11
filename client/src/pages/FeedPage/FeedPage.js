@@ -1,10 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { Layout, Typography, Breadcrumb } from "antd";
-import TextEditor from "../../components/TextEditor/TextEditor";
+import { Layout, Typography } from "antd";
 import styles from "./styles.js";
-
-import Posts from "../../components/Posts/Posts";
-import InputForm from "../../components/InputForm/InputForm";
 import Navbar from "../../components/Navbar/Navbar";
 
 import { useDispatch } from "react-redux";
@@ -26,7 +22,7 @@ function FeedPage() {
   return (
     <>
       <Layout>
-        <Navbar selectedMenu="feed" />
+        <Navbar />
         <Layout>
           <FeedSidebar />
           <Layout style={styles.mainArea}>

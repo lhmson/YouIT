@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { Link, useHistory, useLocation } from "react-router-dom";
-import { Layout, Menu, Typography, Row, Input, Avatar, Button } from "antd";
+import { Layout, Typography, Row, Input, Avatar } from "antd";
 import styles from "./styles";
 import {
   SearchOutlined,
@@ -14,13 +14,15 @@ import decode from "jwt-decode";
 import { useDispatch } from "react-redux";
 import { logout } from "../../redux/actions/auth";
 import COLOR from "../../constants/colors";
+import { useLocalStorage } from "../../hooks/useLocalStorage";
+import { useToken } from "../../context/TokenContext";
 
 const { Header } = Layout;
 const { Text } = Typography;
-const { Search } = Input;
 
 function Navbar({ selectedMenu }) {
-  const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")));
+  const [user, setUser] = useLocalStorage("user");
+  const [token, setToken] = useToken();
   const inputRef = useRef();
 
   const dispatch = useDispatch();
@@ -35,10 +37,8 @@ function Navbar({ selectedMenu }) {
 
   const handleMessage = () => alert("handle message");
 
-  const handleMore = () => alert("handle lot");
-
   const handleLogOut = async () => {
-    await dispatch(logout());
+    await dispatch(logout(setUser, setToken));
     history.push("/login");
     setUser(null);
   };
@@ -50,7 +50,7 @@ function Navbar({ selectedMenu }) {
       const decodedToken = decode(token);
 
       if (decodedToken.exp * 1000 < new Date().getTime()) {
-        dispatch(logout());
+        dispatch(logout(setUser, setToken));
       }
     }
 
