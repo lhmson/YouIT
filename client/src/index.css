@@ -13,8 +13,10 @@ body {
   --black: #333333;
   --gray: #828282;
   --red: #eb5757;
-  height: 100vh;
-  width: 100vw;
+
+  /* overflow: auto; */
+  /* height: 100vh;
+  width: 100vw; */
 }
 
 .clickable:hover {
@@ -186,3 +188,23 @@ input:-webkit-autofill:active {
   border-color: rgb(43, 49, 55);
   color: rgb(43, 49, 55);
 }
+
+/* scroll bar handle */
+/* ::-webkit-scrollbar {
+  width: 12px;
+} */
+
+/* Track */
+/* ::-webkit-scrollbar-track { */
+/* -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3); */
+/* -webkit-border-radius: 10px; */
+/* border-radius: 10px; */
+/* } */
+
+/* Handle */
+/* ::-webkit-scrollbar-thumb { */
+/* -webkit-border-radius: 10px; */
+/* border-radius: 10px; */
+/* background: var(--light-green); */
+/* -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.5); */
+/* } */

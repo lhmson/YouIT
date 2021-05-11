@@ -12,4 +12,10 @@ export const updatePost = (id, updatedPost) =>
   API.put(`/post/${id}`, updatedPost);
 export const likePost = (id) => API.put(`/post/${id}/likePost`);
 
+export const upvotePost = (id) => API.put(`/post/${id}/upvote`);
+
+export const unvotePost = (id) => API.put(`/post/${id}/unvote`);
+
+export const getMyInteractions = (id) => API.get(`/post/${id}/myInteractions`);
+
 export const deletePost = (id) => API.delete(`/post/${id}`);

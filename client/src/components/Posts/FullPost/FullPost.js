@@ -1,17 +1,13 @@
 import React, { useEffect } from "react";
 import {
-  Card,
   Avatar,
-  Button,
   Typography,
   Row,
-  Col,
   Tag,
   Space,
-  Input,
-  Divider,
   Menu,
   Dropdown,
+  message,
 } from "antd";
 import { MdPublic } from "react-icons/md";
 import {
@@ -24,13 +20,9 @@ import {
   DeleteFilled,
   BellOutlined,
 } from "@ant-design/icons";
-import moment from "moment";
-import { useDispatch } from "react-redux";
-import { likePost, deletePost } from "../../../redux/actions/posts";
-import COLOR from "../../../constants/colors";
+import styles from "./styles";
 
-const { Title, Text, Paragraph, Link } = Typography;
-const { TextArea } = Input;
+const { Title, Text, Paragraph } = Typography;
 
 const menuMore = (
   <Menu>
@@ -56,9 +48,19 @@ function FullPost(props) {
 
   const tagList = ["Tag 1", "Tag 2", "Tag 3", "Tag 4", "Tag 5"];
 
+  const copyLink = (id) => {
+    navigator.clipboard
+      .writeText(`localhost:3000/post/${id}`) // change to deployment link later
+      .then(() => message.success("Link copy successfully!"))
+      .catch((error) => {
+        message.error("Something goes wrong");
+        console.log(id);
+      });
+  };
+
   return (
     <div>
-      <div>
+      <div style={styles.item}>
         <Row
           className="pb-2"
           style={{ justifyContent: "space-between", alignItems: "center" }}
@@ -138,7 +140,10 @@ function FullPost(props) {
           </Row>
           <Row>
             <Space size="large">
-              <LinkOutlined className="clickable icon" />
+              <LinkOutlined
+                className="clickable icon"
+                onClick={() => copyLink(post._id)}
+              />
               <ShareAltOutlined className="clickable icon" />
             </Space>
           </Row>

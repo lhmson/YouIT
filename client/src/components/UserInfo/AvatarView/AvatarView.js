@@ -6,11 +6,13 @@ import styles from "./styles.js";
 
 import * as api from "../../../api/user_info";
 import { useSelector } from "react-redux";
+import { isLoginUser } from "../../../utils/user.js";
 
 const { Title } = Typography;
 
 const AvatarView = () => {
   const user = useSelector((state) => state.user);
+  const isMyProfile = isLoginUser(user);
 
   const avatarUrl =
     user?.avatarUrl ??
@@ -20,8 +22,34 @@ const AvatarView = () => {
 
   const displayName = user?.name ?? "Nguoi dung YouIT";
 
+  const EditImageButton = () => {
+    if (isMyProfile) {
+      return (
+        <Button className="green-button mr-2" style={styles.editImageBtn}>
+          Edit image
+        </Button>
+      );
+    }
+    return <></>;
+  };
+
+  const EditAvatarButton = () => {
+    if (isMyProfile) {
+      return (
+        <Button
+          className="green-button"
+          shape="circle"
+          style={styles.editAvatarBtn}
+        >
+          <FaCamera />
+        </Button>
+      );
+    }
+    return <></>;
+  };
+
   return (
-    <div style={{ position: "relative", height: "60vh" }}>
+    <div style={{ position: "relative", height: "50vh" }}>
       <Row
         className="container justify-content-center"
         style={{ height: "40vh" }}
@@ -38,18 +66,14 @@ const AvatarView = () => {
             }}
           ></Image>
         </div>
-        <Button type="primary" style={styles.editImageBtn}>
-          Edit image
-        </Button>
+        <EditImageButton />
         <div
           className="d-flex justify-content-center flex-column align-items-center"
-          style={{ position: "absolute", bottom: "10%" }}
+          style={{ position: "absolute", bottom: "-10%" }}
         >
           <div style={{ position: "relative", marginBottom: 8 }}>
             <Avatar src={avatarUrl} size={150} style={styles.avatar} />
-            <Button type="primary" shape="circle" style={styles.editAvatarBtn}>
-              <FaCamera />
-            </Button>
+            <EditAvatarButton />
           </div>
 
           <Title style={styles.displayName}>{displayName}</Title>

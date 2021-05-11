@@ -24,7 +24,7 @@ function FriendMangementPage() {
   return (
     <>
       <Layout>
-        <Navbar selectedMenu="userinfo" />
+        <Navbar />
         <Layout>
           <Layout style={styles.mainArea}>
             <Content>
