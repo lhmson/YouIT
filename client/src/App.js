@@ -54,7 +54,7 @@ function App() {
         <Route exact path="/friends" component={FriendMangementPage} />
 
         <Route>
-          <ErrorPage code="500" />
+          <ErrorPage code="404" />
         </Route>
       </Switch>
     </div>

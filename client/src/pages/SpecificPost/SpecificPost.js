@@ -14,11 +14,14 @@ import {
   Tag,
   Space,
   Divider,
+  Dropdown,
 } from "antd";
 import {
   UserOutlined,
   LaptopOutlined,
   NotificationOutlined,
+  DownOutlined,
+  FieldTimeOutlined,
 } from "@ant-design/icons";
 
 import Navbar from "../../components/Navbar/Navbar";
@@ -40,21 +43,35 @@ const { Header, Content, Sider } = Layout;
 const { Title, Text } = Typography;
 
 function SpecificPost(props) {
+  const sorts = [
+    {
+      type: "new",
+      name: "Newest",
+      icon: <FieldTimeOutlined />,
+      function: sortByUpdatedTime,
+    },
+  ];
+
   const { id } = props.match.params;
   const [post, setPost] = useState(null);
   const [comments, setComments] = useState(null);
   const [otherPosts, setOtherPosts] = useState(null);
+  const [sort, setSort] = useState(sorts[0]);
+
   const fetchPost = async () => {
     const { data } = await postsApi.fetchAPost(id);
     setPost(data);
   };
+
   const fetchOtherPosts = async () => {
     const { data } = await postsApi.fetchOtherPosts(id);
     setOtherPosts(data);
   };
+
   const fetchComments = async () => {
     const { data } = await commentsApi.fetchComments(id);
-    setComments(data);
+    const sortedData = sort?.function(data);
+    setComments(sortedData);
   };
 
   useEffect(() => {
@@ -63,8 +80,20 @@ function SpecificPost(props) {
     fetchComments();
   }, []);
 
+  function sortByUpdatedTime(data) {
+    const sortedData = data?.sort(function (a, b) {
+      var atime = a.updatedAt;
+      var btime = b.updatedAt;
+      if (atime > btime) return -1;
+      if (atime < btime) return 1;
+      return 0;
+    });
+    return sortedData;
+  }
+
   const handleSubmitComment = async (newComment) => {
     await commentsApi.createComment(post._id, newComment);
+    console.log("handle submit comment", newComment);
     fetchComments();
   };
 
@@ -83,6 +112,31 @@ function SpecificPost(props) {
     fetchComments();
   };
 
+  const handleSortMenuClick = ({ key }) => {
+    switch (key) {
+      case "0":
+        setSort(sorts[0]);
+        break;
+      default:
+        setSort(sorts[0]);
+    }
+  };
+
+  const sortMenu = (
+    <Menu onClick={handleSortMenuClick}>
+      {sorts.map((s, index) => {
+        return (
+          <Menu.Item key={index}>
+            <Row align="middle">
+              {s.icon}
+              <Text className="ml-2">{s.name}</Text>
+            </Row>
+          </Menu.Item>
+        );
+      })}
+    </Menu>
+  );
+
   return (
     <>
       <Layout>
@@ -96,10 +150,26 @@ function SpecificPost(props) {
                   onSubmit={handleSubmitComment}
                   label="Comment to this post"
                 />
-
-                <Title className="mb-4" level={2}>
-                  {`Comments (${comments?.length})`}
-                </Title>
+                <Row justify="space-between" align="middle">
+                  <Title className="mb-4" level={2}>
+                    {`Comments (${comments?.length})`}
+                  </Title>
+                  <Dropdown overlay={sortMenu}>
+                    <Row
+                      align="middle"
+                      style={{
+                        backgroundColor: COLOR.whiteSmoke,
+                        padding: 8,
+                        paddingLeft: 12,
+                        paddingRight: 12,
+                      }}
+                    >
+                      {sort?.icon}
+                      <Text className="ml-2 mr-2">{sort?.name}</Text>
+                      <DownOutlined />
+                    </Row>
+                  </Dropdown>
+                </Row>
                 {comments?.map((c) => (
                   <Comment
                     comment={c}
