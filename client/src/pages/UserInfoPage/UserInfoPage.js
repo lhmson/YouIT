@@ -4,10 +4,10 @@ import styles from "./styles.js";
 
 import Navbar from "../../components/Navbar/Navbar";
 import {
-  AboutCard,
   AvatarView,
   ListButtons,
-  FriendManager,
+  IntroCard,
+  FeedPosts,
 } from "../../components/index";
 
 import { useDispatch, useSelector } from "react-redux";
@@ -26,9 +26,7 @@ function UserInfoPage() {
   const dispatch = useDispatch();
 
   useEffect(async () => {
-    console.log("ZZZ");
     dispatch(getUser(id));
-    console.log("u ", user);
   }, []);
 
   useEffect(() => {
@@ -50,6 +48,18 @@ function UserInfoPage() {
             <Row style={{ marginLeft: 16, marginTop: 32 }}>
               <Col span={12}>
                 <ListButtons />
+              </Col>
+            </Row>
+          </Content>
+        </Layout>
+        <Layout style={styles.mainArea}>
+          <Content className="container">
+            <Row>
+              <Col span={8}>
+                <IntroCard />
+              </Col>
+              <Col span={16}>
+                <FeedPosts />
               </Col>
             </Row>
           </Content>
