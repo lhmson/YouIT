@@ -62,7 +62,7 @@ function App() {
           <Route path="/demoSocketIO" component={DemoSocket} />
 
           <Route>
-            <ErrorPage code="500" />
+            <ErrorPage code="404" />
           </Route>
         </Switch>
       </CuteClientIOProvider>
