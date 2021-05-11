@@ -1,41 +1,41 @@
-import React, { useState, useEffect } from "react";
-import { Layout, Breadcrumb } from "antd";
+import React, { useState } from "react";
+import { Layout, Button } from "antd";
 import styles from "./styles.js";
 
-import Posts from "../../components/Posts/Posts";
-import InputForm from "../../components/InputForm/InputForm";
 import Navbar from "../../components/Navbar/Navbar";
 
-import { useDispatch } from "react-redux";
-import { getPosts } from "../../redux/actions/posts";
-import Sidebar from "../../components/Sidebar/FeedSidebar/FeedSidebar";
+import { Link } from "react-router-dom";
+import { useLocalStorage } from "../../hooks/useLocalStorage.js";
 
 const { Content } = Layout;
 
 function HomePage() {
-  const [currentId, setCurrentId] = useState(null);
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    dispatch(getPosts());
-  }, [currentId, dispatch]);
-
+  const [user] = useLocalStorage("user");
   return (
     <>
       <Layout>
         <Navbar />
         <Layout>
-          <Sidebar />
           <Layout style={{ ...styles.mainArea }}>
-            <Breadcrumb style={{ margin: "16px 0" }}>
-              <Breadcrumb.Item>Home</Breadcrumb.Item>
-              <Breadcrumb.Item>List</Breadcrumb.Item>
-              <Breadcrumb.Item>App</Breadcrumb.Item>
-            </Breadcrumb>
-            <Posts setCurrentId={setCurrentId} />
-            <InputForm currentId={currentId} setCurrentId={setCurrentId} />
-
-            <Content style={{ ...styles.paleBackground }}>Content</Content>
+            <Content style={{ ...styles.paleBackground, ...styles.middle }}>
+              <div onClick={() => console.log("user home", user)}>
+                {user ? (
+                  <>
+                    <Link to="/feed">
+                      <Button>Go explore the world of programming</Button>
+                    </Link>
+                    <h1>Things for user</h1>
+                  </>
+                ) : (
+                  <>
+                    <Link to="/login">
+                      <Button>Become a member</Button>
+                    </Link>
+                    <h1>Things for new one</h1>
+                  </>
+                )}
+              </div>
+            </Content>
           </Layout>
         </Layout>
       </Layout>

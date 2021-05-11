@@ -108,7 +108,9 @@ function RegisterPage() {
           <Row>
             <Col span={12} style={{ paddingRight: 24, marginBottom: 0 }}>
               <Row>
-                <img src={logo} alt="Logo" height="58" className="mr-2" />
+                <Link to="/">
+                  <img src={logo} alt="Logo" height="58" className="mr-2" />
+                </Link>
                 <Title style={{ marginBottom: 8 }}>Register</Title>
               </Row>
               <div style={{ marginBottom: 16 }}>

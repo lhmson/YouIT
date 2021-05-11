@@ -1,18 +1,5 @@
 import React, { useEffect } from "react";
-import {
-  Card,
-  Avatar,
-  Button,
-  Typography,
-  Row,
-  Col,
-  Tag,
-  Space,
-  Input,
-  Divider,
-  Menu,
-  Dropdown,
-} from "antd";
+import { Avatar, Typography, Row, Tag, Space, Menu, Dropdown } from "antd";
 import { MdPublic } from "react-icons/md";
 import {
   EllipsisOutlined,
@@ -24,13 +11,9 @@ import {
   DeleteFilled,
   BellOutlined,
 } from "@ant-design/icons";
-import moment from "moment";
-import { useDispatch } from "react-redux";
-import { likePost, deletePost } from "../../../redux/actions/posts";
-import COLOR from "../../../constants/colors";
+import styles from "./styles";
 
-const { Title, Text, Paragraph, Link } = Typography;
-const { TextArea } = Input;
+const { Title, Text, Paragraph } = Typography;
 
 const menuMore = (
   <Menu>
@@ -58,7 +41,7 @@ function FullPost(props) {
 
   return (
     <div>
-      <div>
+      <div style={styles.item}>
         <Row
           className="pb-2"
           style={{ justifyContent: "space-between", alignItems: "center" }}

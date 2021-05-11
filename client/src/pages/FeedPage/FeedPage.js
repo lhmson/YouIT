@@ -9,7 +9,6 @@ import FeedSidebar from "../../components/Sidebar/FeedSidebar/FeedSidebar";
 import FeedPosts from "../../components/Posts/FeedPosts/FeedPosts";
 
 const { Content } = Layout;
-const { Title, Text } = Typography;
 
 function FeedPage() {
   const [currentId, setCurrentId] = useState(null);

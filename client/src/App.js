@@ -27,14 +27,14 @@ import { CuteClientIOProvider } from "./socket/CuteClientIOProvider.js";
 import { useLocalStorage } from "./hooks/useLocalStorage.js";
 import DemoSocket from "./socket/DemoComponent/DemoSocket.js";
 import { useToken } from "./context/TokenContext.js";
+import PrivateRoute from "./utils/PrivateRoute.js";
 
 const loggedIn = () => {
   const user = JSON.parse(localStorage.getItem("user"));
-  return user?.result?.name;
+  return user;
 };
 
 function App() {
-  const [user, setUser] = useLocalStorage("user");
   const [token, setToken] = useToken();
 
   return (
@@ -48,8 +48,8 @@ function App() {
           <Route exact path="/register">
             {loggedIn() ? <Redirect to="/" /> : <RegisterPage />}
           </Route>
-          <Route exact path="/feed" component={FeedPage} />
-          <Route exact path="/post/create" component={CreatePostPage} />
+          <PrivateRoute exact path="/feed" component={FeedPage} />
+          <PrivateRoute exact path="/post/create" component={CreatePostPage} />
           <Route exact path="/userinfo" exct component={UserInfoPage} />
           <Route exact path="/post/:id" component={SpecificPost} />
           <Route exact path="/search" component={UserResultSearchPage} />

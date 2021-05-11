@@ -6,13 +6,14 @@ import {
   NotificationOutlined,
 } from "@ant-design/icons";
 import styles from "./styles.js";
+import { useLocalStorage } from "../../../hooks/useLocalStorage.js";
 
 const { SubMenu } = Menu;
 const { Sider } = Layout;
 const { Title, Text } = Typography;
 
 function FeedSidebar() {
-  const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")));
+  const [user, setUser] = useLocalStorage("user");
 
   useEffect(() => {}, []);
 
