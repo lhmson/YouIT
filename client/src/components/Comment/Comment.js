@@ -157,10 +157,14 @@ function Comment({ comment, onReply, onEdit, onDelete }) {
                 ) : (
                   <Text className="black bold clickable">{`${comment?.quotedCommentId?.userId?.name}'s comment`}</Text>
                 )}
-                <Text className="clickable" underline type="secondary">
-                  Last edited{" "}
-                  {comment?.quotedCommentId?.updatedAt?.toString().slice(0, 10)}
-                </Text>
+                {comment?.quotedCommentId === null ? null : (
+                  <Text className="clickable" underline type="secondary">
+                    Last edited{" "}
+                    {comment?.quotedCommentId?.updatedAt
+                      ?.toString()
+                      .slice(0, 10)}
+                  </Text>
+                )}
               </Row>
               <Paragraph style={{ color: COLOR.gray, marginBottom: 0 }}>
                 {comment?.quotedCommentId?.content}
