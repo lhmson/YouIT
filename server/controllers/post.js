@@ -8,6 +8,7 @@ import {
 
 import Post from "../models/post.js";
 import { httpStatusCodes } from "../utils/httpStatusCode.js";
+import { cuteIO } from "../index.js"
 
 //#region CRUD
 // GET post/list/all
@@ -143,7 +144,7 @@ export const getMyPostInteractions = async (req, res) => {
     let filterJson = undefined;
     try {
       filterJson = JSON.parse(filter);
-    } catch {}
+    } catch { }
 
     const interactions = await getInteractionOfAUser(id, userId, filterJson);
     return res.status(httpStatusCodes.ok).json(interactions);
@@ -173,17 +174,24 @@ const handleUpdateInteraction = (actions) => async (req, res) => {
         .status(httpStatusCodes.badContent)
         .send(`post id ${id} is invalid`);
 
-    const post = await Post.findById(id);
+    const post = (await Post.findById(id));
     if (!post)
       return res
         .status(httpStatusCodes.notFound)
         .json(`Cannot find a post with id: ${id}`);
 
-    let newPost = post;
+    let newPost = { ...post.toObject() };
+
     actions.forEach((a) => {
       switch (a.actionType) {
         case "add":
           newPost = addInteraction(newPost, userId, a.interactionType);
+
+          // Test socket.io
+          if (a.interactionType === "upvote") {
+            cuteIO.sendToUser(newPost.userId.toString(), "UpvotePost_PostOwner", { upvoter: userId, post: newPost });
+          }
+
           break;
         case "remove":
           newPost = removeInteraction(newPost, userId, a.interactionType);

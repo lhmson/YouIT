@@ -12,7 +12,7 @@ export const useCuteClientIO = () => {
 }
 
 
-export const CuteClientIOProvider = ({ serverUri, token, children }) => {
+export const CuteClientIOProvider = ({ serverUri, token, children, onNewConnection }) => {
   /** @type [CuteClientIO, any] */
   const [cuteIO, setCuteIO] = useState(() => new CuteClientIO());
 
@@ -21,7 +21,11 @@ export const CuteClientIOProvider = ({ serverUri, token, children }) => {
       /**
        * @param {CuteClientIO} cuteIO 
        */
-      cuteIO => cuteIO.connect(serverUri, token)
+      cuteIO => {
+        cuteIO.connect(serverUri, token)
+        onNewConnection(cuteIO);
+        return cuteIO;
+      }
     );
   }, [token, serverUri])
 

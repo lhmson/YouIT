@@ -28,6 +28,7 @@ import { useLocalStorage } from "./hooks/useLocalStorage.js";
 import DemoSocket from "./socket/DemoComponent/DemoSocket.js";
 import { useToken } from "./context/TokenContext.js";
 import PrivateRoute from "./utils/PrivateRoute.js";
+import { handleNewIOConnection } from "./notifications/index.js";
 
 const loggedIn = () => {
   const user = JSON.parse(localStorage.getItem("user"));
@@ -39,7 +40,7 @@ function App() {
 
   return (
     <div className={styles.App}>
-      <CuteClientIOProvider serverUri={"http://localhost:5000"} token={token}>
+      <CuteClientIOProvider serverUri={"http://localhost:5000"} token={token} onNewConnection={handleNewIOConnection}>
         <Switch>
           <Route exact path="/" component={HomePage} />
           <Route exact path="/login">
