@@ -180,10 +180,12 @@ const handleUpdateInteraction = (actions) => async (req, res) => {
         .json(`Cannot find a post with id: ${id}`);
 
     let newPost = post;
+
     actions.forEach((a) => {
       switch (a.actionType) {
         case "add":
           newPost = addInteraction(newPost, userId, a.interactionType);
+
           break;
         case "remove":
           newPost = removeInteraction(newPost, userId, a.interactionType);
