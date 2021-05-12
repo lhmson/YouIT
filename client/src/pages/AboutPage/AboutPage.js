@@ -24,7 +24,7 @@ function AboutPage() {
   const dispatch = useDispatch();
 
   useEffect(async () => {
-    console.log("start fetching user");
+    //console.log("start fetching user");
     dispatch(getUser(id));
   }, []);
 
