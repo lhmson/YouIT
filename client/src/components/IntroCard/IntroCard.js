@@ -5,35 +5,29 @@ import { useSelector } from "react-redux";
 import {
   IoSchoolSharp,
   IoHome,
-  MdPublic,
   MdLocationOn,
-  AiFillHeart,
-  AiOutlineInstagram,
-  AiFillInstagram,
+  FaMale,
+  FaBirthdayCake,
 } from "react-icons/all";
-import { Form, Input, Button, Checkbox, Upload, Typography } from "antd";
+import { Typography } from "antd";
 import styles from "./styles.js";
 import { Layout } from "antd";
+import moment from "moment";
 
-const { Header, Footer, Sider, Content } = Layout;
+const { Content } = Layout;
 // function InfoCard() {
 //   const [selectedItem, setSelectedItem] = useState("1");
-const { Title, Text } = Typography;
-const IntroCard = (props) => {
-  const schoolIcon = () => {
-    return <IoSchoolSharp style={styles.icon} />;
-  };
-  const homeIcon = () => {
-    return <IoHome style={styles.icon} />;
-  };
-
+const { Text } = Typography;
+const IntroCard = () => {
   const user = useSelector((state) => state.user);
 
-  const dateOfBirth = user?.userInfo?.dateOfBirth;
+  const dateOfBirth = moment(user?.userInfo?.dateOfBirth).format("DD/MM/YYYY");
   const address = user?.userInfo?.address ?? "Quang Nam, Viet Nam";
   const workLocation = user?.userInfo?.workLocation ?? "Quang Nam, Viet Nam";
-  const Education =
-    user?.userInfo?.Education ?? "Trường ĐH Công nghệ Thông tin";
+  const gender = user?.userInfo?.gender;
+  // educations la array, coi lai
+  const education =
+    user?.userInfo?.education ?? "Trường ĐH Công nghệ Thông tin";
   return (
     <div style={styles.backgroundheader}>
       <div className="row">
@@ -42,34 +36,27 @@ const IntroCard = (props) => {
       <div className="row" style={styles.lineinfo}>
         <OverviewRow
           firstIcon={<IoSchoolSharp style={styles.icon} />}
-          text={Education}
+          text={education}
         />
         <OverviewRow
-          firstIcon={<IoSchoolSharp style={styles.icon} />}
-          text={Education}
-        />
-        <OverviewRow
-          firstIcon={<MdLocationOn style={styles.icon} />}
-          text={workLocation}
+          firstIcon={<IoHome style={styles.icon} />}
+          text={address}
         />
         <OverviewRow
           firstIcon={<MdLocationOn style={styles.icon} />}
           text={workLocation}
         />
+        <OverviewRow firstIcon={<FaMale style={styles.icon} />} text={gender} />
         <OverviewRow
-          firstIcon={<AiFillHeart style={styles.icon} />}
-          text={workLocation}
-        />
-        <OverviewRow
-          firstIcon={<AiOutlineInstagram style={styles.icon} />}
-          text={workLocation}
+          firstIcon={<FaBirthdayCake style={styles.icon} />}
+          text={dateOfBirth}
         />
       </div>
-      <div className="row">
+      {/* <div className="row">
         <Button type="primary" style={styles.editinfo}>
           Edit
         </Button>
-      </div>
+      </div> */}
     </div>
     // <Layout style={{ backgroundColor: "white", width: 350, height: 350 }}>
     //   <Header>

@@ -26,14 +26,13 @@ const OverviewRow = (props) => {
             </div>
           </div>
           <div
-            className="col-2 offset-1"
+            className="col-2 offset-2"
             style={{
               background: "white",
               display: "flex",
               justifyContent: "center",
             }}
           >
-            {props.privacyIcon}
             {props.lastIcon}
           </div>
         </div>

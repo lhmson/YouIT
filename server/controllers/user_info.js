@@ -4,13 +4,10 @@ import User from "../models/user.js";
 
 // GET userinfo/:id
 export const getUserInfo = async (req, res) => {
-  // auth
-  if (!req.userId) {
-    return res.json({ message: "Unauthenticated" });
-  }
+  const { id } = req.params;
 
   try {
-    const currentUser = await User.findById(req.userId);
+    const currentUser = await User.findById(id);
     res.status(200).json(currentUser);
   } catch (error) {
     res.status(500).json({ message: error.message });
