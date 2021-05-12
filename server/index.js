@@ -14,6 +14,7 @@ import indexRouter from "./routes/index.js";
 import postRouter from "./routes/post.js";
 import userRouter from "./routes/user.js";
 import userInfoRouter from "./routes/user_info.js";
+import groupRouter from "./routes/group.js";
 
 const app = express();
 dotenv.config();
@@ -35,6 +36,7 @@ app.use("/", indexRouter);
 app.use("/user", userRouter);
 app.use("/post", postRouter);
 app.use("/userInfo", userInfoRouter);
+app.use("/group", groupRouter);
 
 const PORT = process.env.PORT || 5000;
 

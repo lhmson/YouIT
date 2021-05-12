@@ -6,7 +6,6 @@ import {
 
 const groupSchema = mongoose.Schema(
   {
-
     Mode: {
       type: String,
       enum: ["Public", "Private"],
@@ -14,22 +13,21 @@ const groupSchema = mongoose.Schema(
     },
 
     listMembers: [
-        {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: "User",
-        },
-      ],
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
 
-      name: { type: String, required: true },
+    name: { type: String, required: true },
     backgroundURL: { type: String },
     description: { type: String, required: true },
-
   },
   {
     timestamps: true,
   }
 );
 
-var Group = mongoose.model("Group", groupchema);
+var Group = mongoose.model("Group", groupSchema);
 
 export default Group;
