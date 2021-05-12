@@ -30,11 +30,9 @@ function FeedPosts({ setCurrentId }) {
   };
 
   useEffect(() => {
-    console.log("start");
     api
       .fetchPostsPagination(0, 2)
       .then((res) => {
-        console.log(res.data);
         handleFetchPosts(res);
       })
       .catch((e) => {
@@ -51,7 +49,6 @@ function FeedPosts({ setCurrentId }) {
       api
         .fetchPostsPagination(page, 2)
         .then((res) => {
-          console.log(res.data);
           handleFetchPosts(res);
         })
         .catch((e) => {

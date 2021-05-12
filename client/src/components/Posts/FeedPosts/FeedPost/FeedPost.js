@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useReducer } from "react";
 import {
   Avatar,
   Typography,
@@ -21,11 +21,11 @@ import {
 import { MdPublic } from "react-icons/md";
 import moment from "moment";
 import { useDispatch } from "react-redux";
-import { useLocalStorage } from "../../../../hooks/useLocalStorage";
 import styles from "./styles";
 import {
   upvotePost,
   unvotePost,
+  downvotePost,
   getMyInteractions,
 } from "../../../../api/post";
 import COLOR from "../../../../constants/colors";
@@ -49,30 +49,92 @@ const menuMore = (
   </Menu>
 );
 
+const allInteractionReducer = (state, action) => {
+  switch (action.type) {
+    case "upvote":
+      return { ...state, upvotes: state.upvotes + 1 };
+    case "downvote":
+      return { ...state, downvotes: state.downvotes + 1 };
+    case "unupvote":
+      return { ...state, upvotes: state.upvotes - 1 };
+    case "undownvote":
+      return { ...state, downvotes: state.downvotes - 1 };
+    default:
+      return state;
+  }
+};
+
 function FeedPost({ post, setCurrentId }) {
   const dispatch = useDispatch();
 
-  const [user, setUser] = useLocalStorage("user");
-
   const [myInteractions, setMyInteractions] = useState({});
 
+  const [allInteractions, dispatchInteractions] = useReducer(
+    allInteractionReducer,
+    {
+      upvotes: post.interactionInfo.listUpvotes.length,
+      downvotes: post.interactionInfo.listDownvotes.length,
+      // add more items later
+    }
+  );
+
   const tagList = ["tag 1", "tag 2", "tag 3", "tag 4"];
+
+  useEffect(() => {
+    fetchMyInteractions();
+  }, []);
 
   const handleUpvoteClick = async (id) => {
     if (myInteractions?.upvote) {
       await unvotePost(id)
         .then((res) => {
-          alert("unvote", JSON.stringify(res.data));
           fetchMyInteractions();
+          dispatchInteractions({ type: "unupvote" });
         })
-        .catch((error) => alert(error.message));
+        .catch((error) => {
+          message.error("Something goes wrong with post upvote");
+          console.log(error);
+        });
     } else {
       await upvotePost(id)
         .then((res) => {
-          alert("upvote", JSON.stringify(res.data));
+          if (myInteractions?.downvote) {
+            dispatchInteractions({ type: "undownvote" });
+          }
           fetchMyInteractions();
+          dispatchInteractions({ type: "upvote" });
         })
-        .catch((error) => alert(error.message));
+        .catch((error) => {
+          message.error("Something goes wrong with post unvote");
+          console.log(error);
+        });
+    }
+  };
+
+  const handleDownvoteClick = async (id) => {
+    if (myInteractions?.downvote) {
+      await unvotePost(id)
+        .then((res) => {
+          fetchMyInteractions();
+          dispatchInteractions({ type: "undownvote" });
+        })
+        .catch((error) => {
+          message.error("Something goes wrong with post downvote");
+          console.log(error);
+        });
+    } else {
+      await downvotePost(id)
+        .then((res) => {
+          if (myInteractions?.upvote) {
+            dispatchInteractions({ type: "unupvote" });
+          }
+          fetchMyInteractions();
+          dispatchInteractions({ type: "downvote" });
+        })
+        .catch((error) => {
+          message.error("Something goes wrong with post unvote");
+          console.log(error);
+        });
     }
   };
 
@@ -80,14 +142,10 @@ function FeedPost({ post, setCurrentId }) {
     getMyInteractions(post._id)
       .then((res) => setMyInteractions(res.data))
       .catch((error) => {
-        alert("Something goes wrong with post interactions");
+        message.error("Something goes wrong with post interactions");
         console.log(error);
       });
   };
-
-  useEffect(() => {
-    fetchMyInteractions();
-  }, []);
 
   const copyLink = (id) => {
     navigator.clipboard
@@ -95,7 +153,6 @@ function FeedPost({ post, setCurrentId }) {
       .then(() => message.success("Link copy successfully!"))
       .catch((error) => {
         message.error("Something goes wrong");
-        console.log(id);
       });
   };
 
@@ -186,9 +243,15 @@ function FeedPost({ post, setCurrentId }) {
                   }}
                   onClick={() => handleUpvoteClick(post._id)}
                 />
-                <Text strong>{post.interactionInfo?.listUpvotes.length}</Text>
-                <Text strong>{post.interactionInfo?.listDownvotes.length}</Text>
-                <ArrowDownOutlined className="clickable icon" />
+                <Text strong>{allInteractions.upvotes}</Text>
+                <Text strong>{allInteractions.downvotes}</Text>
+                <ArrowDownOutlined
+                  className="clickable icon"
+                  style={{
+                    color: myInteractions?.downvote ? COLOR.green : COLOR.black,
+                  }}
+                  onClick={() => handleDownvoteClick(post._id)}
+                />
               </Space>
             </Space>
           </Row>

@@ -23,7 +23,7 @@ import COLOR from "../../constants/colors.js";
 const { Content } = Layout;
 const { Title, Text } = Typography;
 
-function SpecificPost(props) {
+function SpecificPostPage(props) {
   const sorts = [
     {
       type: "new",
@@ -151,8 +151,9 @@ function SpecificPost(props) {
                     </Row>
                   </Dropdown>
                 </Row>
-                {comments?.map((c) => (
+                {comments?.map((c, i) => (
                   <Comment
+                    key={i}
                     comment={c}
                     onReply={handleReplyComment}
                     onEdit={handleEditComment}
@@ -172,4 +173,4 @@ function SpecificPost(props) {
   );
 }
 
-export default SpecificPost;
+export default SpecificPostPage;

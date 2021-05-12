@@ -19,7 +19,7 @@ function RelatedCard(props) {
           <Row className="mb-3" align="middle">
             <Col span={4} justify="center">
               <Tag color={COLOR.greenSmoke} style={styles.votesTag}>
-                {p.upvoters?.length - p.downvoters?.length}
+                {p.upvoters?.length + p.downvoters?.length}
               </Tag>
             </Col>
 

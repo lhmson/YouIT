@@ -92,7 +92,7 @@ export const addInteraction = (post, userId, interactionType, reaction) => {
     ...post,
     interactionInfo,
   };
-  console.log(newPost);
+
   return newPost;
 };
 

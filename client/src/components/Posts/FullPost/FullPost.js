@@ -118,8 +118,10 @@ function FullPost(props) {
           </Row>
         </Row>
         <Row className="mb-1">
-          {tagList.map((item) => (
-            <Tag className="mb-2 tag">{item}</Tag>
+          {tagList.map((item, i) => (
+            <Tag key={i} className="mb-2 tag">
+              {item}
+            </Tag>
           ))}
         </Row>
         <div>
