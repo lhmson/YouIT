@@ -40,4 +40,44 @@ export const getAFriendRequest = async (req, res) => {};
  * @param {express.Response<any, Record<string, any>, number>} res
  * @param {express.NextFunction} next
  */
-export const deleteFriendRequest = async (req, res) => {};
+export const getAllFriendRequests = async (req, res) => {
+  try {
+    const friendRequests = await FriendRequest.find();
+    return res.status(httpStatusCodes.ok).json(friendRequests);
+  } catch (error) {
+    return res
+      .status(httpStatusCodes.internalServerError)
+      .json({ message: error.message });
+  }
+};
+
+/**
+ * @param {express.Request<ParamsDictionary, any, any, QueryString.ParsedQs, Record<string, any>>} req
+ * @param {express.Response<any, Record<string, any>, number>} res
+ * @param {express.NextFunction} next
+ */
+export const deleteFriendRequest = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    // auth
+    if (!req.userId) {
+      return res.json({ message: "Unauthenticated" });
+    }
+
+    if (!(await FriendRequest.findById(id))) {
+      return res
+        .status(httpStatusCodes.notFound)
+        .send(`No friend request with id: ${id}`);
+    }
+
+    await FriendRequest.findByIdAndRemove(id);
+    res
+      .status(httpStatusCodes.ok)
+      .json({ message: "Friend request deleted successfully." });
+  } catch (error) {
+    res
+      .status(httpStatusCodes.internalServerError)
+      .json({ message: error.message });
+  }
+};

@@ -7,19 +7,18 @@ import { Link, useLocation } from "react-router-dom";
 import styles from "./styles.js";
 import { useDispatch, useSelector } from "react-redux";
 import { isLoginUser } from "../../../utils/user.js";
-import { createFriendRequest } from "../../../api/friendRequest";
-import { updateUser } from "../../../redux/actions/user";
 import {
-  updateListReceivingFriendRequests,
-  updateListSendingFriendRequests,
-  updateUserInfo,
-} from "../../../api/user_info.js";
+  createFriendRequest,
+  deleteFriendRequest,
+  fetchAllFriendRequests,
+} from "../../../api/friendRequest";
+import { updateReceiver } from "../../../redux/actions/user";
+import { updateListSendingFriendRequests } from "../../../api/user_info.js";
 
 const ListButtons = () => {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user);
   const loginUser = JSON.parse(localStorage.getItem("user"))?.result;
-
   const isMyProfile = isLoginUser(user);
 
   const location = useLocation();
@@ -38,40 +37,18 @@ const ListButtons = () => {
   const defaultSelectedKey = getDefaultSelectedItem();
 
   const [selectedMenu, setSelectedMenu] = useState(defaultSelectedKey);
+  const [matchingFriendRequest, setMatchingFriendRequest] = useState(null);
 
   useEffect(() => {
     setSelectedMenu(defaultSelectedKey);
   }, [defaultSelectedKey]);
 
+  useEffect(async () => {
+    setMatchingFriendRequest(await getMatchFriendRequest());
+  }, [user]);
+
   const handleClick = (e) => {
     setSelectedMenu(e.key);
-  };
-
-  const updateReceiver = (friendRequestId) => {
-    // update listReceivingRequest in user
-    // user receives a friend request
-    const updatedUser = {
-      ...user,
-      listReceivingFriendRequests: [
-        ...user.listReceivingFriendRequests,
-        friendRequestId,
-      ],
-    };
-    //console.log(updatedUser);
-    dispatch(updateUser(updatedUser));
-  };
-
-  const updateSender = (friendRequestId) => {
-    const newListSendingFriendRequests =
-      loginUser.listSendingFriendRequests.push(friendRequestId);
-    console.log(loginUser.listSendingFriendRequests);
-    const updatedUser = {
-      ...loginUser,
-      newListSendingFriendRequests,
-    };
-    console.log(updatedUser);
-    const { data } = updateUserInfo(updatedUser);
-    console.log(data);
   };
 
   const addFriend = async () => {
@@ -83,21 +60,69 @@ const ListButtons = () => {
     const { data } = await createFriendRequest(friendRequest);
     //console.log(data._id);
 
-    updateListReceivingFriendRequests(data);
-    updateListSendingFriendRequests(data);
+    dispatch(updateReceiver(data));
+    await updateListSendingFriendRequests(data);
+  };
 
-    //updateReceiver(data._id);
-    //updateSender(data._id);
+  const getMatchFriendRequest = async () => {
+    const listFriendRequests = (await fetchAllFriendRequests()).data;
+
+    const friendRequest = listFriendRequests.map((request) => {
+      const listUserId = [request.userConfirmId, request.userSendRequestId];
+      if (listUserId.includes(user?._id) && listUserId.includes(loginUser?._id))
+        return request;
+    });
+    return friendRequest;
+
+    // for (const request in listFriendRequests) {
+    //   const listUserId = [request.userConfirmId, request.userSendRequestId];
+    //   if (listUserId.includes(user?._id) && listUserId.includes(loginUser?._id))
+    //     return request;
+    // }
+    // return null;
+  };
+
+  const cancelFriendRequest = (request) => {
+    deleteFriendRequest(request?._id);
+    // delete xong nho update lai list ... request o ca 2 user
   };
 
   const AddFriendButton = () => {
     if (!isMyProfile) {
+      if (matchingFriendRequest) {
+        if (loginUser?._id === matchingFriendRequest[0]?.userConfirmId) {
+          //console.log("receiver");
+          return (
+            <Row style={{ marginTop: 16 }}>
+              <Button className="green-button" style={{ marginLeft: 16 }}>
+                Accept
+              </Button>
+              <Button style={{ marginLeft: 16 }}>Deny</Button>
+            </Row>
+          );
+        } else if (
+          loginUser?._id === matchingFriendRequest[0]?.userSendRequestId
+        ) {
+          //console.log("sender");
+          return (
+            <Button
+              className="green-button"
+              onClick={() => cancelFriendRequest(matchingFriendRequest[0])}
+            >
+              Cancel Request
+            </Button>
+          );
+        }
+      }
+      // if not my profile and have no friend request, display add friend button
+      //console.log("have no request");
       return (
         <Button className="green-button" onClick={addFriend}>
           Add friend
         </Button>
       );
     }
+    // if my profile, show nothing
     return <></>;
   };
 

@@ -16,6 +16,7 @@ export const LOGOUT = "LOGOUT";
 // user
 export const FETCH_USER = "FETCH_USER";
 export const UPDATE_USER = "UPDATE_USER";
+export const UPDATE_RECEIVER = "UPDATE_RECEIVER";
 
 // Search
 export const FETCH_SEARCH_USER = "FETCH_SEARCH_USER";

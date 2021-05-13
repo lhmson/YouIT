@@ -43,9 +43,13 @@ export const updateListReceivingFriendRequests = async (req, res) => {
   try {
     // update receiver
     await User.findById(friendRequest.userConfirmId).then((user) => {
-      user.listReceivingFriendRequests.push(friendRequest._id);
-      user.save();
-      res.status(httpStatusCodes.ok).json(user);
+      if (!user.listReceivingFriendRequests.includes(friendRequest._id)) {
+        user.listReceivingFriendRequests.push(friendRequest._id);
+        user.save();
+        res.status(httpStatusCodes.ok).json(user);
+      } else {
+        res.json({ message: "Friend request exists" });
+      }
     });
   } catch (error) {
     res
@@ -60,9 +64,13 @@ export const updateListSendingFriendRequests = async (req, res) => {
   try {
     // update sender
     await User.findById(friendRequest.userSendRequestId).then((user) => {
-      user.listSendingFriendRequests.push(friendRequest._id);
-      user.save();
-      res.status(httpStatusCodes.ok).json(user);
+      if (!user.listSendingFriendRequests.includes(friendRequest._id)) {
+        user.listSendingFriendRequests.push(friendRequest._id);
+        user.save();
+        res.status(httpStatusCodes.ok).json(user);
+      } else {
+        res.json({ message: "Friend request exists" });
+      }
     });
   } catch (error) {
     res
