@@ -9,6 +9,13 @@ const styles = {
   },
   mainArea: {
     minHeight: "100vh",
+    marginTop: 16,
+    // marginLeft: 128,
+    // marginRight: 128,
+  },
+  avatarView: {
+    minHeight: "50vh",
+    background: "white",
     marginTop: 64,
     // marginLeft: 128,
     // marginRight: 128,

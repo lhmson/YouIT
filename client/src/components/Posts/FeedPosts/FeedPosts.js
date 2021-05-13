@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { Row, Col, Layout } from "antd";
+import { Row, Layout } from "antd";
 import Loading from "../../Loading/Loading";
 import styles from "./styles";
 
 import useInfiniteScroll from "../../../hooks/useInfiniteScroll";
-import { useSelector } from "react-redux";
 
-import axios from "axios";
 import * as api from "../../../api/post";
 
 import FeedPost from "./FeedPost/FeedPost";
@@ -17,7 +15,7 @@ function FeedPosts({ setCurrentId }) {
   // const posts = useSelector((state) => state.posts);
   const [posts, setPosts] = useState([]);
 
-  //setting tha initial page
+  //setting the initial page
   const [page, setPage] = useState(0);
   //we need to know if there is more data
   const [hasMore, setHasMore] = useState(true);

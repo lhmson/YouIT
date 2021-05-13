@@ -29,7 +29,7 @@ export const getAPost = async (req, res) => {
 
   try {
     await Post.findById(id)
-      .populate("userId", "name")
+      .populate("userId", "name") // need to populate more item (avatar, )
       .then((post) => {
         return res.status(200).json(post);
       })
@@ -239,12 +239,18 @@ export const getPostsPagination = async (req, res) => {
   _page = parseInt(_page);
   _limit = parseInt(_limit);
   try {
-    const posts = await Post.find()
+    await Post.find()
+      .populate("userId", "name")
       .sort({ createdAt: -1 })
       .skip(_page > 0 ? _page * _limit : 0)
-      .limit(_limit);
+      .limit(_limit)
 
-    return res.status(200).json(posts);
+      .then((posts) => {
+        return res.status(200).json(posts);
+      })
+      .catch((err) => {
+        return res.status(500).json(`Cannot get posts`);
+      });
   } catch (error) {
     return res.status(500).send(error.message);
   }
@@ -258,7 +264,9 @@ export const getOtherPosts = async (req, res) => {
       res.status(404).json("Invalid ID");
       return;
     }
-    const posts = await (await Post.find()).filter(
+    const posts = await (
+      await Post.find()
+    ).filter(
       (p) =>
         p.userId.toString() === excludedPost.userId.toString() &&
         p._id.toString() !== excludedPost._id.toString()

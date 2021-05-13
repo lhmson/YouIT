@@ -13,6 +13,11 @@ const styles = {
   item: {
     marginBottom: 16,
   },
+  sider: {
+    height: "auto",
+    background: "white",
+    minHeight: "50vh",
+  },
 };
 
 export default styles;

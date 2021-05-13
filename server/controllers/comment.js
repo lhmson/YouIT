@@ -7,15 +7,15 @@ import Comment from "../models/comment.js";
 import { httpStatusCodes } from "../utils/httpStatusCode.js";
 
 export const createComment = async (req, res) => {
-  const { id } = req.params;
-  if (!mongoose.Types.ObjectId.isValid(id)) {
-    return res.status(400).send(`Id ${id} is invalid.`);
+  const { postId } = req.params;
+  if (!mongoose.Types.ObjectId.isValid(postId)) {
+    return res.status(400).send(`Id ${postId} is invalid.`);
   }
   const comment = new Comment(req.body);
   comment.userId = req.userId;
   await comment.save();
   try {
-    await Post.findById(id)
+    await Post.findById(postId)
       .then((post) => {
         post.comments.push(comment._id);
         post.save();
@@ -77,6 +77,9 @@ export const getComments = async (req, res) => {
     .then(
       (post) => {
         console.log(post.comments.length);
+        post.comments.map((c) => {
+          if (c.quotedCommentId === null) console.log("null quoted comment", c);
+        });
         res.status(200).json(post.comments);
       },
       (err) => {
@@ -86,7 +89,7 @@ export const getComments = async (req, res) => {
 };
 
 export const editComment = async (req, res) => {
-  const { id, commentId } = req.params;
+  const { id } = req.params;
   const { userId } = req;
   try {
     if (!userId) {
@@ -94,11 +97,8 @@ export const editComment = async (req, res) => {
         .status(httpStatusCodes.unauthorized)
         .json({ message: "Unauthenticated" });
     }
-    await Post.findById(id).catch((err) => {
-      return res.status(404).json({ message: err.message });
-    });
     await Comment.findByIdAndUpdate(
-      commentId,
+      id,
       {
         content: req.body.content,
       },
@@ -116,7 +116,7 @@ export const editComment = async (req, res) => {
 };
 
 export const deleteComment = async (req, res) => {
-  const { id, commentId } = req.params;
+  const { id } = req.params;
   const { userId } = req;
   try {
     if (!userId) {
@@ -124,10 +124,7 @@ export const deleteComment = async (req, res) => {
         .status(httpStatusCodes.unauthorized)
         .json({ message: "Unauthenticated" });
     }
-    await Post.findById(id).catch((err) => {
-      return res.status(404).json({ message: err.message });
-    });
-    await Comment.findByIdAndDelete(commentId)
+    await Comment.findByIdAndDelete(id)
       .then((comment) => {
         return res.status(200).json(comment);
       })

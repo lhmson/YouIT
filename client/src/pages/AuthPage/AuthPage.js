@@ -19,7 +19,7 @@ function AuthPage() {
   return (
     <>
       <Layout>
-        <Navbar selectedMenu="auth" />
+        <Navbar />
         <Layout>
           <Layout style={{ padding: "24px" }}>
             <Content style={{ ...styles.paleBackground, ...styles.mainArea }}>

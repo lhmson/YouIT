@@ -22,6 +22,7 @@ function UserResultSearchPage() {
   const [currentId, setCurrentId] = useState(null);
   const dispatch = useDispatch();
   const [modeSearch, setModeSearch] = useState("User");
+  const [txtSearch, setTxtSearch] = useState("");
 
   useEffect(() => {
     dispatch(getPosts());
@@ -30,13 +31,13 @@ function UserResultSearchPage() {
   return (
     <>
       <Layout>
-        <Navbar selectedMenu="userinfo" />
+        <Navbar selectedMenu="userinfo" setTxtSearch={setTxtSearch} />
         <Layout>
           <SearchSidebar setModeSearch={setModeSearch} />
           <Layout style={styles.mainArea}>
             <Content>
               {modeSearch === "User" ? (
-                <SearchUserResult></SearchUserResult>
+                <SearchUserResult userNameSearch={txtSearch}></SearchUserResult>
               ) : modeSearch === "Post" ? (
                 <SearchPostResult></SearchPostResult>
               ) : (

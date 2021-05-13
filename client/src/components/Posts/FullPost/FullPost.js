@@ -1,15 +1,13 @@
 import React, { useEffect } from "react";
 import {
-  Card,
   Avatar,
-  Button,
   Typography,
   Row,
-  Col,
   Tag,
   Space,
-  Input,
-  Divider,
+  Menu,
+  Dropdown,
+  message,
 } from "antd";
 import { MdPublic } from "react-icons/md";
 import {
@@ -19,27 +17,50 @@ import {
   LinkOutlined,
   ShareAltOutlined,
   CaretRightOutlined,
+  DeleteFilled,
+  BellOutlined,
 } from "@ant-design/icons";
-import moment from "moment";
-import { useDispatch } from "react-redux";
-import { likePost, deletePost } from "../../../redux/actions/posts";
-import COLOR from "../../../constants/colors";
+import styles from "./styles";
 
-const { Title, Text, Paragraph, Link } = Typography;
-const { TextArea } = Input;
+const { Title, Text, Paragraph } = Typography;
+
+const menuMore = (
+  <Menu>
+    <Menu.Item key="0">
+      <Row align="middle">
+        <BellOutlined className="mr-2" />
+        <Text>Follow post</Text>
+      </Row>
+    </Menu.Item>
+    <Menu.Item key="1">
+      <Row align="middle">
+        <DeleteFilled className="red mr-2" />
+        <Text className="red">Delete post</Text>
+      </Row>
+    </Menu.Item>
+  </Menu>
+);
 
 function FullPost(props) {
   const { post } = props;
 
-  const handleMore = () => {
-    alert("more");
-  };
+  const handleMore = () => {};
 
   const tagList = ["Tag 1", "Tag 2", "Tag 3", "Tag 4", "Tag 5"];
 
+  const copyLink = (id) => {
+    navigator.clipboard
+      .writeText(`localhost:3000/post/${id}`) // change to deployment link later
+      .then(() => message.success("Link copy successfully!"))
+      .catch((error) => {
+        message.error("Something goes wrong");
+        console.log(id);
+      });
+  };
+
   return (
     <div>
-      <div>
+      <div style={styles.item}>
         <Row
           className="pb-2"
           style={{ justifyContent: "space-between", alignItems: "center" }}
@@ -85,10 +106,15 @@ function FullPost(props) {
                 Last edited {post?.updatedAt.toString().slice(0, 10)}
               </Text>
             </div>
-
-            <div className="clickable" onClick={handleMore}>
-              <EllipsisOutlined className="clickable icon" />
-            </div>
+            <Dropdown
+              overlay={menuMore}
+              trigger={["click"]}
+              placement="bottomRight"
+            >
+              <div className="clickable" onClick={handleMore}>
+                <EllipsisOutlined className="clickable icon" />
+              </div>
+            </Dropdown>
           </Row>
         </Row>
         <Row className="mb-1">
@@ -114,7 +140,10 @@ function FullPost(props) {
           </Row>
           <Row>
             <Space size="large">
-              <LinkOutlined className="clickable icon" />
+              <LinkOutlined
+                className="clickable icon"
+                onClick={() => copyLink(post._id)}
+              />
               <ShareAltOutlined className="clickable icon" />
             </Space>
           </Row>

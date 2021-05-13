@@ -5,7 +5,11 @@ import styles from "./styles.js";
 
 const { Title, Text } = Typography;
 
-function UserCard() {
+function UserCard(props) {
+  const { name } = props;
+  const [txtButton, setTxtButton] = React.useState(
+    props.relationship ?? "Add friend"
+  );
   return (
     <>
       <div style={styles.card}>
@@ -22,7 +26,7 @@ function UserCard() {
             />
 
             <div className="col-8" style={{ alignSelf: "center" }}>
-              <Text style={styles.textUser}>Lalisa Manobal</Text>
+              <Text style={styles.textUser}>{name ?? "Lalisa Manobal"}</Text>
               <div style={{ marginTop: 0 }}></div>
               <Text>React Native Developer</Text>
             </div>
@@ -53,7 +57,7 @@ function UserCard() {
                 fontWeight: 500,
               }}
             >
-              Kết bạn
+              {txtButton}
             </Button>
             <div>
               <Text style={styles.text}>12 bạn chung</Text>

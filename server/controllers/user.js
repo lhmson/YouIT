@@ -2,6 +2,7 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
 import User from "../models/user.js";
+import UserInfo from "../models/user_info.js";
 
 const secret = "test";
 
@@ -30,26 +31,33 @@ export const signin = async (req, res) => {
 };
 
 export const signup = async (req, res) => {
-  console.log("signup");
-  const { email, password, firstname, lastname } = req.body;
+  const { email, password, firstName, lastName, gender, dob } = req.body;
 
   try {
+    console.log("email", email);
     const user = await User.findOne({ email });
-
     if (user) return res.status(400).json({ message: "User already exists" });
 
     const hashedPassword = await bcrypt.hash(password, 12);
 
+    const newInfo = await UserInfo.create({
+      firstName: firstName,
+      lastName: lastName,
+      gender: gender,
+      dateOfBirth: dob,
+    });
+
     const result = await User.create({
       email,
       password: hashedPassword,
-      name: `${firstname} ${lastname}`,
+      name: `${firstName} ${lastName}`,
+      userInfo: newInfo,
     });
 
-    const token = jwt.sign({ email: result.email, id: result._id }, secret, {
-      expiresIn: "24h",
-    });
-    res.status(201).json({ result, token });
+    // const token = jwt.sign({ email: result.email, id: result._id }, secret, {
+    //   expiresIn: "24h",
+    // });
+    res.status(201).json({ result });
   } catch (error) {
     res.status(500).json({ message: "Something went wrong" });
 
