@@ -1,14 +1,9 @@
 import React, { useState, useEffect } from "react";
 import {
-  Card,
   Avatar,
-  Button,
   Typography,
   Row,
-  Col,
-  Tag,
   Space,
-  Input,
   Divider,
   Menu,
   Dropdown,
@@ -19,9 +14,6 @@ import {
   ArrowUpOutlined,
   ArrowDownOutlined,
   LinkOutlined,
-  ShareAltOutlined,
-  CaretRightOutlined,
-  BellOutlined,
   DeleteFilled,
   EditOutlined,
 } from "@ant-design/icons";
@@ -59,22 +51,6 @@ function Comment({ comment, onReply, onEdit, onDelete }) {
   const handleDelete = () => {
     onDelete(comment?._id);
   };
-  const menuMore = (
-    <Menu onClick={onMoreSelect}>
-      <Menu.Item key="0">
-        <Row align="middle">
-          <EditOutlined className="mr-2" />
-          <Text>Edit comment</Text>
-        </Row>
-      </Menu.Item>
-      <Menu.Item key="1">
-        <Row align="middle">
-          <DeleteFilled className="red mr-2" />
-          <Text className="red">Delete comment</Text>
-        </Row>
-      </Menu.Item>
-    </Menu>
-  );
   const renderEdit = () => {
     const handleDiscard = () => {
       setIsEdit(false);
@@ -93,6 +69,33 @@ function Comment({ comment, onReply, onEdit, onDelete }) {
   };
   const handleDiscardReply = () => {
     setIsReply(false);
+  };
+
+  const menuMore = (
+    <Menu onClick={onMoreSelect}>
+      <Menu.Item key="0">
+        <Row align="middle">
+          <EditOutlined className="mr-2" />
+          <Text>Edit comment</Text>
+        </Row>
+      </Menu.Item>
+      <Menu.Item key="1">
+        <Row align="middle">
+          <DeleteFilled className="red mr-2" />
+          <Text className="red">Delete comment</Text>
+        </Row>
+      </Menu.Item>
+    </Menu>
+  );
+
+  const copyLink = (id) => {
+    navigator.clipboard
+      .writeText(id) // change to deployment link later
+      .then(() => message.success("Link copy successfully!"))
+      .catch((error) => {
+        message.error("Something goes wrong copying link");
+        console.log(error);
+      });
   };
 
   return (
@@ -189,7 +192,10 @@ function Comment({ comment, onReply, onEdit, onDelete }) {
             </Row>
             <Row>
               <Space size="large">
-                <LinkOutlined className="clickable icon" />
+                <LinkOutlined
+                  className="clickable icon"
+                  onClick={() => copyLink(comment?._id)}
+                />
               </Space>
             </Row>
           </Row>

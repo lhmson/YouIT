@@ -15,45 +15,60 @@ import {
   ArrowUpOutlined,
   ArrowDownOutlined,
   LinkOutlined,
+  EditFilled,
   ShareAltOutlined,
   CaretRightOutlined,
   DeleteFilled,
   BellOutlined,
 } from "@ant-design/icons";
 import styles from "./styles";
+import { useLocalStorage } from "../../../hooks/useLocalStorage";
 
 const { Title, Text, Paragraph } = Typography;
-
-const menuMore = (
-  <Menu>
-    <Menu.Item key="0">
-      <Row align="middle">
-        <BellOutlined className="mr-2" />
-        <Text>Follow post</Text>
-      </Row>
-    </Menu.Item>
-    <Menu.Item key="1">
-      <Row align="middle">
-        <DeleteFilled className="red mr-2" />
-        <Text className="red">Delete post</Text>
-      </Row>
-    </Menu.Item>
-  </Menu>
-);
 
 function FullPost(props) {
   const { post } = props;
 
+  const [user] = useLocalStorage("user");
+
   const handleMore = () => {};
 
   const tagList = ["Tag 1", "Tag 2", "Tag 3", "Tag 4", "Tag 5"];
+
+  const menuMore = (
+    <Menu>
+      {user.result._id === post?.userId._id ? (
+        <>
+          <Menu.Item key="1">
+            <Row align="middle">
+              <EditFilled className="mr-2" />
+              <Text>Edit post</Text>
+            </Row>
+          </Menu.Item>
+          <Menu.Item key="2">
+            <Row align="middle">
+              <DeleteFilled className="red mr-2" />
+              <Text className="red">Delete post</Text>
+            </Row>
+          </Menu.Item>
+        </>
+      ) : (
+        <Menu.Item key="0">
+          <Row align="middle">
+            <BellOutlined className="mr-2" />
+            <Text>Follow post</Text>
+          </Row>
+        </Menu.Item>
+      )}
+    </Menu>
+  );
 
   const copyLink = (id) => {
     navigator.clipboard
       .writeText(`localhost:3000/post/${id}`) // change to deployment link later
       .then(() => message.success("Link copy successfully!"))
       .catch((error) => {
-        message.error("Something goes wrong");
+        message.error("Something goes wrong copying link");
         console.log(id);
       });
   };

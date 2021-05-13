@@ -76,7 +76,7 @@ export const getComments = async (req, res) => {
     })
     .then(
       (post) => {
-        console.log(post.comments.length);
+        // console.log(post.comments.length);
         post.comments.map((c) => {
           if (c.quotedCommentId === null) console.log("null quoted comment", c);
         });

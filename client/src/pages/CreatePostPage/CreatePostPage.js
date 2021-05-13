@@ -1,23 +1,29 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Navbar from "../../components/Navbar/Navbar.js";
-import Layout, { Content } from "antd/lib/layout/layout";
+import { Layout } from "antd";
 import CreatePostForm from "../../components/CreatePostForm/CreatePostForm";
 import styles from "./styles.js";
+import { useLocation } from "react-router";
 
-/// isNewPost: true if user is adding a new post, false if user is just editting an old post
-function CreatePostPage({ isNewPost = true }) {
+const { Content } = Layout;
+
+/// postId exists if user is editing a new post, otherwise is just editing an old post
+function CreatePostPage() {
+  const location = useLocation();
+  const postId = location.state?.postId;
+
+  useEffect(() => {
+    alert(postId);
+  }, []);
+
   return (
     <>
       <Layout style={{}}>
         <Navbar />
-
-        {/* <div style={{ height: 200 }}></div> */}
-
-        <Layout>
+        <Layout style={styles.mainArea}>
           <Content>
             <h1 className="text-center">
-              {" "}
-              {isNewPost ? "Create a new post" : "Edit your post!"}
+              {postId ? "Edit your post" : "Create a post"}
             </h1>
             <CreatePostForm />
           </Content>

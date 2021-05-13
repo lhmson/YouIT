@@ -1,29 +1,23 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   Card,
   Button,
   Typography,
   Row,
   Col,
-  Space,
   Input,
   Form,
   Checkbox,
   message,
 } from "antd";
-import { FacebookFilled } from "@ant-design/icons";
 
 import { ReactComponent as ReactLogo } from "../../assets/login-bro.svg";
 import logo from "../../assets/lightlogo.png";
-
-import styles from "./styles";
-import { FaFacebookF, FaFacebookSquare } from "react-icons/fa";
 import { GrFacebook } from "react-icons/gr";
 import { SiGithub } from "react-icons/si";
 import { signin } from "../../redux/actions/auth";
 import { useDispatch } from "react-redux";
-import { useHistory } from "react-router";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import COLOR from "../../constants/colors";
 import { useToken } from "../../context/TokenContext";
 import { useLocalStorage } from "../../hooks/useLocalStorage";
@@ -43,7 +37,6 @@ function LoginPage() {
   const history = useHistory();
 
   const [token, setToken] = useToken();
-
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });

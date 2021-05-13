@@ -5,7 +5,6 @@ import styles from "./styles.js";
 import Navbar from "../../components/Navbar/Navbar";
 
 import { useDispatch } from "react-redux";
-import { getPosts } from "../../redux/actions/posts";
 import { Button } from "antd";
 import FriendCard from "../../components/FriendCard/FriendCard";
 
@@ -16,10 +15,6 @@ function FriendMangementPage() {
   const [currentId, setCurrentId] = useState(null);
   const dispatch = useDispatch();
   const [modeSearch, setModeSearch] = useState("User");
-
-  useEffect(() => {
-    dispatch(getPosts());
-  }, [currentId, dispatch]);
 
   return (
     <>

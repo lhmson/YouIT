@@ -11,7 +11,6 @@ import {
 } from "../../components/index";
 
 import { useDispatch, useSelector } from "react-redux";
-import { getPosts } from "../../redux/actions/posts";
 import { useParams } from "react-router";
 import { getUser } from "../../redux/actions/user.js";
 
@@ -28,10 +27,6 @@ function UserInfoPage() {
   useEffect(async () => {
     dispatch(getUser(id));
   }, []);
-
-  useEffect(() => {
-    dispatch(getPosts());
-  }, [currentId, dispatch]);
 
   return (
     <>

@@ -15,7 +15,7 @@ export const updatePost = (id, updatedPost) =>
 export const deletePost = (id) => API.delete(`/post/${id}`);
 
 // user interaction
-export const likePost = (id) => API.put(`/post/${id}/likePost`);
+// export const likePost = (id) => API.put(`/post/${id}/likePost`);
 
 export const upvotePost = (id) => API.put(`/post/${id}/upvote`);
 
