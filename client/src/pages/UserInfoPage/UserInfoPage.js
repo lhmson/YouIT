@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Col, Layout, Row } from "antd";
+import { Button, Col, Layout, Row } from "antd";
 import styles from "./styles.js";
 
 import Navbar from "../../components/Navbar/Navbar";
@@ -40,11 +40,7 @@ function UserInfoPage() {
             }}
           >
             <AvatarView></AvatarView>
-            <Row style={{ marginLeft: 16, marginTop: 32 }}>
-              <Col span={12}>
-                <ListButtons />
-              </Col>
-            </Row>
+            <ListButtons />
           </Content>
         </Layout>
         <Layout style={styles.mainArea}>

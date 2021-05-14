@@ -24,7 +24,7 @@ function AboutPage() {
   const dispatch = useDispatch();
 
   useEffect(async () => {
-    console.log("start fetching user");
+    //console.log("start fetching user");
     dispatch(getUser(id));
   }, []);
 
@@ -40,11 +40,7 @@ function AboutPage() {
             }}
           >
             <AvatarView></AvatarView>
-            <Row style={{ marginLeft: 16, marginTop: 32 }}>
-              <Col span={12}>
-                <ListButtons />
-              </Col>
-            </Row>
+            <ListButtons />
           </Content>
         </Layout>
         <Layout style={styles.mainArea}>

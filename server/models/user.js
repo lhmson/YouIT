@@ -30,13 +30,15 @@ const userSchema = mongoose.Schema(
         ref: "User",
       },
     ],
-    listFriendRequests: [
+    // friend requests which user receives
+    listReceivingFriendRequests: [
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: "FriendRequest",
       },
     ],
-    listFriendSendRequests: [
+    // friend requests which user sends to others
+    listSendingFriendRequests: [
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: "FriendRequest",
