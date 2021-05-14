@@ -24,3 +24,5 @@ export const removeSendingFriendRequest = (friendRequest) =>
     `/userInfo/${friendRequest.userSendRequestId}/sendFriendRequest/remove`,
     friendRequest
   );
+export const addFriend = (user, friend) =>
+  API.put(`/userInfo/${user._id}/addfriend`, friend);

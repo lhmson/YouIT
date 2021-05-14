@@ -17,6 +17,7 @@ import {
   removeFriendRequest,
 } from "../../../redux/actions/user";
 import {
+  addFriend,
   addSendingFriendRequest,
   removeReceivingFriendRequest,
   removeSendingFriendRequest,
@@ -58,7 +59,7 @@ const ListButtons = () => {
     setSelectedMenu(e.key);
   };
 
-  const addFriend = async () => {
+  const handleAddingFriend = async () => {
     // create friend request
     const friendRequest = {
       userConfirmId: user._id,
@@ -81,6 +82,15 @@ const ListButtons = () => {
     dispatch(removeFriendRequest(request, user));
   };
 
+  const acceptFriendRequest = async () => {
+    await addFriend(loginUser, user);
+
+    if (matchingFriendRequest) {
+      const request = matchingFriendRequest[0];
+      await cancelFriendRequest(request);
+    }
+  };
+
   // xem lai ham nay, cach khac
   const getMatchFriendRequest = async () => {
     const listFriendRequests = (await fetchAllFriendRequests()).data;
@@ -93,43 +103,70 @@ const ListButtons = () => {
     return friendRequest;
   };
 
+  const FriendButtons = () => {
+    return (
+      <Row>
+        <Button style={{ marginLeft: 16 }}>Friends</Button>
+        <Button className="green-button" style={{ marginLeft: 16 }}>
+          Unfriend
+        </Button>
+      </Row>
+    );
+  };
+
+  const AcceptDenyButtons = () => {
+    const friendRequest = matchingFriendRequest[0];
+    return (
+      <Row style={{ marginTop: 16 }}>
+        <Button
+          className="green-button"
+          style={{ marginLeft: 16 }}
+          onClick={acceptFriendRequest}
+        >
+          Accept
+        </Button>
+        <Button
+          style={{ marginLeft: 16 }}
+          onClick={() => cancelFriendRequest(friendRequest)}
+        >
+          Deny
+        </Button>
+      </Row>
+    );
+  };
+  // refactor this
   const AddFriendButton = () => {
     if (!isMyProfile) {
-      if (matchingFriendRequest) {
-        const friendRequest = matchingFriendRequest[0];
-        if (loginUser?._id === friendRequest?.userConfirmId) {
-          //console.log("receiver");
-          return (
-            <Row style={{ marginTop: 16 }}>
-              <Button className="green-button" style={{ marginLeft: 16 }}>
-                Accept
-              </Button>
+      var listFriends = Object.values(user?.listFriends ?? []);
+      const isMyFriend = listFriends.includes(loginUser?._id);
+
+      if (isMyFriend) {
+        return <FriendButtons />;
+      } else {
+        if (matchingFriendRequest) {
+          const friendRequest = matchingFriendRequest[0];
+          if (loginUser?._id === friendRequest?.userConfirmId) {
+            //console.log("receiver");
+            return <AcceptDenyButtons />;
+          } else if (loginUser?._id === friendRequest?.userSendRequestId) {
+            return (
               <Button
-                style={{ marginLeft: 16 }}
+                className="green-button"
                 onClick={() => cancelFriendRequest(friendRequest)}
               >
-                Deny
+                Cancel Request
               </Button>
-            </Row>
-          );
-        } else if (loginUser?._id === friendRequest?.userSendRequestId) {
-          return (
-            <Button
-              className="green-button"
-              onClick={() => cancelFriendRequest(friendRequest)}
-            >
-              Cancel Request
-            </Button>
-          );
+            );
+          }
         }
+        // if not my profile and have no friend request, display add friend button
+        //console.log("have no request");
+        return (
+          <Button className="green-button" onClick={handleAddingFriend}>
+            Add friend
+          </Button>
+        );
       }
-      // if not my profile and have no friend request, display add friend button
-      //console.log("have no request");
-      return (
-        <Button className="green-button" onClick={addFriend}>
-          Add friend
-        </Button>
-      );
     }
     // if my profile, show nothing
     return <></>;

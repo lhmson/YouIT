@@ -120,3 +120,35 @@ export const removeSendingFriendRequest = async (req, res) => {
       .json({ message: error.message });
   }
 };
+
+// PUT userinfo/:id/addfriend
+/**
+ * @param {express.Request<ParamsDictionary, any, any, QueryString.ParsedQs, Record<string, any>>} req
+ * @param {express.Response<any, Record<string, any>, number>} res
+ * @param {express.NextFunction} next
+ */
+export const addFriend = async (req, res) => {
+  const friend = req.body;
+  const { id } = req.params;
+
+  try {
+    // add friendId to user's list friends
+    await User.findById(id).then((user) => {
+      user.listFriends.push(friend?._id);
+      user.save();
+      res.status(httpStatusCodes.ok).json(user);
+    });
+
+    // add userId to friend's list friends
+    await User.findById(friend?._id).then((user) => {
+      user.listFriends.push(id);
+      user.save();
+      res.status(httpStatusCodes.ok).json(user);
+    });
+  } catch (error) {
+    console.log(error.message);
+    res
+      .status(httpStatusCodes.internalServerError)
+      .json({ message: error.message });
+  }
+};
