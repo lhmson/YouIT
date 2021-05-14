@@ -46,8 +46,18 @@ function CommentForm({ onSubmit, label, onDiscard }) {
           form={form}
           name="control-hooks"
           onFinish={handleFinish}
+          requiredMark={false}
         >
-          <Form.Item name="userComment" label={label}>
+          <Form.Item
+            name="userComment"
+            label={label}
+            rules={[
+              {
+                required: true,
+                message: "Please write something.",
+              },
+            ]}
+          >
             <TextArea
               style={{ height: 200 }}
               onChange={(e) => setInputComment({ content: e.target.value })}
