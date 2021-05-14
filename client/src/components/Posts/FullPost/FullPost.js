@@ -37,7 +37,7 @@ function FullPost(props) {
 
   const menuMore = (
     <Menu>
-      {user.result._id === post?.userId._id ? (
+      {user?.result?._id === post?.userId?._id ? (
         <>
           <Menu.Item key="1">
             <Row align="middle">
@@ -66,7 +66,7 @@ function FullPost(props) {
   const copyLink = (id) => {
     navigator.clipboard
       .writeText(`localhost:3000/post/${id}`) // change to deployment link later
-      .then(() => message.success("Link copy successfully!"))
+      .then(() => message.success("Link copied to clipboard"))
       .catch((error) => {
         message.error("Something goes wrong copying link");
         console.log(id);

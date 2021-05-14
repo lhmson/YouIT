@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styles from "./styles.js";
-import { Layout, Typography, Menu, Card, Row, Dropdown } from "antd";
+import { Layout, Typography, Menu, Card, Row, Dropdown, message } from "antd";
 import { DownOutlined, FieldTimeOutlined } from "@ant-design/icons";
 
 import Navbar from "../../components/Navbar/Navbar";
@@ -12,11 +12,14 @@ import * as commentsApi from "../../api/comment";
 import CommentForm from "../../components/CommentForm/CommentForm.js";
 import Comment from "../../components/Comment/Comment.js";
 import COLOR from "../../constants/colors.js";
+import { useHistory } from "react-router-dom";
 
 const { Content } = Layout;
 const { Title, Text } = Typography;
 
 function SpecificPostPage(props) {
+  const history = useHistory();
+
   const sorts = [
     {
       type: "new",
@@ -26,11 +29,12 @@ function SpecificPostPage(props) {
     },
   ];
 
-  const { id } = props.match.params;
+  const { id, commentId } = props.match.params;
   const [post, setPost] = useState([]);
   const [comments, setComments] = useState([]);
   const [otherPosts, setOtherPosts] = useState([]);
   const [sort, setSort] = useState(sorts[0]);
+  const [focusedCommentIndex, setFocusedCommentIndex] = useState(-1);
 
   const fetchPost = async () => {
     const { data } = await postsApi.fetchAPost(id);
@@ -45,6 +49,17 @@ function SpecificPostPage(props) {
   const fetchComments = async () => {
     const { data } = await commentsApi.fetchComments(id);
     const sortedData = sort?.function(data);
+    if (commentId) {
+      const i = sortedData.findIndex((c) => c._id === commentId);
+      if (i > -1) {
+        const temp = sortedData[0];
+        sortedData[0] = sortedData[i];
+        sortedData[i] = temp;
+      } else {
+        history.push(`/post/${post?._id}`);
+      }
+      setFocusedCommentIndex(i);
+    }
     setComments(sortedData);
   };
 
@@ -67,7 +82,11 @@ function SpecificPostPage(props) {
 
   const handleSubmitComment = async (newComment) => {
     await commentsApi.createComment(post._id, newComment);
-    fetchComments();
+
+    if (commentId) {
+      history.push(`/post/${post?._id}`);
+      history.go(0);
+    } else fetchComments();
   };
 
   const handleReplyComment = async (commentId, inputComment) => {
@@ -110,6 +129,16 @@ function SpecificPostPage(props) {
     </Menu>
   );
 
+  const handleCopyCommentLink = (id) => {
+    navigator.clipboard
+      .writeText(`localhost:3000/post/${post?._id}/${id}`) // change to deployment link later
+      .then(() => message.success("Link copied to clipboard"))
+      .catch((error) => {
+        message.error("Something goes wrong copying link");
+        console.log(id);
+      });
+  };
+
   return (
     <>
       <Layout>
@@ -146,17 +175,33 @@ function SpecificPostPage(props) {
                   </Dropdown>
                 </Row>
                 {/* test anchor link for comment but not work */}
-                {comments?.map((c, i) => (
-                  <div id={c?._id}>
-                    <Comment
-                      key={i}
-                      comment={c}
-                      onReply={handleReplyComment}
-                      onEdit={handleEditComment}
-                      onDelete={handleDeleteComment}
-                    />
-                  </div>
-                ))}
+                <div style={{ margin: -20, marginTop: 0 }}>
+                  {comments?.map((c, i) =>
+                    focusedCommentIndex > -1 && i === 0 ? (
+                      <div key={i}>
+                        <Comment
+                          comment={c}
+                          onReply={handleReplyComment}
+                          onEdit={handleEditComment}
+                          onDelete={handleDeleteComment}
+                          onCopyCommentLink={handleCopyCommentLink}
+                          isFocus={true}
+                        />
+                      </div>
+                    ) : (
+                      <div key={i}>
+                        <Comment
+                          comment={c}
+                          onReply={handleReplyComment}
+                          onEdit={handleEditComment}
+                          onDelete={handleDeleteComment}
+                          onCopyCommentLink={handleCopyCommentLink}
+                          isFocus={false}
+                        />
+                      </div>
+                    )
+                  )}
+                </div>
               </Card>
             </div>
           </Content>

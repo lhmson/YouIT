@@ -206,7 +206,7 @@ function FeedPost({ post, setCurrentId }) {
   const copyLink = (id) => {
     navigator.clipboard
       .writeText(`${window.location.origin}/post/${id}`) // change to deployment link later
-      .then(() => message.success("Link copy successfully!"))
+      .then(() => message.success("Link copied to clipboard"))
       .catch((error) => {
         message.error("Something goes wrong copying link");
       });

@@ -282,7 +282,7 @@ export const getOtherPosts = async (req, res) => {
       await Post.find()
     ).filter(
       (p) =>
-        p.userId.toString() === excludedPost.userId.toString() &&
+        p.userId?.toString() === excludedPost?.userId.toString() &&
         p._id.toString() !== excludedPost._id.toString()
     );
     res.status(200).json(posts);

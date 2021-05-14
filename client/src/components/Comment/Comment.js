@@ -24,7 +24,14 @@ import { Link } from "react-router-dom";
 
 const { Title, Text, Paragraph } = Typography;
 
-function Comment({ comment, onReply, onEdit, onDelete }) {
+function Comment({
+  comment,
+  onReply,
+  onEdit,
+  onDelete,
+  onCopyCommentLink,
+  isFocus,
+}) {
   const [isReply, setIsReply] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
 
@@ -89,19 +96,23 @@ function Comment({ comment, onReply, onEdit, onDelete }) {
   );
 
   const copyLink = (id) => {
-    navigator.clipboard
-      .writeText(id) // change to deployment link later
-      .then(() => message.success("Link copy successfully!"))
-      .catch((error) => {
-        message.error("Something goes wrong copying link");
-        console.log(error);
-      });
+    // navigator.clipboard
+    //   // .writeText(id) // change to deployment link later
+    //   .then(() => message.success("Link copied to clipboard"))
+    //   .catch((error) => {
+    //     message.error("Something goes wrong copying link");
+    //     console.log(error);
+    //   });
+    onCopyCommentLink(id);
   };
 
   return (
-    <div>
+    <div
+      className={isFocus && "bg-green-smoke pt-4"}
+      style={{ paddingLeft: 20, paddingRight: 20 }}
+    >
       <Row
-        className="pb-2"
+        className={`pb-2`}
         style={{ justifyContent: "space-between", alignItems: "center" }}
       >
         <Row className="align-items-center" style={{ marginBottom: 12 }}>
@@ -214,6 +225,7 @@ function Comment({ comment, onReply, onEdit, onDelete }) {
       ) : (
         renderEdit()
       )}
+
       <Divider />
     </div>
   );
