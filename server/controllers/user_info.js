@@ -36,10 +36,10 @@ export const updateUserInfo = async (req, res) => {
   }
 };
 
-// use after creating a new friend request
-export const updateListReceivingFriendRequests = async (req, res) => {
+// use for updating receiver
+export const addReceivingFriendRequest = async (req, res) => {
   const friendRequest = req.body;
-  console.log(friendRequest);
+  //console.log(friendRequest);
   try {
     // update receiver
     await User.findById(friendRequest.userConfirmId).then((user) => {
@@ -58,7 +58,28 @@ export const updateListReceivingFriendRequests = async (req, res) => {
   }
 };
 
-export const updateListSendingFriendRequests = async (req, res) => {
+export const removeReceivingFriendRequest = async (req, res) => {
+  const friendRequest = req.body;
+  //console.log(friendRequest);
+  try {
+    // update receiver
+    await User.findById(friendRequest.userConfirmId).then((user) => {
+      user.listReceivingFriendRequests =
+        user.listReceivingFriendRequests.filter(
+          (item) => item != friendRequest._id
+        );
+      user.save();
+      res.status(httpStatusCodes.ok).json(user);
+    });
+  } catch (error) {
+    res
+      .status(httpStatusCodes.internalServerError)
+      .json({ message: error.message });
+  }
+};
+
+// use for updating sender
+export const addSendingFriendRequest = async (req, res) => {
   const friendRequest = req.body;
 
   try {
@@ -71,6 +92,27 @@ export const updateListSendingFriendRequests = async (req, res) => {
       } else {
         res.json({ message: "Friend request exists" });
       }
+    });
+  } catch (error) {
+    res
+      .status(httpStatusCodes.internalServerError)
+      .json({ message: error.message });
+  }
+};
+
+export const removeSendingFriendRequest = async (req, res) => {
+  const friendRequest = req.body;
+  try {
+    // update receiver
+    await User.findById(friendRequest.userSendRequestId).then((user) => {
+      user.listSendingFriendRequests = user.listSendingFriendRequests.filter(
+        // item is object
+        // friendRequest._id is string
+        // type different => can't use !==
+        (item) => item != friendRequest._id
+      );
+      user.save();
+      res.status(httpStatusCodes.ok).json(user);
     });
   } catch (error) {
     res

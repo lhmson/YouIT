@@ -21,9 +21,18 @@ export const updateUser = (updatedUser) => async (dispatch) => {
   }
 };
 
-export const updateReceiver = (friendRequest) => async (dispatch) => {
+export const addFriendRequest = (friendRequest) => async (dispatch) => {
   try {
-    const { data } = await api.updateListReceivingFriendRequests(friendRequest);
+    const { data } = await api.addReceivingFriendRequest(friendRequest);
+    dispatch({ type: UPDATE_RECEIVER, payload: data });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const removeFriendRequest = (friendRequest) => async (dispatch) => {
+  try {
+    const { data } = await api.removeReceivingFriendRequest(friendRequest);
     dispatch({ type: UPDATE_RECEIVER, payload: data });
   } catch (error) {
     console.log(error);

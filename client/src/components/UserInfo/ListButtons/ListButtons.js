@@ -12,8 +12,14 @@ import {
   deleteFriendRequest,
   fetchAllFriendRequests,
 } from "../../../api/friendRequest";
-import { updateReceiver } from "../../../redux/actions/user";
-import { updateListSendingFriendRequests } from "../../../api/user_info.js";
+import {
+  addFriendRequest,
+  removeFriendRequest,
+} from "../../../redux/actions/user";
+import {
+  addSendingFriendRequest,
+  removeSendingFriendRequest,
+} from "../../../api/user_info.js";
 
 const ListButtons = () => {
   const dispatch = useDispatch();
@@ -58,12 +64,19 @@ const ListButtons = () => {
       userSendRequestId: loginUser._id,
     };
     const { data } = await createFriendRequest(friendRequest);
-    //console.log(data._id);
 
-    dispatch(updateReceiver(data));
-    await updateListSendingFriendRequests(data);
+    dispatch(addFriendRequest(data));
+    await addSendingFriendRequest(data);
   };
 
+  const cancelFriendRequest = async (request) => {
+    deleteFriendRequest(request?._id);
+
+    await removeSendingFriendRequest(request);
+    dispatch(removeFriendRequest(request));
+  };
+
+  // xem lai ham nay, cach khac
   const getMatchFriendRequest = async () => {
     const listFriendRequests = (await fetchAllFriendRequests()).data;
 
@@ -73,18 +86,6 @@ const ListButtons = () => {
         return request;
     });
     return friendRequest;
-
-    // for (const request in listFriendRequests) {
-    //   const listUserId = [request.userConfirmId, request.userSendRequestId];
-    //   if (listUserId.includes(user?._id) && listUserId.includes(loginUser?._id))
-    //     return request;
-    // }
-    // return null;
-  };
-
-  const cancelFriendRequest = (request) => {
-    deleteFriendRequest(request?._id);
-    // delete xong nho update lai list ... request o ca 2 user
   };
 
   const AddFriendButton = () => {
@@ -103,11 +104,11 @@ const ListButtons = () => {
         } else if (
           loginUser?._id === matchingFriendRequest[0]?.userSendRequestId
         ) {
-          //console.log("sender");
+          const request = matchingFriendRequest[0];
           return (
             <Button
               className="green-button"
-              onClick={() => cancelFriendRequest(matchingFriendRequest[0])}
+              onClick={() => cancelFriendRequest(request)}
             >
               Cancel Request
             </Button>
