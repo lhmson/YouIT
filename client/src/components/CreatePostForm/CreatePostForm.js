@@ -6,7 +6,7 @@ import CreatePostTagSelect from "./CreatePostTagSelect/CreatePostTagSelect.js";
 import CreatePostTitleInput from "./CreatePostTitleInput/CreatePostTitleInput.js";
 import styles from "./styles.js";
 import { createPost } from "../../api/post.js";
-import { useHistory } from "react-router";
+import { useHistory, useLocation } from "react-router";
 import PostEditor from "./PostEditor/PostEditor.js";
 import { io } from "socket.io-client";
 
@@ -31,7 +31,7 @@ function CreatePostForm() {
   const handleSavePostButtonClick = () => {
     const newPost = wrapPostData();
     createPost(newPost)
-      .then((res) => history.push(`/post/${res.data._id}`))
+      .then((res) => history.push(`/post/${res.data._id}`)) // go to specific post
       .catch((error) => {
         alert("Something goes wrong");
         console.log(error);
@@ -40,7 +40,7 @@ function CreatePostForm() {
 
   return (
     <div className="container-fluid">
-      <div className="d-flex justify-content-start">
+      <div className="d-flex justify-content-start py-2">
         <div className="col-8">
           <CreatePostTitleInput title={postTitle} setTitle={setPostTitle} />
         </div>
@@ -49,7 +49,7 @@ function CreatePostForm() {
         </div>
       </div>
 
-      <div className="d-flex justify-content-start">
+      <div className="d-flex justify-content-start py-2">
         <div className="col-8">
           <CreatePostTagSelect />
         </div>
@@ -62,8 +62,14 @@ function CreatePostForm() {
         </div>
 
         {/* May us have a common button component to call here? */}
-        <div className="col-1">
-          <Button onClick={handleSavePostButtonClick}>Publish post</Button>
+        <div className="col-2">
+          <Button
+            className="green-button"
+            onClick={handleSavePostButtonClick}
+            style={{ width: "100%", fontWeight: "bold" }}
+          >
+            PUBLISH
+          </Button>
         </div>
 
         {/* <div className="col-1">
@@ -71,7 +77,7 @@ function CreatePostForm() {
         </div> */}
       </div>
 
-      <div className="d-flex justify-content-start">
+      <div className="d-flex justify-content-start py-2">
         <div className="col-12">
           <PostEditor
             postContent={postContent}

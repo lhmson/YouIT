@@ -150,7 +150,7 @@ export default class CuteServerIO {
   /**
    * 
    * @param {Socket?} toSocket 
-   * @param {string?} event 
+   * @param {string?} event Convention: Action_Receiver
    * @param {object} msg 
    */
   sendToSocket = (toSocket, event, msg) => {
@@ -162,7 +162,7 @@ export default class CuteServerIO {
   /**
    * 
    * @param {string?} toTokenId 
-   * @param {string?} event
+   * @param {string?} event Convention: Action_Receiver
    * @param {any} msg 
    * @param {Socket?} excludedSocket sometimes we dont wanna send some message back to the sender (client). That's when this is helpful :)
    */
@@ -184,11 +184,12 @@ export default class CuteServerIO {
   /**
    * 
    * @param {string?} toUserId
-   * @param {string?} event
+   * @param {string?} event Convention: Action_Receiver
    * @param {any} msg 
    * @param {Socket?} excludedSocket sometimes we dont wanna send some message back to the sender (client). That's when this is helpful :)
    */
   sendToUser = (toUserId, event, msg, excludedSocket) => {
+    console.log("sent to user", toUserId);
     const roomName = this.#USER_ROOM_PREFIX + toUserId
 
     if (excludedSocket && excludedSocket.broadcast) {

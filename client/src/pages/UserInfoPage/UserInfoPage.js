@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Col, Layout, Row } from "antd";
+import { Button, Col, Layout, Row } from "antd";
 import styles from "./styles.js";
 
 import Navbar from "../../components/Navbar/Navbar";
@@ -11,7 +11,6 @@ import {
 } from "../../components/index";
 
 import { useDispatch, useSelector } from "react-redux";
-import { getPosts } from "../../redux/actions/posts";
 import { useParams } from "react-router";
 import { getUser } from "../../redux/actions/user.js";
 
@@ -29,10 +28,6 @@ function UserInfoPage() {
     dispatch(getUser(id));
   }, []);
 
-  useEffect(() => {
-    dispatch(getPosts());
-  }, [currentId, dispatch]);
-
   return (
     <>
       <Layout>
@@ -45,11 +40,7 @@ function UserInfoPage() {
             }}
           >
             <AvatarView></AvatarView>
-            <Row style={{ marginLeft: 16, marginTop: 32 }}>
-              <Col span={12}>
-                <ListButtons />
-              </Col>
-            </Row>
+            <ListButtons />
           </Content>
         </Layout>
         <Layout style={styles.mainArea}>

@@ -1,19 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import {
-  IoSchoolSharp,
-  IoHome,
-  MdPublic,
-  BsThreeDots,
-  MdLocationOn,
-  FaMale,
-  FaBirthdayCake,
-} from "react-icons/all";
+import { IoHome, MdLocationOn, FaMale, FaBirthdayCake } from "react-icons/all";
 import moment from "moment";
 
 import styles from "./styles.js";
-import EditableTimePeriod from "./EditableTimePeriod/EditableTimePeriod.js";
 import EditableText from "./EditableText/EditableText.js";
 import EditableCombobox from "./EditableCombobox/EditableCombobox.js";
 import EditableTime from "./EditableTime/EditableTime.js";
@@ -26,7 +17,6 @@ const OverviewPane = () => {
   const dispatch = useDispatch();
 
   const isMyProfile = isLoginUser(user);
-  console.log("imp ", isMyProfile);
 
   const [dateOfBirth, setDateOfBirth] = useState(
     moment(user?.userInfo?.dateOfBirth).format("DD/MM/YYYY")
@@ -47,14 +37,6 @@ const OverviewPane = () => {
     setDateOfBirth(moment(user?.userInfo?.dateOfBirth).format("DD/MM/YYYY"));
   }, [user]);
 
-  // const dateOfBirth = {
-  //   $convert: {
-  //     input: user?.userInfo?.dateOfBirth,
-  //     to: "date",
-  //   },
-  // };
-  //const dateOfBirth = Number(moment(d).tz(timezone).format("YYYYMMDD"));
-
   const genderOptions = [
     {
       value: "Male",
@@ -70,7 +52,7 @@ const OverviewPane = () => {
     },
   ];
 
-  const saveSchool = () => {};
+  //const saveSchool = () => {};
 
   const saveAddress = () => {
     const updatedUser = { ...user, userInfo: { ...user.userInfo, address } };

@@ -8,7 +8,7 @@ import {
 } from "@ant-design/icons";
 import moment from "moment";
 import { useDispatch } from "react-redux";
-import { likePost, deletePost } from "../../../redux/actions/posts";
+import { deletePost } from "../../../redux/actions/posts";
 
 const { Meta } = Card;
 const { Title, Text } = Typography;
@@ -23,7 +23,7 @@ function Post({ post, setCurrentId }) {
   };
 
   const handleLike = () => {
-    dispatch(likePost(post._id));
+    // dispatch(likePost(post._id));
   };
 
   const handleDelete = () => {

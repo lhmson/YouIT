@@ -1,16 +1,9 @@
 import React, { useState, useEffect } from "react";
 import styles from "./styles.js";
 import { Layout, Typography, Menu, Card, Row, Dropdown } from "antd";
-import {
-  UserOutlined,
-  LaptopOutlined,
-  NotificationOutlined,
-  DownOutlined,
-  FieldTimeOutlined,
-} from "@ant-design/icons";
+import { DownOutlined, FieldTimeOutlined } from "@ant-design/icons";
 
 import Navbar from "../../components/Navbar/Navbar";
-import { getPosts } from "../../redux/actions/posts.js";
 import FullPost from "../../components/Posts/FullPost/FullPost.js";
 import RelatedCard from "../../components/RelatedCard/RelatedCard.js";
 import FixedRightPanel from "../../components/FixedRightPanel/FixedRightPanel.js";
@@ -23,7 +16,7 @@ import COLOR from "../../constants/colors.js";
 const { Content } = Layout;
 const { Title, Text } = Typography;
 
-function SpecificPost(props) {
+function SpecificPostPage(props) {
   const sorts = [
     {
       type: "new",
@@ -123,9 +116,11 @@ function SpecificPost(props) {
         <Navbar />
         <Layout style={styles.mainArea}>
           <Content>
-            <div className="mr-4  ">
+            <div className="mr-4">
               <Card style={{ padding: 16 }}>
                 <FullPost post={post} />
+                {/* put there for anchor link to comments */}
+                <div id="comments"></div>
                 <CommentForm
                   onSubmit={handleSubmitComment}
                   label="Comment to this post"
@@ -150,13 +145,17 @@ function SpecificPost(props) {
                     </Row>
                   </Dropdown>
                 </Row>
-                {comments?.map((c) => (
-                  <Comment
-                    comment={c}
-                    onReply={handleReplyComment}
-                    onEdit={handleEditComment}
-                    onDelete={handleDeleteComment}
-                  />
+                {/* test anchor link for comment but not work */}
+                {comments?.map((c, i) => (
+                  <div id={c?._id}>
+                    <Comment
+                      key={i}
+                      comment={c}
+                      onReply={handleReplyComment}
+                      onEdit={handleEditComment}
+                      onDelete={handleDeleteComment}
+                    />
+                  </div>
                 ))}
               </Card>
             </div>
@@ -171,4 +170,4 @@ function SpecificPost(props) {
   );
 }
 
-export default SpecificPost;
+export default SpecificPostPage;

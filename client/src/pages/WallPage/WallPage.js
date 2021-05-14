@@ -5,7 +5,6 @@ import styles from "./styles.js";
 import Navbar from "../../components/Navbar/Navbar";
 
 import { useDispatch } from "react-redux";
-import { getPosts } from "../../redux/actions/posts";
 import AvatarView from "../../components/UserInfo/AvatarView/AvatarView.js";
 import ListButtons from "../../components/UserInfo/ListButtons/ListButtons.js";
 import IntroCard from "../../components/IntroCard/IntroCard.js";
@@ -16,10 +15,6 @@ const { Title, Text } = Typography;
 function WallPage() {
   const [currentId, setCurrentId] = useState(null);
   const dispatch = useDispatch();
-
-  useEffect(() => {
-    dispatch(getPosts());
-  }, [currentId, dispatch]);
 
   return (
     <>

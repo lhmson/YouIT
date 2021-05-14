@@ -48,10 +48,10 @@ const initialState = {
 
 function RegisterPage() {
   const [form, setForm] = useState(initialState);
+  const [user, setUser] = useLocalStorage("user");
   const [dobError, setDobError] = useState(null);
   const dispatch = useDispatch();
   const history = useHistory();
-  const [user, setUser] = useLocalStorage("user");
   const [token, setToken] = useToken();
 
   const handleChange = (e) => {
@@ -83,7 +83,7 @@ function RegisterPage() {
       gender: form.gender,
       dob: form.dob,
     };
-    dispatch(signup(data, history));
+    dispatch(signup(data, history, setUser));
   };
 
   const handleFinishFailed = (errorInfo) => {

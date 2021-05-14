@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Row, Layout } from "antd";
 import Loading from "../../Loading/Loading";
 import styles from "./styles";
@@ -20,21 +20,19 @@ function FeedPosts({ setCurrentId }) {
   //we need to know if there is more data
   const [hasMore, setHasMore] = useState(true);
 
-  const handleFetchPosts = (res) => {
+  const handleFetchPosts = useCallback((res) => {
     setPosts((prev) => {
       return [...new Set([...prev, ...res.data.map((b) => b)])];
     });
     setPage((prevPageNumber) => prevPageNumber + 1);
     setHasMore(res.data.length !== 0);
     setIsFetching(false);
-  };
+  }, []);
 
   useEffect(() => {
-    console.log("start");
     api
       .fetchPostsPagination(0, 2)
       .then((res) => {
-        console.log(res.data);
         handleFetchPosts(res);
       })
       .catch((e) => {
@@ -51,7 +49,6 @@ function FeedPosts({ setCurrentId }) {
       api
         .fetchPostsPagination(page, 2)
         .then((res) => {
-          console.log(res.data);
           handleFetchPosts(res);
         })
         .catch((e) => {

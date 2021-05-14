@@ -5,7 +5,6 @@ import styles from "./styles.js";
 import Navbar from "../../components/Navbar/Navbar";
 
 import { useDispatch } from "react-redux";
-import { getPosts } from "../../redux/actions/posts";
 import UserCard from "../../components/UserCard/UserCard";
 import GroupCard from "../../components/GroupCard/GroupCard";
 import { Button } from "antd";
@@ -23,10 +22,6 @@ function UserResultSearchPage() {
   const dispatch = useDispatch();
   const [modeSearch, setModeSearch] = useState("User");
   const [txtSearch, setTxtSearch] = useState("");
-
-  useEffect(() => {
-    dispatch(getPosts());
-  }, [currentId, dispatch]);
 
   return (
     <>

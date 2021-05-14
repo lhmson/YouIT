@@ -25,7 +25,7 @@ function SignInForm({ setIsSignIn }) {
   const dispatch = useDispatch();
   const history = useHistory();
 
-  useEffect(() => {}, []);
+  useEffect(() => { }, []);
 
   const switchSignup = () => {
     setIsSignIn(false);
@@ -50,11 +50,11 @@ function SignInForm({ setIsSignIn }) {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (values) => {
-    console.log("form data", form);
-    dispatch(signin(form, history, setUser));
-    console.log("Success:", values);
-  };
+  // const handleSubmit = (values) => {
+  //   console.log("form data", form);
+  //   dispatch(signin(form, history, setUser));
+  //   console.log("Success:", values);
+  // };
 
   const handleFailed = (errorInfo) => {
     console.log("Failed:", errorInfo);
@@ -69,7 +69,7 @@ function SignInForm({ setIsSignIn }) {
         noValidate
         name="basic"
         initialValues={{}}
-        onFinish={handleSubmit}
+        // onFinish={handleSubmit}
         onFinishFailed={handleFailed}
       >
         <Form.Item

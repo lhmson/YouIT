@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useReducer } from "react";
 import {
   Avatar,
   Typography,
@@ -8,6 +8,7 @@ import {
   Dropdown,
   Tag,
   message,
+  Modal,
 } from "antd";
 import {
   EllipsisOutlined,
@@ -15,64 +16,179 @@ import {
   ArrowDownOutlined,
   LinkOutlined,
   ShareAltOutlined,
+  EditFilled,
   DeleteFilled,
   BellOutlined,
+  ExclamationCircleOutlined,
 } from "@ant-design/icons";
 import { MdPublic } from "react-icons/md";
 import moment from "moment";
 import { useDispatch } from "react-redux";
-import { useLocalStorage } from "../../../../hooks/useLocalStorage";
+import { Link, useHistory } from "react-router-dom";
 import styles from "./styles";
 import {
   upvotePost,
   unvotePost,
+  downvotePost,
   getMyInteractions,
 } from "../../../../api/post";
-import COLOR from "../../../../constants/colors";
+import { deletePost } from "../../../../redux/actions/posts";
+import { HashLink } from "react-router-hash-link";
+import { useLocalStorage } from "../../../../hooks/useLocalStorage";
 
-const { Title, Text, Paragraph, Link } = Typography;
+const { Title, Text, Paragraph } = Typography;
 
-const menuMore = (
-  <Menu>
-    <Menu.Item key="0">
-      <Row align="middle">
-        <BellOutlined className="mr-2" />
-        <Text>Follow post</Text>
-      </Row>
-    </Menu.Item>
-    <Menu.Item key="1">
-      <Row align="middle">
-        <DeleteFilled className="red mr-2" />
-        <Text className="red">Delete post</Text>
-      </Row>
-    </Menu.Item>
-  </Menu>
-);
+const { confirm } = Modal;
+
+const allInteractionReducer = (state, action) => {
+  switch (action.type) {
+    case "upvote":
+      return { ...state, upvotes: state.upvotes + 1 };
+    case "downvote":
+      return { ...state, downvotes: state.downvotes + 1 };
+    case "unupvote":
+      return { ...state, upvotes: state.upvotes - 1 };
+    case "undownvote":
+      return { ...state, downvotes: state.downvotes - 1 };
+    default:
+      return state;
+  }
+};
 
 function FeedPost({ post, setCurrentId }) {
   const dispatch = useDispatch();
 
-  const [user, setUser] = useLocalStorage("user");
+  const history = useHistory();
+
+  const [user] = useLocalStorage("user");
 
   const [myInteractions, setMyInteractions] = useState({});
 
-  const tagList = ["tag 1", "tag 2", "tag 3", "tag 4"];
+  const [allInteractions, dispatchInteractions] = useReducer(
+    allInteractionReducer,
+    {
+      upvotes: post.interactionInfo.listUpvotes.length,
+      downvotes: post.interactionInfo.listDownvotes.length,
+      // add more items later
+    }
+  );
+
+  const tagList = ["tag 1", "tag 2", "tag 3", "tag 4"]; // handle tag later
+
+  //#region menu more
+  const showConfirmDeletePost = (id) => {
+    confirm({
+      title: "Do you Want to delete this post?",
+      icon: <ExclamationCircleOutlined />,
+      content: "You cannot undo this action",
+      onOk() {
+        dispatch(deletePost(id));
+        message.success("Post has been deleted");
+        window.location.reload(); // load feed to have new items
+      },
+      onCancel() {
+        message.info("Post is not deleted");
+      },
+    });
+  };
+
+  const handleDeletePost = (id) => {
+    showConfirmDeletePost(id);
+  };
+
+  const handleEditPost = (id) => {
+    history.push({
+      pathname: "/post/create",
+      state: { postId: id },
+    });
+  };
+
+  const menuMore = (
+    <Menu>
+      {user.result._id === post?.userId._id ? (
+        <>
+          <Menu.Item key="1" onClick={() => handleEditPost(post._id)}>
+            <Row align="middle">
+              <EditFilled className="mr-2" />
+              <Text>Edit post</Text>
+            </Row>
+          </Menu.Item>
+          <Menu.Item key="2" onClick={() => handleDeletePost(post._id)}>
+            <Row align="middle">
+              <DeleteFilled className="red mr-2" />
+              <Text className="red">Delete post</Text>
+            </Row>
+          </Menu.Item>
+        </>
+      ) : (
+        <Menu.Item key="0">
+          <Row align="middle">
+            <BellOutlined className="mr-2" />
+            <Text>Follow post</Text>
+          </Row>
+        </Menu.Item>
+      )}
+    </Menu>
+  );
+
+  //#endregion
+
+  //#region handle interaction
+  useEffect(() => {
+    fetchMyInteractions();
+  }, []);
 
   const handleUpvoteClick = async (id) => {
     if (myInteractions?.upvote) {
       await unvotePost(id)
         .then((res) => {
-          alert("unvote", JSON.stringify(res.data));
           fetchMyInteractions();
+          dispatchInteractions({ type: "unupvote" });
         })
-        .catch((error) => alert(error.message));
+        .catch((error) => {
+          message.error("Something goes wrong with post upvote");
+          console.log(error);
+        });
     } else {
       await upvotePost(id)
         .then((res) => {
-          alert("upvote", JSON.stringify(res.data));
+          if (myInteractions?.downvote) {
+            dispatchInteractions({ type: "undownvote" });
+          }
           fetchMyInteractions();
+          dispatchInteractions({ type: "upvote" });
         })
-        .catch((error) => alert(error.message));
+        .catch((error) => {
+          message.error("Something goes wrong with post unvote");
+          console.log(error);
+        });
+    }
+  };
+
+  const handleDownvoteClick = async (id) => {
+    if (myInteractions?.downvote) {
+      await unvotePost(id)
+        .then((res) => {
+          fetchMyInteractions();
+          dispatchInteractions({ type: "undownvote" });
+        })
+        .catch((error) => {
+          message.error("Something goes wrong with post downvote");
+          console.log(error);
+        });
+    } else {
+      await downvotePost(id)
+        .then((res) => {
+          if (myInteractions?.upvote) {
+            dispatchInteractions({ type: "unupvote" });
+          }
+          fetchMyInteractions();
+          dispatchInteractions({ type: "downvote" });
+        })
+        .catch((error) => {
+          message.error("Something goes wrong with post unvote");
+          console.log(error);
+        });
     }
   };
 
@@ -80,22 +196,19 @@ function FeedPost({ post, setCurrentId }) {
     getMyInteractions(post._id)
       .then((res) => setMyInteractions(res.data))
       .catch((error) => {
-        alert("Something goes wrong with post interactions");
+        message.error("Something goes wrong with post interactions");
         console.log(error);
       });
   };
 
-  useEffect(() => {
-    fetchMyInteractions();
-  }, []);
+  //#endregion
 
   const copyLink = (id) => {
     navigator.clipboard
-      .writeText(`localhost:3000/post/${id}`) // change to deployment link later
+      .writeText(`${window.location.origin}/post/${id}`) // change to deployment link later
       .then(() => message.success("Link copy successfully!"))
       .catch((error) => {
-        message.error("Something goes wrong");
-        console.log(id);
+        message.error("Something goes wrong copying link");
       });
   };
 
@@ -112,7 +225,7 @@ function FeedPost({ post, setCurrentId }) {
             <div className="d-inline-flex flex-column ml-3">
               <Row className="align-items-center">
                 <Space size={4}>
-                  <Link href={`/userinfo/${post?.userId._id}`} target="_blank">
+                  <Link to={`/userinfo/${post?.userId._id}`} target="_blank">
                     <Text
                       className="clickable"
                       strong
@@ -168,10 +281,8 @@ function FeedPost({ post, setCurrentId }) {
               sunt in culpa qui officia deserunt mollit anim id est laborum.
             </Paragraph>
             <Paragraph>{post?.content}</Paragraph>
-            <Link href={`/post/${post._id}`} target="_blank">
-              <Text strong className="clickable">
-                Click here to read more
-              </Text>
+            <Link to={`/post/${post._id}`} target="_blank">
+              <Text className="clickable bold">Click here to read more</Text>
             </Link>
           </div>
         </div>
@@ -179,17 +290,37 @@ function FeedPost({ post, setCurrentId }) {
           <Row>
             <Space size="large">
               <Space>
+                <Text strong style={{ fontSize: "1.5rem" }}>
+                  {allInteractions.upvotes}
+                </Text>
                 <ArrowUpOutlined
-                  className="clickable icon"
-                  style={{
-                    color: myInteractions?.upvote ? COLOR.green : COLOR.black,
-                  }}
+                  className={`clickable icon ${
+                    myInteractions?.upvote ? "green" : "black"
+                  }`}
                   onClick={() => handleUpvoteClick(post._id)}
                 />
-                <Text strong>{post.interactionInfo?.listUpvotes.length}</Text>
-                <Text strong>{post.interactionInfo?.listDownvotes.length}</Text>
-                <ArrowDownOutlined className="clickable icon" />
+                <ArrowDownOutlined
+                  className={`clickable icon ${
+                    myInteractions?.downvote ? "green" : "black"
+                  }`}
+                  onClick={() => handleDownvoteClick(post._id)}
+                />
+                <Text strong style={{ fontSize: "1.5rem" }}>
+                  {allInteractions.downvotes}
+                </Text>
               </Space>
+              {/* <HashLink to={`/post/${post._id}#comments`} target="_blank">
+                <Text
+                  style={{ fontSize: "1.2rem" }}
+                  className=" clickable bold mx-2"
+                >{`Comment (${post?.comments.length})`}</Text>
+              </HashLink> */}
+              <Link to={`/post/${post._id}#comments`} target="_blank">
+                <Text
+                  style={{ fontSize: "1.2rem" }}
+                  className=" clickable bold mx-2"
+                >{`Comment (${post?.comments.length})`}</Text>
+              </Link>
             </Space>
           </Row>
           <Row>

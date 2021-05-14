@@ -7,7 +7,6 @@ import InputForm from "../../components/InputForm/InputForm";
 import Navbar from "../../components/Navbar/Navbar";
 
 import { useDispatch } from "react-redux";
-import { getPosts } from "../../redux/actions/posts";
 import Sidebar from "../../components/Sidebar/FeedSidebar/FeedSidebar";
 
 const { Content } = Layout;
@@ -15,10 +14,6 @@ const { Content } = Layout;
 function TestPage() {
   const [currentId, setCurrentId] = useState(null);
   const dispatch = useDispatch();
-
-  useEffect(() => {
-    dispatch(getPosts());
-  }, [currentId, dispatch]);
 
   return (
     <>
