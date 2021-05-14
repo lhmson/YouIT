@@ -18,6 +18,7 @@ import {
 } from "../../../redux/actions/user";
 import {
   addSendingFriendRequest,
+  removeReceivingFriendRequest,
   removeSendingFriendRequest,
 } from "../../../api/user_info.js";
 
@@ -72,8 +73,12 @@ const ListButtons = () => {
   const cancelFriendRequest = async (request) => {
     deleteFriendRequest(request?._id);
 
-    await removeSendingFriendRequest(request);
-    dispatch(removeFriendRequest(request));
+    if (user?._id === request?.userConfirmId) {
+      await removeSendingFriendRequest(request);
+    } else if (user?._id === request?.userSendRequestId) {
+      await removeReceivingFriendRequest(request);
+    }
+    dispatch(removeFriendRequest(request, user));
   };
 
   // xem lai ham nay, cach khac
@@ -91,24 +96,27 @@ const ListButtons = () => {
   const AddFriendButton = () => {
     if (!isMyProfile) {
       if (matchingFriendRequest) {
-        if (loginUser?._id === matchingFriendRequest[0]?.userConfirmId) {
+        const friendRequest = matchingFriendRequest[0];
+        if (loginUser?._id === friendRequest?.userConfirmId) {
           //console.log("receiver");
           return (
             <Row style={{ marginTop: 16 }}>
               <Button className="green-button" style={{ marginLeft: 16 }}>
                 Accept
               </Button>
-              <Button style={{ marginLeft: 16 }}>Deny</Button>
+              <Button
+                style={{ marginLeft: 16 }}
+                onClick={() => cancelFriendRequest(friendRequest)}
+              >
+                Deny
+              </Button>
             </Row>
           );
-        } else if (
-          loginUser?._id === matchingFriendRequest[0]?.userSendRequestId
-        ) {
-          const request = matchingFriendRequest[0];
+        } else if (loginUser?._id === friendRequest?.userSendRequestId) {
           return (
             <Button
               className="green-button"
-              onClick={() => cancelFriendRequest(request)}
+              onClick={() => cancelFriendRequest(friendRequest)}
             >
               Cancel Request
             </Button>
