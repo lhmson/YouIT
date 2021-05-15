@@ -2,6 +2,7 @@ import express from "express";
 import FriendRequest from "../models/friendrequest.js";
 import User from "../models/user.js";
 import { httpStatusCodes } from "../utils/httpStatusCode.js";
+import { notifyUser } from "../businessLogics/notification.js"
 
 /**
  * @param {express.Request<ParamsDictionary, any, any, QueryString.ParsedQs, Record<string, any>>} req
@@ -20,6 +21,14 @@ export const createFriendRequest = async (req, res) => {
   try {
     // create new friend request
     await newFriendRequest.save();
+
+    // Send notification to partner
+    notifyUser({
+      userId: friendRequest.userConfirmId,
+      content: { requestSender: friendRequest.userSendRequestId, requestReceiver: friendRequest.userConfirmId },
+      kind: "FriendRequest_RequestReceiver",
+    })
+
     res.status(httpStatusCodes.created).json(newFriendRequest);
   } catch (error) {
     res
@@ -33,7 +42,7 @@ export const createFriendRequest = async (req, res) => {
  * @param {express.Response<any, Record<string, any>, number>} res
  * @param {express.NextFunction} next
  */
-export const getAFriendRequest = async (req, res) => {};
+export const getAFriendRequest = async (req, res) => { };
 
 /**
  * @param {express.Request<ParamsDictionary, any, any, QueryString.ParsedQs, Record<string, any>>} req
