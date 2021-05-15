@@ -9,6 +9,7 @@ import {
   Tag,
   message,
   Modal,
+  Tooltip,
 } from "antd";
 import {
   EllipsisOutlined,
@@ -107,13 +108,13 @@ function FeedPost({ post, setCurrentId }) {
     <Menu>
       {user.result._id === post?.userId._id ? (
         <>
-          <Menu.Item key="1" onClick={() => handleEditPost(post._id)}>
+          <Menu.Item key="edit" onClick={() => handleEditPost(post._id)}>
             <Row align="middle">
               <EditFilled className="mr-2" />
               <Text>Edit post</Text>
             </Row>
           </Menu.Item>
-          <Menu.Item key="2" onClick={() => handleDeletePost(post._id)}>
+          <Menu.Item key="delete" onClick={() => handleDeletePost(post._id)}>
             <Row align="middle">
               <DeleteFilled className="red mr-2" />
               <Text className="red">Delete post</Text>
@@ -121,7 +122,7 @@ function FeedPost({ post, setCurrentId }) {
           </Menu.Item>
         </>
       ) : (
-        <Menu.Item key="0">
+        <Menu.Item key="follow">
           <Row align="middle">
             <BellOutlined className="mr-2" />
             <Text>Follow post</Text>
@@ -256,7 +257,9 @@ function FeedPost({ post, setCurrentId }) {
               placement="bottomRight"
             >
               <div className="clickable">
-                <EllipsisOutlined className="clickable icon" />
+                <Tooltip title="Click to see more actions">
+                  <EllipsisOutlined className="clickable icon" />
+                </Tooltip>
               </div>
             </Dropdown>
           </Row>
@@ -293,18 +296,22 @@ function FeedPost({ post, setCurrentId }) {
                 <Text strong style={{ fontSize: "1.5rem" }}>
                   {allInteractions.upvotes}
                 </Text>
-                <ArrowUpOutlined
-                  className={`clickable icon ${
-                    myInteractions?.upvote ? "green" : "black"
-                  }`}
-                  onClick={() => handleUpvoteClick(post._id)}
-                />
-                <ArrowDownOutlined
-                  className={`clickable icon ${
-                    myInteractions?.downvote ? "green" : "black"
-                  }`}
-                  onClick={() => handleDownvoteClick(post._id)}
-                />
+                <Tooltip title="Upvote">
+                  <ArrowUpOutlined
+                    className={`clickable icon ${
+                      myInteractions?.upvote ? "green" : "black"
+                    }`}
+                    onClick={() => handleUpvoteClick(post._id)}
+                  />
+                </Tooltip>
+                <Tooltip title="Downvote">
+                  <ArrowDownOutlined
+                    className={`clickable icon ${
+                      myInteractions?.downvote ? "green" : "black"
+                    }`}
+                    onClick={() => handleDownvoteClick(post._id)}
+                  />
+                </Tooltip>
                 <Text strong style={{ fontSize: "1.5rem" }}>
                   {allInteractions.downvotes}
                 </Text>
@@ -325,11 +332,15 @@ function FeedPost({ post, setCurrentId }) {
           </Row>
           <Row>
             <Space size="large">
-              <LinkOutlined
-                className="clickable icon"
-                onClick={() => copyLink(post._id)}
-              />
-              <ShareAltOutlined className="clickable icon" />
+              <Tooltip title="Copy link">
+                <LinkOutlined
+                  className="clickable icon"
+                  onClick={() => copyLink(post._id)}
+                />
+              </Tooltip>
+              <Tooltip title="Share">
+                <ShareAltOutlined className="clickable icon" />
+              </Tooltip>
             </Space>
           </Row>
         </Row>

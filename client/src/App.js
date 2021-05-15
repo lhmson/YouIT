@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styles from "./styles.js";
 import { Switch, Route, Redirect } from "react-router-dom";
 
