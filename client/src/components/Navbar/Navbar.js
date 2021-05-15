@@ -58,7 +58,7 @@ function Navbar({ selectedMenu, setTxtSearch }) {
 
   useEffect(() => {
     const listener = (msg) => {
-      const { upvoter, post } = msg;
+      const { upvoter, post } = msg.content;
       // just a test socket.io client
       alert(`user ${upvoter} just upvote your post!`);
       dispatch(addUserNotifications("some noti"));

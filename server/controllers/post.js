@@ -9,6 +9,7 @@ import {
 import Post from "../models/post.js";
 import { httpStatusCodes } from "../utils/httpStatusCode.js";
 import { cuteIO } from "../index.js";
+import { notifyUser } from "../businessLogics/notification.js";
 
 //#region CRUD
 // GET post/list/all
@@ -146,7 +147,7 @@ export const getMyPostInteractions = async (req, res) => {
     let filterJson = undefined;
     try {
       filterJson = JSON.parse(filter);
-    } catch {}
+    } catch { }
 
     const interactions = await getInteractionOfAUser(id, userId, filterJson);
     return res.status(httpStatusCodes.ok).json(interactions);
@@ -191,11 +192,16 @@ const handleUpdateInteraction = (actions) => async (req, res) => {
 
           // Test socket.io
           if (a.interactionType === "upvote") {
-            cuteIO.sendToUser(
-              newPost.userId.toString(),
-              "UpvotePost_PostOwner",
-              { upvoter: userId, post: newPost }
-            );
+            // cuteIO.sendToUser(
+            //   newPost.userId.toString(),
+            //   "UpvotePost_PostOwner",
+            //   { upvoter: userId, post: newPost }
+            // );
+            notifyUser({
+              userId: newPost.userId.toString(),
+              kind: "UpvotePost_PostOwner",
+              content: { upvoter: userId, post: newPost }
+            })
           }
 
           break;
