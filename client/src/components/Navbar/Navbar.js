@@ -53,6 +53,10 @@ function Navbar({ selectedMenu, setTxtSearch }) {
   const notifications = useSelector((state) => state.notifications);
 
   useEffect(() => {
+    dispatch(getUserNotifications());
+  }, []);
+
+  useEffect(() => {
     const listener = (msg) => {
       const { upvoter, post } = msg;
       // just a test socket.io client

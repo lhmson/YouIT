@@ -8,7 +8,7 @@ import {
 
 export const getUserNotifications = () => async (dispatch) => {
   try {
-    const data = "test";
+    const data = ["abc"];
     //   const { data } = await api.fetchUserNotifications();
     dispatch({ type: FETCH_USER_NOTIFICATIONS, payload: data });
   } catch (error) {
