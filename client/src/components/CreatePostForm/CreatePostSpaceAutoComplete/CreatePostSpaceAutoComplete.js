@@ -18,9 +18,10 @@ function CreatePostSpaceAutoComplete({ setPostSpace }) {
   return (
     <div>
       <AutoComplete
+        className="green"
         options={options}
         style={{ width: "100%" }}
-        placeholder="News feed"
+        placeholder="My wall"
         filterOption={filterOption}
         onChange={handlePostSpaceChange}
       />

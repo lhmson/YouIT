@@ -17,6 +17,7 @@ import postRouter from "./routes/post.js";
 import commentRouter from "./routes/comment.js";
 import userRouter from "./routes/user.js";
 import userInfoRouter from "./routes/user_info.js";
+import groupRouter from "./routes/group.js";
 import searchRouter from "./routes/search.js";
 import friendRequestRouter from "./routes/friendRequest.js";
 import CuteServerIO from "./socket/CuteServerIO.js";
@@ -57,6 +58,7 @@ app.use("/user", userRouter);
 app.use("/post", postRouter);
 app.use("/comment", commentRouter);
 app.use("/userInfo", userInfoRouter);
+app.use("/group", groupRouter);
 app.use("/search", searchRouter);
 app.use("/friendRequest", friendRequestRouter);
 

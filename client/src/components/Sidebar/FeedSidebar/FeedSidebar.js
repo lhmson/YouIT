@@ -7,6 +7,7 @@ import {
 } from "@ant-design/icons";
 import styles from "./styles.js";
 import { useLocalStorage } from "../../../hooks/useLocalStorage.js";
+import { Link } from "react-router-dom";
 
 const { SubMenu } = Menu;
 const { Sider } = Layout;
@@ -37,6 +38,7 @@ function FeedSidebar() {
         }}
       >
         {/* <SubMenu key="sub1" title="subnav 1"> */}
+
         <Menu.Item
           key="username"
           style={styles.item}
@@ -46,8 +48,9 @@ function FeedSidebar() {
             </Avatar>
           }
         >
-          {user?.result?.name}
+          <Link to={`/userinfo/${user?.result._id}`}>{user?.result?.name}</Link>
         </Menu.Item>
+
         <Menu.Item
           key="friends"
           style={styles.item}

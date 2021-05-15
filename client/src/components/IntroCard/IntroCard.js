@@ -11,10 +11,12 @@ import {
 } from "react-icons/all";
 import { Typography } from "antd";
 import styles from "./styles.js";
-import { Layout } from "antd";
+import { Layout, Button } from "antd";
+import { Link } from "react-router-dom";
 import moment from "moment";
 
-const { Content } = Layout;
+const { Header, Footer, Sider, Content } = Layout;
+
 // function InfoCard() {
 //   const [selectedItem, setSelectedItem] = useState("1");
 const { Text } = Typography;
@@ -52,6 +54,15 @@ const IntroCard = () => {
           text={dateOfBirth}
         />
       </div>
+
+      <div className="row">
+        <Link to="/userinfo/about">
+          <Button type="primary" style={styles.editinfo}>
+            Edit
+          </Button>
+        </Link>
+      </div>
+
       {/* <div className="row">
         <Button type="primary" style={styles.editinfo}>
           Edit

@@ -8,7 +8,7 @@ import { useDispatch } from "react-redux";
 import UserCard from "../../components/UserCard/UserCard";
 import GroupCard from "../../components/GroupCard/GroupCard";
 import { Button } from "antd";
-import GroupSidebar from "../../components/Sidebar/GroupSidebar/GroupSidebar";
+import AdminGroupSidebar from "../../components/Sidebar/AdminGroupSidebar/AdminGroupSidebar";
 // import SearchUserResult from "../../components/SearchResults/SearchUserResult/SearchUserResult";
 // import SearchGroupResult from "../../components/SearchResults/SearchGroupResult/SearchGroupResult";
 // import MemberRequest from "../../components/MemberRequest/MemberRequest";
@@ -28,7 +28,7 @@ function UserResultSearchPage() {
       <Layout>
         <Navbar />
         <Layout>
-          <GroupSidebar setModeSearch={setModeSearch} />
+          <AdminGroupSidebar setModeSearch={setModeSearch} />
           <Layout style={styles.mainArea}>
             <Content>
               {modeSearch === "User" ? (
