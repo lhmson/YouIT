@@ -69,16 +69,25 @@ function Navbar({ selectedMenu, setTxtSearch }) {
   }, []);
 
   useEffect(() => {
-    const listener = (msg) => {
-      const { upvoter, post } = msg;
-      // just a test socket.io client
-      alert(`user ${upvoter} just upvote your post!`);
+    const listener = (event, msg) => {
+      switch (event) {
+        case "UpvotePost_PostOwner":
+          const { upvoter, post } = msg.content;
+          // just a test socket.io client
+          alert(`user ${upvoter} just upvote your post!`);
+          break;
+
+        default:
+          // console.log("No handler for event: ", event);
+          break;
+      }
+
       dispatch(addUserNotifications("some noti"));
     };
-    cuteIO.onReceive("UpvotePost_PostOwner", listener);
+    cuteIO.onReceiveAny(listener);
 
     return () => {
-      cuteIO.stopReceive("UpvotePost_PostOwner", listener);
+      cuteIO.stopReceiveAny(listener);
     };
   }, [cuteIO]);
 
