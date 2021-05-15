@@ -7,6 +7,6 @@ export const notifyOnUpvote = (cuteIO) => {
   cuteIO.onReceive("UpvotePost_PostOwner", (msg) => {
     const { upvoter, post } = msg;
     // just a test socket.io client
-    alert(`user ${upvoter} just upvote your post!`);
+    // alert(`user ${upvoter} just upvote your post!`);
   });
 };

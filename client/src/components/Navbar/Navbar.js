@@ -27,6 +27,7 @@ import { logout } from "../../redux/actions/auth";
 import COLOR from "../../constants/colors";
 import { useLocalStorage } from "../../hooks/useLocalStorage";
 import { useToken } from "../../context/TokenContext";
+import { useCuteClientIO } from "../../socket/CuteClientIOProvider";
 
 import {
   getUserNotifications,
@@ -47,7 +48,23 @@ function Navbar({ selectedMenu, setTxtSearch }) {
   const location = useLocation();
   const history = useHistory();
 
+  const cuteIO = useCuteClientIO();
+
   const notifications = useSelector((state) => state.notifications);
+
+  useEffect(() => {
+    const listener = (msg) => {
+      const { upvoter, post } = msg;
+      // just a test socket.io client
+      alert(`user ${upvoter} just upvote your post!`);
+      dispatch(addUserNotifications("some noti"));
+    };
+    cuteIO.onReceive("UpvotePost_PostOwner", listener);
+
+    return () => {
+      cuteIO.stopReceive("UpvotePost_PostOwner", listener);
+    };
+  }, [cuteIO]);
 
   const handleSearch = () => {
     if (setTxtSearch === undefined) return;
@@ -56,7 +73,6 @@ function Navbar({ selectedMenu, setTxtSearch }) {
 
   const handleNoti = () => {
     // test
-    dispatch(addUserNotifications("some noti"));
   };
 
   const handlePost = () => {
