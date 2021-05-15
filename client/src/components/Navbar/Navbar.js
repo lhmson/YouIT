@@ -31,6 +31,7 @@ import { useToken } from "../../context/TokenContext";
 import {
   getUserNotifications,
   addUserNotifications,
+  refreshNotifications,
 } from "../../redux/actions/notifications";
 
 const { Header } = Layout;
@@ -67,6 +68,7 @@ function Navbar({ selectedMenu, setTxtSearch }) {
   //#region menuMore
   const handleLogOut = async () => {
     await dispatch(logout(setUser, token, setToken));
+    await dispatch(refreshNotifications());
     history.push("/login");
   };
 

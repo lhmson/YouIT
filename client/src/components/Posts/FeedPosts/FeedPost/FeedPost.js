@@ -23,6 +23,8 @@ import {
   ExclamationCircleOutlined,
 } from "@ant-design/icons";
 import { MdPublic } from "react-icons/md";
+import { GiThreeFriends } from "react-icons/gi";
+import { IoPerson } from "react-icons/io5";
 import moment from "moment";
 import { useDispatch } from "react-redux";
 import { Link, useHistory } from "react-router-dom";
@@ -241,10 +243,19 @@ function FeedPost({ post, setCurrentId }) {
             </div>
           </Row>
           <Row className="justify-content-end align-items-center pb-3">
-            <MdPublic className="gray mr-1" style={{ fontSize: 16 }} />
-            <div className="mr-4">
-              <Text type="secondary">{post?.privacy}</Text>
-            </div>
+            {post?.privacy === "Friend" ? (
+              <GiThreeFriends className="gray mr-1 icon" />
+            ) : post?.privacy === "Private" ? (
+              <IoPerson className="gray mr-1 icon" />
+            ) : (
+              <MdPublic className="gray mr-1 icon" />
+            )}
+            <Tooltip title="Privacy">
+              <div className="mr-4">
+                <Text type="secondary">{post?.privacy}</Text>
+              </div>
+            </Tooltip>
+
             <div className="mr-4">
               <Text className="clickable" underline type="secondary">
                 Last edited {moment(post.updatedAt).fromNow()}

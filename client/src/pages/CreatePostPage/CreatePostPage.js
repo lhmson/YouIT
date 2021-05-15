@@ -12,9 +12,7 @@ function CreatePostPage() {
   const location = useLocation();
   const postId = location.state?.postId;
 
-  useEffect(() => {
-    alert(postId);
-  }, []);
+  useEffect(() => {}, []);
 
   return (
     <>
