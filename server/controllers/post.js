@@ -147,7 +147,7 @@ export const getMyPostInteractions = async (req, res) => {
     let filterJson = undefined;
     try {
       filterJson = JSON.parse(filter);
-    } catch { }
+    } catch {}
 
     const interactions = await getInteractionOfAUser(id, userId, filterJson);
     return res.status(httpStatusCodes.ok).json(interactions);
@@ -200,8 +200,9 @@ const handleUpdateInteraction = (actions) => async (req, res) => {
             notifyUser({
               userId: newPost.userId.toString(),
               kind: "UpvotePost_PostOwner",
-              content: { upvoter: userId, post: newPost }
-            })
+              content: { upvoter: userId, post: newPost },
+              link: `/post/${newPost._id}`,
+            });
           }
 
           break;

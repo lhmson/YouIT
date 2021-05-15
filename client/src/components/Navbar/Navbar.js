@@ -8,6 +8,7 @@ import {
   Menu,
   Dropdown,
   Avatar,
+  List,
   Badge,
   Button,
 } from "antd";
@@ -53,16 +54,42 @@ function Navbar({ selectedMenu, setTxtSearch }) {
   const notifications = useSelector((state) => state.notifications);
 
   //#region notification handle
-  const notificationList = (
-    <Menu>
-      <Menu.Item key="logout" onClick={() => handleLogOut()}>
-        <Row align="middle">
-          <LogoutOutlined className=" red mr-2" />
-          <Text>Logout</Text>
-        </Row>
-      </Menu.Item>
-    </Menu>
-  );
+
+  const handleClickNotificationItem = (url) => {
+    history.push(url);
+  };
+
+  const NotificationList = () => {
+    return (
+      <Menu>
+        <List
+          itemLayout="horizontal"
+          dataSource={notifications}
+          renderItem={(item) => (
+            <List.Item
+              className="whitegreen-button"
+              onClick={() => handleClickNotificationItem(item?.link)}
+            >
+              <div
+                style={{
+                  width: "100%",
+                  padding: 10,
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
+                <Text className="ml-1">
+                  User ${item.content?.post?.userId} has just ... your post $
+                  {item.content?.post.title}
+                </Text>
+              </div>
+            </List.Item>
+          )}
+        />
+      </Menu>
+    );
+  };
 
   useEffect(() => {
     dispatch(getUserNotifications());
@@ -74,7 +101,7 @@ function Navbar({ selectedMenu, setTxtSearch }) {
         case "UpvotePost_PostOwner":
           const { upvoter, post } = msg.content;
           // just a test socket.io client
-          alert(`user ${upvoter} just upvote your post!`);
+          // alert(`user ${upvoter} just upvote your post!`);
           break;
 
         default:
@@ -82,7 +109,7 @@ function Navbar({ selectedMenu, setTxtSearch }) {
           break;
       }
 
-      dispatch(addUserNotifications("some noti"));
+      dispatch(addUserNotifications(msg)); // add noti to it
     };
     cuteIO.onReceiveAny(listener);
 
@@ -175,9 +202,9 @@ function Navbar({ selectedMenu, setTxtSearch }) {
         {user ? (
           <>
             <Dropdown
-              overlay={notificationList}
+              overlay={NotificationList}
               trigger={["click"]}
-              placement="bottomCenter"
+              placement="bottomRight"
             >
               <Badge count={notifications.length} showZero>
                 <BellFilled

@@ -134,6 +134,24 @@ body {
   color: var(--green);
 }
 
+.whitegreen-button {
+  background-color: white;
+  border-color: grey;
+  color: var(--black);
+}
+
+.whitegreen-button:hover {
+  background-color: var(--green-smoke);
+  border-color: var(--green-smoke);
+  color: var(--dark-green);
+}
+
+.whitegreen-button:focus {
+  background-color: var(--green-smoke);
+  border-color: var(--green-smoke);
+  color: var(--dark-green);
+}
+
 .full {
   height: 100vh;
   width: 100vw;
