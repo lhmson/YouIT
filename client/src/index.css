@@ -41,6 +41,10 @@ body {
   color: var(--dark-green);
 }
 
+.bg-green-smoke {
+  background-color: var(--green-smoke);
+}
+
 .black {
   color: var(--black);
 }

@@ -20,7 +20,7 @@ export const signin =
       message.success("Login successfully!");
     } catch (error) {
       console.log("Error sign in", error);
-      message.error("Wrong email or password, try again!");
+      message.error("Something went wrong, please try again.");
     }
   };
 
