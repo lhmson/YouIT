@@ -147,12 +147,16 @@ function Navbar({ selectedMenu, setTxtSearch }) {
               style={{ fontSize: 24, color: COLOR.white }}
             />
 
-            <Avatar alt={user?.result?.name} src={user?.result?.imageUrl}>
+            <Avatar
+              size="large"
+              alt={user?.result?.name}
+              src={user?.result?.imageUrl}
+            >
               <Link
                 to={`/userinfo/${user?.result._id}`}
                 style={{ color: COLOR.white }}
               >
-                {user?.result?.name.charAt(0)}
+                {user?.result?.name}
               </Link>
             </Avatar>
 
