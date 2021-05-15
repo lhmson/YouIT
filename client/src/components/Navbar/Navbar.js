@@ -104,6 +104,16 @@ function Navbar({ selectedMenu, setTxtSearch }) {
           // alert(`user ${upvoter} just upvote your post!`);
           break;
 
+        case "FriendRequest_RequestReceiver":
+          const { requestSender, requestReceiver } = msg.content;
+          alert(`user ${requestSender} sent you a friend request!`);
+          break;
+
+        case "AcceptFriend_AcceptedFriend":
+          const { acceptingUserId, acceptedUserId } = msg.content;
+          alert(`user ${acceptingUserId} accepted your friend request!`);
+          break;
+
         default:
           // console.log("No handler for event: ", event);
           break;

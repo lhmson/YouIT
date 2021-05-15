@@ -1,5 +1,6 @@
 import express from "express";
 import mongoose from "mongoose";
+import { notifyUser } from "../businessLogics/notification.js";
 import User from "../models/user.js";
 import { httpStatusCodes } from "../utils/httpStatusCode.js";
 
@@ -129,11 +130,14 @@ export const removeSendingFriendRequest = async (req, res) => {
  */
 export const addFriend = async (req, res) => {
   const friend = req.body;
-  const { id } = req.params;
+  const { userId } = req;
+
+  if (!userId)
+    return res.status(httpStatusCodes.unauthorized).json({ message: "Unauthorized" });
 
   try {
     // add friendId to user's list friends
-    await User.findById(id).then((user) => {
+    await User.findById(userId).then((user) => {
       user.listFriends.push(friend?._id);
       user.save();
       res.status(httpStatusCodes.ok).json(user);
@@ -141,10 +145,17 @@ export const addFriend = async (req, res) => {
 
     // add userId to friend's list friends
     await User.findById(friend?._id).then((user) => {
-      user.listFriends.push(id);
+      user.listFriends.push(userId);
       user.save();
-      res.status(httpStatusCodes.ok).json(user);
+      // res.status(httpStatusCodes.ok).json(user);
     });
+
+    // notification
+    notifyUser({
+      userId: friend?._id,
+      content: { acceptingUserId: userId, acceptedUserId: friend._id },
+      kind: "AcceptFriend_AcceptedFriend",
+    })
   } catch (error) {
     console.log(error.message);
     res
