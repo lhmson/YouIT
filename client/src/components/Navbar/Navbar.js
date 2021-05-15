@@ -52,6 +52,18 @@ function Navbar({ selectedMenu, setTxtSearch }) {
 
   const notifications = useSelector((state) => state.notifications);
 
+  //#region notification handle
+  const notificationList = (
+    <Menu>
+      <Menu.Item key="logout" onClick={() => handleLogOut()}>
+        <Row align="middle">
+          <LogoutOutlined className=" red mr-2" />
+          <Text>Logout</Text>
+        </Row>
+      </Menu.Item>
+    </Menu>
+  );
+
   useEffect(() => {
     dispatch(getUserNotifications());
   }, []);
@@ -69,6 +81,8 @@ function Navbar({ selectedMenu, setTxtSearch }) {
       cuteIO.stopReceive("UpvotePost_PostOwner", listener);
     };
   }, [cuteIO]);
+
+  //#endregion
 
   const handleSearch = () => {
     if (setTxtSearch === undefined) return;
@@ -151,12 +165,19 @@ function Navbar({ selectedMenu, setTxtSearch }) {
 
         {user ? (
           <>
-            <Badge count={notifications.length} showZero>
-              <BellFilled
-                onClick={handleNoti}
-                style={{ fontSize: 24, color: COLOR.white }}
-              />
-            </Badge>
+            <Dropdown
+              overlay={notificationList}
+              trigger={["click"]}
+              placement="bottomCenter"
+            >
+              <Badge count={notifications.length} showZero>
+                <BellFilled
+                  className="clickable"
+                  // onClick={handleNoti}
+                  style={{ fontSize: 24, color: COLOR.white }}
+                />
+              </Badge>
+            </Dropdown>
 
             <EditFilled
               onClick={handlePost}

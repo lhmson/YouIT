@@ -5,6 +5,8 @@ import styles from "./styles";
 
 import useInfiniteScroll from "../../../hooks/useInfiniteScroll";
 
+import InfiniteScroll from "react-infinite-scroll-component";
+
 import * as api from "../../../api/post";
 
 import FeedPost from "./FeedPost/FeedPost";
@@ -26,7 +28,7 @@ function FeedPosts({ setCurrentId }) {
     });
     setPage((prevPageNumber) => prevPageNumber + 1);
     setHasMore(res.data.length !== 0);
-    setIsFetching(false);
+    // setIsFetching(false);
   }, []);
 
   useEffect(() => {
@@ -57,29 +59,37 @@ function FeedPosts({ setCurrentId }) {
     }
   };
 
-  const [isFetching, setIsFetching] = useInfiniteScroll(fetchMorePosts);
+  // const [isFetching, setIsFetching] = useInfiniteScroll(fetchMorePosts);
 
   return (
     <Content>
       {!posts.length ? (
         <Loading />
       ) : (
-        <>
-          <Row style={styles.postsBox}>
-            {posts.map((post) => (
-              <FeedPost
-                key={post._id}
-                post={post}
-                setCurrentId={setCurrentId}
-              />
-            ))}
-          </Row>
-          {isFetching && hasMore && (
-            <div className="d-flex justify-content-center pb-2">
-              <Loading />
-            </div>
-          )}
-        </>
+        <div>
+          <InfiniteScroll
+            dataLength={posts.length}
+            next={() => fetchMorePosts()}
+            hasMore={hasMore}
+            loader={<Loading />}
+            endMessage={
+              <p style={{ textAlign: "center", fontSize: "1rem" }}>
+                <b>You have reached all posts. Let's share your own, right?</b>
+              </p>
+            }
+          >
+            <Row style={styles.postsBox}>
+              {posts.map((post) => (
+                <FeedPost
+                  key={post._id}
+                  post={post}
+                  setCurrentId={setCurrentId}
+                />
+              ))}
+            </Row>
+          </InfiniteScroll>
+          {/* {isFetching && hasMore && <Loading />} */}
+        </div>
       )}
     </Content>
   );
