@@ -28,7 +28,7 @@ export const getSearchUsers = async (req, res) => {
   try {
     const currentUser = await (
       await User.find({})
-    ).filter((user) => user.name.includes(q));
+    ).filter((user) => user.name.toLowerCase().includes(q.toLowerCase()));
     res.status(200).json(currentUser);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -46,7 +46,7 @@ export const getSearchPosts = async (req, res) => {
   try {
     const posts = await (
       await Post.find({})
-    ).filter((post) => post?.title?.includes(q));
+    ).filter((post) => post?.title?.toLowerCase().includes(q.toLowerCase()));
     res.status(200).json(posts);
   } catch (error) {
     res.status(500).json({ message: error.message });
