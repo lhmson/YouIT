@@ -13,6 +13,7 @@ import SearchUserResult from "../../components/SearchResults/SearchUserResult/Se
 import SearchGroupResult from "../../components/SearchResults/SearchGroupResult/SearchGroupResult";
 import MemberRequest from "../../components/MemberRequest/MemberRequest";
 import SearchPostResult from "../../components/SearchResults/SearchPostResult/SearchPostResult";
+import { useLocation } from "react-router";
 
 const { Content } = Layout;
 const { Title, Text } = Typography;
@@ -23,6 +24,9 @@ function UserResultSearchPage() {
   const [modeSearch, setModeSearch] = useState("User");
   const [txtSearch, setTxtSearch] = useState("");
 
+  const location = useLocation();
+  const txtInitSearch = location.state?.txtSearch;
+
   return (
     <>
       <Layout>
@@ -30,6 +34,7 @@ function UserResultSearchPage() {
           selectedMenu="userinfo"
           setTxtSearch={setTxtSearch}
           setModeSearch={setModeSearch}
+          txtInitSearch={txtInitSearch}
         />
         <Layout>
           <SearchSidebar setModeSearch={setModeSearch} />

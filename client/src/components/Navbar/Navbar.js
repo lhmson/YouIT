@@ -40,7 +40,7 @@ import NotificationList from "./NotificationList/NotificationList";
 const { Header } = Layout;
 const { Text } = Typography;
 
-function Navbar({ selectedMenu, setTxtSearch }) {
+function Navbar({ selectedMenu, setTxtSearch, txtInitSearch }) {
   // const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")));
   const [user, setUser] = useLocalStorage("user");
   const [token, setToken] = useToken();
@@ -82,7 +82,10 @@ function Navbar({ selectedMenu, setTxtSearch }) {
 
   const handleSearch = () => {
     if (setTxtSearch !== undefined) setTxtSearch(inputRef.current.state.value);
-    history.push("/search");
+    history.push({
+      pathname: "/search",
+      state: { txtSearch: inputRef.current.state.value },
+    });
   };
 
   const handlePost = () => {
@@ -151,6 +154,7 @@ function Navbar({ selectedMenu, setTxtSearch }) {
           ref={inputRef}
           bordered={false}
           style={{ backgroundColor: COLOR.lightGreen, width: "40vw" }}
+          defaultValue={txtInitSearch}
         />
 
         {user ? (
