@@ -7,4 +7,7 @@ const router = express.Router();
 // router.get("/:id", controllers.getANotification);
 router.get("/my/", auth, controllers.getUserNotifications);
 
+
+router.post("/setSeen/:notificationId/:newValue", auth, controllers.setSeen)
+
 export default router;
