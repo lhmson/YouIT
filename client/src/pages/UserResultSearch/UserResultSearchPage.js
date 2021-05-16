@@ -26,7 +26,11 @@ function UserResultSearchPage() {
   return (
     <>
       <Layout>
-        <Navbar selectedMenu="userinfo" setTxtSearch={setTxtSearch} />
+        <Navbar
+          selectedMenu="userinfo"
+          setTxtSearch={setTxtSearch}
+          setModeSearch={setModeSearch}
+        />
         <Layout>
           <SearchSidebar setModeSearch={setModeSearch} />
           <Layout style={styles.mainArea}>
@@ -34,7 +38,7 @@ function UserResultSearchPage() {
               {modeSearch === "User" ? (
                 <SearchUserResult userNameSearch={txtSearch}></SearchUserResult>
               ) : modeSearch === "Post" ? (
-                <SearchPostResult></SearchPostResult>
+                <SearchPostResult txtSearch={txtSearch}></SearchPostResult>
               ) : (
                 <SearchGroupResult></SearchGroupResult>
               )}

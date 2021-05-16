@@ -1,9 +1,9 @@
 import express from "express";
 import mongoose from "mongoose";
 import User from "../models/user.js";
-
+import Post from "../models/post.js";
 // GET search/user
-export const getAllUser = async (req, res) => {
+export const getAllUsers = async (req, res) => {
   // auth
   if (!req.userId) {
     return res.json({ message: "Unauthenticated" });
@@ -18,18 +18,36 @@ export const getAllUser = async (req, res) => {
 };
 
 // GET search/user
-export const getSearchUser = async (req, res) => {
+export const getSearchUsers = async (req, res) => {
   // auth
-  const { nameUser } = req.params;
+  let { q } = req.query ?? "";
   if (!req.userId) {
     return res.json({ message: "Unauthenticated" });
   }
 
   try {
-    const currentUser = await (await User.find({})).filter((user) =>
-      user.name.includes(nameUser)
-    );
+    const currentUser = await (
+      await User.find({})
+    ).filter((user) => user.name.includes(q));
     res.status(200).json(currentUser);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// GET search/user
+export const getSearchPosts = async (req, res) => {
+  // auth
+  let { q } = req.query ?? "";
+  if (!req.userId) {
+    return res.json({ message: "Unauthenticated" });
+  }
+
+  try {
+    const posts = await (
+      await Post.find({})
+    ).filter((post) => post?.title?.includes(q));
+    res.status(200).json(posts);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

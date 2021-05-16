@@ -81,8 +81,8 @@ function Navbar({ selectedMenu, setTxtSearch }) {
   //#endregion
 
   const handleSearch = () => {
-    if (setTxtSearch === undefined) return;
-    setTxtSearch(inputRef.current.state.value);
+    if (setTxtSearch !== undefined) setTxtSearch(inputRef.current.state.value);
+    history.push("/search");
   };
 
   const handlePost = () => {
@@ -143,12 +143,10 @@ function Navbar({ selectedMenu, setTxtSearch }) {
           onPressEnter={handleSearch}
           allowClear
           suffix={
-            <Link to="/search">
-              <SearchOutlined
-                onClick={handleSearch}
-                style={{ fontSize: 24, color: COLOR.white }}
-              />
-            </Link>
+            <SearchOutlined
+              onClick={handleSearch}
+              style={{ fontSize: 24, color: COLOR.white }}
+            />
           }
           ref={inputRef}
           bordered={false}
