@@ -24,7 +24,7 @@ export const getSearchUsers = async (req, res) => {
   if (!req.userId) {
     return res.json({ message: "Unauthenticated" });
   }
-
+  if (!q) return res.status(200).json([]);
   try {
     const currentUser = await (
       await User.find({})
@@ -35,14 +35,14 @@ export const getSearchUsers = async (req, res) => {
   }
 };
 
-// GET search/user
+// GET search/post
 export const getSearchPosts = async (req, res) => {
   // auth
   let { q } = req.query ?? "";
   if (!req.userId) {
     return res.json({ message: "Unauthenticated" });
   }
-
+  if (!q) return res.status(200).json([]);
   try {
     const posts = await (
       await Post.find({})

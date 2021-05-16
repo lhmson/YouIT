@@ -19,13 +19,13 @@ const { Content } = Layout;
 const { Title, Text } = Typography;
 
 function UserResultSearchPage() {
+  const location = useLocation();
+  const txtInitSearch = location.state?.txtSearch;
+
   const [currentId, setCurrentId] = useState(null);
   const dispatch = useDispatch();
   const [modeSearch, setModeSearch] = useState("User");
-  const [txtSearch, setTxtSearch] = useState("");
-
-  const location = useLocation();
-  const txtInitSearch = location.state?.txtSearch;
+  const [txtSearch, setTxtSearch] = useState(txtInitSearch ?? "");
 
   return (
     <>
