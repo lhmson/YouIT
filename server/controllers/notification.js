@@ -19,14 +19,14 @@ export const getUserNotifications = async (req, res, next) => {
     });
 
   try {
-    let filterCond = (notif) => true;
+    let filterCond = { userId }
 
     switch (opt) {
       case "seen":
-        filterCond = (notif) => notif.seen;
+        filterCond.seen = true;
         break;
       case "unseen":
-        filterCond = (notif) => !notif.seen;
+        filterCond.seen = false;
         break;
     }
 

@@ -68,29 +68,30 @@ function Navbar({ selectedMenu, setTxtSearch }) {
 
   useEffect(() => {
     const listener = (event, msg) => {
-      switch (event) {
-        case "UpvotePost_PostOwner":
-          const { upvoter, post } = msg.content;
-          // just a test socket.io client
-          // alert(`user ${upvoter} just upvote your post!`);
-          break;
+      // switch (event) {
+      //   case "Notification_UpvotePost_PostOwner":
+      //     const { upvoter, post } = msg.content;
+      //     // just a test socket.io client
+      //     // alert(`user ${upvoter} just upvote your post!`);
+      //     break;
 
-        case "FriendRequest_RequestReceiver":
-          const { requestSender, requestReceiver } = msg.content;
-          // alert(`user ${requestSender} sent you a friend request!`);
-          break;
+      //   case "Request_FriendRequest_RequestReceiver":
+      //     const { requestSender, requestReceiver } = msg.content;
+      //     // alert(`user ${requestSender} sent you a friend request!`);
+      //     break;
 
-        case "AcceptFriend_AcceptedFriend":
-          const { acceptingUserId, acceptedUserId } = msg.content;
-          alert(`user ${acceptingUserId} accepted your friend request!`);
-          break;
+      //   case "Notification_AcceptFriend_AcceptedFriend":
+      //     const { acceptingUserId, acceptedUserId } = msg.content;
+      //     alert(`user ${acceptingUserId} accepted your friend request!`);
+      //     break;
 
-        default:
-          // console.log("No handler for event: ", event);
-          break;
-      }
+      //   default:
+      //     // console.log("No handler for event: ", event);
+      //     break;
+      // }
 
-      dispatch(addUserNotifications(msg)); // add noti to it
+      if (event.indexOf("Notification") === 0)
+        dispatch(addUserNotifications(msg)); // add noti to it
     };
     cuteIO.onReceiveAny(listener);
 
