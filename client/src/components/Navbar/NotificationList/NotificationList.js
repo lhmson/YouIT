@@ -6,8 +6,7 @@ import { useSelector } from "react-redux";
 
 const { Text } = Typography;
 
-function NotificationList({ handleClickNotificationItem }) {
-  const notifications = useSelector((state) => state.notifications);
+function NotificationList({ handleClickNotificationItem, notifications }) {
   return (
     <Menu>
       {notifications.length === 0 ? (
