@@ -1,8 +1,8 @@
-import { Select } from 'antd';
-import React from 'react'
-import styles from './styles.js';
+import { Select } from "antd";
+import React from "react";
+import styles from "./styles.js";
 
-const { Option } = Select
+const { Option } = Select;
 
 const children = [];
 for (let i = 10; i < 36; i++) {
@@ -20,14 +20,14 @@ function CreatePostTagSelect() {
         mode="tags"
         // size={size}
         placeholder="Please select"
-        defaultValue={['a10', 'c12']}
+        defaultValue={["a10", "c12"]}
         onChange={handleChange}
-        style={{ width: '100%' }}
+        style={{ width: "100%" }}
       >
         {children}
       </Select>
     </>
-  )
+  );
 }
 
-export default CreatePostTagSelect
+export default CreatePostTagSelect;

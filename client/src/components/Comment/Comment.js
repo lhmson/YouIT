@@ -1,14 +1,9 @@
 import React, { useState, useEffect } from "react";
 import {
-  Card,
   Avatar,
-  Button,
   Typography,
   Row,
-  Col,
-  Tag,
   Space,
-  Input,
   Divider,
   Menu,
   Dropdown,
@@ -19,9 +14,6 @@ import {
   ArrowUpOutlined,
   ArrowDownOutlined,
   LinkOutlined,
-  ShareAltOutlined,
-  CaretRightOutlined,
-  BellOutlined,
   DeleteFilled,
   EditOutlined,
 } from "@ant-design/icons";
@@ -32,7 +24,14 @@ import { Link } from "react-router-dom";
 
 const { Title, Text, Paragraph } = Typography;
 
-function Comment({ comment, onReply, onEdit, onDelete }) {
+function Comment({
+  comment,
+  onReply,
+  onEdit,
+  onDelete,
+  onCopyCommentLink,
+  isFocus,
+}) {
   const [isReply, setIsReply] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
 
@@ -59,22 +58,6 @@ function Comment({ comment, onReply, onEdit, onDelete }) {
   const handleDelete = () => {
     onDelete(comment?._id);
   };
-  const menuMore = (
-    <Menu onClick={onMoreSelect}>
-      <Menu.Item key="0">
-        <Row align="middle">
-          <EditOutlined className="mr-2" />
-          <Text>Edit comment</Text>
-        </Row>
-      </Menu.Item>
-      <Menu.Item key="1">
-        <Row align="middle">
-          <DeleteFilled className="red mr-2" />
-          <Text className="red">Delete comment</Text>
-        </Row>
-      </Menu.Item>
-    </Menu>
-  );
   const renderEdit = () => {
     const handleDiscard = () => {
       setIsEdit(false);
@@ -95,10 +78,41 @@ function Comment({ comment, onReply, onEdit, onDelete }) {
     setIsReply(false);
   };
 
+  const menuMore = (
+    <Menu onClick={onMoreSelect}>
+      <Menu.Item key="0">
+        <Row align="middle">
+          <EditOutlined className="mr-2" />
+          <Text>Edit comment</Text>
+        </Row>
+      </Menu.Item>
+      <Menu.Item key="1">
+        <Row align="middle">
+          <DeleteFilled className="red mr-2" />
+          <Text className="red">Delete comment</Text>
+        </Row>
+      </Menu.Item>
+    </Menu>
+  );
+
+  const copyLink = (id) => {
+    // navigator.clipboard
+    //   // .writeText(id) // change to deployment link later
+    //   .then(() => message.success("Link copied to clipboard"))
+    //   .catch((error) => {
+    //     message.error("Something goes wrong copying link");
+    //     console.log(error);
+    //   });
+    onCopyCommentLink(id);
+  };
+
   return (
-    <div>
+    <div
+      className={isFocus ? "bg-green-smoke pt-4" : ""}
+      style={{ paddingLeft: 20, paddingRight: 20 }}
+    >
       <Row
-        className="pb-2"
+        className={`pb-2`}
         style={{ justifyContent: "space-between", alignItems: "center" }}
       >
         <Row className="align-items-center" style={{ marginBottom: 12 }}>
@@ -157,10 +171,14 @@ function Comment({ comment, onReply, onEdit, onDelete }) {
                 ) : (
                   <Text className="black bold clickable">{`${comment?.quotedCommentId?.userId?.name}'s comment`}</Text>
                 )}
-                <Text className="clickable" underline type="secondary">
-                  Last edited{" "}
-                  {comment?.quotedCommentId?.updatedAt?.toString().slice(0, 10)}
-                </Text>
+                {comment?.quotedCommentId === null ? null : (
+                  <Text className="clickable" underline type="secondary">
+                    Last edited{" "}
+                    {comment?.quotedCommentId?.updatedAt
+                      ?.toString()
+                      .slice(0, 10)}
+                  </Text>
+                )}
               </Row>
               <Paragraph style={{ color: COLOR.gray, marginBottom: 0 }}>
                 {comment?.quotedCommentId?.content}
@@ -189,7 +207,10 @@ function Comment({ comment, onReply, onEdit, onDelete }) {
             </Row>
             <Row>
               <Space size="large">
-                <LinkOutlined className="clickable icon" />
+                <LinkOutlined
+                  className="clickable icon"
+                  onClick={() => copyLink(comment?._id)}
+                />
               </Space>
             </Row>
           </Row>
@@ -204,6 +225,7 @@ function Comment({ comment, onReply, onEdit, onDelete }) {
       ) : (
         renderEdit()
       )}
+
       <Divider />
     </div>
   );

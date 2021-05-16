@@ -1,7 +1,10 @@
 const styles = {
-  button: {
+  linkView: {
     marginRight: 16,
     width: "20%",
+  },
+  button: {
+    width: "100%",
   },
 };
 

@@ -3,11 +3,17 @@ import * as actionType from "../actionTypes";
 const authReducer = (state = { authData: null }, action) => {
   switch (action.type) {
     case actionType.AUTH:
-      action.setLocalStorageUser?.(JSON.stringify({ ...action?.data }));
-      console.log("before set token", localStorage);
+      action.setLocalStorageUser?.(
+        JSON.stringify({
+          token: action?.data.token,
+          result: {
+            name: action?.data.result.name,
+            _id: action?.data.result._id,
+          },
+        })
+      );
       // action.setToken?.(action?.data.token);
       // action.setToken?.(JSON.parse(localStorage.getItem("user")));
-      console.log("after set token", localStorage);
       return { ...state, authData: action.data, loading: false, errors: null };
 
     case actionType.LOGOUT:

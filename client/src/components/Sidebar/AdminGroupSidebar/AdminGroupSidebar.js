@@ -8,7 +8,7 @@ import { BiConversation } from "react-icons/bi";
 const { Sider } = Layout;
 const { Title, Text } = Typography;
 
-function AdminGroupSidebar() {
+function AdminGroupSidebar(props) {
   return (
     <Sider
       width={200}
@@ -35,6 +35,7 @@ function AdminGroupSidebar() {
           key="memberRequests"
           style={styles.item}
           icon={<IoPersonAdd style={styles.transparent} />}
+          onClick={() => props.setModeSearch("User")}
         >
           Member Requests
         </Menu.Item>
@@ -42,6 +43,7 @@ function AdminGroupSidebar() {
           key="approvePosts"
           style={styles.item}
           icon={<FiCheckSquare style={styles.transparent} />}
+          onClick={() => props.setModeSearch("Post")}
         >
           Approve Posts
         </Menu.Item>

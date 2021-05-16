@@ -1,18 +1,16 @@
-import React from 'react'
-import MDEditor from '@uiw/react-md-editor'
+import React from "react";
+import MDEditor from "@uiw/react-md-editor";
 
-import styles from './styles.js';
-import { postEditorCommands } from './commands.js';
+import styles from "./styles.js";
+import { postEditorCommands } from "./commands.js";
 
 function PostEditor({ postContent, setPostContent }) {
   if (postContent === null || postContent === undefined || !setPostContent)
     return (
       <div>
-        <p>
-          postContent and setPostContent is required!
-        </p>
+        <p>postContent and setPostContent is required!</p>
       </div>
-    )
+    );
 
   return (
     <div>
@@ -25,7 +23,7 @@ function PostEditor({ postContent, setPostContent }) {
         height={580}
       />
     </div>
-  )
+  );
 }
 
-export default PostEditor
+export default PostEditor;

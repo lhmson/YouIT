@@ -1,21 +1,41 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Link, useHistory, useLocation } from "react-router-dom";
-import { Layout, Typography, Row, Input, Avatar, Button } from "antd";
+import {
+  Layout,
+  Typography,
+  Row,
+  Input,
+  Menu,
+  Dropdown,
+  Avatar,
+  List,
+  Badge,
+  Button,
+} from "antd";
 import styles from "./styles";
 import {
   SearchOutlined,
   BellFilled,
   EditFilled,
   MessageFilled,
+  LogoutOutlined,
   EllipsisOutlined,
 } from "@ant-design/icons";
 
 import decode from "jwt-decode";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../../redux/actions/auth";
 import COLOR from "../../constants/colors";
 import { useLocalStorage } from "../../hooks/useLocalStorage";
 import { useToken } from "../../context/TokenContext";
+import { useCuteClientIO } from "../../socket/CuteClientIOProvider";
+
+import {
+  getUserNotifications,
+  addUserNotifications,
+  refreshNotifications,
+} from "../../redux/actions/notifications";
+import NotificationList from "./NotificationList/NotificationList";
 
 const { Header } = Layout;
 const { Text } = Typography;
@@ -30,12 +50,40 @@ function Navbar({ selectedMenu, setTxtSearch }) {
   const location = useLocation();
   const history = useHistory();
 
+  const cuteIO = useCuteClientIO();
+
+  const notifications = useSelector((state) => state.notifications);
+
+  //#region notification handle
+
+  const handleClickNotificationItem = (url) => {
+    history.push(url);
+  };
+
+  useEffect(() => {
+    if (user) {
+      dispatch(getUserNotifications());
+    }
+  }, [user, dispatch]);
+
+  useEffect(() => {
+    const listener = (event, msg) => {
+      if (event.indexOf("Notification") === 0)
+        dispatch(addUserNotifications(msg)); // add noti to it
+    };
+    cuteIO.onReceiveAny(listener);
+
+    return () => {
+      cuteIO.stopReceiveAny(listener);
+    };
+  }, [cuteIO]);
+
+  //#endregion
+
   const handleSearch = () => {
     if (setTxtSearch === undefined) return;
     setTxtSearch(inputRef.current.state.value);
   };
-
-  const handleNoti = () => alert("handle noti");
 
   const handlePost = () => {
     history.push("/post/create");
@@ -43,11 +91,25 @@ function Navbar({ selectedMenu, setTxtSearch }) {
 
   const handleMessage = () => alert("handle message");
 
+  //#region menuMore
   const handleLogOut = async () => {
-    await dispatch(logout(setUser, setToken));
+    await dispatch(logout(setUser, token, setToken));
+    await dispatch(refreshNotifications());
     history.push("/login");
-    setUser(null);
   };
+
+  const menuMore = (
+    <Menu>
+      <Menu.Item key="logout" onClick={() => handleLogOut()}>
+        <Row align="middle">
+          <LogoutOutlined className=" red mr-2" />
+          <Text>Logout</Text>
+        </Row>
+      </Menu.Item>
+    </Menu>
+  );
+
+  //#endregion
 
   // useEffect(() => {
   //   const token = user?.token;
@@ -62,12 +124,6 @@ function Navbar({ selectedMenu, setTxtSearch }) {
 
   //   setUser(JSON.parse(localStorage.getItem("user")));
   // }, [location]);
-
-  useEffect(() => {
-    // return () => {
-    //   inputRef.current = false;
-    // };
-  }, []);
 
   return (
     <Header
@@ -101,10 +157,23 @@ function Navbar({ selectedMenu, setTxtSearch }) {
 
         {user ? (
           <>
-            <BellFilled
-              onClick={handleNoti}
-              style={{ fontSize: 24, color: COLOR.white }}
-            />
+            <Dropdown
+              overlay={NotificationList({
+                handleClickNotificationItem,
+                notifications,
+              })}
+              trigger={["click"]}
+              placement="bottomRight"
+            >
+              <Badge count={notifications.length} showZero>
+                <BellFilled
+                  className="clickable"
+                  // onClick={handleNoti}
+                  style={{ fontSize: 24, color: COLOR.white }}
+                />
+              </Badge>
+            </Dropdown>
+
             <EditFilled
               onClick={handlePost}
               style={{ fontSize: 24, color: COLOR.white }}
@@ -114,14 +183,26 @@ function Navbar({ selectedMenu, setTxtSearch }) {
               style={{ fontSize: 24, color: COLOR.white }}
             />
 
-            <Avatar alt={user?.result?.name} src={user?.result?.imageUrl}>
-              {user?.result?.name.charAt(0)}
+            <Avatar
+              size="large"
+              alt={user?.result?.name}
+              src={user?.result?.imageUrl}
+            >
+              <Link
+                to={`/userinfo/${user?.result._id}`}
+                style={{ color: COLOR.white }}
+              >
+                {user?.result?.name}
+              </Link>
             </Avatar>
 
-            <EllipsisOutlined
-              onClick={handleLogOut}
-              style={{ fontSize: 24, color: COLOR.white }}
-            />
+            <Dropdown
+              overlay={menuMore}
+              trigger={["click"]}
+              placement="bottomCenter"
+            >
+              <EllipsisOutlined style={{ fontSize: 24, color: COLOR.white }} />
+            </Dropdown>
           </>
         ) : (
           <>

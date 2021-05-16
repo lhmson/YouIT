@@ -14,33 +14,35 @@ import {
   ListButtons,
   FriendManager,
 } from "../../components/index";
+import { useParams } from "react-router";
 
 const { Content } = Layout;
 
 function AboutPage() {
-  //const [user, setUser] = useState(null);
-  const user = useSelector((state) => state.user);
+  let { id } = useParams();
 
   const dispatch = useDispatch();
 
-  // const handleFetchUserInfo = (user) => {
-  //   setUser(user);
-  // };
-
   useEffect(async () => {
-    console.log("start fetching user");
-
-    const localUserInfo = JSON.parse(localStorage.getItem("user"));
-    dispatch(getUser(localUserInfo?.result?._id));
-
-    //console.log("user:: ", user);
-    //handleFetchUserInfo(user.data);
+    //console.log("start fetching user");
+    dispatch(getUser(id));
   }, []);
 
   return (
     <>
       <Layout>
         <Navbar />
+        <Layout style={styles.avatarView}>
+          <Content
+            className="container"
+            style={{
+              padding: 8,
+            }}
+          >
+            <AvatarView></AvatarView>
+            <ListButtons />
+          </Content>
+        </Layout>
         <Layout style={styles.mainArea}>
           <Content
             className="container"
@@ -48,13 +50,7 @@ function AboutPage() {
               padding: 16,
             }}
           >
-            <AvatarView></AvatarView>
-            <Row>
-              <Col span={12}>
-                <ListButtons />
-              </Col>
-            </Row>
-            <AboutCard user={user}></AboutCard>
+            <AboutCard></AboutCard>
             <FriendManager></FriendManager>
           </Content>
         </Layout>

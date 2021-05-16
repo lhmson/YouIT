@@ -41,6 +41,10 @@ body {
   color: var(--dark-green);
 }
 
+.bg-green-smoke {
+  background-color: var(--green-smoke);
+}
+
 .black {
   color: var(--black);
 }
@@ -128,6 +132,24 @@ body {
 .white-button:focus {
   border-color: var(--green);
   color: var(--green);
+}
+
+.whitegreen-button {
+  background-color: white;
+  border-color: grey;
+  color: var(--black);
+}
+
+.whitegreen-button:hover {
+  background-color: var(--green-smoke);
+  border-color: var(--green-smoke);
+  color: var(--dark-green);
+}
+
+.whitegreen-button:focus {
+  background-color: var(--green-smoke);
+  border-color: var(--green-smoke);
+  color: var(--dark-green);
 }
 
 .full {

@@ -32,6 +32,7 @@ export default class CuteClientIO {
    * @type [{event: string, handleFunction: OnReceiveDelegate}]
    */
   #queueEventHandlersOnConnection = [];
+  #queueAnyEventHandlersOnConnection = [];
 
   /**
    * set socket with new serverUri and token and connect to server
@@ -51,13 +52,14 @@ export default class CuteClientIO {
     this.#socket.on("connect", () => {
       this.#socketId = this.#socket.id;
       console.log(
-        `[IO] Connected to server token ${token}. Socket ID: ${
-          this.#socketId
-        } at ${this.#uri}`
+        `[IO] Connected to server with token ${token}. Socket ID: ${this.#socketId} at ${this.#uri}`
       );
 
       this.onReceiveMulti(this.#queueEventHandlersOnConnection);
       this.#queueEventHandlersOnConnection = [];
+
+      this.#queueAnyEventHandlersOnConnection.forEach(h => this.onReceiveAny(h));
+      this.#queueAnyEventHandlersOnConnection = [];
 
       this.#socket.on("disconnect", (reason) => {
         console.log(
@@ -94,6 +96,14 @@ export default class CuteClientIO {
   };
 
   /**
+   * @param {OnReceiveAnyDelegate} handleFunction
+   */
+  onReceiveAny = (handleFunction) => {
+    if (this.#socket) this.#socket.onAny(handleFunction);
+    else this.#queueAnyEventHandlersOnConnection.push(handleFunction)
+  }
+
+  /**
    * Add multiple event handlers at once because you'll need it :)
    * @param {[{event: string, handleFunction: OnReceiveDelegate}]} eventHandlers
    */
@@ -108,6 +118,15 @@ export default class CuteClientIO {
   stopReceive = (event, handleFunction) => {
     this.#socket?.off(event, handleFunction);
   };
+
+
+  /**
+   * @param {OnReceiveAnyDelegate} handleFunction 
+   */
+  stopReceiveAny = (handleFunction) => {
+    this.#socket.offAny(handleFunction);
+  }
+
 
   /**
    * Stop multiple event handlers at once because you'll need it :)
@@ -126,4 +145,13 @@ export default class CuteClientIO {
  * @param {any} msg
  * @returns {any}
  */
+
+/**
+ * A kind of function to handle any messages that are emitted from the clients
+ * @callback OnReceiveAnyDelegate
+ * @param {string} event
+ * @param {any} msg
+ * @returns {any}
+ */
+
 //#endregion

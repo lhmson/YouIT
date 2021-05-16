@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styles from "./styles.js";
 import { Switch, Route, Redirect } from "react-router-dom";
 
@@ -10,12 +10,13 @@ import {
   CreatePostPage,
   FeedPage,
   UserInfoPage,
-  SpecificPost,
+  SpecificPostPage,
   UserResultSearchPage,
   AboutPage,
   GroupPage,
   GroupAboutPage,
   RequestsInGroupsPage,
+  CreateAGroupPage,
   LoginPage,
   RegisterPage,
   ErrorPage,
@@ -28,6 +29,7 @@ import { useLocalStorage } from "./hooks/useLocalStorage.js";
 import DemoSocket from "./socket/DemoComponent/DemoSocket.js";
 import { useToken } from "./context/TokenContext.js";
 import PrivateRoute from "./utils/PrivateRoute.js";
+import { handleNewIOConnection } from "./notifications/index.js";
 
 const loggedIn = () => {
   const user = JSON.parse(localStorage.getItem("user"));
@@ -39,7 +41,11 @@ function App() {
 
   return (
     <div className={styles.App}>
-      <CuteClientIOProvider serverUri={"http://localhost:5000"} token={token}>
+      <CuteClientIOProvider
+        serverUri={"http://localhost:5000"}
+        token={token}
+        onNewConnection={handleNewIOConnection}
+      >
         <Switch>
           <Route exact path="/" component={HomePage} />
           <Route exact path="/login">
@@ -50,18 +56,21 @@ function App() {
           </Route>
           <PrivateRoute exact path="/feed" component={FeedPage} />
           <PrivateRoute exact path="/post/create" component={CreatePostPage} />
-          <Route exact path="/userinfo" exct component={UserInfoPage} />
-          <Route exact path="/post/:id" component={SpecificPost} />
+          <Route path="/userinfo/:id" exact component={UserInfoPage} />
+          <Route exact path="/post/:id" component={SpecificPostPage} />
+          <Route path="/post/:id/:commentId" component={SpecificPostPage} />
           <Route exact path="/search" component={UserResultSearchPage} />
           <Route exact path="/requests" component={RequestsInGroupsPage} />
           <Route exact path="/wall" component={WallPage} />
-          <Route exact path="/userinfo/about" component={AboutPage} />
+          <Route path="/userinfo/:id/about" component={AboutPage} />
           <Route exact path="/group" component={GroupPage} />
           <Route exact path="/group/about" component={GroupAboutPage} />
           <Route exact path="/friends" component={FriendMangementPage} />
           <Route path="/demoSocketIO" component={DemoSocket} />
+          <Route path="/createagroup" component={CreateAGroupPage} />
+
           <Route>
-            <ErrorPage code="500" />
+            <ErrorPage code="404" />
           </Route>
         </Switch>
       </CuteClientIOProvider>

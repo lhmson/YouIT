@@ -3,12 +3,13 @@ import AuthPage from "./AuthPage/AuthPage";
 import CreatePostPage from "./CreatePostPage/CreatePostPage";
 import FeedPage from "./FeedPage/FeedPage";
 import TestPage from "./TestPage/TestPage";
-import SpecificPost from "./SpecificPostPage/SpecificPostPage";
+import SpecificPostPage from "./SpecificPostPage/SpecificPostPage";
 import UserInfoPage from "./UserInfoPage/UserInfoPage";
 import UserResultSearchPage from "./UserResultSearch/UserResultSearchPage";
 import GroupPage from "./GroupPage/GroupPage";
 import GroupAboutPage from "./GroupAboutPage/GroupAboutPage";
 import RequestsInGroupsPage from "./RequestsInGroupsPage/RequestsInGroupsPage";
+import CreateAGroupPage from "./CreateAGroupPage/CreateAGroupPage";
 import LoginPage from "./LoginPage/LoginPage";
 import RegisterPage from "./RegisterPage/RegisterPage";
 import ErrorPage from "./ErrorPage/ErrorPage";
@@ -21,12 +22,13 @@ export {
   CreatePostPage,
   FeedPage,
   TestPage,
-  SpecificPost,
+  SpecificPostPage,
   UserInfoPage,
   UserResultSearchPage,
   GroupPage,
   GroupAboutPage,
   RequestsInGroupsPage,
+  CreateAGroupPage,
   LoginPage,
   RegisterPage,
   ErrorPage,
