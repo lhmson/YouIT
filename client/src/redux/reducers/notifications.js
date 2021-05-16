@@ -9,7 +9,8 @@ const notificationReducer = (notifications = [], action) => {
     case FETCH_USER_NOTIFICATIONS:
       return action.payload;
     case ADD_USER_NOTIFICATIONS:
-      return [...notifications, action.payload];
+      const newArr = [action.payload, ...notifications];
+      return newArr;
     case REFRESH_NOTIFICATIONS:
       return [];
     default:

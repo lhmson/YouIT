@@ -35,6 +35,7 @@ import {
   addUserNotifications,
   refreshNotifications,
 } from "../../redux/actions/notifications";
+import NotificationList from "./NotificationList/NotificationList";
 
 const { Header } = Layout;
 const { Text } = Typography;
@@ -59,41 +60,11 @@ function Navbar({ selectedMenu, setTxtSearch }) {
     history.push(url);
   };
 
-  const NotificationList = () => {
-    return (
-      <Menu>
-        <List
-          itemLayout="horizontal"
-          dataSource={notifications}
-          renderItem={(item) => (
-            <List.Item
-              className="whitegreen-button"
-              onClick={() => handleClickNotificationItem(item?.link)}
-            >
-              <div
-                style={{
-                  width: "100%",
-                  padding: 10,
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
-                <Text className="ml-1">
-                  User ${item.content?.post?.userId} has just ... your post $
-                  {item.content?.post.title}
-                </Text>
-              </div>
-            </List.Item>
-          )}
-        />
-      </Menu>
-    );
-  };
-
   useEffect(() => {
-    dispatch(getUserNotifications());
-  }, []);
+    if (user) {
+      dispatch(getUserNotifications());
+    }
+  }, [user, dispatch]);
 
   useEffect(() => {
     const listener = (event, msg) => {
@@ -106,7 +77,7 @@ function Navbar({ selectedMenu, setTxtSearch }) {
 
         case "FriendRequest_RequestReceiver":
           const { requestSender, requestReceiver } = msg.content;
-          alert(`user ${requestSender} sent you a friend request!`);
+          // alert(`user ${requestSender} sent you a friend request!`);
           break;
 
         case "AcceptFriend_AcceptedFriend":
@@ -133,10 +104,6 @@ function Navbar({ selectedMenu, setTxtSearch }) {
   const handleSearch = () => {
     if (setTxtSearch === undefined) return;
     setTxtSearch(inputRef.current.state.value);
-  };
-
-  const handleNoti = () => {
-    // test
   };
 
   const handlePost = () => {
@@ -212,7 +179,10 @@ function Navbar({ selectedMenu, setTxtSearch }) {
         {user ? (
           <>
             <Dropdown
-              overlay={NotificationList}
+              overlay={NotificationList({
+                handleClickNotificationItem,
+                notifications,
+              })}
               trigger={["click"]}
               placement="bottomRight"
             >

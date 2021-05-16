@@ -1,6 +1,6 @@
-import express from 'express';
-import { httpStatusCodes } from '../utils/httpStatusCode.js';
-import Notification from '../models/notification.js'
+import express from "express";
+import { httpStatusCodes } from "../utils/httpStatusCode.js";
+import Notification from "../models/notification.js";
 
 /**
  * @param {express.Request<ParamsDictionary, any, any, QueryString.ParsedQs, Record<string, any>>} req
@@ -13,10 +13,13 @@ export const getUserNotifications = async (req, res, next) => {
   const { userId } = req;
 
   if (!userId)
-    return res.status(httpStatusCodes.unauthorized).json({ message: "Unauthenticated: user have to sign in to fetch \"my notifications\"" });
+    return res.status(httpStatusCodes.unauthorized).json({
+      message:
+        'Unauthenticated: user have to sign in to fetch "my notifications"',
+    });
 
   try {
-    let filterCond = (notif => true)
+    let filterCond = (notif) => true;
 
     switch (opt) {
       case "seen":
@@ -27,11 +30,13 @@ export const getUserNotifications = async (req, res, next) => {
         break;
     }
 
-    const notifications = await Notification.find(filterCond);
+    const notifications = await Notification.find(filterCond).sort({
+      createdAt: -1,
+    });
     return res.status(httpStatusCodes.ok).json(notifications);
   } catch (error) {
     return res
       .status(httpStatusCodes.internalServerError)
       .json({ message: error.message });
   }
-}
+};

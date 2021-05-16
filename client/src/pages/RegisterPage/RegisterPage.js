@@ -5,23 +5,17 @@ import {
   Typography,
   Row,
   Col,
-  Space,
   Input,
   Form,
-  Checkbox,
   Select,
   DatePicker,
   message,
 } from "antd";
-import { FacebookFilled } from "@ant-design/icons";
 
 import { ReactComponent as ReactLogo } from "../../assets/add-user.svg";
 import logo from "../../assets/lightlogo.png";
 
 import styles from "./styles";
-import { FaFacebookF, FaFacebookSquare } from "react-icons/fa";
-import { GrFacebook } from "react-icons/gr";
-import { SiGithub } from "react-icons/si";
 import { Option } from "antd/lib/mentions";
 import { Link } from "react-router-dom";
 import { signup } from "../../redux/actions/auth";
@@ -32,7 +26,7 @@ import COLOR from "../../constants/colors";
 import { useLocalStorage } from "../../hooks/useLocalStorage";
 import { useToken } from "../../context/TokenContext";
 
-const { Title, Text, Paragraph } = Typography;
+const { Title, Text } = Typography;
 
 const dateFormat = "DD/MM/YYYY";
 

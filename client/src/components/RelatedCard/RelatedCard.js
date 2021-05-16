@@ -16,8 +16,8 @@ function RelatedCard(props) {
         bordered={false}
         className="mb-4"
       >
-        {posts?.map((p) => (
-          <Row className="mb-3" align="middle">
+        {posts?.map((p, i) => (
+          <Row key={i} className="mb-3" align="middle">
             <Col span={4} justify="center">
               <Tag color={COLOR.greenSmoke} style={styles.votesTag}>
                 {p.upvoters?.length + p.downvoters?.length}

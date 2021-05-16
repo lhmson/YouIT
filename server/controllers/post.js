@@ -10,6 +10,7 @@ import Post from "../models/post.js";
 import { httpStatusCodes } from "../utils/httpStatusCode.js";
 import { cuteIO } from "../index.js";
 import { notifyUser } from "../businessLogics/notification.js";
+import User from "../models/user.js";
 
 //#region CRUD
 // GET post/list/all
@@ -177,6 +178,10 @@ const handleUpdateInteraction = (actions) => async (req, res) => {
         .status(httpStatusCodes.badContent)
         .send(`post id ${id} is invalid`);
 
+    // user who act
+    const user = await User.findById(userId);
+    console.log(user);
+
     const post = await Post.findById(id);
     if (!post)
       return res
@@ -200,7 +205,9 @@ const handleUpdateInteraction = (actions) => async (req, res) => {
             notifyUser({
               userId: newPost.userId.toString(),
               kind: "UpvotePost_PostOwner",
-              content: { upvoter: userId, post: newPost },
+              content: {
+                description: `${user?.name} has upvoted your post named ${newPost?.title}`,
+              },
               link: `/post/${newPost._id}`,
             });
           }
