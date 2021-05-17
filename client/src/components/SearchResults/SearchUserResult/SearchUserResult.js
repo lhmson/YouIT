@@ -19,8 +19,8 @@ function SearchUserResult({ userNameSearch }) {
     api
       .fetchSearchUser(userNameSearch)
       .then((res) => {
-        console.log("LISTALLUSER", userNameSearch);
-        console.log(res.data);
+        // console.log("LISTALLUSER", userNameSearch);
+        // console.log(res.data);
         setListUser(res.data);
       })
       .catch((e) => {

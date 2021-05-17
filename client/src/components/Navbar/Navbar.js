@@ -8,7 +8,6 @@ import {
   Menu,
   Dropdown,
   Avatar,
-  List,
   Badge,
   Button,
 } from "antd";
@@ -34,6 +33,7 @@ import {
   getUserNotifications,
   addUserNotifications,
   refreshNotifications,
+  setSeenNotification,
 } from "../../redux/actions/notifications";
 import NotificationList from "./NotificationList/NotificationList";
 
@@ -52,12 +52,14 @@ function Navbar({ selectedMenu, setTxtSearch, txtInitSearch }) {
 
   const cuteIO = useCuteClientIO();
 
-  const notifications = useSelector((state) => state.notifications);
-
   //#region notification handle
 
-  const handleClickNotificationItem = (url) => {
+  const notifications = useSelector((state) => state.notifications);
+
+  const handleClickNotificationItem = (url, notificationId) => {
+    dispatch(setSeenNotification(notificationId, "true"));
     history.push(url);
+    window.location.reload(); // fix bug push not route
   };
 
   useEffect(() => {
@@ -68,8 +70,9 @@ function Navbar({ selectedMenu, setTxtSearch, txtInitSearch }) {
 
   useEffect(() => {
     const listener = (event, msg) => {
-      if (event.indexOf("Notification") === 0)
+      if (event.indexOf("Notification") === 0) {
         dispatch(addUserNotifications(msg)); // add noti to it
+      }
     };
     cuteIO.onReceiveAny(listener);
 

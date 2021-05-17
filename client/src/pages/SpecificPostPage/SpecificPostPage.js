@@ -135,7 +135,7 @@ function SpecificPostPage(props) {
       .then(() => message.success("Link copied to clipboard"))
       .catch((error) => {
         message.error("Something goes wrong copying link");
-        console.log(id);
+        // console.log(id);
       });
   };
 

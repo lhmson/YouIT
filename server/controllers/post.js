@@ -148,7 +148,7 @@ export const getMyPostInteractions = async (req, res) => {
     let filterJson = undefined;
     try {
       filterJson = JSON.parse(filter);
-    } catch { }
+    } catch {}
 
     const interactions = await getInteractionOfAUser(id, userId, filterJson);
     return res.status(httpStatusCodes.ok).json(interactions);
@@ -180,7 +180,7 @@ const handleUpdateInteraction = (actions) => async (req, res) => {
 
     // user who act
     const user = await User.findById(userId);
-    console.log(user);
+    // console.log(user);
 
     const post = await Post.findById(id);
     if (!post)

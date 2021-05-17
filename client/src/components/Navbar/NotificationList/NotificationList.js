@@ -1,8 +1,8 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { Typography, Menu, Avatar } from "antd";
 import moment from "moment";
 import styles from "./styles";
-import { useSelector } from "react-redux";
+import COLOR from "../../../constants/colors";
 
 const { Text } = Typography;
 
@@ -21,9 +21,12 @@ function NotificationList({ handleClickNotificationItem, notifications }) {
             <Menu.Item
               key={i}
               className="whitegreen-button"
-              onClick={() => handleClickNotificationItem(item?.link)}
+              onClick={() => handleClickNotificationItem(item?.link, item?._id)}
             >
-              <div className="d-flex align-items-center p-2 w-100">
+              <div
+                className="d-flex align-items-center p-2 w-100"
+                style={{ backgroundColor: !item?.seen && COLOR.greenSmoke }}
+              >
                 <Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
                 <div className="d-flex ml-1 flex-column">
                   <Text>{item.content?.description}</Text>
