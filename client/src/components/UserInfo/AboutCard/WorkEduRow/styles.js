@@ -1,8 +1,7 @@
 const styles = {
   icon: {
-    marginRight: 8,
+    marginRight: 16,
     fontSize: 24,
-    color: "blue",
   },
 };
 
