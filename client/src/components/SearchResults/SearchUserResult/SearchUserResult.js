@@ -21,7 +21,8 @@ function SearchUserResult({ userNameSearch }) {
       .then((res) => {
         console.log("LISTALLUSER", userNameSearch);
         console.log(res.data);
-        setListUser(res.data);
+        if (res.data instanceof Array) setListUser(res.data);
+        else setListUser([]);
       })
       .catch((e) => {
         console.log(e);
