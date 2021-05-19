@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Typography, Button, List, Row } from "antd";
+import { Typography, Button, List, Row, Layout, Input } from "antd";
 import { GrAddCircle, IoHome } from "react-icons/all";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -20,6 +20,8 @@ function WorkEduRow({
   onSave,
   onTextChange,
   onSubTextChange,
+  onNewTextChange,
+  onNewSubTextChange,
   setPreviousState,
   editable,
 }) {
@@ -45,10 +47,43 @@ function WorkEduRow({
     return () => {};
   }, [user]);
 
+  const handleSaving = () => {
+    onSave();
+    setIsAdding(false);
+  };
+
   const AddingComponent = () => {
     if (isAdding) {
-      return <></>;
+      return (
+        <Layout style={styles.whiteBackground}>
+          <Text style={styles.text}>{placeholder}</Text>
+          <Input
+            placeholder={placeholder}
+            style={styles.input}
+            onChange={(value) => onNewTextChange(value)}
+          ></Input>
+          <Input
+            placeholder={placeholder}
+            style={styles.input}
+            defaultValue={subText}
+            onChange={(value) => onNewSubTextChange(value)}
+          ></Input>
+          <Row style={{ justifyContent: "flex-end" }}>
+            <Button style={styles.button} onClick={() => setIsAdding(false)}>
+              Cancel
+            </Button>
+            <Button
+              className="green-button"
+              style={styles.button}
+              onClick={handleSaving}
+            >
+              Save
+            </Button>
+          </Row>
+        </Layout>
+      );
     }
+    return <></>;
   };
 
   return (
@@ -80,6 +115,7 @@ function WorkEduRow({
           </List.Item>
         )}
       ></List>
+      <AddingComponent />
       <div
         style={{
           flexDirection: "row",
@@ -88,7 +124,12 @@ function WorkEduRow({
           justifyContent: "center",
         }}
       >
-        <Button className="clickable" type="link" size="large">
+        <Button
+          className="clickable"
+          type="link"
+          size="large"
+          onClick={() => setIsAdding(true)}
+        >
           <GrAddCircle style={styles.icon} color="blue" />
           {addingText}
         </Button>
