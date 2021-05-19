@@ -8,24 +8,29 @@ import {
   Button,
   Col,
   Form,
-  Select,
   Layout,
+  Select,
   Menu,
+  Divider,
+  message,
 } from "antd";
 import { Link } from "react-router-dom";
 import COLOR from "../../constants/colors.js";
 import { useHistory } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
-import { createAGroup } from "../../redux/actions/group";
-import { Option } from "antd/lib/mentions";
+import { createGroup } from "../../api/group";
 import { CoverPhoto, GroupAboutCard } from "../../components/index.js";
 import { BsThreeDots } from "react-icons/bs";
 import { GoSearch } from "react-icons/go";
 import { MailOutlined } from "@ant-design/icons";
 import Navbar from "../../components/Navbar/Navbar";
-import CreateAGroupName from "../../components/CreateAGroup/CreataGroupName/CreateAGroupName.js";
-import CreateAGroupDescription from "../../components/CreateAGroup/CreateAGroupDescription.js/CreateAGroupDescription.js.js";
-import CreateGroupMembers from "../../components/CreateAGroup/CreateGroupMembers/CreateGroupMembers.js";
+import CreateGroupName from "../../components/CreateGroup/CreateGroupName/CreateGroupName";
+import CreateGroupDescription from "../../components/CreateGroup/CreateGroupDescription/CreateGroupDescription";
+import CreateGroupMembers from "../../components/CreateGroup/CreateGroupMembers/CreateGroupMembers";
+import { OverviewRow } from "../../components/UserInfo/AboutCard/index.js";
+import { IoMdLock } from "react-icons/all";
+import { isLoginUser } from "../../utils/user.js";
+import CreateGroupNameAdmin from "../../components/CreateGroup/CreateGroupNameAdmin/CreateGroupNameAdmin.js";
 import styles from "./styles.js";
 
 const { Title, Text } = Typography;
@@ -47,20 +52,16 @@ const optionsTopic = [
   "School",
 ];
 
-function CreateAGroupPage() {
-  const user = useSelector((state) => state.user);
-
+function CreateGroupPage() {
   const [groupName, setGroupName] = useState("");
   const [groupDescription, setGroupDescription] = useState("");
-  const [groupPrivacy, setGroupPrivacy] = useState(optionsPrivacy[0]);
+  const [groupPrivacy, setGroupPrivacy] = useState("");
   const [groupTopic, setGroupTopic] = useState("");
-
-  const [form, setForm] = useState(initialState);
 
   const dispatch = useDispatch();
   const history = useHistory();
 
-  const wrapGroupData = () => {
+  const Data = () => {
     const result = {
       name: groupName,
       description: groupDescription,
@@ -71,38 +72,44 @@ function CreateAGroupPage() {
   };
 
   const handleSelectPrivacy = (selectedItems) => {
-    const privacy = [];
-    for (let i = 0; i < selectedItems.length; i++) {
-      privacy.push(selectedItems[i].value);
-    }
-    setGroupPrivacy(privacy);
-    setForm({ ...form, privacy: privacy });
+    setGroupPrivacy(selectedItems);
   };
 
   const handleSelectTopic = (selectedItems) => {
-    const topic = [];
-    for (let i = 0; i < selectedItems.length; i++) {
-      topic.push(selectedItems[i].value);
-    }
-    setGroupTopic(topic);
-    setForm({ ...form, topic: topic });
+    setGroupTopic(selectedItems);
   };
 
-  const handleFinish = (values) => {
-    const data = {};
-    dispatch(createAGroup(data, history));
+  const handleCreateGroupButtonClick = () => {
+    const newGroup = Data();
+    createGroup(newGroup)
+      // .then((res) => history.push(`/group/${res.data._id}`))
+      .then((res) => history.push("/userinfo/607e4827ec4a6b07cc74eb67"))
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
-  const displayName = user?.name ?? "Nguoi dung YouIT";
+  const handleFinishFailed = (errorInfo) => {
+    // errorInfo.errorFields.map((err) => {
+    //   message.error(err.errors[0]);
+    // });
+  };
 
-  const handleCreateAGroupButtonClick = () => {
-    const newGroup = wrapGroupData();
-    // createGroup(newGroup)
-    //   .then((res) => history.push(`/post/${res.data._id}`)) // go to specific post
-    //   .catch((error) => {
-    //     alert("Something goes wrong");
-    //     console.log(error);
-    //   });
+  const Description =
+    "ZZZ zzzZZZ zzzZZZ zzzZZZ zzzZZZ zzzZZZ zzzZZZ zzzZZZ zzzZZZ zzzZZZ zzzZZZ zzzZZZ zzzZZZ zzzZZZ zzzZZZZZZ zzzZZZ zzzZZZ zzzZZZ zzzZZZ zzzZZZ zzzZZZ zzzZZZ zzzZZZ zzzZZZ zzz zzzZZZ zzzZZZ zzzZZZ zzzZZZ zzzZZZ zzz";
+
+  const privacyDescription =
+    "Anyone can see who's in the group and what they post.";
+
+  const publicDescription =
+    "Anyone can see who's in the group and what they post.";
+
+  const PrivateIcon = () => {
+    return <IoMdLock style={styles.icon} />;
+  };
+
+  const PublicIcon = () => {
+    return <IoMdLock style={styles.icon} />;
   };
 
   return (
@@ -120,64 +127,41 @@ function CreateAGroupPage() {
                 <Title style={{ marginBottom: 8 }}>Create a group</Title>
               </Row>
               <Row style={{ marginBottom: 18, marginTop: 18 }}>
-                <Link to="/">
-                  <Avatar
-                    src="https://scontent-hkg4-2.xx.fbcdn.net/v/t1.6435-9/179048033_1139396113169332_2102843025754757575_n.jpg?_nc_cat=110&ccb=1-3&_nc_sid=09cbfe&_nc_ohc=plNrtGcVUs8AX-qL0nd&_nc_ht=scontent-hkg4-2.xx&oh=9ec720ace0503fae288080f97a649df2&oe=60B9683D"
-                    alt="avatar"
-                    className="ml-1 clickable"
-                    size={80}
-                  />
-                </Link>
-                <Layout style={{ background: COLOR.white }}>
-                  <Text
-                    className="clickable"
-                    strong
-                    style={{ marginLeft: 15, fontSize: "1.8rem" }}
-                  >
-                    {displayName}
-                  </Text>
-                  <Text style={{ marginLeft: 15, fontSize: 16 }}>Admin</Text>
-                </Layout>
+                <CreateGroupNameAdmin />
               </Row>
               <Form
                 style={{ marginTop: 40 }}
                 name="basic"
                 size="large"
-                onFinish={handleFinish}
+                // onFinish={handleFinish}
                 // onFinishFailed={handleFinishFailed}
               >
                 <Form.Item
                   name="groupName"
-                  rules={[
-                    {
-                      required: true,
-                      message: "Group name is required.",
-                    },
-                  ]}
+                  // rules={[
+                  //   {
+                  //     required: true,
+                  //     message: "Group name is required.",
+                  //   },
+                  // ]}
                 >
-                  {/* <Input
-                    name="groupName"
-                    placeholder="Group Name"
-                    onChange={handleChange}
-                  /> */}
-                  <CreateAGroupName name={groupName} setName={setGroupName} />
+                  <CreateGroupName name={groupName} setName={setGroupName} />
                 </Form.Item>
 
                 <Row gutter={8}>
                   <Col span={10}>
                     {" "}
                     <Form.Item
-                      name="privacy"
-                      rules={[
-                        {
-                          required: true,
-                          message: "Privacy is required.",
-                        },
-                      ]}
+                      name="groupPrivacyItem"
+                      // rules={[
+                      //   {
+                      //     required: true,
+                      //     message: "Privacy is required.",
+                      //   },
+                      // ]}
                     >
                       <Select
                         placeholder="Privacy"
-                        name="privacy"
                         value={groupPrivacy}
                         onChange={handleSelectPrivacy}
                         style={{ width: "100%" }}
@@ -193,12 +177,12 @@ function CreateAGroupPage() {
                   <Col span={14}>
                     <Form.Item
                       name="topic"
-                      rules={[
-                        {
-                          required: true,
-                          message: "Topic is required.",
-                        },
-                      ]}
+                      // rules={[
+                      //   {
+                      //     required: true,
+                      //     message: "Topic is required.",
+                      //   },
+                      // ]}
                     >
                       <Select
                         placeholder="Topic"
@@ -213,7 +197,6 @@ function CreateAGroupPage() {
                           </option>
                         ))}
                       </Select>
-                      {/* <CreateAGroupTopicSelect /> */}
                     </Form.Item>
                   </Col>
                 </Row>
@@ -225,7 +208,7 @@ function CreateAGroupPage() {
                   <CreateGroupMembers />
                 </Form.Item>
                 <Form.Item name="description">
-                  <CreateAGroupDescription
+                  <CreateGroupDescription
                     description={groupDescription}
                     setDescription={setGroupDescription}
                   />
@@ -235,7 +218,7 @@ function CreateAGroupPage() {
                     style={{ width: "100%" }}
                     className="green-button"
                     htmlType="submit"
-                    onClick={handleCreateAGroupButtonClick}
+                    onClick={handleCreateGroupButtonClick}
                   >
                     Create a group
                   </Button>
@@ -246,7 +229,9 @@ function CreateAGroupPage() {
               <div style={{ marginLeft: 10 }}>
                 <Layout className="container">
                   <Row>
-                    <Title style={{ marginBottom: 8, fontSize: 20 }}>
+                    <Title
+                      style={{ marginBottom: 8, marginTop: 8, fontSize: 20 }}
+                    >
                       Preview
                     </Title>
                   </Row>
@@ -258,9 +243,12 @@ function CreateAGroupPage() {
                           style={{ fontSize: 40, fontWeight: "bold" }}
                           placeholder="Group Name"
                         >
-                          {groupName}
+                          {groupName != "" ? groupName : "Group Name"}
                         </Text>
-                        <Text style={{ fontSize: 16 }}>{groupPrivacy}</Text>
+                        <Text style={{ fontSize: 18 }}>
+                          {" "}
+                          {groupPrivacy != "" ? groupPrivacy : "Privacy"}
+                        </Text>
                       </Layout>
                     </Col>
                   </Row>
@@ -282,7 +270,44 @@ function CreateAGroupPage() {
                       <BsThreeDots size={24} style={styles.icon} />
                     </Col>
                   </Row>
-                  <GroupAboutCard />
+                  {/* <GroupAboutCard /> */}
+                  <Layout
+                    style={{
+                      marginBottom: 32,
+                      padding: 16,
+                      background: "white",
+                    }}
+                  >
+                    <Text style={{ fontSize: 32, fontWeight: "bold" }}>
+                      About this group
+                    </Text>
+                    <Layout style={{ paddingLeft: 32, background: "white" }}>
+                      <Divider style={{ justifySelf: "start" }}></Divider>
+                      <Text>
+                        {groupDescription != ""
+                          ? groupDescription
+                          : Description}
+                      </Text>
+                      <Row>
+                        <OverviewRow
+                          firstIcon={
+                            groupPrivacy == "Public" ? (
+                              <PrivateIcon />
+                            ) : (
+                              <PublicIcon />
+                            )
+                          }
+                          text={groupPrivacy}
+                          subText={
+                            groupPrivacy == "Public"
+                              ? publicDescription
+                              : privacyDescription
+                          }
+                        />
+                        <OverviewRow />
+                      </Row>
+                    </Layout>
+                  </Layout>
                 </Layout>
               </div>
             </Col>
@@ -294,4 +319,4 @@ function CreateAGroupPage() {
   );
 }
 
-export default CreateAGroupPage;
+export default CreateGroupPage;

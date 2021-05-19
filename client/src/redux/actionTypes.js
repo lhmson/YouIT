@@ -21,3 +21,6 @@ export const REMOVE_FRIEND_REQUEST = "REMOVE_FRIEND_REQUEST";
 
 // Search
 export const FETCH_SEARCH_USER = "FETCH_SEARCH_USER";
+
+// Group
+export const CREATE_GROUP = "CREATE_GROUP";

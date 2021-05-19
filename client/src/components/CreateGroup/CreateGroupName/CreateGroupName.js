@@ -2,7 +2,7 @@ import React from "react";
 import styles from "./styles.js";
 import { Input } from "antd";
 
-function CreateAGroupName({ name, setName }) {
+function CreateGroupName({ name, setName }) {
   const handleChange = (value) => {
     setName(value.target.value);
   };
@@ -19,4 +19,4 @@ function CreateAGroupName({ name, setName }) {
   );
 }
 
-export default CreateAGroupName;
+export default CreateGroupName;

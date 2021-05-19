@@ -16,7 +16,7 @@ import {
   GroupPage,
   GroupAboutPage,
   RequestsInGroupsPage,
-  CreateAGroupPage,
+  CreateGroupPage,
   LoginPage,
   RegisterPage,
   ErrorPage,
@@ -68,7 +68,7 @@ function App() {
           <Route exact path="/group/about" component={GroupAboutPage} />
           <Route exact path="/friends" component={FriendMangementPage} />
           <Route path="/demoSocketIO" component={DemoSocket} />
-          <Route path="/group/create" component={CreateAGroupPage} />
+          <Route path="/group/create" component={CreateGroupPage} />
 
           <Route>
             <ErrorPage code="404" />

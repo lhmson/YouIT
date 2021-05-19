@@ -36,3 +36,26 @@ export const getAGroup = async (req, res, next) => {
       .json({ message: error.message });
   }
 };
+
+export const createGroup = async (req, res) => {
+  const group = req.body;
+
+  if (group._id) {
+    return res.status(400).json("New group mustn't have _id field");
+  }
+
+  const newGroup = new Group({
+    ...group,
+    userId: req.userId,
+  });
+
+  try {
+    await newGroup.save();
+
+    res.status(httpStatusCodes.created).json(newGroup);
+  } catch (error) {
+    res
+      .status(httpStatusCodes.internalServerError)
+      .json({ message: error.message });
+  }
+};

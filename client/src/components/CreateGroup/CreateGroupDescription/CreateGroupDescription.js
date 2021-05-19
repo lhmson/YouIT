@@ -2,7 +2,7 @@ import React from "react";
 import styles from "./styles.js";
 import { Input } from "antd";
 
-function CreateAGroupDescription({ description, setDescription }) {
+function CreateGroupDescription({ description, setDescription }) {
   const handleChangeDescription = (value) => {
     setDescription(value.target.value);
   };
@@ -20,4 +20,4 @@ function CreateAGroupDescription({ description, setDescription }) {
   );
 }
 
-export default CreateAGroupDescription;
+export default CreateGroupDescription;
