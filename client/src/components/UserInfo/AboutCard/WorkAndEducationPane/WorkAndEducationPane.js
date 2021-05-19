@@ -26,12 +26,22 @@ const WorkAndEducationPane = () => {
     setEducations(user?.userInfo?.educations);
   }, [user]);
 
+  // add new work
   const addWorkLocation = (value) => {
     const newLocation = value.target.value;
-    console.log(newLocation);
     let updatedWork = { ...newWork, location: newLocation };
     setNewWork(updatedWork);
-    //console.log(newWork);
+  };
+
+  const addWorkPosition = (value) => {
+    const newPosition = value.target.value;
+    let updatedWork = { ...newWork, position: newPosition };
+    setNewWork(updatedWork);
+  };
+
+  const addWork = () => {
+    works.push(newWork);
+    saveWorks();
   };
 
   // edit works
@@ -60,6 +70,24 @@ const WorkAndEducationPane = () => {
     };
     console.log(updatedUser);
     dispatch(updateUser(updatedUser));
+  };
+
+  // add new education
+  const addSchoolName = (value) => {
+    const newSchoolName = value.target.value;
+    let updatedEducation = { ...newEducation, schoolName: newSchoolName };
+    setNewEducation(updatedEducation);
+  };
+
+  const addMoreInfo = (value) => {
+    const newInfo = value.target.value;
+    let updatedEducation = { ...newEducation, moreInfo: newInfo };
+    setNewEducation(updatedEducation);
+  };
+
+  const addEducation = () => {
+    educations.push(newEducation);
+    saveEducations();
   };
 
   // edit educations
@@ -108,11 +136,12 @@ const WorkAndEducationPane = () => {
             editable={isMyProfile}
             onTextChange={(index, value) => changeWorkLocation(index, value)}
             onSubTextChange={(index, value) => changeWorkPosition(index, value)}
+            onSave={saveWorks}
             onNewTextChange={(value) => {
               addWorkLocation(value);
             }}
-            onNewSubTextChange={(value) => { }}
-            onSave={saveWorks}
+            onNewSubTextChange={(value) => addWorkPosition(value)}
+            onAdd={addWork}
           />
         </Row>
         <Row style={styles.headingView}>
@@ -123,6 +152,9 @@ const WorkAndEducationPane = () => {
             onTextChange={(index, value) => changeSchoolName(index, value)}
             onSubTextChange={(index, value) => changeMoreInfo(index, value)}
             onSave={saveEducations}
+            onNewTextChange={(value) => addSchoolName(value)}
+            onNewSubTextChange={(value) => addMoreInfo(value)}
+            onAdd={addEducation}
           />
         </Row>
       </Col>

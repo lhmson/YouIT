@@ -22,7 +22,7 @@ function WorkEduRow({
   onSubTextChange,
   onNewTextChange,
   onNewSubTextChange,
-  setPreviousState,
+  onAdd,
   editable,
 }) {
   const user = useSelector((state) => state.user);
@@ -44,46 +44,12 @@ function WorkEduRow({
       default:
         break;
     }
-    return () => { };
+    return () => {};
   }, [user]);
 
   const handleSaving = () => {
-    onSave();
+    onAdd();
     setIsAdding(false);
-  };
-
-  const AddingComponent = () => {
-    if (isAdding) {
-      return (
-        <Layout style={styles.whiteBackground}>
-          <Text style={styles.text}>{placeholder}</Text>
-          <Input
-            placeholder={placeholder}
-            style={styles.input}
-            onChange={(value) => onNewTextChange(value)}
-          ></Input>
-          <Input
-            placeholder={placeholder}
-            style={styles.input}
-            defaultValue={subText}
-            onChange={(value) => onNewSubTextChange(value)}
-          ></Input>
-          <Row style={{ justifyContent: "flex-end" }}>
-            <Button style={styles.button} onClick={() => setIsAdding(false)}>
-              Cancel
-            </Button>
-            <Button
-              className="green-button"
-              style={styles.button}
-              onClick={handleSaving}
-            >
-              Save
-            </Button>
-          </Row>
-        </Layout>
-      );
-    }
-    return <></>;
   };
 
   return (
@@ -109,14 +75,13 @@ function WorkEduRow({
               onSave={onSave}
               onTextChange={(index, value) => onTextChange(index, value)}
               onSubTextChange={(index, value) => onSubTextChange(index, value)}
-              setPreviousState={setPreviousState}
               editable={editable}
             />
           </List.Item>
         )}
       ></List>
 
-      {isAdding ?
+      {isAdding ? (
         <Layout style={styles.whiteBackground}>
           <Text style={styles.text}>{placeholder}</Text>
           <Input
@@ -143,9 +108,9 @@ function WorkEduRow({
             </Button>
           </Row>
         </Layout>
-        :
+      ) : (
         <></>
-      }
+      )}
 
       <div
         style={{
