@@ -42,7 +42,7 @@ function UserResultSearchPage() {
               ) : modeSearch === "Post" ? (
                 <SearchPostResult txtSearch={txtSearch}></SearchPostResult>
               ) : modeSearch === "Group" ? (
-                <SearchGroupResult></SearchGroupResult>
+                <SearchGroupResult txtSearch={txtSearch}></SearchGroupResult>
               ) : (
                 <SearchAllResult txtSearch={txtSearch}></SearchAllResult>
               )}

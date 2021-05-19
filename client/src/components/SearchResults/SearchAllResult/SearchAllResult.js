@@ -2,20 +2,45 @@ import React, { useState, useEffect, useMemo } from "react";
 import { Layout, Typography, Breadcrumb, Row, Col } from "antd";
 import FeedPost from "../../Posts/FeedPosts/FeedPost/FeedPost";
 import * as api from "../../../api/search";
-
-const { Content } = Layout;
-const { Title, Text } = Typography;
+import GroupCard from "../../../components/GroupCard/GroupCard";
+import UserCard from "../../../components/UserCard/UserCard";
 
 const SearchAllResult = ({ txtSearch }) => {
   const [listPost, setListPost] = useState([]);
+  const [listUser, setListUser] = useState([]);
+  const [listGroup, setListGroup] = useState([]);
+
   useEffect(() => {
-    console.log("alo" + txtSearch);
+    /// fetch data search post
     api
       .fetchSearchPost(txtSearch)
       .then((res) => {
         console.log("LISTALLPOSTS", txtSearch);
         console.log(res.data);
         setListPost(res.data);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+    /// fetch data search group
+    api
+      .fetchSearchGroup(txtSearch)
+      .then((res) => {
+        console.log("LISTALLGROUP", txtSearch);
+        console.log(res.data);
+        setListGroup(res.data);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+
+    /// fetch data search user
+    api
+      .fetchSearchUser(txtSearch)
+      .then((res) => {
+        console.log("LISTALLUSER", txtSearch);
+        console.log(res.data);
+        setListUser(res.data);
       })
       .catch((e) => {
         console.log(e);
@@ -30,6 +55,22 @@ const SearchAllResult = ({ txtSearch }) => {
     [listPost]
   );
 
+  const listGroupCard = useMemo(
+    () =>
+      listGroup?.map((group, i) => {
+        return <GroupCard nameGroup={group.name}></GroupCard>;
+      }),
+    [listGroup]
+  );
+
+  const listUserCard = useMemo(
+    () =>
+      listUser?.map((user, i) => {
+        return <UserCard name={user.name} relationship="Add Friend"></UserCard>;
+      }),
+    [listUser]
+  );
+
   return (
     <div className="col-10 offset-1">
       <div
@@ -41,7 +82,9 @@ const SearchAllResult = ({ txtSearch }) => {
           marginLeft: 128,
         }}
       >
-        <div className="col-10 offset-1">{listPostCard}</div>
+        <div className="col-10 offset-1">
+          {listPostCard} {listGroupCard} {listUserCard}
+        </div>
       </div>
     </div>
   );

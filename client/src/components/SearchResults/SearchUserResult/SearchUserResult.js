@@ -1,16 +1,6 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { Layout, Typography, Breadcrumb, Row, Col } from "antd";
-import styles from "./styles.js";
-
-import Navbar from "../../../components/Navbar/Navbar";
-
-import { useDispatch } from "react-redux";
 import UserCard from "../../../components/UserCard/UserCard";
-import GroupCard from "../../../components/GroupCard/GroupCard";
 import * as api from "../../../api/search";
-
-const { Content } = Layout;
-const { Title, Text } = Typography;
 
 function SearchUserResult({ userNameSearch }) {
   const [listUser, setListUser] = useState([]);
