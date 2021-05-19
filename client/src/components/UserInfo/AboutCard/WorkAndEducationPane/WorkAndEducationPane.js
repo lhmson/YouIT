@@ -30,7 +30,7 @@ const WorkAndEducationPane = () => {
     const newLocation = value.target.value;
     console.log(newLocation);
     let updatedWork = { ...newWork, location: newLocation };
-    //setNewWork(updatedWork);
+    setNewWork(updatedWork);
     //console.log(newWork);
   };
 
@@ -111,7 +111,7 @@ const WorkAndEducationPane = () => {
             onNewTextChange={(value) => {
               addWorkLocation(value);
             }}
-            onNewSubTextChange={(value) => {}}
+            onNewSubTextChange={(value) => { }}
             onSave={saveWorks}
           />
         </Row>

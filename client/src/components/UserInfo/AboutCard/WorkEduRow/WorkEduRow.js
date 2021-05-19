@@ -44,7 +44,7 @@ function WorkEduRow({
       default:
         break;
     }
-    return () => {};
+    return () => { };
   }, [user]);
 
   const handleSaving = () => {
@@ -115,7 +115,38 @@ function WorkEduRow({
           </List.Item>
         )}
       ></List>
-      <AddingComponent />
+
+      {isAdding ?
+        <Layout style={styles.whiteBackground}>
+          <Text style={styles.text}>{placeholder}</Text>
+          <Input
+            placeholder={placeholder}
+            style={styles.input}
+            onChange={(value) => onNewTextChange(value)}
+          ></Input>
+          <Input
+            placeholder={placeholder}
+            style={styles.input}
+            defaultValue={subText}
+            onChange={(value) => onNewSubTextChange(value)}
+          ></Input>
+          <Row style={{ justifyContent: "flex-end" }}>
+            <Button style={styles.button} onClick={() => setIsAdding(false)}>
+              Cancel
+            </Button>
+            <Button
+              className="green-button"
+              style={styles.button}
+              onClick={handleSaving}
+            >
+              Save
+            </Button>
+          </Row>
+        </Layout>
+        :
+        <></>
+      }
+
       <div
         style={{
           flexDirection: "row",
