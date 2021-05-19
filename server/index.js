@@ -19,6 +19,7 @@ import userRouter from "./routes/user.js";
 import userInfoRouter from "./routes/user_info.js";
 import groupRouter from "./routes/group.js";
 import searchRouter from "./routes/search.js";
+import friendRequestRouter from "./routes/friendRequest.js";
 import CuteServerIO from "./socket/CuteServerIO.js";
 import { setUpCuteIO } from "./socket/handlers/allHandlers.js";
 
@@ -59,6 +60,7 @@ app.use("/comment", commentRouter);
 app.use("/userInfo", userInfoRouter);
 app.use("/group", groupRouter);
 app.use("/search", searchRouter);
+app.use("/friendRequest", friendRequestRouter);
 
 const PORT = process.env.PORT || 5000;
 

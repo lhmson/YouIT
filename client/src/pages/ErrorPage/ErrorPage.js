@@ -1,28 +1,8 @@
 import React, { useEffect, useState } from "react";
-import {
-  Card,
-  Button,
-  Typography,
-  Row,
-  Col,
-  Space,
-  Input,
-  Form,
-  Checkbox,
-  message,
-} from "antd";
-import { FacebookFilled } from "@ant-design/icons";
-
+import { Button, Typography, Col } from "antd";
 import styles from "./styles";
-import { FaFacebookF, FaFacebookSquare } from "react-icons/fa";
-import { GrFacebook } from "react-icons/gr";
-import { SiGithub } from "react-icons/si";
-import { signin } from "../../redux/actions/auth";
-import { useDispatch } from "react-redux";
-import { useHistory } from "react-router";
 import { Link } from "react-router-dom";
-
-const { Title, Text, Paragraph } = Typography;
+const { Title } = Typography;
 
 const buttonSize = 150;
 

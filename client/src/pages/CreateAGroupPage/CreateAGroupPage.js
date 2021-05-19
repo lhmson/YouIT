@@ -23,40 +23,69 @@ import { BsThreeDots } from "react-icons/bs";
 import { GoSearch } from "react-icons/go";
 import { MailOutlined } from "@ant-design/icons";
 import Navbar from "../../components/Navbar/Navbar";
+import CreateAGroupName from "../../components/CreateAGroup/CreataGroupName/CreateAGroupName.js";
+import CreateAGroupDescription from "../../components/CreateAGroup/CreateAGroupDescription.js/CreateAGroupDescription.js.js";
+import CreateGroupMembers from "../../components/CreateAGroup/CreateGroupMembers/CreateGroupMembers.js";
 import styles from "./styles.js";
 
 const { Title, Text } = Typography;
-const onChange = (e) => {
-  console.log("Change:", e.target.value);
-};
 
 const initialState = {
   groupName: "",
 };
 
-// function CreateAGroupPage() {
-const CreateAGroupPage = () => {
+const optionsPrivacy = ["Public", "Private"];
+const optionsTopic = [
+  "General",
+  "Game",
+  "Language",
+  "Mobile",
+  "Web Dev",
+  "System",
+  "Jobs",
+  "Data",
+  "School",
+];
+
+function CreateAGroupPage() {
   const user = useSelector((state) => state.user);
+
+  const [groupName, setGroupName] = useState("");
+  const [groupDescription, setGroupDescription] = useState("");
+  const [groupPrivacy, setGroupPrivacy] = useState(optionsPrivacy[0]);
+  const [groupTopic, setGroupTopic] = useState("");
 
   const [form, setForm] = useState(initialState);
 
   const dispatch = useDispatch();
   const history = useHistory();
 
-  const handleChange = (e) => {
-    setForm({ ...form, [e?.target.groupname]: e?.target.value });
+  const wrapGroupData = () => {
+    const result = {
+      name: groupName,
+      description: groupDescription,
+      privacy: groupPrivacy,
+      topic: groupTopic,
+    };
+    return result;
   };
 
-  const handleChangeDescription = (e) => {
-    setForm({ ...form, [e?.target.description]: e?.target.value });
+  const handleSelectPrivacy = (selectedItems) => {
+    const privacy = [];
+    for (let i = 0; i < selectedItems.length; i++) {
+      privacy.push(selectedItems[i].value);
+    }
+    setGroupPrivacy(privacy);
+    setForm({ ...form, privacy: privacy });
   };
 
-  const handleChangePrivacy = (value) => {
-    setForm({ ...form, privacy: value });
-  };
-
-  const handleChangeTopic = (value) => {
-    setForm({ ...form, topic: value });
+  const handleSelectTopic = (selectedItems) => {
+    const topic = [];
+    for (let i = 0; i < selectedItems.length; i++) {
+      topic.push(selectedItems[i].value);
+    }
+    setGroupTopic(topic);
+    setForm({ ...form, topic: topic });
   };
 
   const handleFinish = (values) => {
@@ -65,6 +94,16 @@ const CreateAGroupPage = () => {
   };
 
   const displayName = user?.name ?? "Nguoi dung YouIT";
+
+  const handleCreateAGroupButtonClick = () => {
+    const newGroup = wrapGroupData();
+    // createGroup(newGroup)
+    //   .then((res) => history.push(`/post/${res.data._id}`)) // go to specific post
+    //   .catch((error) => {
+    //     alert("Something goes wrong");
+    //     console.log(error);
+    //   });
+  };
 
   return (
     <Layout>
@@ -116,11 +155,12 @@ const CreateAGroupPage = () => {
                     },
                   ]}
                 >
-                  <Input
+                  {/* <Input
                     name="groupName"
                     placeholder="Group Name"
                     onChange={handleChange}
-                  />
+                  /> */}
+                  <CreateAGroupName name={groupName} setName={setGroupName} />
                 </Form.Item>
 
                 <Row gutter={8}>
@@ -138,11 +178,15 @@ const CreateAGroupPage = () => {
                       <Select
                         placeholder="Privacy"
                         name="privacy"
-                        onChange={handleChangePrivacy}
+                        value={groupPrivacy}
+                        onChange={handleSelectPrivacy}
                         style={{ width: "100%" }}
                       >
-                        <Option value="Public">Public</Option>
-                        <Option value="Private">Private</Option>
+                        {optionsPrivacy.map((option) => (
+                          <option key={option} value={option}>
+                            {option}
+                          </option>
+                        ))}
                       </Select>
                     </Form.Item>
                   </Col>
@@ -159,35 +203,31 @@ const CreateAGroupPage = () => {
                       <Select
                         placeholder="Topic"
                         name="Topic"
-                        onChange={handleChangeTopic}
+                        value={groupTopic}
+                        onChange={handleSelectTopic}
                         style={{ width: "100%" }}
                       >
-                        <Option value="General"> General</Option>
-                        <Option value="Game">Game</Option>
-                        <Option value="Language">Language</Option>
-                        <Option value="Mobile">Mobile</Option>
-                        <Option value="Web Dev">Web Dev</Option>
-                        <Option value="System">System</Option>
-                        <Option value="Jobs">Jobs</Option>
-                        <Option value="Data">Data</Option>
-                        <Option value="School">School</Option>
+                        {optionsTopic.map((option) => (
+                          <option key={option} value={option}>
+                            {option}
+                          </option>
+                        ))}
                       </Select>
+                      {/* <CreateAGroupTopicSelect /> */}
                     </Form.Item>
                   </Col>
                 </Row>
                 <Form.Item name="inviteFriends">
-                  <Input
+                  {/* <Input
                     name="inviteFriends"
                     placeholder="Invite your friends"
-                    onChange={handleChange}
-                  />
+                  /> */}
+                  <CreateGroupMembers />
                 </Form.Item>
                 <Form.Item name="description">
-                  <Input
-                    name="description"
-                    placeholder="Description"
-                    onChange={handleChangeDescription}
-                    style={{ height: 150 }}
+                  <CreateAGroupDescription
+                    description={groupDescription}
+                    setDescription={setGroupDescription}
                   />
                 </Form.Item>
                 <Form.Item style={{}}>
@@ -195,6 +235,7 @@ const CreateAGroupPage = () => {
                     style={{ width: "100%" }}
                     className="green-button"
                     htmlType="submit"
+                    onClick={handleCreateAGroupButtonClick}
                   >
                     Create a group
                   </Button>
@@ -217,9 +258,9 @@ const CreateAGroupPage = () => {
                           style={{ fontSize: 40, fontWeight: "bold" }}
                           placeholder="Group Name"
                         >
-                          Group Name
+                          {groupName}
                         </Text>
-                        <Text style={{ fontSize: 16 }}>Public group</Text>
+                        <Text style={{ fontSize: 16 }}>{groupPrivacy}</Text>
                       </Layout>
                     </Col>
                   </Row>
@@ -251,6 +292,6 @@ const CreateAGroupPage = () => {
       </div>
     </Layout>
   );
-};
+}
 
 export default CreateAGroupPage;

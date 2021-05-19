@@ -1,4 +1,9 @@
-import { FETCH_USER, UPDATE_USER } from "../actionTypes";
+import {
+  FETCH_USER,
+  UPDATE_USER,
+  ADD_FRIEND_REQUEST,
+  REMOVE_FRIEND_REQUEST,
+} from "../actionTypes";
 import * as api from "../../api/user_info";
 
 export const getUser = (uid) => async (dispatch) => {
@@ -20,3 +25,28 @@ export const updateUser = (updatedUser) => async (dispatch) => {
     console.log(error);
   }
 };
+
+export const addFriendRequest = (friendRequest) => async (dispatch) => {
+  try {
+    const { data } = await api.addReceivingFriendRequest(friendRequest);
+    dispatch({ type: ADD_FRIEND_REQUEST, payload: data });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const removeFriendRequest =
+  (friendRequest, user) => async (dispatch) => {
+    try {
+      // if page is loading receiver's data, update receiver
+      if (user?._id === friendRequest?.userConfirmId) {
+        const { data } = await api.removeReceivingFriendRequest(friendRequest);
+        dispatch({ type: REMOVE_FRIEND_REQUEST, payload: data });
+      } else if (user?._id === friendRequest?.userSendRequestId) {
+        const { data } = await api.removeSendingFriendRequest(friendRequest);
+        dispatch({ type: REMOVE_FRIEND_REQUEST, payload: data });
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };

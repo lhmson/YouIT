@@ -5,7 +5,6 @@ import styles from "./styles.js";
 import Navbar from "../../../components/Navbar/Navbar";
 
 import { useDispatch } from "react-redux";
-import { getPosts } from "../../../redux/actions/posts";
 import UserCard from "../../../components/UserCard/UserCard";
 import GroupCard from "../../../components/GroupCard/GroupCard";
 

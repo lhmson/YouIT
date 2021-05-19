@@ -5,25 +5,19 @@ import {
   Typography,
   Row,
   Col,
-  Space,
   Input,
   Form,
   Checkbox,
   message,
 } from "antd";
-import { FacebookFilled } from "@ant-design/icons";
 
 import { ReactComponent as ReactLogo } from "../../assets/login-bro.svg";
 import logo from "../../assets/lightlogo.png";
-
-import styles from "./styles";
-import { FaFacebookF, FaFacebookSquare } from "react-icons/fa";
 import { GrFacebook } from "react-icons/gr";
 import { SiGithub } from "react-icons/si";
 import { signin } from "../../redux/actions/auth";
 import { useDispatch } from "react-redux";
-import { useHistory } from "react-router";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import COLOR from "../../constants/colors";
 import { useToken } from "../../context/TokenContext";
 import { useLocalStorage } from "../../hooks/useLocalStorage";
@@ -38,9 +32,10 @@ const initialState = {
 
 function LoginPage() {
   const [form, setForm] = useState(initialState);
+  const [user, setUser] = useLocalStorage("user");
   const dispatch = useDispatch();
   const history = useHistory();
-  const [user, setUser] = useLocalStorage("user");
+
   const [token, setToken] = useToken();
 
   const handleChange = (e) => {
@@ -48,7 +43,7 @@ function LoginPage() {
   };
 
   const handleFinish = async (values) => {
-    await dispatch(signin(form, history, setUser, setToken));
+    dispatch(signin(form, history, setUser, token, setToken));
   };
 
   const handleFinishFailed = (errorInfo) => {

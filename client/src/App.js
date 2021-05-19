@@ -10,7 +10,7 @@ import {
   CreatePostPage,
   FeedPage,
   UserInfoPage,
-  SpecificPost,
+  SpecificPostPage,
   UserResultSearchPage,
   AboutPage,
   GroupPage,
@@ -29,6 +29,7 @@ import { useLocalStorage } from "./hooks/useLocalStorage.js";
 import DemoSocket from "./socket/DemoComponent/DemoSocket.js";
 import { useToken } from "./context/TokenContext.js";
 import PrivateRoute from "./utils/PrivateRoute.js";
+import { handleNewIOConnection } from "./notifications/index.js";
 
 const loggedIn = () => {
   const user = JSON.parse(localStorage.getItem("user"));
@@ -40,25 +41,13 @@ function App() {
 
   return (
     <div className={styles.App}>
-      {/* // <<<<<<< HEAD */}
-      {/* //       <Switch>
-//         <Route path="/" exact component={MainPage} />
-//         <Route path="/feed" exact component={FeedPage} />
-//         <Route path="/auth" component={AuthPage} />
-//         <Route path="/post/create" component={CreatePostPage} />
-//         <Route path="/userinfo" exact component={UserInfoPage} />
-//         <Route path="/post/:id" component={SpecificPost} />
-//         <Route path="/search" component={UserResultSearchPage} />
-//         <Route path="/requests" component={RequestsInGroupsPage} />
-//         <Route path="/wall" component={WallPage} />
-//         <Route path="/userinfo/about" component={AboutPage} />
-//         <Route path="/group" exact component={GroupPage} />
-//         <Route path="/group/about" component={GroupAboutPage} />
-//         <Route path="/friends" component={FriendMangementPage}></Route>
-//         <Route path="/createagroup" component={CreateAGroupPage} />
-//       </Switch>
-// ======= */}
-      <CuteClientIOProvider serverUri={"http://localhost:5000"} token={token}>
+      {/* </div> <CuteClientIOProvider serverUri={"http://localhost:5000"} token={token}> */}
+
+      <CuteClientIOProvider
+        serverUri={"http://localhost:5000"}
+        token={token}
+        onNewConnection={handleNewIOConnection}
+      >
         <Switch>
           <Route exact path="/" component={HomePage} />
           <Route exact path="/login">
@@ -70,7 +59,7 @@ function App() {
           <PrivateRoute exact path="/feed" component={FeedPage} />
           <PrivateRoute exact path="/post/create" component={CreatePostPage} />
           <Route path="/userinfo/:id" exact component={UserInfoPage} />
-          <Route exact path="/post/:id" component={SpecificPost} />
+          <Route exact path="/post/:id" component={SpecificPostPage} />
           <Route exact path="/search" component={UserResultSearchPage} />
           <Route exact path="/requests" component={RequestsInGroupsPage} />
           <Route exact path="/wall" component={WallPage} />
@@ -79,7 +68,7 @@ function App() {
           <Route exact path="/group/about" component={GroupAboutPage} />
           <Route exact path="/friends" component={FriendMangementPage} />
           <Route path="/demoSocketIO" component={DemoSocket} />
-          <Route path="/createagroup" component={CreateAGroupPage} />
+          <Route path="/group/create" component={CreateAGroupPage} />
 
           <Route>
             <ErrorPage code="404" />
