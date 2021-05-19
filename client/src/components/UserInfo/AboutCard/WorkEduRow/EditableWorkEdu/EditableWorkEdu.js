@@ -17,19 +17,16 @@ function EditableWorkEdu({
   subText,
   placeholder,
   onSave,
-  onChange,
+  onTextChange,
+  onSubTextChange,
   setPreviousState,
   editable,
+  index,
 }) {
   const [isEditing, setIsEditing] = useState(false);
 
   const EditIcon = () => {
-    console.log("start edit");
-    console.log(editable);
-
     if (editable) {
-      console.log("L");
-
       return (
         <AiOutlineEdit style={styles.icon} onClick={() => setIsEditing(true)} />
       );
@@ -43,7 +40,7 @@ function EditableWorkEdu({
   };
 
   const handleCancel = () => {
-    setPreviousState();
+    //setPreviousState();
     setIsEditing(false);
   };
 
@@ -55,7 +52,13 @@ function EditableWorkEdu({
           placeholder={placeholder}
           style={styles.input}
           defaultValue={text}
-          onChange={(value) => onChange(value)}
+          onChange={(value) => onTextChange(index, value)}
+        ></Input>
+        <Input
+          placeholder={placeholder}
+          style={styles.input}
+          defaultValue={subText}
+          onChange={(value) => onSubTextChange(index, value)}
         ></Input>
         <Row style={{ justifyContent: "flex-end" }}>
           <Button style={styles.button} onClick={handleCancel}>

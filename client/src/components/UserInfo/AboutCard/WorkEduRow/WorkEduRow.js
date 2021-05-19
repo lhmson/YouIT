@@ -18,7 +18,8 @@ function WorkEduRow({
   subText,
   placeholder,
   onSave,
-  onChange,
+  onTextChange,
+  onSubTextChange,
   setPreviousState,
   editable,
 }) {
@@ -26,6 +27,7 @@ function WorkEduRow({
   const dispatch = useDispatch();
 
   const [data, setData] = useState([]);
+  const [isAdding, setIsAdding] = useState(false);
 
   useEffect(() => {
     switch (heading) {
@@ -43,22 +45,35 @@ function WorkEduRow({
     return () => {};
   }, [user]);
 
+  const AddingComponent = () => {
+    if (isAdding) {
+      return <></>;
+    }
+  };
+
   return (
     <Row
-      style={{ display: "flex", flexDirection: "column", background: "pink" }}
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        width: "100%",
+      }}
     >
       <Title level={3}>{heading}</Title>
       <List
+        style={{ width: "100%" }}
         dataSource={data}
-        renderItem={(item) => (
+        renderItem={(item, index) => (
           <List.Item>
             <EditableWorkEdu
+              index={index}
               text={heading === "Work" ? item?.location : item?.schoolName}
               firstIcon={firstIcon}
               subText={heading === "Work" ? item?.position : item?.moreInfo}
               placeholder={placeholder}
               onSave={onSave}
-              onChange={onChange}
+              onTextChange={(index, value) => onTextChange(index, value)}
+              onSubTextChange={(index, value) => onSubTextChange(index, value)}
               setPreviousState={setPreviousState}
               editable={editable}
             />
