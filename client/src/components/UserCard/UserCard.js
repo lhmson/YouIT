@@ -8,8 +8,14 @@ const { Title, Text } = Typography;
 function UserCard(props) {
   const { name } = props;
   const [txtButton, setTxtButton] = React.useState(
-    props.relationship ?? "Add friend"
+    props.relationship ?? "Add Friend"
   );
+
+  const changeStateButton = () => {
+    console.log(txtButton);
+    if (txtButton === "Add Friend") setTxtButton("Cancel Request");
+    else setTxtButton("Add Friend");
+  };
   return (
     <>
       <div style={styles.card}>
@@ -48,6 +54,7 @@ function UserCard(props) {
             }}
           >
             <Button
+              onClick={changeStateButton}
               className="mb-2"
               type="primary"
               style={{
@@ -60,7 +67,7 @@ function UserCard(props) {
               {txtButton}
             </Button>
             <div>
-              <Text style={styles.text}>12 bạn chung</Text>
+              <Text style={styles.text}>12 mutual friends</Text>
             </div>
           </div>
         </div>
@@ -69,7 +76,7 @@ function UserCard(props) {
             <Tag className="tag">C#</Tag>
             <Tag className="tag">Javascript</Tag>
             <Tag className="tag">Unity 3D</Tag>
-            <Text style={{ ...styles.text, fontWeight: 600 }}>15 bài viết</Text>
+            <Text style={{ ...styles.text, fontWeight: 600 }}>+ 15 Posts</Text>
           </div>
         </div>
       </div>
