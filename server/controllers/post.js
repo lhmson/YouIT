@@ -9,6 +9,8 @@ import {
 import Post from "../models/post.js";
 import { httpStatusCodes } from "../utils/httpStatusCode.js";
 import { cuteIO } from "../index.js";
+import { sendNotificationUser } from "../businessLogics/notification.js";
+import User from "../models/user.js";
 
 //#region CRUD
 // GET post/list/all
@@ -176,6 +178,10 @@ const handleUpdateInteraction = (actions) => async (req, res) => {
         .status(httpStatusCodes.badContent)
         .send(`post id ${id} is invalid`);
 
+    // user who act
+    const user = await User.findById(userId);
+    // console.log(user);
+
     const post = await Post.findById(id);
     if (!post)
       return res
@@ -191,11 +197,19 @@ const handleUpdateInteraction = (actions) => async (req, res) => {
 
           // Test socket.io
           if (a.interactionType === "upvote") {
-            cuteIO.sendToUser(
-              newPost.userId.toString(),
-              "UpvotePost_PostOwner",
-              { upvoter: userId, post: newPost }
-            );
+            // cuteIO.sendToUser(
+            //   newPost.userId.toString(),
+            //   "UpvotePost_PostOwner",
+            //   { upvoter: userId, post: newPost }
+            // );
+            sendNotificationUser({
+              userId: newPost.userId.toString(),
+              kind: "UpvotePost_PostOwner",
+              content: {
+                description: `${user?.name} has upvoted your post named ${newPost?.title}`,
+              },
+              link: `/post/${newPost._id}`,
+            });
           }
 
           break;
@@ -278,13 +292,13 @@ export const getOtherPosts = async (req, res) => {
       res.status(404).json("Invalid ID");
       return;
     }
-    const posts = await (
-      await Post.find()
-    ).filter(
-      (p) =>
-        p.userId.toString() === excludedPost.userId.toString() &&
-        p._id.toString() !== excludedPost._id.toString()
-    );
+    const posts = await (await Post.find())
+      .filter(
+        (p) =>
+          p.userId?.toString() === excludedPost?.userId.toString() &&
+          p._id.toString() !== excludedPost._id.toString()
+      )
+      .slice(0, 5);
     res.status(200).json(posts);
   } catch (error) {
     res.status(500).json({ message: error.message });

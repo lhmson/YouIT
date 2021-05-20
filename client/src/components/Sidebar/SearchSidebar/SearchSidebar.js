@@ -51,7 +51,7 @@ function SearchSidebar(props) {
             </Avatar>
           }
         >
-          Lọc kết quả
+          Search Result
         </Menu.Item>
         <Menu.Item
           key="post"
@@ -59,7 +59,7 @@ function SearchSidebar(props) {
           style={styles.item}
           icon={<Avatar style={styles.transparent} />}
         >
-          Bài viết
+          Post
         </Menu.Item>
         <Menu.Item
           onClick={() => props.setModeSearch("User")}
@@ -67,7 +67,7 @@ function SearchSidebar(props) {
           style={styles.item}
           icon={<Avatar style={styles.transparent} />}
         >
-          Người dùng
+          User
         </Menu.Item>
         {/* </SubMenu> */}
 
@@ -77,7 +77,7 @@ function SearchSidebar(props) {
           style={styles.item}
           icon={<Avatar style={styles.transparent} />}
         >
-          Nhóm
+          Group
         </Menu.Item>
       </Menu>
     </Sider>

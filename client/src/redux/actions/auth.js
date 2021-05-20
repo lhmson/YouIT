@@ -4,7 +4,8 @@ import { message } from "antd";
 import { forceGetNewLocalStorageToken } from "../../utils/forceGetNewLocalStorageToken";
 
 export const signin =
-  (formData, router, setLocalStorageUser, oldToken, setToken) => async (dispatch) => {
+  (formData, router, setLocalStorageUser, oldToken, setToken) =>
+  async (dispatch) => {
     try {
       console.log("signin");
       const { data } = await api.signIn(formData);
@@ -19,7 +20,7 @@ export const signin =
       message.success("Login successfully!");
     } catch (error) {
       console.log("Error sign in", error);
-      message.error("Wrong email or password, try again!");
+      message.error("Something went wrong, please try again.");
     }
   };
 
@@ -36,12 +37,12 @@ export const signup = (formData, router) => async (dispatch) => {
   }
 };
 
-export const logout = (setLocalStorageUser, oldToken, setToken) => async (dispatch) => {
-  dispatch({ type: LOGOUT, setLocalStorageUser });
-  // setTimeout(() => {
-  //   setToken(JSON.parse(localStorage.getItem("user"))?.token);
-  //   // setToken(null);
-  // }, 2000);
-  forceGetNewLocalStorageToken(oldToken, setToken);
-
-};
+export const logout =
+  (setLocalStorageUser, oldToken, setToken) => async (dispatch) => {
+    dispatch({ type: LOGOUT, setLocalStorageUser });
+    // setTimeout(() => {
+    //   setToken(JSON.parse(localStorage.getItem("user"))?.token);
+    //   // setToken(null);
+    // }, 2000);
+    forceGetNewLocalStorageToken(oldToken, setToken);
+  };

@@ -13,20 +13,29 @@ import SearchUserResult from "../../components/SearchResults/SearchUserResult/Se
 import SearchGroupResult from "../../components/SearchResults/SearchGroupResult/SearchGroupResult";
 import MemberRequest from "../../components/MemberRequest/MemberRequest";
 import SearchPostResult from "../../components/SearchResults/SearchPostResult/SearchPostResult";
+import { useLocation } from "react-router";
 
 const { Content } = Layout;
 const { Title, Text } = Typography;
 
 function UserResultSearchPage() {
+  const location = useLocation();
+  const txtInitSearch = location.state?.txtSearch;
+
   const [currentId, setCurrentId] = useState(null);
   const dispatch = useDispatch();
   const [modeSearch, setModeSearch] = useState("User");
-  const [txtSearch, setTxtSearch] = useState("");
+  const [txtSearch, setTxtSearch] = useState(txtInitSearch ?? "");
 
   return (
     <>
       <Layout>
-        <Navbar selectedMenu="userinfo" setTxtSearch={setTxtSearch} />
+        <Navbar
+          selectedMenu="userinfo"
+          setTxtSearch={setTxtSearch}
+          setModeSearch={setModeSearch}
+          txtInitSearch={txtInitSearch}
+        />
         <Layout>
           <SearchSidebar setModeSearch={setModeSearch} />
           <Layout style={styles.mainArea}>
@@ -34,7 +43,7 @@ function UserResultSearchPage() {
               {modeSearch === "User" ? (
                 <SearchUserResult userNameSearch={txtSearch}></SearchUserResult>
               ) : modeSearch === "Post" ? (
-                <SearchPostResult></SearchPostResult>
+                <SearchPostResult txtSearch={txtSearch}></SearchPostResult>
               ) : (
                 <SearchGroupResult></SearchGroupResult>
               )}

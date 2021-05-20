@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styles from "./styles.js";
 import { Switch, Route, Redirect } from "react-router-dom";
 
@@ -41,8 +41,6 @@ function App() {
 
   return (
     <div className={styles.App}>
-      {/* </div> <CuteClientIOProvider serverUri={"http://localhost:5000"} token={token}> */}
-
       <CuteClientIOProvider
         serverUri={"http://localhost:5000"}
         token={token}
@@ -60,6 +58,7 @@ function App() {
           <PrivateRoute exact path="/post/create" component={CreatePostPage} />
           <Route path="/userinfo/:id" exact component={UserInfoPage} />
           <Route exact path="/post/:id" component={SpecificPostPage} />
+          <Route path="/post/:id/:commentId" component={SpecificPostPage} />
           <Route exact path="/search" component={UserResultSearchPage} />
           <Route exact path="/requests" component={RequestsInGroupsPage} />
           <Route exact path="/wall" component={WallPage} />
