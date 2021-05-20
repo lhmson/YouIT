@@ -1,21 +1,117 @@
-import React from "react";
-import { Typography, Button } from "antd";
-import { GrAddCircle } from "react-icons/all";
+import React, { useEffect, useState } from "react";
+import { Typography, Button, List, Row, Layout, Input } from "antd";
+import { GrAddCircle, IoHome } from "react-icons/all";
+import { useDispatch, useSelector } from "react-redux";
+
+import EditableText from "../../AboutCard/OverviewPane/EditableText/EditableText";
 
 import styles from "./styles.js";
+import EditableWorkEdu from "./EditableWorkEdu/EditableWorkEdu";
 
 const { Text, Title } = Typography;
 
-const ListItems = () => {
-  //data here
-  return <></>;
-};
+function WorkEduRow({
+  heading,
+  addingText,
+  firstIcon,
+  text,
+  subText,
+  placeholder,
+  onSave,
+  onTextChange,
+  onSubTextChange,
+  onNewTextChange,
+  onNewSubTextChange,
+  onAdd,
+  editable,
+}) {
+  const user = useSelector((state) => state.user);
+  const dispatch = useDispatch();
 
-function WorkEduRow(props) {
+  const [data, setData] = useState([]);
+  const [isAdding, setIsAdding] = useState(false);
+
+  useEffect(() => {
+    switch (heading) {
+      case "Work":
+        setData(user?.userInfo?.works);
+        console.log(data);
+        break;
+      case "College":
+        setData(user?.userInfo?.educations);
+        console.log(data);
+        break;
+      default:
+        break;
+    }
+    return () => {};
+  }, [user]);
+
+  const handleSaving = () => {
+    onAdd();
+    setIsAdding(false);
+  };
+
   return (
-    <div className="row" style={{ display: "flex", flexDirection: "column" }}>
-      <Title level={3}>{props.heading}</Title>
-      <ListItems />
+    <Row
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        width: "100%",
+      }}
+    >
+      <Title level={3}>{heading}</Title>
+      <List
+        style={{ width: "100%" }}
+        dataSource={data}
+        renderItem={(item, index) => (
+          <List.Item>
+            <EditableWorkEdu
+              index={index}
+              text={heading === "Work" ? item?.location : item?.schoolName}
+              firstIcon={firstIcon}
+              subText={heading === "Work" ? item?.position : item?.moreInfo}
+              placeholder={placeholder}
+              onSave={onSave}
+              onTextChange={(index, value) => onTextChange(index, value)}
+              onSubTextChange={(index, value) => onSubTextChange(index, value)}
+              editable={editable}
+            />
+          </List.Item>
+        )}
+      ></List>
+
+      {isAdding ? (
+        <Layout style={styles.whiteBackground}>
+          <Text style={styles.text}>{placeholder}</Text>
+          <Input
+            placeholder={placeholder}
+            style={styles.input}
+            onChange={(value) => onNewTextChange(value)}
+          ></Input>
+          <Input
+            placeholder={placeholder}
+            style={styles.input}
+            defaultValue={subText}
+            onChange={(value) => onNewSubTextChange(value)}
+          ></Input>
+          <Row style={{ justifyContent: "flex-end" }}>
+            <Button style={styles.button} onClick={() => setIsAdding(false)}>
+              Cancel
+            </Button>
+            <Button
+              className="green-button"
+              style={styles.button}
+              onClick={handleSaving}
+            >
+              Save
+            </Button>
+          </Row>
+        </Layout>
+      ) : (
+        <></>
+      )}
+
       <div
         style={{
           flexDirection: "row",
@@ -24,12 +120,17 @@ function WorkEduRow(props) {
           justifyContent: "center",
         }}
       >
-        <Button className="clickable" type="link" size="large">
+        <Button
+          className="clickable"
+          type="link"
+          size="large"
+          onClick={() => setIsAdding(true)}
+        >
           <GrAddCircle style={styles.icon} color="blue" />
-          {props.addingText}
+          {addingText}
         </Button>
       </div>
-    </div>
+    </Row>
   );
 }
 
