@@ -1,16 +1,6 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { Layout, Typography, Breadcrumb, Row, Col } from "antd";
-import styles from "./styles.js";
-
-import Navbar from "../../../components/Navbar/Navbar";
-
-import { useDispatch } from "react-redux";
 import UserCard from "../../../components/UserCard/UserCard";
-import GroupCard from "../../../components/GroupCard/GroupCard";
 import * as api from "../../../api/search";
-
-const { Content } = Layout;
-const { Title, Text } = Typography;
 
 function SearchUserResult({ userNameSearch }) {
   const [listUser, setListUser] = useState([]);
@@ -19,9 +9,10 @@ function SearchUserResult({ userNameSearch }) {
     api
       .fetchSearchUser(userNameSearch)
       .then((res) => {
-        // console.log("LISTALLUSER", userNameSearch);
-        // console.log(res.data);
-        setListUser(res.data);
+        console.log("LISTALLUSER", userNameSearch);
+        console.log(res.data);
+        if (res.data instanceof Array) setListUser(res.data);
+        else setListUser([]);
       })
       .catch((e) => {
         console.log(e);
@@ -31,7 +22,15 @@ function SearchUserResult({ userNameSearch }) {
   const listUserCardLeft = useMemo(
     () =>
       listUser?.map((user, i) => {
-        if (i % 2 == 0) return <UserCard name={user.name}></UserCard>;
+        console.log("alo" + user._id);
+        if (i % 2 == 0)
+          return (
+            <UserCard
+              _id={user._id}
+              name={user.name}
+              relationship="Add Friend"
+            ></UserCard>
+          );
       }),
     [listUser]
   );
@@ -39,7 +38,14 @@ function SearchUserResult({ userNameSearch }) {
   const listUserCardRight = useMemo(
     () =>
       listUser?.map((user, i) => {
-        if (i % 2 == 1) return <UserCard name={user.name}></UserCard>;
+        if (i % 2 == 1)
+          return (
+            <UserCard
+              _id={user._id}
+              name={user.name}
+              relationship="Add Friend"
+            ></UserCard>
+          );
       }),
     [listUser]
   );

@@ -26,7 +26,7 @@ function SearchSidebar(props) {
     >
       <Menu
         mode="inline"
-        defaultSelectedKeys={["post"]}
+        defaultSelectedKeys={["all"]}
         // defaultOpenKeys={["1"]}
         style={{
           height: "100%",
@@ -52,6 +52,14 @@ function SearchSidebar(props) {
           }
         >
           Search Result
+        </Menu.Item>
+        <Menu.Item
+          key="all"
+          onClick={() => props.setModeSearch("All")}
+          style={styles.item}
+          icon={<Avatar style={styles.transparent} />}
+        >
+          All
         </Menu.Item>
         <Menu.Item
           key="post"
