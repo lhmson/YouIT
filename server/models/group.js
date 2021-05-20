@@ -6,6 +6,11 @@ import {
 
 const groupSchema = mongoose.Schema(
   {
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+    },
+
     privacy: {
       type: String,
       enum: ["Public", "Private"],

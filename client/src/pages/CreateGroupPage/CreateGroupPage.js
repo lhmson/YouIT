@@ -22,7 +22,7 @@ import { createGroup } from "../../api/group";
 import { CoverPhoto, GroupAboutCard } from "../../components/index.js";
 import { BsThreeDots } from "react-icons/bs";
 import { GoSearch } from "react-icons/go";
-import { MailOutlined } from "@ant-design/icons";
+import { MailOutlined, ShopOutlined } from "@ant-design/icons";
 import Navbar from "../../components/Navbar/Navbar";
 import CreateGroupName from "../../components/CreateGroup/CreateGroupName/CreateGroupName";
 import CreateGroupDescription from "../../components/CreateGroup/CreateGroupDescription/CreateGroupDescription";
@@ -82,8 +82,7 @@ function CreateGroupPage() {
   const handleCreateGroupButtonClick = () => {
     const newGroup = Data();
     createGroup(newGroup)
-      // .then((res) => history.push(`/group/${res.data._id}`))
-      .then((res) => history.push("/userinfo/607e4827ec4a6b07cc74eb67"))
+      .then((res) => history.push(`/group/${res.data._id}`))
       .catch((error) => {
         console.log(error);
       });
@@ -297,7 +296,7 @@ function CreateGroupPage() {
                               <PublicIcon />
                             )
                           }
-                          text={groupPrivacy}
+                          text={groupPrivacy != "" ? groupPrivacy : "Privacy"}
                           subText={
                             groupPrivacy == "Public"
                               ? publicDescription
@@ -305,6 +304,12 @@ function CreateGroupPage() {
                           }
                         />
                         <OverviewRow />
+                        {/* <OverviewRow
+                          firstIcon={<ShopOutlined />}
+                          text="Topic"
+                          subText={groupTopic != "" ? groupTopic : "Topic"}
+                        />
+                        <OverviewRow /> */}
                       </Row>
                     </Layout>
                   </Layout>

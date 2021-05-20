@@ -51,7 +51,6 @@ export const createGroup = async (req, res) => {
 
   try {
     await newGroup.save();
-
     res.status(httpStatusCodes.created).json(newGroup);
   } catch (error) {
     res
