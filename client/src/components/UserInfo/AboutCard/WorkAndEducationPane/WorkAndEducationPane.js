@@ -155,6 +155,8 @@ const WorkAndEducationPane = () => {
             onNewSubTextChange={(value) => addWorkPosition(value)}
             onAdd={addWork}
             onDelete={(index) => deleteWork(index)}
+            newPlaceholder="Work location"
+            newSubPlaceholder="Work position"
           />
         </Row>
         <Row style={styles.headingView}>
@@ -169,6 +171,8 @@ const WorkAndEducationPane = () => {
             onNewSubTextChange={(value) => addMoreInfo(value)}
             onAdd={addEducation}
             onDelete={(index) => deleteEducation(index)}
+            newPlaceholder="School name"
+            newSubPlaceholder="More info (major, time,...)"
           />
         </Row>
       </Col>

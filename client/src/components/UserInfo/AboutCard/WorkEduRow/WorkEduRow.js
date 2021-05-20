@@ -25,6 +25,8 @@ function WorkEduRow({
   onAdd,
   editable,
   onDelete,
+  newPlaceholder,
+  newSubPlaceholder,
 }) {
   const user = useSelector((state) => state.user);
   const dispatch = useDispatch();
@@ -86,12 +88,12 @@ function WorkEduRow({
         <Layout style={styles.whiteBackground}>
           <Text style={styles.text}>{placeholder}</Text>
           <Input
-            placeholder={placeholder}
+            placeholder={newPlaceholder}
             style={styles.input}
             onChange={(value) => onNewTextChange(value)}
           ></Input>
           <Input
-            placeholder={placeholder}
+            placeholder={newSubPlaceholder}
             style={styles.input}
             defaultValue={subText}
             onChange={(value) => onNewSubTextChange(value)}
