@@ -22,9 +22,14 @@ function SearchUserResult({ userNameSearch }) {
   const listUserCardLeft = useMemo(
     () =>
       listUser?.map((user, i) => {
+        console.log("alo" + user._id);
         if (i % 2 == 0)
           return (
-            <UserCard name={user.name} relationship="Add Friend"></UserCard>
+            <UserCard
+              _id={user._id}
+              name={user.name}
+              relationship="Add Friend"
+            ></UserCard>
           );
       }),
     [listUser]
@@ -35,7 +40,11 @@ function SearchUserResult({ userNameSearch }) {
       listUser?.map((user, i) => {
         if (i % 2 == 1)
           return (
-            <UserCard name={user.name} relationship="Add Friend"></UserCard>
+            <UserCard
+              _id={user._id}
+              name={user.name}
+              relationship="Add Friend"
+            ></UserCard>
           );
       }),
     [listUser]

@@ -2,11 +2,12 @@ import React from "react";
 import { Button, Row, Col, Divider, Form, Typography, Input, Card } from "antd";
 import { Avatar, Image, Tag } from "antd";
 import styles from "./styles.js";
-
+import { Link, useHistory, useLocation } from "react-router-dom";
 const { Title, Text } = Typography;
 
 function UserCard(props) {
   const { name } = props;
+  const { _id } = props;
   const [txtButton, setTxtButton] = React.useState(
     props.relationship ?? "Add Friend"
   );
@@ -32,7 +33,9 @@ function UserCard(props) {
             />
 
             <div className="col-8" style={{ alignSelf: "center" }}>
-              <Text style={styles.textUser}>{name ?? "Lalisa Manobal"}</Text>
+              <Link to={`/userinfo/${_id}`}>
+                <Text style={styles.textUser}>{name ?? "Lalisa Manobal"}</Text>
+              </Link>
               <div style={{ marginTop: 0 }}></div>
               <Text>React Native Developer</Text>
             </div>

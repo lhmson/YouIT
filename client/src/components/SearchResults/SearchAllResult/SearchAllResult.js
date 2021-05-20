@@ -66,7 +66,13 @@ const SearchAllResult = ({ txtSearch }) => {
   const listUserCard = useMemo(
     () =>
       listUser?.map((user, i) => {
-        return <UserCard name={user.name} relationship="Add Friend"></UserCard>;
+        return (
+          <UserCard
+            _id={user._id}
+            name={user.name}
+            relationship="Add Friend"
+          ></UserCard>
+        );
       }),
     [listUser]
   );
