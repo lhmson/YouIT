@@ -134,7 +134,7 @@ function RegisterPage() {
                     },
                     ({ getFieldValue }) => ({
                       validator(_, value) {
-                        console.log("value", value.length);
+                        // console.log("value", value.length);
                         if (value.length >= 6) {
                           return Promise.resolve();
                         }
@@ -161,7 +161,7 @@ function RegisterPage() {
                     },
                     ({ getFieldValue }) => ({
                       validator(_, value) {
-                        console.log("value", value.length);
+                        // console.log("value", value.length);
                         if (value.length >= 6) {
                           return Promise.resolve();
                         }
@@ -276,7 +276,7 @@ function RegisterPage() {
                           validator(_, value) {
                             var now = moment();
                             var input = moment(value);
-                            console.log("dob valid", now.diff(input, "years"));
+                            // console.log("dob valid", now.diff(input, "years"));
                             if (!value || now.diff(input, "years") >= 13) {
                               return Promise.resolve();
                             }

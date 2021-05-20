@@ -3,7 +3,8 @@ import {
   getSearchUsers,
   getSearchPosts,
   getSearchGroups,
-} from "../controllers/search_user.js";
+} from "../controllers/search.js";
+
 import auth from "../middleware/auth.js";
 
 const router = express.Router();

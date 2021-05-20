@@ -13,8 +13,8 @@ const SearchPostResult = ({ txtSearch }) => {
     api
       .fetchSearchPost(txtSearch)
       .then((res) => {
-        console.log("LISTALLPOSTS", txtSearch);
-        console.log(res.data);
+        // console.log("LISTALLPOSTS", txtSearch);
+        // console.log(res.data);
         setListPost(res.data);
       })
       .catch((e) => {
