@@ -24,6 +24,7 @@ function WorkEduRow({
   onNewSubTextChange,
   onAdd,
   editable,
+  onDelete,
 }) {
   const user = useSelector((state) => state.user);
   const dispatch = useDispatch();
@@ -76,11 +77,11 @@ function WorkEduRow({
               onTextChange={(index, value) => onTextChange(index, value)}
               onSubTextChange={(index, value) => onSubTextChange(index, value)}
               editable={editable}
+              onDelete={() => onDelete(index)}
             />
           </List.Item>
         )}
       ></List>
-
       {isAdding ? (
         <Layout style={styles.whiteBackground}>
           <Text style={styles.text}>{placeholder}</Text>
@@ -111,25 +112,28 @@ function WorkEduRow({
       ) : (
         <></>
       )}
-
-      <div
-        style={{
-          flexDirection: "row",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        <Button
-          className="clickable"
-          type="link"
-          size="large"
-          onClick={() => setIsAdding(true)}
+      {editable ? (
+        <div
+          style={{
+            flexDirection: "row",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
         >
-          <GrAddCircle style={styles.icon} color="blue" />
-          {addingText}
-        </Button>
-      </div>
+          <Button
+            className="clickable"
+            type="link"
+            size="large"
+            onClick={() => setIsAdding(true)}
+          >
+            <GrAddCircle style={styles.icon} color="blue" />
+            {addingText}
+          </Button>
+        </div>
+      ) : (
+        <></>
+      )}
     </Row>
   );
 }
