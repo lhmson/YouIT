@@ -7,6 +7,16 @@ export const defaultUserInfoValue = {
   gender: "Male",
 };
 
+const workSchema = mongoose.Schema({
+  location: { type: String },
+  position: { type: String },
+});
+
+const educationSchema = mongoose.Schema({
+  schoolName: { type: String },
+  moreInfo: { type: String },
+});
+
 export const userInfoSchema = mongoose.Schema(
   {
     firstName: { type: String, required: true },
@@ -28,8 +38,8 @@ export const userInfoSchema = mongoose.Schema(
         ref: "Hashtag",
       },
     ],
-    educations: [{ type: String }],
-    works: [{ type: String }],
+    educations: [{ type: educationSchema }],
+    works: [{ type: workSchema }],
     description: { type: String },
   },
   { timestamps: true }

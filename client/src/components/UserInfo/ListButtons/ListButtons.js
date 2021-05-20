@@ -199,11 +199,6 @@ const ListButtons = () => {
                 About
               </Link>
             </Menu.Item>
-            <Menu.Item key="more" icon={<MailOutlined />}>
-              <Link to="/wall" style={styles.linkView}>
-                More
-              </Link>
-            </Menu.Item>
           </Menu>
         </div>
         <AddFriendButton />

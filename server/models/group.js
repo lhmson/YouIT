@@ -6,9 +6,30 @@ import {
 
 const groupSchema = mongoose.Schema(
   {
-    Mode: {
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+    },
+
+    privacy: {
       type: String,
       enum: ["Public", "Private"],
+      required: true,
+    },
+
+    topic: {
+      type: String,
+      enum: [
+        "General",
+        "Game",
+        "Language",
+        "Mobile",
+        "Web Dev",
+        "System",
+        "Jobs",
+        "Data",
+        "School",
+      ],
       required: true,
     },
 

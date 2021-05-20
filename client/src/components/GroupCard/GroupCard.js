@@ -5,13 +5,19 @@ import styles from "./styles.js";
 
 const { Title, Text } = Typography;
 
-function GroupCard() {
+function GroupCard({ nameGroup }) {
+  const [txtButton, setTxtButton] = React.useState("Join");
+
+  const changeStateButton = () => {
+    if (txtButton === "Join") setTxtButton("Cancel Request");
+    else setTxtButton("Join");
+  };
+
   return (
     <>
       <div style={styles.card}>
-        <div className="row">
+        <div className="row ml-2" style={{ justifyContent: "space-between" }}>
           <div
-            className="col-8"
             style={{
               display: "flex",
               justifyContent: "center",
@@ -19,13 +25,13 @@ function GroupCard() {
           >
             <Avatar
               size={72}
-              src="https://i.pinimg.com/originals/00/5b/36/005b36c78f2ba0585416fccd55d58439.jpg"
+              src="https://vtv1.mediacdn.vn/thumb_w/650/2020/10/20/blackpink-lisa-mac-160316252527410005928.jpg"
             />
 
             <div className="col-8" style={{ alignSelf: "center" }}>
-              <Text style={styles.textUser}>BlackPink</Text>
+              <Text style={styles.textUser}>{nameGroup ?? "Name Group"}</Text>
               <div style={{ marginTop: 0 }}></div>
-              <Text>"BlackPink in your area"</Text>
+              <Text>"Blackpink in your area"</Text>
             </div>
             <div
               style={{
@@ -38,14 +44,15 @@ function GroupCard() {
           </div>
 
           <div
-            className="col-4"
+            className="mr-3"
             style={{
-              justifyContent: "center",
-              alignItems: "center",
-              alignSelf: "center",
+              justifyContent: "flex-end",
+              alignItems: "flex-end",
             }}
           >
             <Button
+              onClick={changeStateButton}
+              className="mb-2"
               type="primary"
               style={{
                 background: "#27AE60",
@@ -54,20 +61,19 @@ function GroupCard() {
                 fontWeight: 500,
               }}
             >
-              Tham gia
+              {txtButton}
             </Button>
             <div>
-              <Text style={styles.text}>10M thành viên</Text>
+              <Text style={styles.text}>12,8K Members</Text>
             </div>
           </div>
         </div>
-        <div className="row" style={{ marginTop: 8 }}>
-          <div className="col-10">
-            <Tag style={styles.tag}>Lisa</Tag>
-            <Tag style={styles.tag}>Rosé</Tag>
-            <Tag style={styles.tag}>Jennie</Tag>
-            <Tag style={styles.tag}>Jisoo</Tag>
-            <Text style={{ ...styles.text, fontWeight: 600 }}>23 bài viết</Text>
+        <div className="row mt-4">
+          <div className="ml-4">
+            <Tag className="tag">#Talkshow</Tag>
+            <Tag className="tag">#KPOP</Tag>
+            <Tag className="tag">#Film</Tag>
+            <Text style={{ ...styles.text, fontWeight: 600 }}>+ 15 Posts</Text>
           </div>
         </div>
       </div>

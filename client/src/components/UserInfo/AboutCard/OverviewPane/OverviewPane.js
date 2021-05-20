@@ -111,7 +111,9 @@ const OverviewPane = () => {
         firstIcon={<MdLocationOn style={styles.icon} />}
         text={workLocation}
         placeholder="Work location"
-        onChange={(value) => setWorkLocation(value.target.value)}
+        onChange={(value) => {
+          setWorkLocation(value.target.value);
+        }}
         onSave={saveWorkLocation}
         setPreviousState={() => {
           setWorkLocation(user?.userInfo?.workLocation ?? "VietNam");
