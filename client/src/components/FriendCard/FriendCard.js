@@ -5,13 +5,15 @@ import styles from "./styles.js";
 
 const { Title, Text } = Typography;
 
-function FriendCard() {
+function FriendCard(props) {
+  const { name } = props;
+  const [txtButton, setTxtButton] = React.useState("Message");
+
   return (
     <>
       <div style={styles.card}>
-        <div className="row">
+        <div className="row ml-2" style={{ justifyContent: "space-between" }}>
           <div
-            className="col-8"
             style={{
               display: "flex",
               justifyContent: "center",
@@ -23,7 +25,7 @@ function FriendCard() {
             />
 
             <div className="col-8" style={{ alignSelf: "center" }}>
-              <Text style={styles.textUser}>Lalisa Manobal</Text>
+              <Text style={styles.textUser}>{name ?? "Lalisa Manobal"}</Text>
               <div style={{ marginTop: 0 }}></div>
               <Text>React Native Developer</Text>
             </div>
@@ -38,14 +40,14 @@ function FriendCard() {
           </div>
 
           <div
-            className="col-4"
+            className="mr-3"
             style={{
-              justifyContent: "center",
-              alignItems: "center",
-              alignSelf: "center",
+              justifyContent: "flex-end",
+              alignItems: "flex-end",
             }}
           >
             <Button
+              className="mb-2"
               type="primary"
               style={{
                 background: "#27AE60",
@@ -54,19 +56,19 @@ function FriendCard() {
                 fontWeight: 500,
               }}
             >
-              Nhắn tin
+              {txtButton}
             </Button>
             <div>
-              <Text style={styles.text}>12 bạn chung</Text>
+              <Text style={styles.text}>12 mutual friends</Text>
             </div>
           </div>
         </div>
-        <div className="row" style={{ marginTop: 8 }}>
-          <div className="col-10">
-            <Tag style={styles.tag}>C#</Tag>
-            <Tag style={styles.tag}>Javascript</Tag>
-            <Tag style={styles.tag}>Unity 3D</Tag>
-            <Text style={{ ...styles.text, fontWeight: 600 }}>15 bài viết</Text>
+        <div className="row mt-4">
+          <div className="ml-4">
+            <Tag className="tag">C#</Tag>
+            <Tag className="tag">Javascript</Tag>
+            <Tag className="tag">Unity 3D</Tag>
+            <Text style={{ ...styles.text, fontWeight: 600 }}>+ 15 Posts</Text>
           </div>
         </div>
       </div>

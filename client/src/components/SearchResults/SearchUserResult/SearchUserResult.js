@@ -1,39 +1,54 @@
-import React, { useState, useEffect } from "react";
-import { Layout, Typography, Breadcrumb, Row, Col } from "antd";
-import styles from "./styles.js";
-
-import Navbar from "../../../components/Navbar/Navbar";
-
-import { useDispatch } from "react-redux";
+import React, { useState, useEffect, useMemo } from "react";
 import UserCard from "../../../components/UserCard/UserCard";
-import GroupCard from "../../../components/GroupCard/GroupCard";
-
-const { Content } = Layout;
-const { Title, Text } = Typography;
+import * as api from "../../../api/search";
 
 function SearchUserResult({ userNameSearch }) {
-  let listAllUser = [
-    { userName: "Sanh" },
-    { userName: "Sanh cute" },
-    { userName: "Sanh đẹp trai" },
-    { userName: "Thảo" },
-    { userName: "Tiến" },
-    { userName: "Sơn" },
-    { userName: "Hậu" },
-    { userName: "Nghĩa" },
-  ];
+  const [listUser, setListUser] = useState([]);
 
-  let txtSearch = userNameSearch ?? "";
+  useEffect(() => {
+    api
+      .fetchSearchUser(userNameSearch)
+      .then((res) => {
+        console.log("LISTALLUSER", userNameSearch);
+        console.log(res.data);
+        if (res.data instanceof Array) setListUser(res.data);
+        else setListUser([]);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  }, [userNameSearch]);
 
-  let listUser = listAllUser.filter((x) => x.userName.includes(txtSearch));
+  const listUserCardLeft = useMemo(
+    () =>
+      listUser?.map((user, i) => {
+        console.log("alo" + user._id);
+        if (i % 2 == 0)
+          return (
+            <UserCard
+              _id={user._id}
+              name={user.name}
+              relationship="Add Friend"
+            ></UserCard>
+          );
+      }),
+    [listUser]
+  );
 
-  const listUserCardLeft = listUser.map((user, i) => {
-    if (i % 2 == 0) return <UserCard name={user.userName}></UserCard>;
-  });
-
-  const listUserCardRight = listUser.map((user, i) => {
-    if (i % 2 == 1) return <UserCard name={user.userName}></UserCard>;
-  });
+  const listUserCardRight = useMemo(
+    () =>
+      listUser?.map((user, i) => {
+        if (i % 2 == 1)
+          return (
+            <UserCard
+              _id={user._id}
+              name={user.name}
+              relationship="Add Friend"
+            ></UserCard>
+          );
+      }),
+    [listUser]
+  );
 
   return (
     <div className="col-10 offset-1">

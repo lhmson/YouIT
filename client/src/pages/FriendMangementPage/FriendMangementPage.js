@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { Layout, Typography, Breadcrumb, Row, Col } from "antd";
+import React, { useState, useEffect, useRef } from "react";
+import { Layout, Typography, Input } from "antd";
 import styles from "./styles.js";
 
 import Navbar from "../../components/Navbar/Navbar";
@@ -7,6 +7,9 @@ import Navbar from "../../components/Navbar/Navbar";
 import { useDispatch } from "react-redux";
 import { Button } from "antd";
 import FriendCard from "../../components/FriendCard/FriendCard";
+import COLOR from "../../constants/colors";
+
+import { SearchOutlined } from "@ant-design/icons";
 
 const { Content } = Layout;
 const { Title, Text } = Typography;
@@ -15,7 +18,7 @@ function FriendMangementPage() {
   const [currentId, setCurrentId] = useState(null);
   const dispatch = useDispatch();
   const [modeSearch, setModeSearch] = useState("User");
-
+  const inputRef = useRef();
   return (
     <>
       <Layout>
@@ -24,24 +27,23 @@ function FriendMangementPage() {
           <Layout style={styles.mainArea}>
             <Content>
               <div
-                className="col-8 offset-2"
+                className="col-8 offset-2 "
                 style={{
                   marginTop: 64,
+                  alignItems: "center",
                 }}
               >
-                <div
-                  className="row"
-                  style={{ background: "white", paddingTop: 16 }}
-                >
+                <div className="row" style={{ paddingTop: 16 }}>
                   <div
-                    className="col-6"
+                    className="col-8"
                     style={{
-                      background: "white",
+                      // background: "white",
+                      paddingLeft: 32,
                     }}
                   >
                     <Title>Friends</Title>
                   </div>
-                  <div className="col-2 offset-1">
+                  <div className="d-flex justify-content-end">
                     <Button
                       type="primary"
                       style={{
@@ -72,15 +74,31 @@ function FriendMangementPage() {
                   </div>
                 </div>
 
-                <div className="row" style={{ marginTop: 16 }}>
-                  <div
-                    className="col-9"
-                    style={{ height: 32, background: "white" }}
-                  ></div>
-                  <div
-                    className="col-3"
-                    style={{ height: 32, background: "#27AE60" }}
-                  ></div>
+                <div
+                  className="row"
+                  style={{
+                    marginTop: 8,
+                    marginBottom: 16,
+                    paddingLeft: 32,
+                    paddingRight: 32,
+                  }}
+                >
+                  <Input
+                    onPressEnter={() => {}}
+                    allowClear
+                    suffix={
+                      <SearchOutlined
+                        onClick={() => {}}
+                        style={{ fontSize: 24, color: COLOR.white }}
+                      />
+                    }
+                    ref={inputRef}
+                    bordered={false}
+                    style={{
+                      backgroundColor: COLOR.lightGreen,
+                    }}
+                    defaultValue={""}
+                  />
                 </div>
 
                 <div className="row">

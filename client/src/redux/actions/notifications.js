@@ -2,25 +2,33 @@ import {
   FETCH_USER_NOTIFICATIONS,
   ADD_USER_NOTIFICATIONS,
   REFRESH_NOTIFICATIONS,
+  SET_SEEN_NOTIFICATION,
 } from "../actionTypes";
 
-// import * as api from "../../api/notifications";
+import * as api from "../../api/notification";
 
 export const getUserNotifications = () => async (dispatch) => {
   try {
-    const data = ["abc"];
-    //   const { data } = await api.fetchUserNotifications();
+    const { data } = await api.fetchAllNotifications();
     dispatch({ type: FETCH_USER_NOTIFICATIONS, payload: data });
   } catch (error) {
     console.log(error);
   }
 };
 
-export const addUserNotifications = (noti) => async (dispatch) => {
+export const addUserNotifications = (data) => async (dispatch) => {
   try {
-    const data = "test";
-    //   const { data } = await api.fetchUserNotifications();
+    //   const { data } = await api.fetchAllNotifications();
     dispatch({ type: ADD_USER_NOTIFICATIONS, payload: data });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const setSeenNotification = (id, seen) => async (dispatch) => {
+  try {
+    const { data } = await api.setSeenNotifications(id, seen);
+    dispatch({ type: SET_SEEN_NOTIFICATION, payload: data });
   } catch (error) {
     console.log(error);
   }

@@ -5,23 +5,17 @@ import {
   Typography,
   Row,
   Col,
-  Space,
   Input,
   Form,
-  Checkbox,
   Select,
   DatePicker,
   message,
 } from "antd";
-import { FacebookFilled } from "@ant-design/icons";
 
 import { ReactComponent as ReactLogo } from "../../assets/add-user.svg";
 import logo from "../../assets/lightlogo.png";
 
 import styles from "./styles";
-import { FaFacebookF, FaFacebookSquare } from "react-icons/fa";
-import { GrFacebook } from "react-icons/gr";
-import { SiGithub } from "react-icons/si";
 import { Option } from "antd/lib/mentions";
 import { Link } from "react-router-dom";
 import { signup } from "../../redux/actions/auth";
@@ -32,7 +26,7 @@ import COLOR from "../../constants/colors";
 import { useLocalStorage } from "../../hooks/useLocalStorage";
 import { useToken } from "../../context/TokenContext";
 
-const { Title, Text, Paragraph } = Typography;
+const { Title, Text } = Typography;
 
 const dateFormat = "DD/MM/YYYY";
 
@@ -140,7 +134,7 @@ function RegisterPage() {
                     },
                     ({ getFieldValue }) => ({
                       validator(_, value) {
-                        console.log("value", value.length);
+                        // console.log("value", value.length);
                         if (value.length >= 6) {
                           return Promise.resolve();
                         }
@@ -167,7 +161,7 @@ function RegisterPage() {
                     },
                     ({ getFieldValue }) => ({
                       validator(_, value) {
-                        console.log("value", value.length);
+                        // console.log("value", value.length);
                         if (value.length >= 6) {
                           return Promise.resolve();
                         }
@@ -282,7 +276,7 @@ function RegisterPage() {
                           validator(_, value) {
                             var now = moment();
                             var input = moment(value);
-                            console.log("dob valid", now.diff(input, "years"));
+                            // console.log("dob valid", now.diff(input, "years"));
                             if (!value || now.diff(input, "years") >= 13) {
                               return Promise.resolve();
                             }

@@ -1,6 +1,6 @@
 import express from "express";
 import mongoose from "mongoose";
-import { notifyUser } from "../businessLogics/notification.js";
+import { sendNotificationUser } from "../businessLogics/notification.js";
 import User from "../models/user.js";
 import { httpStatusCodes } from "../utils/httpStatusCode.js";
 
@@ -151,7 +151,7 @@ export const addFriend = async (req, res) => {
     });
 
     // notification
-    notifyUser({
+    sendNotificationUser({
       userId: friend?._id,
       content: { acceptingUserId: userId, acceptedUserId: friend._id },
       kind: "AcceptFriend_AcceptedFriend",

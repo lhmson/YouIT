@@ -108,7 +108,7 @@ function Comment({
 
   return (
     <div
-      className={isFocus && "bg-green-smoke pt-4"}
+      className={isFocus ? "bg-green-smoke pt-4" : ""}
       style={{ paddingLeft: 20, paddingRight: 20 }}
     >
       <Row

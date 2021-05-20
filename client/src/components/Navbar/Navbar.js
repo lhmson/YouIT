@@ -33,12 +33,14 @@ import {
   getUserNotifications,
   addUserNotifications,
   refreshNotifications,
+  setSeenNotification,
 } from "../../redux/actions/notifications";
+import NotificationList from "./NotificationList/NotificationList";
 
 const { Header } = Layout;
 const { Text } = Typography;
 
-function Navbar({ selectedMenu, setTxtSearch }) {
+function Navbar({ selectedMenu, setTxtSearch, txtInitSearch }) {
   // const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")));
   const [user, setUser] = useLocalStorage("user");
   const [token, setToken] = useToken();
@@ -50,37 +52,27 @@ function Navbar({ selectedMenu, setTxtSearch }) {
 
   const cuteIO = useCuteClientIO();
 
+  //#region notification handle
+
   const notifications = useSelector((state) => state.notifications);
 
+  const handleClickNotificationItem = (url, notificationId) => {
+    dispatch(setSeenNotification(notificationId, "true"));
+    history.push(url);
+    window.location.reload(); // fix bug push not route
+  };
+
   useEffect(() => {
-    dispatch(getUserNotifications());
-  }, []);
+    if (user) {
+      dispatch(getUserNotifications());
+    }
+  }, [user, dispatch]);
 
   useEffect(() => {
     const listener = (event, msg) => {
-      switch (event) {
-        case "UpvotePost_PostOwner":
-          const { upvoter, post } = msg.content;
-          // just a test socket.io client
-          alert(`user ${upvoter} just upvote your post!`);
-          break;
-
-        case "FriendRequest_RequestReceiver":
-          const { requestSender, requestReceiver } = msg.content;
-          alert(`user ${requestSender} sent you a friend request!`);
-          break;
-
-        case "AcceptFriend_AcceptedFriend":
-          const { acceptingUserId, acceptedUserId } = msg.content;
-          alert(`user ${acceptingUserId} accepted your friend request!`);
-          break;
-
-        default:
-          // console.log("No handler for event: ", event);
-          break;
+      if (event.indexOf("Notification") === 0) {
+        dispatch(addUserNotifications(msg)); // add noti to it
       }
-
-      dispatch(addUserNotifications("some noti"));
     };
     cuteIO.onReceiveAny(listener);
 
@@ -89,13 +81,14 @@ function Navbar({ selectedMenu, setTxtSearch }) {
     };
   }, [cuteIO]);
 
-  const handleSearch = () => {
-    if (setTxtSearch === undefined) return;
-    setTxtSearch(inputRef.current.state.value);
-  };
+  //#endregion
 
-  const handleNoti = () => {
-    // test
+  const handleSearch = () => {
+    if (setTxtSearch !== undefined) setTxtSearch(inputRef.current.state.value);
+    history.push({
+      pathname: "/search",
+      state: { txtSearch: inputRef.current.state.value },
+    });
   };
 
   const handlePost = () => {
@@ -156,26 +149,35 @@ function Navbar({ selectedMenu, setTxtSearch }) {
           onPressEnter={handleSearch}
           allowClear
           suffix={
-            <Link to="/search">
-              <SearchOutlined
-                onClick={handleSearch}
-                style={{ fontSize: 24, color: COLOR.white }}
-              />
-            </Link>
+            <SearchOutlined
+              onClick={handleSearch}
+              style={{ fontSize: 24, color: COLOR.white }}
+            />
           }
           ref={inputRef}
           bordered={false}
           style={{ backgroundColor: COLOR.lightGreen, width: "40vw" }}
+          defaultValue={txtInitSearch}
         />
 
         {user ? (
           <>
-            <Badge count={notifications.length} showZero>
-              <BellFilled
-                onClick={handleNoti}
-                style={{ fontSize: 24, color: COLOR.white }}
-              />
-            </Badge>
+            <Dropdown
+              overlay={NotificationList({
+                handleClickNotificationItem,
+                notifications,
+              })}
+              trigger={["click"]}
+              placement="bottomRight"
+            >
+              <Badge count={notifications.length} showZero>
+                <BellFilled
+                  className="clickable"
+                  // onClick={handleNoti}
+                  style={{ fontSize: 24, color: COLOR.white }}
+                />
+              </Badge>
+            </Dropdown>
 
             <EditFilled
               onClick={handlePost}

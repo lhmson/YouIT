@@ -9,7 +9,8 @@ import {
 import Post from "../models/post.js";
 import { httpStatusCodes } from "../utils/httpStatusCode.js";
 import { cuteIO } from "../index.js";
-import { notifyUser } from "../businessLogics/notification.js";
+import { sendNotificationUser } from "../businessLogics/notification.js";
+import User from "../models/user.js";
 
 //#region CRUD
 // GET post/list/all
@@ -147,7 +148,7 @@ export const getMyPostInteractions = async (req, res) => {
     let filterJson = undefined;
     try {
       filterJson = JSON.parse(filter);
-    } catch { }
+    } catch {}
 
     const interactions = await getInteractionOfAUser(id, userId, filterJson);
     return res.status(httpStatusCodes.ok).json(interactions);
@@ -177,6 +178,10 @@ const handleUpdateInteraction = (actions) => async (req, res) => {
         .status(httpStatusCodes.badContent)
         .send(`post id ${id} is invalid`);
 
+    // user who act
+    const user = await User.findById(userId);
+    // console.log(user);
+
     const post = await Post.findById(id);
     if (!post)
       return res
@@ -197,11 +202,14 @@ const handleUpdateInteraction = (actions) => async (req, res) => {
             //   "UpvotePost_PostOwner",
             //   { upvoter: userId, post: newPost }
             // );
-            notifyUser({
+            sendNotificationUser({
               userId: newPost.userId.toString(),
               kind: "UpvotePost_PostOwner",
-              content: { upvoter: userId, post: newPost }
-            })
+              content: {
+                description: `${user?.name} has upvoted your post named ${newPost?.title}`,
+              },
+              link: `/post/${newPost._id}`,
+            });
           }
 
           break;
