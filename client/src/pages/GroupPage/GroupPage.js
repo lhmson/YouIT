@@ -1,4 +1,4 @@
-import { Button, Layout, Row, Col } from "antd";
+import { Button, Layout, Row, Col, message } from "antd";
 import Sider from "antd/lib/layout/Sider";
 import React from "react";
 import { BsThreeDots } from "react-icons/bs";
@@ -11,11 +11,26 @@ import {
   ListButtons,
   Navbar,
 } from "../../components/index.js";
+import { useHistory } from "react-router";
 import styles from "./styles.js";
-
+import * as api from "../../api/group";
 const { Content } = Layout;
 
-function GroupPage() {
+function GroupPage(props) {
+  const { id } = props.match.params;
+  console.log(id);
+
+  const history = useHistory();
+
+  const handleDeleteGroup = (id) => {
+    api
+      .deleteGroup(id)
+      .then((res) => {
+        message.success(res.data.message);
+        history.push(`/group/create`);
+      })
+      .catch((error) => message.success(error.message));
+  };
   return (
     <Layout>
       <Navbar />
@@ -43,6 +58,15 @@ function GroupPage() {
                 </Button>
                 <Button type="primary" style={styles.button}>
                   Invite
+                </Button>
+                <Button
+                  type="primary"
+                  style={styles.button}
+                  onClick={() => {
+                    handleDeleteGroup(id);
+                  }}
+                >
+                  Delete
                 </Button>
               </Col>
             </Row>
