@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { groupPostInfoSchema } from "./groupPostInfo.js";
 import {
   interactionInfoSchema,
   defaultInteractionInfoValue,
@@ -27,10 +28,10 @@ const postSchema = mongoose.Schema(
       required: true,
     },
 
-    // groupPostInfo: {
-    //     type: mongoose.Schema.Types.ObjectId,
-    //     ref: "GroupPostInfo"
-    // }
+    groupPostInfo: {
+      type: groupPostInfoSchema,
+      required: false,
+    },
 
     interactionInfo: {
       type: interactionInfoSchema,

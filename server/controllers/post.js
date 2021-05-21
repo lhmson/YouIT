@@ -8,9 +8,9 @@ import {
 
 import Post from "../models/post.js";
 import { httpStatusCodes } from "../utils/httpStatusCode.js";
-import { cuteIO } from "../index.js";
 import { sendNotificationUser } from "../businessLogics/notification.js";
 import User from "../models/user.js";
+import Group from "../models/group.js";
 
 //#region CRUD
 // GET post/list/all
@@ -44,7 +44,11 @@ export const getAPost = async (req, res) => {
   }
 };
 
-// POST post/
+/**
+ * @param {express.Request<ParamsDictionary, any, any, QueryString.ParsedQs, Record<string, any>>} req
+ * @param {express.Response<any, Record<string, any>, number>} res
+ * @param {express.NextFunction} next
+ */
 export const createPost = async (req, res) => {
   const post = req.body;
 
@@ -53,19 +57,35 @@ export const createPost = async (req, res) => {
     return res.status(400).json("New post mustn't have _id field");
   }
 
+  // handle post in group
+  if (post.privacy === "Group") {
+    const { groupId } = post;
+
+    if (!groupId)
+      return res.status(httpStatusCodes.badContent).json({ message: `Field groupId is required when privacy is "Group"` })
+
+    const group = await Group.findById(groupId);
+    if (!group)
+      return res.status(httpStatusCodes.notFound).json({ message: `Cannot find group with group ID = ${groupId}` });
+
+    post.groupPostInfo = {
+      groupId,
+    }
+  }
+  delete post.groupId;
+
+
   const newPost = new Post({
     ...post,
     userId: req.userId,
   });
-  // console.log("userid", req.userId);
+
 
   try {
-    // console.log(newPost);
     await newPost.save();
-
-    res.status(httpStatusCodes.created).json(newPost);
+    return res.status(httpStatusCodes.created).json(newPost);
   } catch (error) {
-    res
+    return res
       .status(httpStatusCodes.internalServerError)
       .json({ message: error.message });
   }
@@ -74,6 +94,8 @@ export const createPost = async (req, res) => {
 // PUT post/:id
 export const updatePost = async (req, res) => {
   const { id } = req.params;
+  const { userId } = req;
+
   try {
     const newPost = req.body;
 
@@ -82,10 +104,15 @@ export const updatePost = async (req, res) => {
         .status(httpStatusCodes.badContent)
         .send(`New post information is required`);
 
-    if (!Post.findById(id))
+    const post = await (await Post.findById(id)).toObject();
+    if (!post)
       return res
         .status(httpStatusCodes.notFound)
         .send(`Cannot find a post with id: ${id}`);
+
+    if (!userId || !post.userId.equals(userId)) {
+      return res.status(httpStatusCodes.unauthorized).json({ message: `You don't have permission to edit this post` });
+    }
 
     const updatedPost = {
       ...newPost,
@@ -106,6 +133,7 @@ export const updatePost = async (req, res) => {
 // DELETE post/:id
 export const deletePost = async (req, res) => {
   const { id } = req.params;
+  const { userId } = req;
 
   try {
     // auth
@@ -113,10 +141,15 @@ export const deletePost = async (req, res) => {
       return res.json({ message: "Unauthenticated" });
     }
 
-    if (!(await Post.findById(id))) {
+    const post = await (await Post.findById(id)).toObject();
+    if (!post) {
       return res
         .status(httpStatusCodes.notFound)
         .send(`No post with id: ${id}`);
+    }
+
+    if (!userId || !post.userId.equals(userId)) {
+      return res.status(httpStatusCodes.unauthorized).json({ message: `You don't have permission to delete this post` });
     }
 
     await Post.findByIdAndRemove(id);
@@ -148,7 +181,7 @@ export const getMyPostInteractions = async (req, res) => {
     let filterJson = undefined;
     try {
       filterJson = JSON.parse(filter);
-    } catch {}
+    } catch { }
 
     const interactions = await getInteractionOfAUser(id, userId, filterJson);
     return res.status(httpStatusCodes.ok).json(interactions);
