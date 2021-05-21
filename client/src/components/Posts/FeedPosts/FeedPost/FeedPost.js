@@ -246,7 +246,7 @@ function FeedPost({ post, setCurrentId }) {
                       <CaretRightOutlined
                         style={{ fontSize: 18, paddingBottom: 5 }}
                       />
-                      <Link to={`/group/${groupId._id}`}>
+                      <Link to={`/group/${groupId._id}`} target="_blank">
                         <Text
                           className="clickable"
                           strong
