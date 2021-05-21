@@ -2,7 +2,6 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
 import User from "../models/user.js";
-import UserInfo from "../models/user_info.js";
 
 const secret = "test";
 
@@ -40,12 +39,12 @@ export const signup = async (req, res) => {
 
     const hashedPassword = await bcrypt.hash(password, 12);
 
-    const newInfo = await UserInfo.create({
+    const newInfo = {
       firstName: firstName,
       lastName: lastName,
       gender: gender,
       dateOfBirth: dob,
-    });
+    };
 
     const result = await User.create({
       email,
