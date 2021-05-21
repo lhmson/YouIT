@@ -33,11 +33,16 @@ export const getAPost = async (req, res) => {
   try {
     await Post.findById(id)
       .populate("userId", "name") // need to populate more item (avatar, )
+      .populate({
+        path: 'groupPostInfo.groupId',
+        select: 'name',
+        model: 'Group',
+      })
       .then((post) => {
         return res.status(200).json(post);
       })
       .catch((err) => {
-        return res.status(404).json(`Cannot find a post with id: ${id}`);
+        return res.status(404).json({ message: `Cannot find a post with id: ${id}`, error: err });
       });
   } catch (error) {
     return res.status(500).json({ message: error.message });
