@@ -53,7 +53,7 @@ export const createGroup = async (req, res) => {
     await newGroup.save();
     const groupOwner = { role: "Owner", userId: req.userId };
     newGroup.listMembers.push(groupOwner);
-    newGroup.save();
+    await newGroup.save();
     res.status(httpStatusCodes.created).json(newGroup);
   } catch (error) {
     res
@@ -64,17 +64,13 @@ export const createGroup = async (req, res) => {
 
 export const addGroupMember = async (req, res) => {
   const { id, memberId } = req.params;
-  const addMember = { role: "Member", userId: memberId };
+  const { role } = req.query ?? "Member";
+  const addMember = { role, userId: memberId };
 
   try {
-    // const updatedGroup = {
-    //   ...newGroup,
-    //   _id: id,
-    // };
-    // await Group.findByIdAndUpdate(id, updatedGroup, { new: true });
-    await Group.findById(id).then((group) => {
+    await Group.findById(id).then(async (group) => {
       group.listMembers.push(addMember);
-      group.save();
+      await group.save();
       return res.status(httpStatusCodes.ok).json(group);
     });
   } catch (error) {

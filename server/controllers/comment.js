@@ -16,9 +16,9 @@ export const createComment = async (req, res) => {
   await comment.save();
   try {
     await Post.findById(postId)
-      .then((post) => {
+      .then(async (post) => {
         post.comments.push(comment._id);
-        post.save();
+        await post.save();
         res.status(201).json(post);
       })
       .catch((error) => {
@@ -40,9 +40,9 @@ export const replyComment = async (req, res) => {
     await comment.save();
 
     await Post.findById(postId)
-      .then((post) => {
+      .then(async (post) => {
         post.comments.push(comment._id);
-        post.save();
+        await post.save();
         res.status(201).json(comment);
       })
       .catch((error) => {
