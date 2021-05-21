@@ -19,6 +19,7 @@ import {
   MessageFilled,
   LogoutOutlined,
   EllipsisOutlined,
+  SettingOutlined,
 } from "@ant-design/icons";
 
 import decode from "jwt-decode";
@@ -104,8 +105,18 @@ function Navbar({ selectedMenu, setTxtSearch, txtInitSearch }) {
     history.push("/login");
   };
 
+  const handleSettings = async () => {
+    history.push("/settings");
+  };
+
   const menuMore = (
     <Menu>
+      <Menu.Item key="settings" onClick={() => handleSettings()}>
+        <Row align="middle">
+          <SettingOutlined className="mr-lg-2" />
+          <Text>Settings</Text>
+        </Row>
+      </Menu.Item>
       <Menu.Item key="logout" onClick={() => handleLogOut()}>
         <Row align="middle">
           <LogoutOutlined className=" red mr-2" />
