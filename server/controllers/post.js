@@ -34,15 +34,17 @@ export const getAPost = async (req, res) => {
     await Post.findById(id)
       .populate("userId", "name") // need to populate more item (avatar, )
       .populate({
-        path: 'groupPostInfo.groupId',
-        select: 'name',
-        model: 'Group',
+        path: "groupPostInfo.groupId",
+        select: "name",
+        model: "Group",
       })
       .then((post) => {
         return res.status(200).json(post);
       })
       .catch((err) => {
-        return res.status(404).json({ message: `Cannot find a post with id: ${id}`, error: err });
+        return res
+          .status(404)
+          .json({ message: `Cannot find a post with id: ${id}`, error: err });
       });
   } catch (error) {
     return res.status(500).json({ message: error.message });
@@ -67,24 +69,26 @@ export const createPost = async (req, res) => {
     const { groupId } = post;
 
     if (!groupId)
-      return res.status(httpStatusCodes.badContent).json({ message: `Field groupId is required when privacy is "Group"` })
+      return res
+        .status(httpStatusCodes.badContent)
+        .json({ message: `Field groupId is required when privacy is "Group"` });
 
     const group = await Group.findById(groupId);
     if (!group)
-      return res.status(httpStatusCodes.notFound).json({ message: `Cannot find group with group ID = ${groupId}` });
+      return res
+        .status(httpStatusCodes.notFound)
+        .json({ message: `Cannot find group with group ID = ${groupId}` });
 
     post.groupPostInfo = {
       groupId,
-    }
+    };
   }
   delete post.groupId;
-
 
   const newPost = new Post({
     ...post,
     userId: req.userId,
   });
-
 
   try {
     await newPost.save();
@@ -116,7 +120,9 @@ export const updatePost = async (req, res) => {
         .send(`Cannot find a post with id: ${id}`);
 
     if (!userId || !post.userId.equals(userId)) {
-      return res.status(httpStatusCodes.unauthorized).json({ message: `You don't have permission to edit this post` });
+      return res
+        .status(httpStatusCodes.unauthorized)
+        .json({ message: `You don't have permission to edit this post` });
     }
 
     const updatedPost = {
@@ -154,7 +160,9 @@ export const deletePost = async (req, res) => {
     }
 
     if (!userId || !post.userId.equals(userId)) {
-      return res.status(httpStatusCodes.unauthorized).json({ message: `You don't have permission to delete this post` });
+      return res
+        .status(httpStatusCodes.unauthorized)
+        .json({ message: `You don't have permission to delete this post` });
     }
 
     await Post.findByIdAndRemove(id);
@@ -186,7 +194,7 @@ export const getMyPostInteractions = async (req, res) => {
     let filterJson = undefined;
     try {
       filterJson = JSON.parse(filter);
-    } catch { }
+    } catch {}
 
     const interactions = await getInteractionOfAUser(id, userId, filterJson);
     return res.status(httpStatusCodes.ok).json(interactions);
@@ -307,6 +315,11 @@ export const getPostsPagination = async (req, res) => {
   try {
     await Post.find()
       .populate("userId", "name")
+      .populate({
+        path: "groupPostInfo.groupId",
+        select: "name",
+        model: "Group",
+      })
       .sort({ createdAt: -1 })
       .skip(_page > 0 ? _page * _limit : 0)
       .limit(_limit)

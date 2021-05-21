@@ -17,6 +17,7 @@ import {
   ArrowDownOutlined,
   LinkOutlined,
   ShareAltOutlined,
+  CaretRightOutlined,
   EditFilled,
   DeleteFilled,
   BellOutlined,
@@ -215,6 +216,8 @@ function FeedPost({ post, setCurrentId }) {
       });
   };
 
+  const groupId = post?.groupPostInfo?.groupId;
+
   return (
     <div style={styles.item}>
       <div style={{ margin: 12 }}>
@@ -237,6 +240,23 @@ function FeedPost({ post, setCurrentId }) {
                       {post?.userId?.name}
                     </Text>
                   </Link>
+
+                  {groupId && (
+                    <>
+                      <CaretRightOutlined
+                        style={{ fontSize: 18, paddingBottom: 5 }}
+                      />
+                      <Link to={`/group/${groupId._id}`}>
+                        <Text
+                          className="clickable"
+                          strong
+                          style={{ fontSize: "1.2rem" }}
+                        >
+                          {groupId.name}
+                        </Text>
+                      </Link>
+                    </>
+                  )}
                 </Space>
               </Row>
               <Text>Fullstack Developer</Text>

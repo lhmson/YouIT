@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Button } from "antd";
+import { Button, message } from "antd";
 import CreatePostPrivacySelect from "./CreatePostPrivacySelect/CreatePostPrivacySelect.js";
 import CreatePostSpaceAutoComplete from "./CreatePostSpaceAutoComplete/CreatePostSpaceAutoComplete.js";
 import CreatePostTagSelect from "./CreatePostTagSelect/CreatePostTagSelect.js";
@@ -37,14 +37,14 @@ function CreatePostForm() {
     createPost(newPost)
       .then((res) => history.push(`/post/${res.data._id}`)) // go to specific post
       .catch((error) => {
-        alert("Something goes wrong");
+        message.error("Something goes wrong. Check all fields");
         console.log(error);
       });
   };
 
   const handleSelectedGroupChange = (group) => {
     setSelectedGroup(group);
-  }
+  };
 
   return (
     <div className="container-fluid">
