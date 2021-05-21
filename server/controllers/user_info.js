@@ -43,10 +43,10 @@ export const addReceivingFriendRequest = async (req, res) => {
   //console.log(friendRequest);
   try {
     // update receiver
-    await User.findById(friendRequest.userConfirmId).then((user) => {
+    await User.findById(friendRequest.userConfirmId).then(async (user) => {
       if (!user.listReceivingFriendRequests.includes(friendRequest._id)) {
         user.listReceivingFriendRequests.push(friendRequest._id);
-        user.save();
+        await user.save();
         res.status(httpStatusCodes.ok).json(user);
       } else {
         res.json({ message: "Friend request exists" });
@@ -64,12 +64,12 @@ export const removeReceivingFriendRequest = async (req, res) => {
   //console.log(friendRequest);
   try {
     // update receiver
-    await User.findById(friendRequest.userConfirmId).then((user) => {
+    await User.findById(friendRequest.userConfirmId).then(async (user) => {
       user.listReceivingFriendRequests =
         user.listReceivingFriendRequests.filter(
           (item) => item != friendRequest._id
         );
-      user.save();
+      await user.save();
       res.status(httpStatusCodes.ok).json(user);
     });
   } catch (error) {
@@ -85,10 +85,10 @@ export const addSendingFriendRequest = async (req, res) => {
 
   try {
     // update sender
-    await User.findById(friendRequest.userSendRequestId).then((user) => {
+    await User.findById(friendRequest.userSendRequestId).then(async (user) => {
       if (!user.listSendingFriendRequests.includes(friendRequest._id)) {
         user.listSendingFriendRequests.push(friendRequest._id);
-        user.save();
+        await user.save();
         res.status(httpStatusCodes.ok).json(user);
       } else {
         res.json({ message: "Friend request exists" });
@@ -105,14 +105,14 @@ export const removeSendingFriendRequest = async (req, res) => {
   const friendRequest = req.body;
   try {
     // update receiver
-    await User.findById(friendRequest.userSendRequestId).then((user) => {
+    await User.findById(friendRequest.userSendRequestId).then(async (user) => {
       user.listSendingFriendRequests = user.listSendingFriendRequests.filter(
         // item is object
         // friendRequest._id is string
         // type different => can't use !==
         (item) => item != friendRequest._id
       );
-      user.save();
+      await user.save();
       res.status(httpStatusCodes.ok).json(user);
     });
   } catch (error) {
@@ -133,20 +133,22 @@ export const addFriend = async (req, res) => {
   const { userId } = req;
 
   if (!userId)
-    return res.status(httpStatusCodes.unauthorized).json({ message: "Unauthorized" });
+    return res
+      .status(httpStatusCodes.unauthorized)
+      .json({ message: "Unauthorized" });
 
   try {
     // add friendId to user's list friends
-    await User.findById(userId).then((user) => {
+    await User.findById(userId).then(async (user) => {
       user.listFriends.push(friend?._id);
-      user.save();
+      await user.save();
       res.status(httpStatusCodes.ok).json(user);
     });
 
     // add userId to friend's list friends
-    await User.findById(friend?._id).then((user) => {
+    await User.findById(friend?._id).then(async (user) => {
       user.listFriends.push(userId);
-      user.save();
+      await user.save();
       // res.status(httpStatusCodes.ok).json(user);
     });
 
@@ -155,7 +157,7 @@ export const addFriend = async (req, res) => {
       userId: friend?._id,
       content: { acceptingUserId: userId, acceptedUserId: friend._id },
       kind: "AcceptFriend_AcceptedFriend",
-    })
+    });
   } catch (error) {
     console.log(error.message);
     res

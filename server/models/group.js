@@ -1,15 +1,11 @@
 import mongoose from "mongoose";
-import {
-  interactionInfoSchema,
-  defaultInteractionInfoValue,
-} from "./interactionInfo.js";
-
+import { groupMemberSchema } from "./groupMember.js";
 const groupSchema = mongoose.Schema(
   {
-    userId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-    },
+    // userId: {
+    //   type: mongoose.Schema.Types.ObjectId,
+    //   ref: "User",
+    // },
 
     privacy: {
       type: String,
@@ -35,8 +31,8 @@ const groupSchema = mongoose.Schema(
 
     listMembers: [
       {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
+        type: groupMemberSchema,
+        default: [],
       },
     ],
 
