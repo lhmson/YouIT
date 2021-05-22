@@ -1,5 +1,6 @@
 import express from "express";
 import Group from "../models/group.js";
+import { isMemberOfGroup } from "../businessLogics/group.js"
 import { httpStatusCodes } from "../utils/httpStatusCode.js";
 
 /**
@@ -49,12 +50,7 @@ export const getJoinedGroups = async (req, res) => {
     return res.status(httpStatusCodes.unauthorized).json({ message: "You must sign in to fetch list of your group" })
 
   try {
-    const groups = await (await Group.find()).map(g => g.toObject()).filter(g => {
-      if (g.listMembers.find(member => member.userId.equals(userId)))
-        return true;
-      else
-        return false;
-    });
+    const groups = await (await Group.find()).map(g => g.toObject()).filter(g => isMemberOfGroup(userId, g));
     return res.status(httpStatusCodes.accepted).json(groups);
   }
   catch (error) {

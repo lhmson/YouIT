@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 import {
   addInteraction,
   getInteractionOfAUser,
+  isPostVisibleByUser,
   removeInteraction,
 } from "../businessLogics/post.js";
 
@@ -11,9 +12,12 @@ import { httpStatusCodes } from "../utils/httpStatusCode.js";
 import { sendNotificationUser } from "../businessLogics/notification.js";
 import User from "../models/user.js";
 import Group from "../models/group.js";
+import { asyncFilter } from '../utils/asyncFilter.js'
+import { customPagination } from "../utils/customPagination.js";
 
 //#region CRUD
 // GET post/list/all
+/** @deprecated */
 export const getPosts = async (req, res) => {
   try {
     const posts = await Post.find();
@@ -26,8 +30,8 @@ export const getPosts = async (req, res) => {
 };
 
 // GET post/:id
-
 export const getAPost = async (req, res) => {
+  const { userId } = req;
   const { id } = req.params;
 
   try {
@@ -39,7 +43,12 @@ export const getAPost = async (req, res) => {
         model: "Group",
       })
       .then((post) => {
-        return res.status(200).json(post);
+        const postObj = post.toObject();
+
+        if (isPostVisibleByUser(postObj, userId))
+          return res.status(200).json(post);
+        else
+          return res.status(httpStatusCodes.forbidden).json("You don't have permission to access this post due to its privacy");
       })
       .catch((err) => {
         return res
@@ -130,8 +139,6 @@ export const updatePost = async (req, res) => {
       _id: id,
     };
 
-    console.log("update post", updatedPost);
-
     await Post.findByIdAndUpdate(id, updatedPost, { new: true });
     return res.status(httpStatusCodes.ok).json(updatedPost);
   } catch (error) {
@@ -152,7 +159,7 @@ export const deletePost = async (req, res) => {
       return res.json({ message: "Unauthenticated" });
     }
 
-    const post = await (await Post.findById(id)).toObject();
+    const post = await (await Post.findById(id))?.toObject();
     if (!post) {
       return res
         .status(httpStatusCodes.notFound)
@@ -194,7 +201,7 @@ export const getMyPostInteractions = async (req, res) => {
     let filterJson = undefined;
     try {
       filterJson = JSON.parse(filter);
-    } catch {}
+    } catch { }
 
     const interactions = await getInteractionOfAUser(id, userId, filterJson);
     return res.status(httpStatusCodes.ok).json(interactions);
@@ -226,7 +233,6 @@ const handleUpdateInteraction = (actions) => async (req, res) => {
 
     // user who act
     const user = await User.findById(userId);
-    // console.log(user);
 
     const post = await Post.findById(id);
     if (!post)
@@ -308,6 +314,8 @@ export const unfollowPost = handleUpdateInteraction([
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 export const getPostsPagination = async (req, res) => {
+  const { userId } = req;
+
   //get _page and _limit params from url
   let { _page, _limit } = req.query;
   _page = parseInt(_page);
@@ -321,15 +329,27 @@ export const getPostsPagination = async (req, res) => {
         model: "Group",
       })
       .sort({ createdAt: -1 })
-      .skip(_page > 0 ? _page * _limit : 0)
-      .limit(_limit)
-
+      // .skip(_page > 0 ? _page * _limit : 0)
+      // .limit(_limit) // because the last filter would filter out even more element :)
       .then((posts) => {
-        return res.status(200).json(posts);
+        asyncFilter(posts, async p => {
+          const stdObj = p.toObject();
+          stdObj.userId = stdObj.userId._id; // because this data has been populated
+          let result = await isPostVisibleByUser(stdObj, userId);
+          return result;
+        }).then(filteredPosts => {
+          return res.status(200).json(customPagination(filteredPosts, _limit, _page));
+        })
       })
       .catch((err) => {
-        return res.status(500).json(`Cannot get posts`);
+        return res.status(500).send({ message: `Cannot get posts`, error: err });
       });
+
+    // const filteredPosts = [];
+    // posts.forEach(p => {
+
+    // });
+
   } catch (error) {
     return res.status(500).send(error.message);
   }
