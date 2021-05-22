@@ -133,9 +133,9 @@ export default class CuteServerIO {
         })
 
         if (userId)
-          console.log(`[IO] Connected to user ${userId} from socket ${socket.id}`);
+          console.log(`[IO] New connection: User ${userId}.`);
         else
-          console.log(`[IO] Connected to an anonymous user from socket ${socket.id}`);
+          console.log(`[IO] New connection: Anonymous`);
       }
       catch (error) {
         // CuteTN Todo: send something back to client maybe
@@ -213,6 +213,17 @@ export default class CuteServerIO {
     }
     else
       this.#io.emit(event, msg)
+  }
+
+
+
+  countUserSockets = (userId) => {
+    userId = userId.toString();
+    const room = this.#io?.sockets.adapter.rooms.get(this.#USER_ROOM_PREFIX + userId);
+    if (room)
+      return room.size;
+
+    return 0;
   }
 }
 
