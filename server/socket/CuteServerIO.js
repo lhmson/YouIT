@@ -112,6 +112,12 @@ export default class CuteServerIO {
         if (!token || !userId) {
           // signed in anonymously
           socket.join(this.#ANONYMOUS_ROOM_PREFIX)
+
+          // force user to log out if the token is not valid
+          if (token && token !== "undefined" && token !== "null" && !userId) {
+            this.sendToSocket(socket, "System_InvalidToken", {});
+          }
+
         }
         else {
           // Add this socket to a room with id User. every socket here belongs to this user only.
@@ -129,17 +135,17 @@ export default class CuteServerIO {
         }
 
         socket.on("disconnect", (reason) => {
-          console.log(`[IO] Disconnected from socket ${socket.id}. Reason: ${reason}`)
+          console.info(`[IO] Disconnected from ${socket.id}. Reason: ${reason}`)
         })
 
         if (userId)
-          console.log(`[IO] New connection: User ${userId}.`);
+          console.info(`[IO] Connected to ${socket.id}: User ${userId}.`);
         else
-          console.log(`[IO] New connection: Anonymous`);
+          console.info(`[IO] Connected to ${socket.id}: Anonymous`);
       }
       catch (error) {
         // CuteTN Todo: send something back to client maybe
-        console.log(`[IO] Error: cannot connect to a client with socket id ${socket.id}. Reason: ${error}`);
+        console.error(`[IO] Connection Error on ${socket.id}. Reason: ${error}`);
         socket.disconnect();
       }
     })

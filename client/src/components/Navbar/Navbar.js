@@ -73,6 +73,14 @@ function Navbar({ selectedMenu, setTxtSearch, txtInitSearch }) {
       if (event.indexOf("Notification") === 0) {
         dispatch(addUserNotifications(msg)); // add noti to it
       }
+
+      // force this tab to log out if the token is invalid
+      if (event === "System_InvalidToken") {
+        // handleLogOut() // dont know why this causes bug tho...
+        alert("Session expired! Please log in again!");
+        localStorage.removeItem("user");
+        window.location.reload();
+      }
     };
     cuteIO.onReceiveAny(listener);
 

@@ -51,8 +51,8 @@ export default class CuteClientIO {
 
     this.#socket.on("connect", () => {
       this.#socketId = this.#socket.id;
-      console.log(
-        `[IO] Connected to server with token ${token}. Socket ID: ${this.#socketId} at ${this.#uri}`
+      console.info(
+        `[IO] Connected to ${this.#socketId} at ${this.#uri}`
       );
 
       this.onReceiveMulti(this.#queueEventHandlersOnConnection);
@@ -62,8 +62,8 @@ export default class CuteClientIO {
       this.#queueAnyEventHandlersOnConnection = [];
 
       this.#socket.on("disconnect", (reason) => {
-        console.log(
-          `[IO] Disconnected from socket ${this.#socketId}. Reason: ${reason}`
+        console.info(
+          `[IO] Disconnected from ${this.#socketId}. Reason: ${reason}`
         );
       });
     });
