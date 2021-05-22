@@ -23,6 +23,7 @@ import {
 } from "@ant-design/icons";
 import styles from "./styles";
 import { useLocalStorage } from "../../../hooks/useLocalStorage";
+import { Link } from "react-router-dom";
 
 const { Title, Text, Paragraph } = Typography;
 
@@ -73,6 +74,8 @@ function FullPost(props) {
       });
   };
 
+  const groupId = post?.groupPostInfo?.groupId;
+
   return (
     <div>
       <div style={styles.item}>
@@ -96,16 +99,22 @@ function FullPost(props) {
                   >
                     {post?.userId?.name}
                   </Text>
-                  <CaretRightOutlined
-                    style={{ fontSize: 18, paddingBottom: 5 }}
-                  />
-                  <Text
-                    className="clickable"
-                    strong
-                    style={{ fontSize: "1.2rem" }}
-                  >
-                    Trại tâm thần đa ngôn ngữ*
-                  </Text>
+                  {groupId && (
+                    <>
+                      <CaretRightOutlined
+                        style={{ fontSize: 18, paddingBottom: 5 }}
+                      />
+                      <Link to={`/group/${groupId._id}`}>
+                        <Text
+                          className="clickable"
+                          strong
+                          style={{ fontSize: "1.2rem" }}
+                        >
+                          {groupId.name}
+                        </Text>
+                      </Link>
+                    </>
+                  )}
                 </Space>
               </Row>
               <Text>Fullstack Developer</Text>

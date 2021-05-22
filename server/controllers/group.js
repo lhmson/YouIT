@@ -1,5 +1,6 @@
 import express from "express";
 import Group from "../models/group.js";
+import { isMemberOfGroup } from "../businessLogics/group.js"
 import { httpStatusCodes } from "../utils/httpStatusCode.js";
 
 /**
@@ -28,7 +29,7 @@ export const getAGroup = async (req, res, next) => {
       .catch((err) => {
         return res
           .status(httpStatusCodes.internalServerError)
-          .json({ message: error.message });
+          .json({ message: err.message });
       });
   } catch (error) {
     return res
@@ -36,6 +37,26 @@ export const getAGroup = async (req, res, next) => {
       .json({ message: error.message });
   }
 };
+
+/**
+ * @param {express.Request<ParamsDictionary, any, any, QueryString.ParsedQs, Record<string, any>>} req
+ * @param {express.Response<any, Record<string, any>, number>} res
+ * @param {express.NextFunction} next
+ */
+export const getJoinedGroups = async (req, res) => {
+  const { userId } = req;
+
+  if (!userId)
+    return res.status(httpStatusCodes.unauthorized).json({ message: "You must sign in to fetch list of your group" })
+
+  try {
+    const groups = await (await Group.find()).map(g => g.toObject()).filter(g => isMemberOfGroup(userId, g));
+    return res.status(httpStatusCodes.accepted).json(groups);
+  }
+  catch (error) {
+    return res.status(httpStatusCodes.internalServerError).json({ error });
+  }
+}
 
 export const createGroup = async (req, res) => {
   const group = req.body;
