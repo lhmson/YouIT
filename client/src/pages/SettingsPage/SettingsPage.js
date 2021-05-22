@@ -12,6 +12,9 @@ import {
   Col,
   Form,
   Divider,
+  Input,
+  Select,
+  Button,
 } from "antd";
 import {
   DownOutlined,
@@ -131,6 +134,9 @@ const GeneralTab = () => {
 };
 
 const SecurityTab = () => {
+  const handleFinish = () => {};
+  const handleFinishFailed = () => {};
+  const handleChange = () => {};
   return (
     <div className="bg-white p-4">
       <h3>Security</h3>
@@ -142,89 +148,119 @@ const SecurityTab = () => {
           marginBottom: 14,
         }}
       />
-      <div>
-        <div style={{ marginLeft: 12 }}>
-          <EditableText
-            firstIcon={
-              <Text
-                style={{ fontSize: 16, width: 150, color: COLOR.gray }}
-                strong
-              >
-                Email
-              </Text>
-            }
-            text="hau@gmail.com"
-            placeholder="Email"
-            // onChange={(value) => setAddress(value.target.value)}
-            // onSave={saveAddress}
-            setPreviousState={() => {
-              // setAddress(user?.userInfo?.address ?? "VietNam");
-            }}
-            editable={true}
+      <h5>Change password</h5>
+      <Form
+        name="basic"
+        size="large"
+        onFinish={handleFinish}
+        onFinishFailed={handleFinishFailed}
+        className="mt-4"
+      >
+        <Form.Item
+          name="currentPassword"
+          rules={[
+            {
+              required: true,
+              message: "Password is required.",
+            },
+            ({ getFieldValue }) => ({
+              validator(_, value) {
+                // console.log("value", value.length);
+                if (value.length >= 6) {
+                  return Promise.resolve();
+                }
+                return Promise.reject(
+                  new Error("Password must be at least 6 characters.")
+                );
+              },
+            }),
+          ]}
+        >
+          <Input.Password
+            name="currentPassword"
+            autoComplete="newPassword"
+            placeholder="Current password"
+            onChange={handleChange}
           />
-        </div>
-        <div
-          style={{
-            height: 1,
-            backgroundColor: COLOR.whiteSmoke,
-            marginTop: -20,
-            marginBottom: 14,
-          }}
-        />
-        <div style={{ marginLeft: 12 }}>
-          <EditableText
-            firstIcon={
-              <Text
-                style={{ fontSize: 16, width: 150, color: COLOR.gray }}
-                strong
-              >
-                First name
-              </Text>
-            }
-            text="Ngo"
-            placeholder="First name"
-            // onChange={(value) => setAddress(value.target.value)}
-            // onSave={saveAddress}
-            setPreviousState={() => {
-              // setAddress(user?.userInfo?.address ?? "VietNam");
-            }}
-            editable={true}
+        </Form.Item>
+        <Form.Item
+          name="newPassword"
+          rules={[
+            {
+              required: true,
+              message: "Password is required.",
+            },
+            ({ getFieldValue }) => ({
+              validator(_, value) {
+                // console.log("value", value.length);
+                if (value.length >= 6) {
+                  return Promise.resolve();
+                }
+                return Promise.reject(
+                  new Error("Password must be at least 6 characters.")
+                );
+              },
+            }),
+          ]}
+        >
+          <Input.Password
+            name="newPassword"
+            autoComplete="newPassword"
+            placeholder="New password"
+            onChange={handleChange}
           />
-        </div>
-        <div
-          style={{
-            height: 1,
-            backgroundColor: COLOR.whiteSmoke,
-            marginTop: -20,
-            marginBottom: 14,
-          }}
-        />
-        <div style={{ marginLeft: 12 }}>
-          <EditableText
-            firstIcon={
-              <Text
-                style={{ fontSize: 16, width: 150, color: COLOR.gray }}
-                strong
-              >
-                Last name
-              </Text>
-            }
-            text="Hau"
-            placeholder="Last name"
-            // onChange={(value) => setAddress(value.target.value)}
-            // onSave={saveAddress}
-            setPreviousState={() => {
-              // setAddress(user?.userInfo?.address ?? "VietNam");
-            }}
-            editable={true}
-          />
-        </div>
-      </div>
+        </Form.Item>
+
+        <Form.Item
+          name="confirmPassword"
+          dependencies={["newPassword"]}
+          rules={[
+            {
+              required: true,
+              message: "Password confirm is required.",
+            },
+            ({ getFieldValue }) => ({
+              validator(_, value) {
+                if (!value || getFieldValue("newPassword") === value) {
+                  return Promise.resolve();
+                }
+                return Promise.reject(new Error("Password does not match!"));
+              },
+            }),
+          ]}
+        >
+          <Input.Password placeholder="Confirm password" suffix={null} />
+        </Form.Item>
+
+        <Form.Item style={{}}>
+          <Button
+            style={{ width: "100%" }}
+            className="green-button"
+            htmlType="submit"
+          >
+            Create account
+          </Button>
+        </Form.Item>
+      </Form>
     </div>
   );
 };
 
+const SettingsTabs = [
+  {
+    tab: GeneralTab(),
+  },
+  {
+    tab: SecurityTab(),
+  },
+];
+
 const SettingsPage = () => {
+  const [currentTab, setCurrentTab] = useState("0");
+  const handleSelectTab = (e) => {
+    console.log("ekey", e.key);
+    setCurrentTab(e.key);
+  };
   return (
     <Layout>
       <Navbar />
@@ -248,17 +284,17 @@ const SettingsPage = () => {
               borderWidth: 0,
               backgroundColor: "white",
             }}
-            defaultSelectedKeys={["1"]}
-            defaultOpenKeys={["sub1"]}
+            onClick={handleSelectTab}
+            selectedKeys={[currentTab]}
             mode="inline"
           >
             <h2 className="ml-3 mt-3">Settings</h2>
-            <Menu.Item key="general">General</Menu.Item>
-            <Menu.Item key="security">Security and Login</Menu.Item>
+            <Menu.Item key="0">General</Menu.Item>
+            <Menu.Item key="1">Security and Login</Menu.Item>
           </Menu>
         </Sider>
         <Content style={{ marginLeft: 350, marginTop: 32, marginRight: 100 }}>
-          {SecurityTab()}
+          {SettingsTabs[currentTab].tab}
         </Content>
       </div>
     </Layout>
