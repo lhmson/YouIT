@@ -51,7 +51,7 @@ export const getSearchGroups = async (req, res) => {
   try {
     const groups = await (
       await Group.find({})
-    ).filter((group) => group?.name?.includes(q));
+    ).filter((group) => group?.name?.toLowerCase().includes(q.toLowerCase()));
     res.status(200).json(groups);
   } catch (error) {
     res.status(500).json({ message: error.message });
