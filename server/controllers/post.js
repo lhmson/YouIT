@@ -14,6 +14,7 @@ import User from "../models/user.js";
 import Group from "../models/group.js";
 import { asyncFilter } from '../utils/asyncFilter.js'
 import { customPagination } from "../utils/customPagination.js";
+import { isMemberOfGroup } from "../businessLogics/group.js";
 
 //#region CRUD
 // GET post/list/all
@@ -86,7 +87,12 @@ export const createPost = async (req, res) => {
     if (!group)
       return res
         .status(httpStatusCodes.notFound)
-        .json({ message: `Cannot find group with group ID = ${groupId}` });
+        .send({ message: `Cannot find group with group ID = ${groupId}` });
+
+    if (!isMemberOfGroup(req.userId, group.toObject()))
+      return res
+        .status(httpStatusCodes.forbidden)
+        .send({ message: `You are not in this group` })
 
     post.groupPostInfo = {
       groupId,
