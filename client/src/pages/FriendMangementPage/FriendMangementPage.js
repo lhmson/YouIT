@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 import { Layout, Typography, Input } from "antd";
 import styles from "./styles.js";
 
@@ -8,6 +8,8 @@ import { useDispatch } from "react-redux";
 import { Button } from "antd";
 import FriendCard from "../../components/FriendCard/FriendCard";
 import COLOR from "../../constants/colors";
+import * as api from "../../api/friend";
+import { useLocalStorage } from "../../hooks/useLocalStorage";
 
 import { SearchOutlined } from "@ant-design/icons";
 
@@ -15,10 +17,53 @@ const { Content } = Layout;
 const { Title, Text } = Typography;
 
 function FriendMangementPage() {
-  const [currentId, setCurrentId] = useState(null);
-  const dispatch = useDispatch();
-  const [modeSearch, setModeSearch] = useState("User");
+  const [user, setUser] = useLocalStorage("user");
   const inputRef = useRef();
+  const [listFriend, setListFriend] = useState([]);
+  useEffect(() => {
+    console.log(user);
+    api
+      .fetchListMyFriends(user?.result?._id)
+      .then((res) => {
+        console.log(res.data);
+        if (res.data instanceof Array) setListFriend(res.data);
+        else setListFriend([]);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  }, [user]);
+
+  const listUserCardLeft = useMemo(
+    () =>
+      listFriend?.map((user, i) => {
+        if (i % 2 == 0)
+          return (
+            <FriendCard
+              _id={user._id}
+              name={user.name}
+              relationship="Add Friend"
+            ></FriendCard>
+          );
+      }),
+    [listFriend]
+  );
+
+  const listUserCardRight = useMemo(
+    () =>
+      listFriend?.map((user, i) => {
+        if (i % 2 == 1)
+          return (
+            <FriendCard
+              _id={user._id}
+              name={user.name}
+              relationship="Add Friend"
+            ></FriendCard>
+          );
+      }),
+    [listFriend]
+  );
+
   return (
     <>
       <Layout>
@@ -35,15 +80,15 @@ function FriendMangementPage() {
               >
                 <div className="row" style={{ paddingTop: 16 }}>
                   <div
-                    className="col-8"
+                    className="col-3"
                     style={{
-                      // background: "white",
-                      paddingLeft: 32,
+                      display: "flex",
+                      justifyContent: "center",
                     }}
                   >
                     <Title>Friends</Title>
                   </div>
-                  <div className="d-flex justify-content-end">
+                  <div className="offset-5 col-2">
                     <Button
                       type="primary"
                       style={{
@@ -51,6 +96,8 @@ function FriendMangementPage() {
                         borderColor: "#27AE60",
                         color: "white",
                         fontWeight: 500,
+                        display: "flex",
+                        justifyContent: "center",
                       }}
                     >
                       Invites (5)
@@ -65,8 +112,8 @@ function FriendMangementPage() {
                         borderColor: "#27AE60",
                         color: "white",
                         fontWeight: 500,
-                        alignItems: "center",
                         display: "flex",
+                        justifyContent: "center",
                       }}
                     >
                       Friends(503)
@@ -102,18 +149,8 @@ function FriendMangementPage() {
                 </div>
 
                 <div className="row">
-                  <div className="col-6">
-                    <FriendCard></FriendCard>
-                    <FriendCard></FriendCard>
-                    <FriendCard></FriendCard>
-                    <FriendCard></FriendCard>
-                  </div>
-                  <div className="col-6">
-                    <FriendCard></FriendCard>
-                    <FriendCard></FriendCard>
-                    <FriendCard></FriendCard>
-                    <FriendCard></FriendCard>
-                  </div>
+                  <div className="col-6">{listUserCardLeft}</div>
+                  <div className="col-6">{listUserCardRight}</div>
                 </div>
               </div>
             </Content>
