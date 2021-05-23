@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { Button, Row, Col, Divider, Form, Typography, Input, Card } from "antd";
-import { Avatar, Image, Tag } from "antd";
+import { Button, Typography, List } from "antd";
+import { Avatar, Tag, Popover } from "antd";
 import styles from "./styles.js";
 import { Link, useHistory, useLocation } from "react-router-dom";
 import * as api from "../../api/friend";
@@ -13,10 +13,10 @@ function UserCard(props) {
   const { name } = props;
   const { _id } = props;
   const [numberMutual, setNumberMutual] = useState(0);
-  const [txtButton, setTxtButton] = React.useState(
+  const [txtButton, setTxtButton] = useState(
     props.relationship ?? "Add Friend"
   );
-
+  const [listMutual, setListMutual] = useState([]);
   const changeStateButton = () => {
     console.log(txtButton);
     if (txtButton === "Add Friend") setTxtButton("Cancel Request");
@@ -36,6 +36,42 @@ function UserCard(props) {
       });
   }, []);
 
+  useEffect(() => {
+    api
+      .fetchListMutualFriends(user?.result?._id, _id)
+      .then((res) => {
+        if (res.data && res.data instanceof Array) {
+          const tempList = [];
+          for (let i = 0; i < res.data.length; i++)
+            tempList.push(res.data[i].name);
+          setListMutual(tempList);
+          console.log(tempList);
+        }
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  }, []);
+
+  const popupListMutualFriend = (data) => {
+    return (
+      <>
+        <div>
+          <List
+            header={<div></div>}
+            footer={<div></div>}
+            bordered
+            dataSource={data}
+            renderItem={(item) => (
+              <List.Item>
+                <Text style={styles.text}>{item}</Text>
+              </List.Item>
+            )}
+          />
+        </div>
+      </>
+    );
+  };
   return (
     <>
       <div style={styles.card}>
@@ -89,9 +125,16 @@ function UserCard(props) {
               {txtButton}
             </Button>
             <div>
-              <Text style={styles.text}>
-                {numberMutual} mutual friend{numberMutual >= 2 ? "s" : ""}
-              </Text>
+              <Popover
+                placement="bottom"
+                title={""}
+                content={popupListMutualFriend(listMutual ?? [])}
+                trigger="hover"
+              >
+                <Text style={styles.text}>
+                  {numberMutual} mutual friend{numberMutual >= 2 ? "s" : ""}
+                </Text>
+              </Popover>
             </div>
           </div>
         </div>
