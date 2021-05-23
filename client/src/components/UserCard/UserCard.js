@@ -1,13 +1,18 @@
-import React from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { Button, Row, Col, Divider, Form, Typography, Input, Card } from "antd";
 import { Avatar, Image, Tag } from "antd";
 import styles from "./styles.js";
 import { Link, useHistory, useLocation } from "react-router-dom";
+import * as api from "../../api/friend";
+import { useLocalStorage } from "../../hooks/useLocalStorage";
+
 const { Title, Text } = Typography;
 
 function UserCard(props) {
+  const [user, setUser] = useLocalStorage("user");
   const { name } = props;
   const { _id } = props;
+  const [numberMutual, setNumberMutual] = useState(0);
   const [txtButton, setTxtButton] = React.useState(
     props.relationship ?? "Add Friend"
   );
@@ -17,6 +22,20 @@ function UserCard(props) {
     if (txtButton === "Add Friend") setTxtButton("Cancel Request");
     else setTxtButton("Add Friend");
   };
+
+  useEffect(() => {
+    api
+      .fetchCountMutualFriends(user?.result?._id, _id)
+      .then((res) => {
+        console.log("List mutual friends");
+        console.log(res.data);
+        if (res.data) setNumberMutual(res.data);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  }, []);
+
   return (
     <>
       <div style={styles.card}>
@@ -70,7 +89,9 @@ function UserCard(props) {
               {txtButton}
             </Button>
             <div>
-              <Text style={styles.text}>12 mutual friends</Text>
+              <Text style={styles.text}>
+                {numberMutual} mutual friend{numberMutual >= 2 ? "s" : ""}
+              </Text>
             </div>
           </div>
         </div>
