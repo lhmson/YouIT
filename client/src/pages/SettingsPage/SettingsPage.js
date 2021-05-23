@@ -136,7 +136,12 @@ const GeneralTab = () => {
 };
 
 const SecurityTab = () => {
-  const [form, setForm] = useState(null);
+  const formDefault = {
+    currentPassword: "",
+    newPassword: "",
+    confirmPassword: "",
+  };
+  const [form, setForm] = useState(formDefault);
   const handleFinish = () => {
     // const data = {
     //   email: form.newEmail,
@@ -147,6 +152,28 @@ const SecurityTab = () => {
     //   dob: form.dob,
     // };
     // dispatch(signup(data, history, setUser));
+    authAPI
+      .checkPassword(form.currentPassword)
+      .then(() => {
+        authAPI
+          .changePassword(form.newPassword)
+          .then((res) => {
+            message.success("Password changed successfully.");
+            console.log("password changed", res);
+          })
+          .catch((err) => {
+            message.error(err.response.status);
+          });
+      })
+      .catch((err) => {
+        switch (err.response.status) {
+          case 400:
+            message.error("Wrong current password.");
+            break;
+          case 500:
+            message.error("There was an error.");
+        }
+      });
   };
   const handleFinishFailed = (errorInfo) => {
     errorInfo.errorFields.map((err) => {

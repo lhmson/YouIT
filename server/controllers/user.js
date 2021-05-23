@@ -93,8 +93,8 @@ export const changePassword = async (req, res) => {
 
 export const checkPassword = async (req, res) => {
   const { userId } = req;
-  const { password } = req.body;
-
+  const { password } = req.params;
+  console.log("password", req.body);
   try {
     if (!userId) {
       return res
@@ -103,9 +103,8 @@ export const checkPassword = async (req, res) => {
     }
     const user = await User.findById(userId);
     const isPasswordCorrect = await bcrypt.compare(password, user.password);
-    if (!isPasswordCorrect) return res.status(400).json({ result: false });
-
-    res.status(200).json({ result: true });
+    if (!isPasswordCorrect) return res.status(400).json(false);
+    res.status(200).json(true);
   } catch (err) {
     res.status(500).json({ message: "Something went wrong" });
   }

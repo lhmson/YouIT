@@ -37,17 +37,6 @@ export const signup = (formData, router) => async (dispatch) => {
   }
 };
 
-export const changePassword = (password, router) => async (dispatch) => {
-  try {
-    console.log("changePassword");
-    await api.changePassword(password);
-    message.success("Password changed!");
-  } catch (error) {
-    console.log(error);
-    message.error("Incorrent current password.");
-  }
-};
-
 export const logout =
   (setLocalStorageUser, oldToken, setToken) => async (dispatch) => {
     dispatch({ type: LOGOUT, setLocalStorageUser });
