@@ -107,6 +107,7 @@ export default class CuteServerIO {
   start = () => {
     this.#io.on("connection", async socket => {
       const { token, userId } = this.#extractInfoSocket(socket)
+      let logOutTask;
 
       try {
         if (!token || !userId) {
@@ -125,6 +126,18 @@ export default class CuteServerIO {
             this.#USER_ROOM_PREFIX + userId,
             this.#TOKEN_ROOM_PREFIX + token,
           ]);
+
+          const { exp } = verifyJwt(token);
+          console.log("exp", exp);
+          // auto logout on expiration
+          if (exp) {
+            logOutTask = setTimeout(
+              () => {
+                this.sendToSocket(socket, "System_InvalidToken", {});
+              },
+              exp * 1000 - Date.now()
+            )
+          }
         }
 
         // add handlers to call whenever this client send something to the server
@@ -135,6 +148,9 @@ export default class CuteServerIO {
         }
 
         socket.on("disconnect", (reason) => {
+          if (logOutTask)
+            clearTimeout(logOutTask);
+
           console.info(`[IO] Disconnected from ${socket.id}. Reason: ${reason}`)
         })
 
