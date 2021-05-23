@@ -5,12 +5,12 @@ import User from "../models/user.js";
 import UserInfo from "../models/user_info.js";
 
 import { cuteIO } from "../index.js"
+import { httpStatusCodes } from "../utils/httpStatusCode.js";
 
 const secret = "test";
 
 export const signin = async (req, res) => {
-  console.log("signin");
-  const { email, password } = req.body;
+  const { email, password, browserId } = req.body;
 
   try {
     const user = await User.findOne({ email });
@@ -25,6 +25,10 @@ export const signin = async (req, res) => {
     const token = jwt.sign({ email: user.email, id: user._id }, secret, {
       expiresIn: "24h",
     });
+
+    if (browserId) {
+      cuteIO.sendToBrowser(browserId, "System-SignedIn", {});
+    }
 
     res.status(200).json({ result: user, token });
   } catch (err) {
@@ -68,10 +72,11 @@ export const signup = async (req, res) => {
 };
 
 export const signout = async (req, res) => {
-  const token = req?.headers?.authorization?.split?.(" ")?.[1];
+  const { browserId } = req.body;
 
-  if (token) {
-    cuteIO.sendToToken(token, "System-InvalidToken", { enableAlert: false });
+  if (browserId) {
+    cuteIO.sendToBrowser(browserId, "System-InvalidToken", { enableAlert: false });
   }
 
+  res.status(httpStatusCodes.accepted).send("Ok");
 }

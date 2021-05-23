@@ -38,8 +38,8 @@ export const signup = (formData, router) => async (dispatch) => {
   }
 };
 
-export const signout = () => async (dispatch) => {
-  api.signOut();
+export const signout = (browserId) => async (dispatch) => {
+  api.signOut(browserId);
 }
   // (setLocalStorageUser, oldToken, setToken) => async (dispatch) => {
     // dispatch({ type: LOGOUT, setLocalStorageUser });
