@@ -30,9 +30,9 @@ import { useToken } from "../../context/TokenContext";
 import { useCuteClientIO } from "../../socket/CuteClientIOProvider";
 
 import {
-  getUserNotifications,
   addUserNotifications,
   refreshNotifications,
+  getUserUnseenNotifications,
   setSeenNotification,
 } from "../../redux/actions/notifications";
 import NotificationList from "./NotificationList/NotificationList";
@@ -64,7 +64,7 @@ function Navbar({ selectedMenu, setTxtSearch, txtInitSearch }) {
 
   useEffect(() => {
     if (user) {
-      dispatch(getUserNotifications());
+      dispatch(getUserUnseenNotifications());
     }
   }, [user, dispatch]);
 
@@ -95,7 +95,9 @@ function Navbar({ selectedMenu, setTxtSearch, txtInitSearch }) {
     history.push("/post/create");
   };
 
-  const handleMessage = () => alert("handle message");
+  const handleMessage = () => {
+    history.push("/message");
+  };
 
   //#region menuMore
   const handleLogOut = async () => {

@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { Layout, Menu, Avatar, Typography } from "antd";
+import React, { useEffect } from "react";
+import { Layout, Menu, Avatar } from "antd";
 import {
   UserOutlined,
   LaptopOutlined,
@@ -9,9 +9,7 @@ import styles from "./styles.js";
 import { useLocalStorage } from "../../../hooks/useLocalStorage.js";
 import { Link } from "react-router-dom";
 
-const { SubMenu } = Menu;
 const { Sider } = Layout;
-const { Title, Text } = Typography;
 
 function FeedSidebar() {
   const [user] = useLocalStorage("user");
@@ -28,7 +26,7 @@ function FeedSidebar() {
     >
       <Menu
         mode="inline"
-        defaultSelectedKeys={["username"]}
+        defaultSelectedKeys={["all"]}
         // defaultOpenKeys={["1"]}
         style={{
           height: "100%",
@@ -39,7 +37,7 @@ function FeedSidebar() {
       >
         {/* <SubMenu key="sub1" title="subnav 1"> */}
 
-        <Menu.Item
+        {/* <Menu.Item
           key="username"
           style={styles.item}
           icon={
@@ -49,6 +47,14 @@ function FeedSidebar() {
           }
         >
           <Link to={`/userinfo/${user?.result._id}`}>{user?.result?.name}</Link>
+        </Menu.Item> */}
+
+        <Menu.Item
+          key="all"
+          style={styles.item}
+          icon={<Avatar style={styles.transparent} />}
+        >
+          All
         </Menu.Item>
 
         <Menu.Item

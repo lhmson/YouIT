@@ -21,6 +21,7 @@ import {
   RegisterPage,
   ErrorPage,
   HomePage,
+  MessagePage,
 } from "./pages/index";
 
 import FriendMangementPage from "./pages/FriendMangementPage/FriendMangementPage";
@@ -68,6 +69,7 @@ function App() {
           <Route path="/demoSocketIO" component={DemoSocket} />
           <Route exact path="/group/create" component={CreateGroupPage} />
           <Route exact path="/group/:id" component={GroupPage} />
+          <PrivateRoute exact path="/message" component={MessagePage} />
           <Route>
             <ErrorPage code="404" />
           </Route>

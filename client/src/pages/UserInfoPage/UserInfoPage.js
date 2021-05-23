@@ -24,7 +24,7 @@ function UserInfoPage() {
   const user = useSelector((state) => state.user);
   const dispatch = useDispatch();
 
-  useEffect(async () => {
+  useEffect(() => {
     dispatch(getUser(id));
   }, []);
 

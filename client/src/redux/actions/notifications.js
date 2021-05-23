@@ -7,9 +7,18 @@ import {
 
 import * as api from "../../api/notification";
 
-export const getUserNotifications = () => async (dispatch) => {
+// export const getUserNotifications = () => async (dispatch) => {
+//   try {
+//     const { data } = await api.fetchAllNotifications();
+//     dispatch({ type: FETCH_USER_NOTIFICATIONS, payload: data });
+//   } catch (error) {
+//     console.log(error);
+//   }
+// };
+
+export const getUserUnseenNotifications = () => async (dispatch) => {
   try {
-    const { data } = await api.fetchAllNotifications();
+    const { data } = await api.fetchUnseenNotifications();
     dispatch({ type: FETCH_USER_NOTIFICATIONS, payload: data });
   } catch (error) {
     console.log(error);
