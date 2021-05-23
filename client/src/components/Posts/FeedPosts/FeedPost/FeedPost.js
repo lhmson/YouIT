@@ -109,7 +109,7 @@ function FeedPost({ post, setCurrentId }) {
 
   const menuMore = (
     <Menu>
-      {user.result._id === post?.userId._id ? (
+      {user?.result._id === post?.userId._id ? (
         <>
           <Menu.Item key="edit" onClick={() => handleEditPost(post._id)}>
             <Row align="middle">

@@ -1,21 +1,25 @@
 import React, { useEffect } from "react";
 import { Layout, Menu, Avatar } from "antd";
 import {
-  UserOutlined,
+  RocketOutlined,
   LaptopOutlined,
-  NotificationOutlined,
+  TeamOutlined,
 } from "@ant-design/icons";
 import styles from "./styles.js";
 import { useLocalStorage } from "../../../hooks/useLocalStorage.js";
 import { Link } from "react-router-dom";
-import { useHistory, useLocation } from "react-router-dom";
 
+import { useSelector } from "react-redux";
+
+const { SubMenu } = Menu;
 const { Sider } = Layout;
 
 function FeedSidebar() {
   const [user] = useLocalStorage("user");
-  const history = useHistory();
+
   useEffect(() => {}, []);
+
+  const groups = useSelector((state) => state.groups);
 
   return (
     <Sider
@@ -27,7 +31,6 @@ function FeedSidebar() {
     >
       <Menu
         mode="inline"
-        defaultSelectedKeys={["all"]}
         // defaultOpenKeys={["1"]}
         style={{
           height: "100%",
@@ -36,44 +39,34 @@ function FeedSidebar() {
           fontSize: "1rem",
         }}
       >
-        {/* <SubMenu key="sub1" title="subnav 1"> */}
-
-        {/* <Menu.Item
+        <Menu.Item
           key="username"
           style={styles.item}
-          icon={
-            <Avatar alt={user?.result?.name} src={user?.result?.imageUrl}>
-              {user?.result?.name.charAt(0)}
-            </Avatar>
-          }
+          icon={<RocketOutlined spin style={{ fontSize: "1.4rem" }} />}
         >
-          <Link to={`/userinfo/${user?.result._id}`}>{user?.result?.name}</Link>
-        </Menu.Item> */}
-
-        <Menu.Item
-          key="all"
-          style={styles.item}
-          icon={<Avatar style={styles.transparent} />}
-        >
-          All
+          My Profile
         </Menu.Item>
 
         <Menu.Item
-          onClick={() => history.push("/friends")}
           key="friends"
           style={styles.item}
-          icon={<Avatar style={styles.transparent} />}
+          icon={<TeamOutlined style={{ fontSize: "1.4rem" }} />}
         >
-          Friends
+          <Link to="/friends">Friends</Link>
         </Menu.Item>
-        <Menu.Item
-          key="group"
-          style={styles.item}
-          icon={<Avatar style={styles.transparent} />}
+        <SubMenu
+          key="sub3"
+          icon={<LaptopOutlined style={{ fontSize: "1.4rem" }} />}
+          title="Groups"
         >
-          Groups
-        </Menu.Item>
-        {/* </SubMenu> */}
+          {groups.map((group, i) => (
+            <Menu.Item key={i} style={styles.item}>
+              <Link to={`/group/${group?._id}`} target="_blank">
+                {group?.name}
+              </Link>
+            </Menu.Item>
+          ))}
+        </SubMenu>
       </Menu>
     </Sider>
   );
