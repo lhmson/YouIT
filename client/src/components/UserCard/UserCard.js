@@ -27,8 +27,6 @@ function UserCard(props) {
     api
       .fetchCountMutualFriends(user?.result?._id, _id)
       .then((res) => {
-        console.log("List mutual friends");
-        console.log(res.data);
         if (res.data) setNumberMutual(res.data);
       })
       .catch((e) => {
