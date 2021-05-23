@@ -20,6 +20,8 @@ function FriendMangementPage() {
   const [user, setUser] = useLocalStorage("user");
   const inputRef = useRef();
   const [listFriend, setListFriend] = useState([]);
+  const [txtSearch, setTxtSearch] = useState("");
+
   useEffect(() => {
     console.log(user);
     api
@@ -34,9 +36,12 @@ function FriendMangementPage() {
       });
   }, [user]);
 
+  const listFilter = listFriend.filter((user) =>
+    user.name.toLowerCase().includes(txtSearch.toLowerCase())
+  );
   const listUserCardLeft = useMemo(
     () =>
-      listFriend?.map((user, i) => {
+      listFilter?.map((user, i) => {
         if (i % 2 == 0)
           return (
             <FriendCard
@@ -46,12 +51,12 @@ function FriendMangementPage() {
             ></FriendCard>
           );
       }),
-    [listFriend]
+    [listFilter]
   );
 
   const listUserCardRight = useMemo(
     () =>
-      listFriend?.map((user, i) => {
+      listFilter?.map((user, i) => {
         if (i % 2 == 1)
           return (
             <FriendCard
@@ -61,9 +66,12 @@ function FriendMangementPage() {
             ></FriendCard>
           );
       }),
-    [listFriend]
+    [listFilter]
   );
 
+  const handleSearch = () => {
+    setTxtSearch(inputRef.current.state.value);
+  };
   return (
     <>
       <Layout>
@@ -131,7 +139,7 @@ function FriendMangementPage() {
                   }}
                 >
                   <Input
-                    onPressEnter={() => {}}
+                    onPressEnter={handleSearch}
                     allowClear
                     suffix={
                       <SearchOutlined
