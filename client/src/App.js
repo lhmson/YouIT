@@ -34,6 +34,7 @@ import SettingsPage from "./pages/SettingsPage/SettingsPage.js";
 
 const loggedIn = () => {
   const user = JSON.parse(localStorage.getItem("user"));
+  console.log("USER USER", user);
   return user;
 };
 

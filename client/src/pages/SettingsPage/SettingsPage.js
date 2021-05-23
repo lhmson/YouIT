@@ -36,6 +36,8 @@ import { Content } from "antd/lib/layout/layout";
 import Sider from "antd/lib/layout/Sider";
 import SubMenu from "antd/lib/menu/SubMenu";
 import EditableText from "../../components/UserInfo/AboutCard/OverviewPane/EditableText/EditableText.js";
+import * as authAPI from "../../api/auth";
+
 const { TabPane } = Tabs;
 const { Title, Text } = Typography;
 
@@ -134,9 +136,26 @@ const GeneralTab = () => {
 };
 
 const SecurityTab = () => {
-  const handleFinish = () => {};
-  const handleFinishFailed = () => {};
-  const handleChange = () => {};
+  const [form, setForm] = useState(null);
+  const handleFinish = () => {
+    // const data = {
+    //   email: form.newEmail,
+    //   password: form.newPassword,
+    //   firstName: form.firstName,
+    //   lastName: form.lastName,
+    //   gender: form.gender,
+    //   dob: form.dob,
+    // };
+    // dispatch(signup(data, history, setUser));
+  };
+  const handleFinishFailed = (errorInfo) => {
+    errorInfo.errorFields.map((err) => {
+      message.error(err.errors[0]);
+    });
+  };
+  const handleChange = (e) => {
+    setForm({ ...form, [e?.target.name]: e?.target.value });
+  };
   return (
     <div className="bg-white p-4">
       <h3>Security</h3>
@@ -156,29 +175,10 @@ const SecurityTab = () => {
         onFinishFailed={handleFinishFailed}
         className="mt-4"
       >
-        <Form.Item
-          name="currentPassword"
-          rules={[
-            {
-              required: true,
-              message: "Password is required.",
-            },
-            ({ getFieldValue }) => ({
-              validator(_, value) {
-                // console.log("value", value.length);
-                if (value.length >= 6) {
-                  return Promise.resolve();
-                }
-                return Promise.reject(
-                  new Error("Password must be at least 6 characters.")
-                );
-              },
-            }),
-          ]}
-        >
+        <Form.Item name="currentPassword">
           <Input.Password
             name="currentPassword"
-            autoComplete="newPassword"
+            autocomplete="newpassword"
             placeholder="Current password"
             onChange={handleChange}
           />
@@ -205,7 +205,7 @@ const SecurityTab = () => {
         >
           <Input.Password
             name="newPassword"
-            autoComplete="newPassword"
+            autocomplete="newpassword"
             placeholder="New password"
             onChange={handleChange}
           />
@@ -229,7 +229,11 @@ const SecurityTab = () => {
             }),
           ]}
         >
-          <Input.Password placeholder="Confirm password" suffix={null} />
+          <Input.Password
+            autocomplete="newpassword"
+            placeholder="Confirm password"
+            suffix={null}
+          />
         </Form.Item>
 
         <Form.Item style={{}}>
@@ -248,15 +252,15 @@ const SecurityTab = () => {
 
 const SettingsTabs = [
   {
-    tab: GeneralTab(),
+    tab: <GeneralTab />,
   },
   {
-    tab: SecurityTab(),
+    tab: <SecurityTab />,
   },
 ];
 
 const SettingsPage = () => {
-  const [currentTab, setCurrentTab] = useState("0");
+  const [currentTab, setCurrentTab] = useState("1");
   const handleSelectTab = (e) => {
     console.log("ekey", e.key);
     setCurrentTab(e.key);

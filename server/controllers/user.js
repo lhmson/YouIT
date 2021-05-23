@@ -63,3 +63,50 @@ export const signup = async (req, res) => {
     console.log(error);
   }
 };
+
+export const changePassword = async (req, res) => {
+  const { userId } = req;
+  const { password } = req.body;
+  try {
+    const hashedPassword = await bcrypt.hash(password, 12);
+    const result = await User.findByIdAndUpdate(
+      userId,
+      {
+        password: hashedPassword,
+      },
+      { new: true },
+      function (err, arr) {
+        if (err) res.status(500).json(err);
+        res.status(200).json(arr);
+      }
+    );
+
+    // const token = jwt.sign({ email: result.email, id: result._id }, secret, {
+    //   expiresIn: "24h",
+    // });
+  } catch (error) {
+    res.status(500).json(error);
+
+    console.log(error);
+  }
+};
+
+export const checkPassword = async (req, res) => {
+  const { userId } = req;
+  const { password } = req.body;
+
+  try {
+    if (!userId) {
+      return res
+        .status(httpStatusCodes.unauthorized)
+        .json({ message: "Unauthenticated" });
+    }
+    const user = await User.findById(userId);
+    const isPasswordCorrect = await bcrypt.compare(password, user.password);
+    if (!isPasswordCorrect) return res.status(400).json({ result: false });
+
+    res.status(200).json({ result: true });
+  } catch (err) {
+    res.status(500).json({ message: "Something went wrong" });
+  }
+};
