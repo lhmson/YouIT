@@ -8,12 +8,13 @@ import {
 import styles from "./styles.js";
 import { useLocalStorage } from "../../../hooks/useLocalStorage.js";
 import { Link } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 
 const { Sider } = Layout;
 
 function FeedSidebar() {
   const [user] = useLocalStorage("user");
-
+  const history = useHistory();
   useEffect(() => {}, []);
 
   return (
@@ -58,6 +59,7 @@ function FeedSidebar() {
         </Menu.Item>
 
         <Menu.Item
+          onClick={() => history.push("/friends")}
           key="friends"
           style={styles.item}
           icon={<Avatar style={styles.transparent} />}

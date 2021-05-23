@@ -1,14 +1,70 @@
-import React from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { Button, Row, Col, Divider, Form, Typography, Input, Card } from "antd";
-import { Avatar, Image, Tag } from "antd";
+import { Avatar, Image, Tag, Popover, List } from "antd";
 import styles from "./styles.js";
+import { Link, useHistory, useLocation } from "react-router-dom";
+import { useLocalStorage } from "../../hooks/useLocalStorage";
+import * as api from "../../api/friend";
 
 const { Title, Text } = Typography;
 
 function FriendCard(props) {
+  const [user, setUser] = useLocalStorage("user");
+  const [listMutual, setListMutual] = useState([]);
+  const [numberMutual, setNumberMutual] = useState(0);
   const { name } = props;
   const [txtButton, setTxtButton] = React.useState("Message");
+  const { _id } = props;
 
+  useEffect(() => {
+    api
+      .fetchCountMutualFriends(user?.result?._id, _id)
+      .then((res) => {
+        console.log("List mutual friends");
+        console.log(res.data);
+        if (res.data) setNumberMutual(res.data);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  }, []);
+
+  useEffect(() => {
+    api
+      .fetchListMutualFriends(user?.result?._id, _id)
+      .then((res) => {
+        if (res.data && res.data instanceof Array) {
+          const tempList = [];
+          for (let i = 0; i < res.data.length; i++)
+            tempList.push(res.data[i].name);
+          setListMutual(tempList);
+          console.log(tempList);
+        }
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  }, []);
+
+  const popupListMutualFriend = (data) => {
+    return (
+      <>
+        <div>
+          <List
+            header={<div></div>}
+            footer={<div></div>}
+            bordered
+            dataSource={data}
+            renderItem={(item) => (
+              <List.Item>
+                <Text style={styles.text}>{item}</Text>
+              </List.Item>
+            )}
+          />
+        </div>
+      </>
+    );
+  };
   return (
     <>
       <div style={styles.card}>
@@ -25,7 +81,9 @@ function FriendCard(props) {
             />
 
             <div className="col-8" style={{ alignSelf: "center" }}>
-              <Text style={styles.textUser}>{name ?? "Lalisa Manobal"}</Text>
+              <Link to={`/userinfo/${_id}`}>
+                <Text style={styles.textUser}>{name ?? "Lalisa Manobal"}</Text>
+              </Link>
               <div style={{ marginTop: 0 }}></div>
               <Text>React Native Developer</Text>
             </div>
@@ -59,7 +117,16 @@ function FriendCard(props) {
               {txtButton}
             </Button>
             <div>
-              <Text style={styles.text}>12 mutual friends</Text>
+              <Popover
+                placement="bottom"
+                title={""}
+                content={popupListMutualFriend(listMutual ?? [])}
+                trigger="hover"
+              >
+                <Text style={styles.text}>
+                  {numberMutual} mutual friend{numberMutual >= 2 ? "s" : ""}
+                </Text>
+              </Popover>
             </div>
           </div>
         </div>
