@@ -23,7 +23,7 @@ import {
 
 import decode from "jwt-decode";
 import { useDispatch, useSelector } from "react-redux";
-import { logout } from "../../redux/actions/auth";
+import { signout } from "../../redux/actions/auth";
 import COLOR from "../../constants/colors";
 import { useLocalStorage } from "../../hooks/useLocalStorage";
 import { useToken } from "../../context/TokenContext";
@@ -75,11 +75,11 @@ function Navbar({ selectedMenu, setTxtSearch, txtInitSearch }) {
       }
 
       // force this tab to log out if the token is invalid
-      if (event === "System_InvalidToken") {
+      if (event === "System-InvalidToken") {
         // handleLogOut() // dont know why this causes bug tho...
-        alert("Session expired! Please log in again!");
-        localStorage.removeItem("user");
-        window.location.reload();
+        if (msg.enableAlert)
+          alert("Session expired! Please log in again!");
+        handleLogOut();
       }
     };
     cuteIO.onReceiveAny(listener);
@@ -107,9 +107,13 @@ function Navbar({ selectedMenu, setTxtSearch, txtInitSearch }) {
 
   //#region menuMore
   const handleLogOut = async () => {
-    await dispatch(logout(setUser, token, setToken));
-    await dispatch(refreshNotifications());
-    history.push("/login");
+    // await dispatch(logout(setUser, token, setToken));
+    // await dispatch(refreshNotifications());
+    // history.push("/login");
+
+    await dispatch(signout());
+    localStorage.removeItem("user");
+    window.location.reload();
   };
 
   const menuMore = (

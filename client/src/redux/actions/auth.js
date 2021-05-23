@@ -38,12 +38,15 @@ export const signup = (formData, router) => async (dispatch) => {
   }
 };
 
-export const logout =
-  (setLocalStorageUser, oldToken, setToken) => async (dispatch) => {
-    dispatch({ type: LOGOUT, setLocalStorageUser });
+export const signout = () => async (dispatch) => {
+  api.signOut();
+}
+  // (setLocalStorageUser, oldToken, setToken) => async (dispatch) => {
+    // dispatch({ type: LOGOUT, setLocalStorageUser });
     // setTimeout(() => {
     //   setToken(JSON.parse(localStorage.getItem("user"))?.token);
     //   // setToken(null);
     // }, 2000);
-    forceGetNewLocalStorageToken(oldToken, setToken);
-  };
+    // window.location.reload(); // this is to make force log out work :)
+    // forceGetNewLocalStorageToken(oldToken, setToken);
+  // };

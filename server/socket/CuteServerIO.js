@@ -116,7 +116,7 @@ export default class CuteServerIO {
 
           // force user to log out if the token is not valid
           if (token && token !== "undefined" && token !== "null" && !userId) {
-            this.sendToSocket(socket, "System_InvalidToken", {});
+            this.sendToSocket(socket, "System-InvalidToken", { enableAlert: true });
           }
 
         }
@@ -128,12 +128,11 @@ export default class CuteServerIO {
           ]);
 
           const { exp } = verifyJwt(token);
-          console.log("exp", exp);
           // auto logout on expiration
           if (exp) {
             logOutTask = setTimeout(
               () => {
-                this.sendToSocket(socket, "System_InvalidToken", {});
+                this.sendToSocket(socket, "System-InvalidToken", { enableAlert: true });
               },
               exp * 1000 - Date.now()
             )
@@ -211,7 +210,6 @@ export default class CuteServerIO {
    * @param {Socket?} excludedSocket sometimes we dont wanna send some message back to the sender (client). That's when this is helpful :)
    */
   sendToUser = (toUserId, event, msg, excludedSocket) => {
-    console.log("sent to user", toUserId);
     const roomName = this.#USER_ROOM_PREFIX + toUserId
 
     if (excludedSocket && excludedSocket.broadcast) {

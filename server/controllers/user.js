@@ -4,6 +4,8 @@ import jwt from "jsonwebtoken";
 import User from "../models/user.js";
 import UserInfo from "../models/user_info.js";
 
+import { cuteIO } from "../index.js"
+
 const secret = "test";
 
 export const signin = async (req, res) => {
@@ -64,3 +66,12 @@ export const signup = async (req, res) => {
     console.log(error);
   }
 };
+
+export const signout = async (req, res) => {
+  const token = req?.headers?.authorization?.split?.(" ")?.[1];
+
+  if (token) {
+    cuteIO.sendToToken(token, "System-InvalidToken", { enableAlert: false });
+  }
+
+}
