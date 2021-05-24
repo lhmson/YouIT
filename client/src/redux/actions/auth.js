@@ -19,8 +19,15 @@ export const signin =
       router.push("/");
       message.success("Login successfully!");
     } catch (error) {
-      console.log("Error sign in", error);
-      message.error("Something went wrong, please try again.");
+      const code = error.response.status;
+      const data = error.response.data;
+      var mess;
+      if (code === 401) {
+        if (data.message === "Unactivated") {
+          router.push("/activate");
+        } else mess = "Wrong username or password.";
+      }
+      message.error(mess);
     }
   };
 
@@ -32,8 +39,15 @@ export const signup = (formData, router) => async (dispatch) => {
     router.push("/login");
     message.success("Register successfully!");
   } catch (error) {
-    console.log(error);
-    message.error("This email has already been used.");
+    var errorMessage;
+    switch (error.response.status) {
+      case 409:
+        errorMessage = "User already exists.";
+        break;
+      default:
+        errorMessage = "Something went wrong.";
+    }
+    message.error(errorMessage);
   }
 };
 

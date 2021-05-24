@@ -1,9 +1,10 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import nodemailer from "nodemailer";
 
 import User from "../models/user.js";
 
-const secret = "test";
+const JWT_KEY = "youit";
 
 export const signin = async (req, res) => {
   console.log("signin");
@@ -17,9 +18,11 @@ export const signin = async (req, res) => {
     const isPasswordCorrect = await bcrypt.compare(password, user.password);
 
     if (!isPasswordCorrect)
-      return res.status(400).json({ message: "Invalid credentials" });
+      return res.status(401).json({ message: "Invalid credentials" });
 
-    const token = jwt.sign({ email: user.email, id: user._id }, secret, {
+    if (!user.activated)
+      return res.status(401).json({ message: "Unactivated" });
+    const token = jwt.sign({ email: user.email, id: user._id }, JWT_KEY, {
       expiresIn: "24h",
     });
 
@@ -35,7 +38,7 @@ export const signup = async (req, res) => {
   try {
     // console.log("email", email);
     const user = await User.findOne({ email });
-    if (user) return res.status(400).json({ message: "User already exists" });
+    if (user) return res.status(409).json({ message: "User already exists" });
 
     const hashedPassword = await bcrypt.hash(password, 12);
 
@@ -56,6 +59,43 @@ export const signup = async (req, res) => {
     // const token = jwt.sign({ email: result.email, id: result._id }, secret, {
     //   expiresIn: "24h",
     // });
+
+    const token = jwt.sign({ email: result.email, id: result._id }, JWT_KEY, {
+      expiresIn: "24h",
+    });
+
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: "youit.app@gmail.com",
+        pass: "youIT123", // naturally, replace both with your real credentials or an application-specific password
+      },
+    });
+
+    const mailContent = `
+    <h2>Hey, ${firstName} ${lastName}</h2>
+    <p>To complete the process, please verify your email address by clicking the link below or pasting it into your browser:</p>
+    <a>http://localhost:3000/activate/${token}</a>
+    <p>The above activation link expires in 30 minutes.</p>
+    <h3>YouIT Team</p>
+    `;
+
+    const mailOptions = {
+      from: "youit.app@gmail.com",
+      to: "muiheoconghau@gmail.com",
+      subject: "Verify Your Email Address",
+      generateTextFromHTML: true,
+      html: mailContent,
+    };
+
+    transporter.sendMail(mailOptions, function (error, info) {
+      if (error) {
+        console.log(error);
+      } else {
+        console.log("Email sent: " + info.response);
+      }
+    });
+
     res.status(201).json({ result });
   } catch (error) {
     res.status(500).json({ message: "Something went wrong" });

@@ -7,40 +7,35 @@ const { Title } = Typography;
 const buttonSize = 150;
 
 function ErrorPage({ code }) {
-  const [info, setInfo] = useState(null);
-  useEffect(() => {
-    switch (code) {
-      case "400":
-        setInfo({
-          name: "400 BAD REQUEST",
-          desc: "There was a problem with the request.",
-        });
-        break;
-      case "403":
-        setInfo({
-          name: "403 FORBIDDEN",
-          desc: "Access to the resource is forbidden.",
-        });
-        break;
-      case "404":
-        setInfo({
-          name: "404 NOT FOUND",
-          desc: "The requested resource does not exist.",
-        });
-        break;
-      case "500":
-        setInfo({
-          name: "500 INTERNAL SERVER ERROR",
-          desc: "There was an error on the server.",
-        });
-        break;
-      default:
-        setInfo({
-          name: "400 BAD REQUEST",
-          desc: "There was a problem with the request.",
-        });
-    }
-  }, []);
+  var errors = [
+    {
+      code: "400",
+      name: "400 BAD REQUEST",
+      desc: "There was a problem with the request.",
+    },
+    {
+      code: "403",
+      name: "403 FORBIDDEN",
+      desc: "Access to the resource is forbidden.",
+    },
+    {
+      code: "404",
+      name: "404 NOT FOUND",
+      desc: "The requested resource does not exist.",
+    },
+    {
+      code: "500",
+      name: "500 INTERNAL SERVER ERROR",
+      desc: "There was an error on the server.",
+    },
+    {
+      code: "400",
+      name: "400 BAD REQUEST",
+      desc: "There was a problem with the request.",
+    },
+  ];
+
+  const error = errors.find((e) => e.code === code);
 
   return (
     <div
@@ -53,9 +48,9 @@ function ErrorPage({ code }) {
           alt="error"
           style={{ width: 400, marginBottom: 24 }}
         />
-        <Title style={{ fontWeight: "lighter" }}>{info?.name}</Title>
+        <Title style={{ fontWeight: "lighter" }}>{error.name}</Title>
         <Title className="mb-4" level={5}>
-          {info?.desc}
+          {error.desc}
         </Title>
         <a href={`https://en.wikipedia.org/wiki/HTTP_${code}`} target="_blank">
           <Button
