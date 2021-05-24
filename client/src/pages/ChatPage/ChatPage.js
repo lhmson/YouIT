@@ -12,7 +12,7 @@ function MessagePage() {
   return (
     <div>
       <Layout>
-        <Navbar />
+        <Navbar selectedMenu="message" />
         {/* <Layout> */}
         <Layout style={styles.mainArea}>
           {/* <Content> */}

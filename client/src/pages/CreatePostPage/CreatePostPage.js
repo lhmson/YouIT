@@ -17,7 +17,7 @@ function CreatePostPage() {
   return (
     <>
       <Layout style={{}}>
-        <Navbar />
+        <Navbar selectedMenu="edit" />
         <Layout style={styles.mainArea}>
           <Content>
             <h1 className="text-center">

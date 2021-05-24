@@ -9,7 +9,8 @@ import styles from "./styles.js";
 import { useLocalStorage } from "../../../hooks/useLocalStorage.js";
 import { Link } from "react-router-dom";
 
-import { useSelector } from "react-redux";
+import { fetchUserJoinedGroups } from "../../../redux/actions/group";
+import { useSelector, useDispatch } from "react-redux";
 import FeedMenu from "./FeedMenu/FeedMenu.js";
 
 const { SubMenu } = Menu;
@@ -17,9 +18,12 @@ const { Sider } = Layout;
 
 function FeedSidebar() {
   const [user] = useLocalStorage("user");
-  const [visible, setVisible] = useState(false);
+  // const [visible, setVisible] = useState(false);
+  const dispatch = useDispatch();
 
-  useEffect(() => {}, []);
+  useEffect(() => {
+    dispatch(fetchUserJoinedGroups());
+  }, []);
 
   const groups = useSelector((state) => state.groups);
 
