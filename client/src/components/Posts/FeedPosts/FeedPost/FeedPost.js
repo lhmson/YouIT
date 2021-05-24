@@ -218,6 +218,21 @@ function FeedPost({ post, setCurrentId }) {
 
   const groupId = post?.groupPostInfo?.groupId;
 
+  const renderPrivacyIcon = (privacy) => {
+    switch (privacy) {
+      case "Friends":
+        return <GiThreeFriends className="gray mr-1 icon" />;
+      case "Private":
+        return <IoPerson className="gray mr-1 icon" />;
+      case "Public":
+        return <MdPublic className="gray mr-1 icon" />;
+      case "Group":
+        return <MdPublic className="gray mr-1 icon" />;
+      default:
+        return <MdPublic className="gray mr-1 icon" />;
+    }
+  };
+
   return (
     <div style={styles.item}>
       <div style={{ margin: 12 }}>
@@ -263,13 +278,7 @@ function FeedPost({ post, setCurrentId }) {
             </div>
           </Row>
           <Row className="justify-content-end align-items-center pb-3">
-            {post?.privacy === "Friend" ? (
-              <GiThreeFriends className="gray mr-1 icon" />
-            ) : post?.privacy === "Private" ? (
-              <IoPerson className="gray mr-1 icon" />
-            ) : (
-              <MdPublic className="gray mr-1 icon" />
-            )}
+            {renderPrivacyIcon(post?.privacy)}
             <Tooltip title="Privacy">
               <div className="mr-4">
                 <Text type="secondary">{post?.privacy}</Text>

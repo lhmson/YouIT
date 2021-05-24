@@ -1,5 +1,5 @@
-import React, { useEffect } from "react";
-import { Layout, Menu, Avatar } from "antd";
+import React, { useEffect, useState } from "react";
+import { Layout, Menu, Drawer, Button } from "antd";
 import {
   RocketOutlined,
   LaptopOutlined,
@@ -10,65 +10,44 @@ import { useLocalStorage } from "../../../hooks/useLocalStorage.js";
 import { Link } from "react-router-dom";
 
 import { useSelector } from "react-redux";
+import FeedMenu from "./FeedMenu/FeedMenu.js";
 
 const { SubMenu } = Menu;
 const { Sider } = Layout;
 
 function FeedSidebar() {
   const [user] = useLocalStorage("user");
+  const [visible, setVisible] = useState(false);
 
   useEffect(() => {}, []);
 
   const groups = useSelector((state) => state.groups);
 
   return (
-    <Sider
-      width={200}
-      style={{
-        ...styles.paleBackground,
-        ...styles.fixedSider,
-      }}
-    >
-      <Menu
-        mode="inline"
-        // defaultOpenKeys={["1"]}
+    <div>
+      <Sider
+        breakpoint="lg"
+        // width={200}
+        collapsedWidth="0"
+        // trigger={null}
         style={{
-          height: "100%",
-          borderRight: 0,
-          fontWeight: 500,
-          fontSize: "1rem",
+          ...styles.paleBackground,
+          ...styles.fixedSider,
         }}
       >
-        <Menu.Item
-          key="username"
-          style={styles.item}
-          icon={<RocketOutlined spin style={{ fontSize: "1.4rem" }} />}
-        >
-          My Profile
-        </Menu.Item>
-
-        <Menu.Item
-          key="friends"
-          style={styles.item}
-          icon={<TeamOutlined style={{ fontSize: "1.4rem" }} />}
-        >
-          <Link to="/friends">Friends</Link>
-        </Menu.Item>
-        <SubMenu
-          key="sub3"
-          icon={<LaptopOutlined style={{ fontSize: "1.4rem" }} />}
-          title="Groups"
-        >
-          {groups.map((group, i) => (
-            <Menu.Item key={i} style={styles.item}>
-              <Link to={`/group/${group?._id}`} target="_blank">
-                {group?.name}
-              </Link>
-            </Menu.Item>
-          ))}
-        </SubMenu>
-      </Menu>
-    </Sider>
+        <FeedMenu user={user} groups={groups} />
+      </Sider>
+      {/* <Drawer
+        title="Topics"
+        placement="left"
+        onClick={() => setVisible(false)}
+        onClose={() => setVisible(false)}
+        visible={visible}
+        style={{ zIndex: 100 }}
+      >
+        <FeedMenu user={user} groups={groups} />
+      </Drawer> */}
+    </div>
   );
 }
 

@@ -38,7 +38,7 @@ import GroupBasicInfo from "./GroupPage/GroupBasicInfo/GroupBasicInfo";
 import GroupAboutCard from "./GroupPage/GroupAboutCard/GroupAboutCard";
 import IntroCard from "./IntroCard/IntroCard";
 
-import MessageSidebar from "./Messages/MessageSidebar/MessageSidebar";
+import MessageSidebar from "./Chat/MessageSidebar/MessageSidebar";
 
 export {
   SignInForm,

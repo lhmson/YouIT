@@ -1,17 +1,17 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { Row } from "antd";
-import Loading from "../../Loading/Loading";
-import styles from "./styles";
-
-import useInfiniteScroll from "../../../hooks/useInfiniteScroll";
+import { Row, Layout } from "antd";
+import Loading from "../../../Loading/Loading";
+import styles from "../styles";
 
 import InfiniteScroll from "react-infinite-scroll-component";
 
-import * as api from "../../../api/post";
+import * as api from "../../../../api/post";
 
-import FeedPost from "./FeedPost/FeedPost";
+import FeedPost from "../FeedPost/FeedPost";
 
-function FeedPosts({ setCurrentId }) {
+const { Content } = Layout;
+
+function TestFeed({ setCurrentId }) {
   // const posts = useSelector((state) => state.posts);
   const [posts, setPosts] = useState([]);
 
@@ -92,15 +92,6 @@ function FeedPosts({ setCurrentId }) {
       )}
     </div>
   );
-
-  // return (
-  //   <div className="feed-container">
-  //     <FeedSidebar className="sidebar" />
-  //     <div className="content" id="scrollableDiv">
-  //       <TestFeed />
-  //     </div>
-  //   </div>
-  // );
 }
 
-export default FeedPosts;
+export default TestFeed;

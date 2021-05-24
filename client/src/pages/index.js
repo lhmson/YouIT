@@ -10,7 +10,7 @@ import GroupPage from "./GroupPage/GroupPage";
 import GroupAboutPage from "./GroupAboutPage/GroupAboutPage";
 import RequestsInGroupsPage from "./RequestsInGroupsPage/RequestsInGroupsPage";
 import CreateGroupPage from "./CreateGroupPage/CreateGroupPage";
-import MessagePage from "./MessagePage/MessagePage";
+import MessagePage from "./ChatPage/ChatPage";
 import LoginPage from "./LoginPage/LoginPage";
 import RegisterPage from "./RegisterPage/RegisterPage";
 import ErrorPage from "./ErrorPage/ErrorPage";
