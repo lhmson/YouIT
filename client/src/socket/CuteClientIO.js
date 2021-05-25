@@ -122,6 +122,8 @@ export default class CuteClientIO {
   onReceive = (event, handleFunction) => {
     if (this.#socket) this.#socket.on(event, handleFunction);
     else this.#queueEventHandlersOnConnection.push({ event, handleFunction });
+
+    return () => this.stopReceive(event, handleFunction);
   };
 
   /**
@@ -130,6 +132,8 @@ export default class CuteClientIO {
   onReceiveAny = (handleFunction) => {
     if (this.#socket) this.#socket.onAny(handleFunction);
     else this.#queueAnyEventHandlersOnConnection.push(handleFunction)
+
+    return () => this.stopReceiveAny(handleFunction);
   }
 
   /**
@@ -138,6 +142,8 @@ export default class CuteClientIO {
    */
   onReceiveMulti = (eventHandlers) => {
     eventHandlers.forEach((e) => this.onReceive(e.event, e.handleFunction));
+
+    return () => this.stopReceiveMulti(eventHandlers);
   };
 
   /**
