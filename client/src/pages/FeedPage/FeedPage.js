@@ -5,7 +5,7 @@ import Navbar from "../../components/Navbar/Navbar";
 import "./styles.css";
 
 import FeedSidebar from "../../components/Sidebar/FeedSidebar/FeedSidebar";
-import TestFeed from "../../components/Posts/FeedPosts/TestFeed/TestFeed.js";
+import { FeedPosts } from "../../components/index.js";
 
 const { Content } = Layout;
 
@@ -14,21 +14,21 @@ function FeedPage() {
     <>
       <Layout>
         <Navbar />
-        <Layout>
-          <Layout style={styles.mainArea}>
-            {/* <div className="feed-container">
+        {/* <Layout> */}
+        <Layout style={styles.mainArea}>
+          {/* <div className="feed-container">
               <FeedSidebar className="sidebar" />
               <FeedPosts className="content" id="scrollableDiv" />
             </div> */}
-            {/* <FeedPosts /> */}
-            <div className="feed-container">
-              <FeedSidebar className="sidebar" />
-              <div className="content" id="scrollableDiv">
-                <TestFeed />
-              </div>
+          {/* <FeedPosts /> */}
+          <div className="feed-container">
+            <FeedSidebar className="sidebar" />
+            <div className="mainContent" id="scrollableDiv">
+              <FeedPosts />
             </div>
-          </Layout>
+          </div>
         </Layout>
+        {/* </Layout> */}
       </Layout>
     </>
   );

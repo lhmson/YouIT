@@ -1,25 +1,18 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { Layout } from "antd";
 import styles from "./styles.js";
 import Navbar from "../../components/Navbar/Navbar";
 
-import ChatSample from "../../components/Chat/Chat.js";
-import { MessageSidebar } from "../../components/index.js";
-
-const { Content } = Layout;
+import ChatSpace from "../../components/Chat/ChatSpace.js";
 
 function MessagePage() {
   return (
     <div>
       <Layout>
         <Navbar selectedMenu="message" />
-        {/* <Layout> */}
         <Layout style={styles.mainArea}>
-          {/* <Content> */}
-          <ChatSample />
-          {/* </Content> */}
+          <ChatSpace />
         </Layout>
-        {/* </Layout> */}
       </Layout>
     </div>
   );

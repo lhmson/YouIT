@@ -1,19 +1,12 @@
-import React, { useEffect, useState } from "react";
-import { Layout, Menu, Drawer, Button } from "antd";
-import {
-  RocketOutlined,
-  LaptopOutlined,
-  TeamOutlined,
-} from "@ant-design/icons";
+import React, { useEffect } from "react";
+import { Layout } from "antd";
 import styles from "./styles.js";
 import { useLocalStorage } from "../../../hooks/useLocalStorage.js";
-import { Link } from "react-router-dom";
 
 import { fetchUserJoinedGroups } from "../../../redux/actions/group";
 import { useSelector, useDispatch } from "react-redux";
 import FeedMenu from "./FeedMenu/FeedMenu.js";
 
-const { SubMenu } = Menu;
 const { Sider } = Layout;
 
 function FeedSidebar() {

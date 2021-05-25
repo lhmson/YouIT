@@ -1,7 +1,7 @@
 .feed-container {
   display: grid;
   grid:
-    "sidebar content"
+    "sidebar mainContent"
     / 1fr;
   /* min-width: 800px;
     max-width: 1000px; */
@@ -16,7 +16,7 @@
   overflow-y: scroll;
 }
 
-.content {
-  grid-area: content;
+.mainContent {
+  grid-area: mainContent;
   overflow-y: scroll;
 }

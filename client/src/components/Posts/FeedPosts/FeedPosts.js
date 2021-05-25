@@ -92,15 +92,6 @@ function FeedPosts({ setCurrentId }) {
       )}
     </div>
   );
-
-  // return (
-  //   <div className="feed-container">
-  //     <FeedSidebar className="sidebar" />
-  //     <div className="content" id="scrollableDiv">
-  //       <TestFeed />
-  //     </div>
-  //   </div>
-  // );
 }
 
 export default FeedPosts;

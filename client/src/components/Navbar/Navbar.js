@@ -10,6 +10,7 @@ import {
   Avatar,
   Badge,
   Button,
+  Tooltip,
   Space,
 } from "antd";
 import styles from "./styles";
@@ -124,11 +125,13 @@ function Navbar({ selectedMenu, setTxtSearch, txtInitSearch }) {
             placement="bottomRight"
           >
             <Badge count={notifications.length} showZero>
-              <BellFilled
-                className="clickable"
-                // onClick={handleNoti}
-                style={{ fontSize: 24, color: COLOR.white }}
-              />
+              <Tooltip title="Notifications" placement="bottom">
+                <BellFilled
+                  className="clickable"
+                  // onClick={handleNoti}
+                  style={{ fontSize: 24, color: COLOR.white }}
+                />
+              </Tooltip>
             </Badge>
           </Dropdown>
         </Menu.Item>
@@ -138,7 +141,9 @@ function Navbar({ selectedMenu, setTxtSearch, txtInitSearch }) {
           className="navitem pickitem text-center"
           onClick={handlePost}
         >
-          <EditFilled style={{ fontSize: 24, color: COLOR.white }} />
+          <Tooltip title="Post" placement="bottom">
+            <EditFilled style={{ fontSize: 24, color: COLOR.white }} />
+          </Tooltip>
         </Menu.Item>
 
         <Menu.Item
@@ -146,7 +151,9 @@ function Navbar({ selectedMenu, setTxtSearch, txtInitSearch }) {
           className="text-center navitem pickitem"
           onClick={handleMessage}
         >
-          <MessageFilled style={{ fontSize: 24, color: COLOR.white }} />
+          <Tooltip title="Message" placement="bottom">
+            <MessageFilled style={{ fontSize: 24, color: COLOR.white }} />
+          </Tooltip>
         </Menu.Item>
 
         <Menu.Item key="avatar" className="text-center navitem">
@@ -163,6 +170,7 @@ function Navbar({ selectedMenu, setTxtSearch, txtInitSearch }) {
                 {user?.result?.name}
               </Link>
             </Avatar>
+
             {!isSmallScreen && (
               <Link
                 to={`/userinfo/${user?.result._id}`}
