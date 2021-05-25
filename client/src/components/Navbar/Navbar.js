@@ -27,7 +27,7 @@ import { useMediaQuery } from "react-responsive";
 
 import decode from "jwt-decode";
 import { useDispatch, useSelector } from "react-redux";
-import { logout } from "../../redux/actions/auth";
+import { signout } from "../../redux/actions/auth";
 import COLOR from "../../constants/colors";
 import { useLocalStorage } from "../../hooks/useLocalStorage";
 import { useToken } from "../../context/TokenContext";
@@ -187,9 +187,14 @@ function Navbar({ selectedMenu, setTxtSearch, txtInitSearch }) {
 
   //#region menuMore
   const handleLogOut = async () => {
-    await dispatch(logout(setUser, token, setToken));
-    await dispatch(refreshNotifications());
-    history.push("/login");
+    // await dispatch(logout(setUser, token, setToken));
+    // await dispatch(refreshNotifications());
+    // history.push("/login");
+    const browserId = JSON.parse(localStorage.getItem("browser"))?.id
+
+    await dispatch(signout(browserId));
+    localStorage.removeItem("user");
+    window.location.reload();
   };
 
   const menuMore = (

@@ -323,9 +323,19 @@ export const getPostsPagination = async (req, res) => {
   const { userId } = req;
 
   //get _page and _limit params from url
-  let { _page, _limit } = req.query;
-  _page = parseInt(_page);
-  _limit = parseInt(_limit);
+  // joinedGroupOnly: cut out the posts of group of which this user is not a member
+  let { _page, _limit, ownerId, groupId, joinedGroupOnly } = req.query;
+  if (_page)
+    _page = parseInt(_page);
+  else
+    _page = 0;
+  if (_limit)
+    _limit = parseInt(_limit);
+  else
+    _limit = 100; // sorry for the magic :)
+
+  joinedGroupOnly = joinedGroupOnly?.toUpperCase() === "TRUE";
+
   try {
     await Post.find()
       .populate("userId", "name")
@@ -337,14 +347,24 @@ export const getPostsPagination = async (req, res) => {
       .sort({ createdAt: -1 })
       // .skip(_page > 0 ? _page * _limit : 0)
       // .limit(_limit) // because the last filter would filter out even more element :)
-      .then((posts) => {
+      .then((rawPosts) => {
+        const posts = rawPosts.map(p => p.toObject());
+
         asyncFilter(posts, async p => {
-          const stdObj = p.toObject();
-          stdObj.userId = stdObj.userId._id; // because this data has been populated
-          let result = await isPostVisibleByUser(stdObj, userId);
+          const stdObj = {
+            ...p,
+            userId: p.userId._id
+          };
+          let result = await isPostVisibleByUser(stdObj, userId, !joinedGroupOnly);
           return result;
         }).then(filteredPosts => {
-          return res.status(200).json(customPagination(filteredPosts, _limit, _page));
+          if (ownerId)
+            filteredPosts = filteredPosts.filter(p => p.userId._id.equals(ownerId));
+
+          if (groupId)
+            filteredPosts = filteredPosts.filter(p => p.privacy === "Group" && p.groupPostInfo.groupId._id.equals(groupId));
+
+          return res.status(200).send(customPagination(filteredPosts, _limit, _page));
         })
       })
       .catch((err) => {

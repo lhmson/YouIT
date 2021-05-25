@@ -128,16 +128,17 @@ export const removeInteraction = (post, userId, interactionType) => {
  * - if the post is group post. first check if the group if this post exists, return false if no. otherwise, check the group's privacy.
  * @param {any} post 
  * @param {string | mongoose.Types.ObjectId} userId 
+ * @param {boolean=} allowedUnjoinedGroups 
  * @returns {boolean}
  */
-export const isPostVisibleByUser = async (post, userId) => {
+export const isPostVisibleByUser = async (post, userId, allowedUnjoinedGroups = true) => {
   if (post.privacy === "Group") {
     const group = (await Group.findById(post.groupPostInfo.groupId)).toObject();
 
     if (!group)
       return false;
 
-    if (group.privacy === "Public")
+    if (group.privacy === "Public" && allowedUnjoinedGroups)
       return true;
     else
       return isMemberOfGroup(userId, group);
