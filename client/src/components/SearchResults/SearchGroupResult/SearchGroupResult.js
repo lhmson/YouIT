@@ -22,7 +22,8 @@ const SearchGroupResult = ({ txtSearch }) => {
   const listGroupCardLeft = useMemo(
     () =>
       listGroup?.map((group, i) => {
-        if (i % 2 == 0) return <GroupCard nameGroup={group.name}></GroupCard>;
+        if (i % 2 == 0)
+          return <GroupCard _id={group._id} nameGroup={group.name}></GroupCard>;
       }),
     [listGroup]
   );
@@ -30,7 +31,8 @@ const SearchGroupResult = ({ txtSearch }) => {
   const listGroupCardRight = useMemo(
     () =>
       listGroup?.map((group, i) => {
-        if (i % 2 == 1) return <GroupCard nameGroup={group.name}></GroupCard>;
+        if (i % 2 == 1)
+          return <GroupCard _id={group._id} nameGroup={group.name}></GroupCard>;
       }),
     [listGroup]
   );

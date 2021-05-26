@@ -9,7 +9,6 @@ function SearchUserResult({ userNameSearch }) {
     api
       .fetchSearchUser(userNameSearch)
       .then((res) => {
-        console.log("LISTALLUSER", userNameSearch);
         console.log(res.data);
         if (res.data instanceof Array) setListUser(res.data);
         else setListUser([]);
@@ -22,7 +21,6 @@ function SearchUserResult({ userNameSearch }) {
   const listUserCardLeft = useMemo(
     () =>
       listUser?.map((user, i) => {
-        console.log("alo" + user._id);
         if (i % 2 == 0)
           return (
             <UserCard

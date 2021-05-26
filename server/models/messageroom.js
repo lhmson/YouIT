@@ -16,12 +16,6 @@ const messageRoomSchema = mongoose.Schema(
         ref: "User",
       },
     ],
-    seenMembers: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
-      },
-    ],
     message: [messageSchema],
   },
   { timestamps: true }

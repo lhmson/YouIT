@@ -2,10 +2,11 @@ import React from "react";
 import { Button, Row, Col, Divider, Form, Typography, Input, Card } from "antd";
 import { Avatar, Image, Tag } from "antd";
 import styles from "./styles.js";
+import { Link, useHistory, useLocation } from "react-router-dom";
 
 const { Title, Text } = Typography;
 
-function GroupCard({ nameGroup }) {
+function GroupCard({ nameGroup, _id }) {
   const [txtButton, setTxtButton] = React.useState("Join");
 
   const changeStateButton = () => {
@@ -29,7 +30,9 @@ function GroupCard({ nameGroup }) {
             />
 
             <div className="col-8" style={{ alignSelf: "center" }}>
-              <Text style={styles.textUser}>{nameGroup ?? "Name Group"}</Text>
+              <Link to={`/group/${_id}`}>
+                <Text style={styles.textUser}>{nameGroup ?? "Name Group"}</Text>
+              </Link>
               <div style={{ marginTop: 0 }}></div>
               <Text>"Blackpink in your area"</Text>
             </div>
