@@ -74,13 +74,14 @@ export default class CuteServerIO {
   onReceive = (socket, eventName, handleFunction) => {
     if (typeof socket === "string")
       socket = this.#getSocket(socket);
-    const { userId, token } = this.#extractInfoSocket(socket)
+    const { userId, token, browserId } = this.#extractInfoSocket(socket)
 
     socket.on(eventName, (msg) => {
       handleFunction({
         userId,
         token,
         socket,
+        browserId,
         msg,
         cuteServerIo: this,
       })
@@ -293,6 +294,7 @@ export default class CuteServerIO {
  * @typedef {object} OnReceiveParams
  * @property {string?} userId
  * @property {string?} token
+ * @property {string?} browserId
  * @property {Socket?} socket
  * @property {string?} eventName
  * @property {CuteServerIO} cuteServerIo
