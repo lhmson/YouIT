@@ -100,10 +100,10 @@ function FeedPost({ post, setCurrentId }) {
     showConfirmDeletePost(id);
   };
 
-  const handleEditPost = (id) => {
+  const handleEditPost = (postId, postTitle, postPrivacy, postContent) => {
     history.push({
       pathname: "/post/create",
-      state: { postId: id },
+      state: { postId, postTitle, postContent, postPrivacy },
     });
   };
 
@@ -111,7 +111,17 @@ function FeedPost({ post, setCurrentId }) {
     <Menu>
       {user?.result._id === post?.userId._id ? (
         <>
-          <Menu.Item key="edit" onClick={() => handleEditPost(post._id)}>
+          <Menu.Item
+            key="edit"
+            onClick={() =>
+              handleEditPost(
+                post?._id,
+                post?.title,
+                post?.privacy,
+                post?.content
+              )
+            }
+          >
             <Row align="middle">
               <EditFilled className="mr-2" />
               <Text>Edit post</Text>
@@ -220,7 +230,7 @@ function FeedPost({ post, setCurrentId }) {
 
   const renderPrivacyIcon = (privacy) => {
     switch (privacy) {
-      case "Friends":
+      case "Friend":
         return <GiThreeFriends className="gray mr-1 icon" />;
       case "Private":
         return <IoPerson className="gray mr-1 icon" />;

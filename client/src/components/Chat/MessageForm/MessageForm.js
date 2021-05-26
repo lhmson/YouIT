@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Tooltip } from "antd";
+import { Tooltip, Input } from "antd";
 import "../styles.css";
 import { SendOutlined, PaperClipOutlined } from "@ant-design/icons";
 
@@ -9,7 +9,7 @@ function ChatForm() {
       <Tooltip title="Attach">
         <PaperClipOutlined className="clickable icon white" />
       </Tooltip>
-      <input type="text" placeholder="type a message" />
+      <Input type="text" placeholder="type a message" />
       <Tooltip title="Send">
         <SendOutlined className="clickable icon white" />
       </Tooltip>

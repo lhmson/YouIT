@@ -11,6 +11,9 @@ const { Content } = Layout;
 function CreatePostPage() {
   const location = useLocation();
   const postId = location.state?.postId;
+  const postPrivacy = location.state?.postPrivacy;
+  const postTitle = location.state?.postTitle;
+  const postContent = location.state?.postContent;
 
   useEffect(() => {}, []);
 
@@ -23,7 +26,12 @@ function CreatePostPage() {
             <h1 className="text-center">
               {postId ? "Edit your post" : "Create a post"}
             </h1>
-            <CreatePostForm />
+            <CreatePostForm
+              postId={postId}
+              title={postTitle}
+              content={postContent}
+              privacy={postPrivacy}
+            />
           </Content>
         </Layout>
       </Layout>

@@ -5,16 +5,16 @@ import CreatePostSpaceAutoComplete from "./CreatePostSpaceAutoComplete/CreatePos
 import CreatePostTagSelect from "./CreatePostTagSelect/CreatePostTagSelect.js";
 import CreatePostTitleInput from "./CreatePostTitleInput/CreatePostTitleInput.js";
 import styles from "./styles.js";
-import { createPost } from "../../api/post.js";
+import * as api from "../../api/post.js";
 import { useHistory } from "react-router";
 import PostEditor from "./PostEditor/PostEditor.js";
 
-function CreatePostForm() {
-  const [postTitle, setPostTitle] = useState("");
-  const [postContent, setPostContent] = useState("");
+function CreatePostForm({ postId, title, content, privacy }) {
+  const [postTitle, setPostTitle] = useState(title ?? "");
+  const [postContent, setPostContent] = useState(content ?? "");
   const [postSpace, setPostSpace] = useState(""); // just text
   const [selectedGroup, setSelectedGroup] = useState(null); // actual group
-  const [postPrivacy, setPostPrivacy] = useState("");
+  const [postPrivacy, setPostPrivacy] = useState(privacy ?? "");
 
   const history = useHistory();
 
@@ -34,12 +34,23 @@ function CreatePostForm() {
 
   const handleSavePostButtonClick = () => {
     const newPost = wrapPostData();
-    createPost(newPost)
-      .then((res) => history.push(`/post/${res.data._id}`)) // go to specific post
-      .catch((error) => {
-        message.error("Something goes wrong. Check all fields");
-        console.log(error);
-      });
+    if (!postId) {
+      api
+        .createPost(newPost)
+        .then((res) => history.push(`/post/${res.data._id}`)) // go to specific post
+        .catch((error) => {
+          message.error("Something goes wrong. Check all fields");
+          console.log(error);
+        });
+    } else {
+      api
+        .updatePost(postId, newPost)
+        .then((res) => history.push(`/post/${res.data._id}`))
+        .catch((error) => {
+          message.error("Something goes wrong. Check all fields");
+          console.log(error);
+        });
+    }
   };
 
   const handleSelectedGroupChange = (group) => {

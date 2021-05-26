@@ -81,11 +81,6 @@
   padding: 0 20px;
 }
 
-.chat-title > img {
-  width: 36px;
-  height: 36px;
-}
-
 .chat-message-list {
   display: flex;
   flex-direction: column-reverse;
@@ -154,12 +149,6 @@
   grid-area: chat-form;
   background: var(--black);
   padding: 16px;
-}
-
-.chat-form > img {
-  width: 32px;
-  height: 32px;
-  margin: 15px;
 }
 
 .chat-form input {

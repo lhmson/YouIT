@@ -190,7 +190,7 @@ function Navbar({ selectedMenu, setTxtSearch, txtInitSearch }) {
     // await dispatch(logout(setUser, token, setToken));
     // await dispatch(refreshNotifications());
     // history.push("/login");
-    const browserId = JSON.parse(localStorage.getItem("browser"))?.id
+    const browserId = JSON.parse(localStorage.getItem("browser"))?.id;
 
     await dispatch(signout(browserId));
     localStorage.removeItem("user");
@@ -281,52 +281,6 @@ function Navbar({ selectedMenu, setTxtSearch, txtInitSearch }) {
           </>
         )}
       </Row>
-      {/* <Menu
-        style={styles.greenBackground}
-        theme="dark"
-        mode="horizontal"
-        defaultSelectedKeys={[selectedMenu]}
-      >
-        <Menu.Item key="home">
-          <Link to="/">Home</Link>
-        </Menu.Item>
-        <Menu.Item key="feed">
-          <Link to="/feed">Feed</Link>
-        </Menu.Item>
-        {user ? (
-          <>
-            <div style={styles.right}>
-              <Text className="text-white">{user.result.name}</Text>
-              <Avatar
-                className="mx-2"
-                alt={user.result.name}
-                src={user.result.imageUrl}
-              >
-                {user.result.name.charAt(0)}
-              </Avatar>
-              <Button>
-                <Link to="/" onClick={handleLogOut}>
-                  Logout
-                </Link>
-              </Button>
-            </div>
-          </>
-        ) : (
-          <Menu.Item key="auth">
-            <Link to="/auth">Sign In</Link>
-          </Menu.Item>
-        )}
-        <Menu.Item key="test">
-          <Link to="/posts/60821adcd9bd84174cecee9f">A post</Link>
-        </Menu.Item>
-        <Menu.Item key="userinfo">
-          <Link to="/userinfo">User Info</Link>
-        </Menu.Item>
-
-        <Menu.Item key="createPost">
-          <Link to="/post/create">Create post</Link>
-        </Menu.Item>
-      </Menu> */}
     </Header>
   );
 }
