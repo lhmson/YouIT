@@ -71,7 +71,7 @@ function App() {
           <Route exact path="/group/create" component={CreateGroupPage} />
           <Route exact path="/group/:id" component={GroupPage} />
           <Route exact path="/settings" component={SettingsPage} />
-          <Route path="/activate" component={ActivationPage} />
+          <Route exac path="/activate/:token" component={ActivationPage} />
           <Route>
             <ErrorPage code="404" />
           </Route>

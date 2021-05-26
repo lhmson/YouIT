@@ -4,7 +4,7 @@ import { message } from "antd";
 import { forceGetNewLocalStorageToken } from "../../utils/forceGetNewLocalStorageToken";
 
 export const signin =
-  (formData, router, setLocalStorageUser, oldToken, setToken) =>
+  (formData, router, setLocalStorageUser, oldToken, setToken, setResend) =>
   async (dispatch) => {
     try {
       console.log("signin");
@@ -21,23 +21,22 @@ export const signin =
     } catch (error) {
       const code = error.response.status;
       const data = error.response.data;
-      var mess;
       if (code === 401) {
         if (data.message === "Unactivated") {
-          router.push("/activate");
-        } else mess = "Wrong username or password.";
-      }
-      message.error(mess);
+          setResend(true);
+          message.success("Please check your email to verify.");
+        } else message.error("Wrong username or password.");
+      } else if (code === 500) message.error("Something went wrong.");
     }
   };
 
-export const signup = (formData, router) => async (dispatch) => {
+export const signup = (formData, setResend) => async (dispatch) => {
   try {
     console.log("signup");
     await api.signUp(formData);
     // dispatch({ type: AUTH, data });
-    router.push("/login");
-    message.success("Register successfully!");
+    setResend(true);
+    message.success("Please check your email to verify.");
   } catch (error) {
     var errorMessage;
     switch (error.response.status) {

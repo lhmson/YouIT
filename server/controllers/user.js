@@ -1,8 +1,8 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import nodemailer from "nodemailer";
 
 import User from "../models/user.js";
+import sendVerificationMail from "../utils/sendVerificationMail.js";
 
 const JWT_KEY = "youit";
 
@@ -21,7 +21,8 @@ export const signin = async (req, res) => {
       return res.status(401).json({ message: "Invalid credentials" });
 
     if (!user.activated)
-      return res.status(401).json({ message: "Unactivated" });
+      return res.status(401).json({ message: "Unactivated", result: user });
+
     const token = jwt.sign({ email: user.email, id: user._id }, JWT_KEY, {
       expiresIn: "24h",
     });
@@ -29,6 +30,15 @@ export const signin = async (req, res) => {
     res.status(200).json({ result: user, token });
   } catch (err) {
     res.status(500).json({ message: "Something went wrong" });
+  }
+};
+
+export const resendVerificationMail = async (req, res) => {
+  const { email } = req.body;
+  try {
+    sendVerificationMail(email);
+  } catch (error) {
+    res.status(500).json(error);
   }
 };
 
@@ -60,41 +70,7 @@ export const signup = async (req, res) => {
     //   expiresIn: "24h",
     // });
 
-    const token = jwt.sign({ email: result.email, id: result._id }, JWT_KEY, {
-      expiresIn: "24h",
-    });
-
-    const transporter = nodemailer.createTransport({
-      service: "gmail",
-      auth: {
-        user: "youit.app@gmail.com",
-        pass: "youIT123", // naturally, replace both with your real credentials or an application-specific password
-      },
-    });
-
-    const mailContent = `
-    <h2>Hey, ${firstName} ${lastName}</h2>
-    <p>To complete the process, please verify your email address by clicking the link below or pasting it into your browser:</p>
-    <a>http://localhost:3000/activate/${token}</a>
-    <p>The above activation link expires in 30 minutes.</p>
-    <h3>YouIT Team</p>
-    `;
-
-    const mailOptions = {
-      from: "youit.app@gmail.com",
-      to: "muiheoconghau@gmail.com",
-      subject: "Verify Your Email Address",
-      generateTextFromHTML: true,
-      html: mailContent,
-    };
-
-    transporter.sendMail(mailOptions, function (error, info) {
-      if (error) {
-        console.log(error);
-      } else {
-        console.log("Email sent: " + info.response);
-      }
-    });
+    sendVerificationMail(email);
 
     res.status(201).json({ result });
   } catch (error) {
@@ -134,7 +110,6 @@ export const changePassword = async (req, res) => {
 export const checkPassword = async (req, res) => {
   const { userId } = req;
   const { password } = req.params;
-  console.log("password", req.body);
   try {
     if (!userId) {
       return res
@@ -147,5 +122,33 @@ export const checkPassword = async (req, res) => {
     res.status(200).json(true);
   } catch (err) {
     res.status(500).json({ message: "Something went wrong" });
+  }
+};
+
+export const verifyToken = async (req, res) => {
+  const { token } = req.params;
+  try {
+    jwt.verify(token, JWT_KEY, function (error, decoded) {
+      if (error) {
+        res.status(410).json(error);
+      } else {
+        User.findById(decoded.id).then((user) => {
+          if (user.activated === true) res.status(409).json("alreadyActivated");
+        });
+        User.findByIdAndUpdate(
+          decoded.id,
+          {
+            activated: true,
+          },
+          { new: true },
+          function (err, arr) {
+            if (err) res.status(500).json(err);
+            res.status(200).json(arr);
+          }
+        );
+      }
+    });
+  } catch (err) {
+    res.status(500).json(err);
   }
 };

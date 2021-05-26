@@ -28,15 +28,15 @@ function ErrorPage({ code }) {
       name: "500 INTERNAL SERVER ERROR",
       desc: "There was an error on the server.",
     },
-    {
-      code: "400",
-      name: "400 BAD REQUEST",
-      desc: "There was a problem with the request.",
-    },
   ];
 
   const error = errors.find((e) => e.code === code);
-
+  if (!error)
+    error = {
+      code: "500",
+      name: "500 INTERNAL SERVER ERROR",
+      desc: "There was an error on the server.",
+    };
   return (
     <div
       className="full d-flex align-items-center justify-content-center"
@@ -46,7 +46,7 @@ function ErrorPage({ code }) {
         <img
           src={require(`../../assets/errors/${code}.png`).default}
           alt="error"
-          style={{ width: 400, marginBottom: 24 }}
+          style={{ height: 250, marginBottom: 24 }}
         />
         <Title style={{ fontWeight: "lighter" }}>{error.name}</Title>
         <Title className="mb-4" level={5}>
