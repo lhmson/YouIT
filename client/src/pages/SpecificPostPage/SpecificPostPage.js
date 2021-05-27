@@ -13,6 +13,7 @@ import CommentForm from "../../components/CommentForm/CommentForm.js";
 import Comment from "../../components/Comment/Comment.js";
 import COLOR from "../../constants/colors.js";
 import { useHistory } from "react-router-dom";
+import Loading from "../../components/Loading/Loading.js";
 
 const { Content } = Layout;
 const { Title, Text } = Typography;
@@ -30,7 +31,7 @@ function SpecificPostPage(props) {
   ];
 
   const { id, commentId } = props.match.params;
-  const [post, setPost] = useState([]);
+  const [post, setPost] = useState();
   const [comments, setComments] = useState([]);
   const [otherPosts, setOtherPosts] = useState([]);
   const [sort, setSort] = useState(sorts[0]);
@@ -147,7 +148,7 @@ function SpecificPostPage(props) {
           <Content>
             <div className="mr-4">
               <Card style={{ padding: 16 }}>
-                <FullPost post={post} />
+                {post ? <FullPost post={post} /> : <Loading />}
                 {/* put there for anchor link to comments */}
                 <div id="comments"></div>
                 <CommentForm

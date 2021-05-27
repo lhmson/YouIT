@@ -32,7 +32,23 @@ import {
 } from "../../../api/post";
 const { Title, Text, Paragraph } = Typography;
 
+const allInteractionReducer = (state, action) => {
+  switch (action.type) {
+    case "upvote":
+      return { ...state, upvotes: state.upvotes + 1 };
+    case "downvote":
+      return { ...state, downvotes: state.downvotes + 1 };
+    case "unupvote":
+      return { ...state, upvotes: state.upvotes - 1 };
+    case "undownvote":
+      return { ...state, downvotes: state.downvotes - 1 };
+    default:
+      return state;
+  }
+};
+
 function FullPost({ post }) {
+  // alert(JSON.stringify(post));
   const [myInteractions, setMyInteractions] = useState({});
   const [listInteractions, setListInteractions] = useState({});
   // const [post, setPost] = useState(null);
@@ -45,23 +61,6 @@ function FullPost({ post }) {
     //   downvoteslength: post?.interactionInfo?.listDownvotes?.length,
     // });
   }, [post]);
-
-  const allInteractionReducer = (state, action) => {
-    switch (action.type) {
-      case "upvote":
-        return { ...state, upvotes: state.upvotes + 1 };
-      case "downvote":
-        return { ...state, downvotes: state.downvotes + 1 };
-      case "unupvote":
-        return { ...state, upvotes: state.upvotes - 1 };
-      case "undownvote":
-        return { ...state, downvotes: state.downvotes - 1 };
-      case "init":
-        return listInteractions;
-      default:
-        return state;
-    }
-  };
 
   const [allInteractions, dispatchInteractions] = useReducer(
     allInteractionReducer,

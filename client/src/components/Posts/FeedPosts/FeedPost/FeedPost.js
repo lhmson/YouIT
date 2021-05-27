@@ -300,9 +300,16 @@ function FeedPost({ post, setCurrentId }) {
               sunt in culpa qui officia deserunt mollit anim id est laborum.
             </Paragraph>
             <Paragraph>{post?.content}</Paragraph>
-            <Link to={`/post/${post._id}`} target="_blank">
-              <Text className="clickable bold">Click here to read more</Text>
-            </Link>
+            {/* <Link to={`/post/${post._id}`} target="_blank"> */}
+            <Text
+              onClick={() => {
+                history.push(`/post/${post._id}`);
+              }}
+              className="clickable bold"
+            >
+              Click here to read more
+            </Text>
+            {/* </Link> */}
           </div>
         </div>
         <Row className="justify-content-between my-4">
