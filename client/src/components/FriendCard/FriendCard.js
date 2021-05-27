@@ -36,7 +36,7 @@ function FriendCard(props) {
         if (res.data && res.data instanceof Array) {
           const tempList = [];
           for (let i = 0; i < res.data.length; i++)
-            tempList.push(res.data[i].name);
+            tempList.push({name : res.data[i].name, id : res.data[i]._id});
           setListMutual(tempList);
           console.log(tempList);
         }
@@ -57,7 +57,9 @@ function FriendCard(props) {
             dataSource={data}
             renderItem={(item) => (
               <List.Item>
-                <Text style={styles.text}>{item}</Text>
+              <Link to={`/userinfo/${item.id}`}>
+                <Text style={styles.text}>{item.name}</Text>
+              </Link>                
               </List.Item>
             )}
           />

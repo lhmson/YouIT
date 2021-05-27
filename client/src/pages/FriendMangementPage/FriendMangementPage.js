@@ -23,7 +23,7 @@ function FriendMangementPage() {
   const [txtSearch, setTxtSearch] = useState("");
 
   useEffect(() => {
-    console.log(user);
+    console.log("User", user);
     api
       .fetchListMyFriends(user?.result?._id)
       .then((res) => {
