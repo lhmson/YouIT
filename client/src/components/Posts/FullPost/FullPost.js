@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useReducer, useState } from "react";
 import {
   Avatar,
   Typography,
@@ -8,6 +8,7 @@ import {
   Menu,
   Dropdown,
   message,
+  Tooltip,
 } from "antd";
 import { MdPublic } from "react-icons/md";
 import {
@@ -23,11 +24,121 @@ import {
 } from "@ant-design/icons";
 import styles from "./styles";
 import { useLocalStorage } from "../../../hooks/useLocalStorage";
-
+import {
+  upvotePost,
+  unvotePost,
+  downvotePost,
+  getMyInteractions,
+} from "../../../api/post";
 const { Title, Text, Paragraph } = Typography;
 
-function FullPost(props) {
-  const { post } = props;
+function FullPost({ post }) {
+  const [myInteractions, setMyInteractions] = useState({});
+  const [listInteractions, setListInteractions] = useState({});
+  // const [post, setPost] = useState(null);
+
+  useEffect(() => {
+    // setPost(props.post);
+    fetchMyInteractions();
+    // setListInteractions({
+    //   upvoteslength: post?.interactionInfo?.listUpvotes?.length,
+    //   downvoteslength: post?.interactionInfo?.listDownvotes?.length,
+    // });
+  }, [post]);
+
+  const allInteractionReducer = (state, action) => {
+    switch (action.type) {
+      case "upvote":
+        return { ...state, upvotes: state.upvotes + 1 };
+      case "downvote":
+        return { ...state, downvotes: state.downvotes + 1 };
+      case "unupvote":
+        return { ...state, upvotes: state.upvotes - 1 };
+      case "undownvote":
+        return { ...state, downvotes: state.downvotes - 1 };
+      case "init":
+        return listInteractions;
+      default:
+        return state;
+    }
+  };
+
+  const [allInteractions, dispatchInteractions] = useReducer(
+    allInteractionReducer,
+    {
+      upvotes: post?.interactionInfo?.listUpvotes?.length,
+      downvotes: post?.interactionInfo?.listDownvotes?.length,
+      // upvotes: listInteractions.upvoteslength,
+      // downvotes: listInteractions.downvoteslength,
+      // add more items later
+    }
+  );
+
+  const handleUpvoteClick = async (id) => {
+    if (myInteractions?.upvote) {
+      await unvotePost(id)
+        .then((res) => {
+          fetchMyInteractions();
+          dispatchInteractions({ type: "unupvote" });
+        })
+        .catch((error) => {
+          message.error("Something goes wrong with post upvote");
+          console.log(error);
+        });
+    } else {
+      await upvotePost(id)
+        .then((res) => {
+          if (myInteractions?.downvote) {
+            dispatchInteractions({ type: "undownvote" });
+          }
+          fetchMyInteractions();
+          dispatchInteractions({ type: "upvote" });
+        })
+        .catch((error) => {
+          message.error("Something goes wrong with post unvote");
+          console.log(error);
+        });
+    }
+  };
+
+  const handleDownvoteClick = async (id) => {
+    if (myInteractions?.downvote) {
+      await unvotePost(id)
+        .then((res) => {
+          fetchMyInteractions();
+          dispatchInteractions({ type: "undownvote" });
+        })
+        .catch((error) => {
+          message.error("Something goes wrong with post downvote");
+          console.log(error);
+        });
+    } else {
+      await downvotePost(id)
+        .then((res) => {
+          if (myInteractions?.upvote) {
+            dispatchInteractions({ type: "unupvote" });
+          }
+          fetchMyInteractions();
+          dispatchInteractions({ type: "downvote" });
+        })
+        .catch((error) => {
+          message.error("Something goes wrong with post unvote");
+          console.log(error);
+        });
+    }
+  };
+
+  const fetchMyInteractions = () => {
+    getMyInteractions(post._id)
+      .then((res) => {
+        setMyInteractions(res.data);
+        console.log("aaaaaaaaaaaaaaaaaa", res, post);
+      })
+      .catch((error) => {
+        message.error("Something goes wrong with post interactions");
+        console.log("uwuwuuw", error, post);
+      });
+  };
 
   const [user] = useLocalStorage("user");
 
@@ -149,9 +260,28 @@ function FullPost(props) {
           <Row>
             <Space size="large">
               <Space>
-                <ArrowUpOutlined className="clickable icon" />
-                <Text strong>150</Text>
-                <ArrowDownOutlined className="clickable icon" />
+                <Text strong style={{ fontSize: "1.5rem" }}>
+                  {allInteractions.upvotes}
+                </Text>
+                <Tooltip title="Upvote">
+                  <ArrowUpOutlined
+                    className={`clickable icon ${
+                      myInteractions?.upvote ? "green" : "black"
+                    }`}
+                    onClick={() => handleUpvoteClick(post._id)}
+                  />
+                </Tooltip>
+                <Tooltip title="Downvote">
+                  <ArrowDownOutlined
+                    className={`clickable icon ${
+                      myInteractions?.downvote ? "green" : "black"
+                    }`}
+                    onClick={() => handleDownvoteClick(post._id)}
+                  />
+                </Tooltip>
+                <Text strong style={{ fontSize: "1.5rem" }}>
+                  {allInteractions.downvotes}
+                </Text>
               </Space>
             </Space>
           </Row>

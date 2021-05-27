@@ -62,6 +62,7 @@ function CommentForm({ onSubmit, label, onDiscard }) {
               style={{ height: 200 }}
               onChange={(e) => setInputComment({ content: e.target.value })}
               value={inputComment}
+              autoSize={{ minRows: 3, maxRows: 15 }}
             />
           </Form.Item>
 

@@ -215,6 +215,21 @@ input:-webkit-autofill:active {
   color: rgb(43, 49, 55);
 }
 
+.ellipsis {
+  height: 175px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  /* z-index: -9999; */
+}
+
+.bottom-fade {
+  height: 128px;
+  margin-top: -128px;
+  background-image: url("./assets/fade.png");
+  transform: rotate(360deg);
+  pointer-events: none;
+}
+
 /* scroll bar handle */
 /* ::-webkit-scrollbar {
   width: 12px;

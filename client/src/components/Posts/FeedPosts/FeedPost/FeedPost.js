@@ -141,7 +141,6 @@ function FeedPost({ post, setCurrentId }) {
   //#region handle interaction
   useEffect(() => {
     fetchMyInteractions();
-    console.log("post id");
     getCommentsNumber(post?._id).then((cn) => {
       setCommentsNumber(cn.data);
     });
