@@ -10,3 +10,4 @@ export const checkPassword = (password) => {
 export const verifyToken = (token) => API.put(`user/verify/${token}`);
 export const resendVerificationMail = (email) =>
   API.post(`user/resend`, { email: email });
+export const signOut = (browserId) => API.post("/user/signout", { browserId });

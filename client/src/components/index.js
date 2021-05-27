@@ -38,6 +38,8 @@ import GroupBasicInfo from "./GroupPage/GroupBasicInfo/GroupBasicInfo";
 import GroupAboutCard from "./GroupPage/GroupAboutCard/GroupAboutCard";
 import IntroCard from "./IntroCard/IntroCard";
 
+import ChatSidebar from "./Chat/ChatSidebar/ChatSidebar";
+
 export {
   SignInForm,
   SignUpForm,
@@ -70,4 +72,5 @@ export {
   GroupBasicInfo,
   GroupAboutCard,
   IntroCard,
+  ChatSidebar,
 };

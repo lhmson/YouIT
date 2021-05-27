@@ -21,6 +21,7 @@ import {
   RegisterPage,
   ErrorPage,
   HomePage,
+  MessagePage,
 } from "./pages/index";
 
 import FriendMangementPage from "./pages/FriendMangementPage/FriendMangementPage";
@@ -72,6 +73,7 @@ function App() {
           <Route exact path="/group/:id" component={GroupPage} />
           <Route exact path="/settings" component={SettingsPage} />
           <Route exac path="/activate/:token" component={ActivationPage} />
+          <PrivateRoute exact path="/message" component={MessagePage} />
           <Route>
             <ErrorPage code="404" />
           </Route>

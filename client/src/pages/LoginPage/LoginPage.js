@@ -52,6 +52,8 @@ function LoginPage() {
   const handleResend = async () => {
     resendVerificationMail(form.email);
     message.success("Verification mail sent!");
+    const browserId = JSON.parse(localStorage.getItem("browser"))?.id;
+    dispatch(signin({ ...form, browserId }, history, setUser, token, setToken));
   };
 
   const handleFinishFailed = (errorInfo) => {

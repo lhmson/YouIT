@@ -24,6 +24,7 @@ export const FETCH_SEARCH_USER = "FETCH_SEARCH_USER";
 
 // Group
 export const CREATE_GROUP = "CREATE_GROUP";
+export const FETCH_USER_JOINED_GROUPS = "FETCH_USER_GROUPS";
 
 // notifications
 export const FETCH_USER_NOTIFICATIONS = "FETCH_USER_NOTIFICATIONS";

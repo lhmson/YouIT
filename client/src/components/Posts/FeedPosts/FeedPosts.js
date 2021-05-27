@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { Row, Layout } from "antd";
+import { Row } from "antd";
 import Loading from "../../Loading/Loading";
 import styles from "./styles";
 
@@ -10,8 +10,6 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import * as api from "../../../api/post";
 
 import FeedPost from "./FeedPost/FeedPost";
-
-const { Content } = Layout;
 
 function FeedPosts({ setCurrentId }) {
   // const posts = useSelector((state) => state.posts);
@@ -62,7 +60,7 @@ function FeedPosts({ setCurrentId }) {
   // const [isFetching, setIsFetching] = useInfiniteScroll(fetchMorePosts);
 
   return (
-    <Content>
+    <div>
       {!posts.length ? (
         <Loading />
       ) : (
@@ -72,6 +70,7 @@ function FeedPosts({ setCurrentId }) {
             next={() => fetchMorePosts()}
             hasMore={hasMore}
             loader={<Loading />}
+            scrollableTarget="scrollableDiv"
             endMessage={
               <p style={{ textAlign: "center", fontSize: "1rem" }}>
                 <b>You have reached all posts. Let's share your own, right?</b>
@@ -91,7 +90,7 @@ function FeedPosts({ setCurrentId }) {
           {/* {isFetching && hasMore && <Loading />} */}
         </div>
       )}
-    </Content>
+    </div>
   );
 }
 

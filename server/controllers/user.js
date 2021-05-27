@@ -4,11 +4,13 @@ import jwt from "jsonwebtoken";
 import User from "../models/user.js";
 import sendVerificationMail from "../utils/sendVerificationMail.js";
 
+import { cuteIO } from "../index.js";
+import { httpStatusCodes } from "../utils/httpStatusCode.js";
+
 const JWT_KEY = "youit";
 
 export const signin = async (req, res) => {
-  console.log("signin");
-  const { email, password } = req.body;
+  const { email, password, browserId } = req.body;
 
   try {
     const user = await User.findOne({ email });
@@ -24,8 +26,12 @@ export const signin = async (req, res) => {
       return res.status(401).json({ message: "Unactivated", result: user });
 
     const token = jwt.sign({ email: user.email, id: user._id }, JWT_KEY, {
-      expiresIn: "24h",
+      // expiresIn: "24h",
     });
+
+    if (browserId) {
+      cuteIO.sendToBrowser(browserId, "System-SignedIn", {});
+    }
 
     res.status(200).json({ result: user, token });
   } catch (err) {
@@ -151,4 +157,15 @@ export const verifyToken = async (req, res) => {
   } catch (err) {
     res.status(500).json(err);
   }
+};
+export const signout = async (req, res) => {
+  const { browserId } = req.body;
+
+  if (browserId) {
+    cuteIO.sendToBrowser(browserId, "System-InvalidToken", {
+      enableAlert: false,
+    });
+  }
+
+  res.status(httpStatusCodes.accepted).send("Ok");
 };

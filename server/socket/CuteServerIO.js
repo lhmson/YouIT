@@ -22,6 +22,7 @@ export default class CuteServerIO {
   #ANONYMOUS_ROOM_PREFIX = "ANONYMOUS~"
   #USER_ROOM_PREFIX = "USER~"
   #TOKEN_ROOM_PREFIX = "TOKEN~"
+  #BROWSER_ROOM_PREFIX = "BROWSER~"
 
 
 
@@ -46,14 +47,15 @@ export default class CuteServerIO {
   /**
    * extract token and userId from a socket.
    * @param {Socket} socket 
-   * @returns {{socket: string, token: string, userId: string}}
+   * @returns {{socket: string, token: string, userId: string, browserId: string}}
    */
   #extractInfoSocket = (socket) => {
     // user must provide a token in order to connect to this server.
     const token = socket.handshake.query.token;
+    const browserId = socket.handshake.query.browserId;
     const userId = verifyJwt(token)?.id;
 
-    return { socket, token, userId }
+    return { socket, token, userId, browserId }
   }
 
 
@@ -72,13 +74,14 @@ export default class CuteServerIO {
   onReceive = (socket, eventName, handleFunction) => {
     if (typeof socket === "string")
       socket = this.#getSocket(socket);
-    const { userId, token } = this.#extractInfoSocket(socket)
+    const { userId, token, browserId } = this.#extractInfoSocket(socket)
 
     socket.on(eventName, (msg) => {
       handleFunction({
         userId,
         token,
         socket,
+        browserId,
         msg,
         cuteServerIo: this,
       })
@@ -106,19 +109,47 @@ export default class CuteServerIO {
   */
   start = () => {
     this.#io.on("connection", async socket => {
-      const { token, userId } = this.#extractInfoSocket(socket)
+      let { token, userId, browserId } = this.#extractInfoSocket(socket)
+      let logOutTask;
+
+      if (!browserId) {
+        browserId = socket.id + "-" + Date.now().toString();
+      }
+
+      this.sendToSocket(socket, "System-AcceptBrowserId", { browserId });
 
       try {
         if (!token || !userId) {
           // signed in anonymously
-          socket.join(this.#ANONYMOUS_ROOM_PREFIX)
+          socket.join([
+            this.#ANONYMOUS_ROOM_PREFIX,
+            this.#BROWSER_ROOM_PREFIX + browserId,
+          ])
+
+          // force user to log out if the token is not valid
+          if (token && token !== "undefined" && token !== "null" && !userId) {
+            this.sendToSocket(socket, "System-InvalidToken", { enableAlert: true });
+          }
+
         }
         else {
           // Add this socket to a room with id User. every socket here belongs to this user only.
           socket.join([
             this.#USER_ROOM_PREFIX + userId,
             this.#TOKEN_ROOM_PREFIX + token,
+            this.#BROWSER_ROOM_PREFIX + browserId,
           ]);
+
+          const { exp } = verifyJwt(token);
+          // auto logout on expiration
+          if (exp) {
+            logOutTask = setTimeout(
+              () => {
+                this.sendToSocket(socket, "System-InvalidToken", { enableAlert: true });
+              },
+              exp * 1000 - Date.now()
+            )
+          }
         }
 
         // add handlers to call whenever this client send something to the server
@@ -129,17 +160,20 @@ export default class CuteServerIO {
         }
 
         socket.on("disconnect", (reason) => {
-          console.log(`[IO] Disconnected from socket ${socket.id}. Reason: ${reason}`)
+          if (logOutTask)
+            clearTimeout(logOutTask);
+
+          console.info(`[IO] Disconnected from ${socket.id}. Reason: ${reason}`)
         })
 
         if (userId)
-          console.log(`[IO] Connected to user ${userId} from socket ${socket.id}`);
+          console.info(`[IO] Connected to ${socket.id}: User ${userId}.`);
         else
-          console.log(`[IO] Connected to an anonymous user from socket ${socket.id}`);
+          console.info(`[IO] Connected to ${socket.id}: Anonymous`);
       }
       catch (error) {
         // CuteTN Todo: send something back to client maybe
-        console.log(`[IO] Error: cannot connect to a client with socket id ${socket.id}. Reason: ${error}`);
+        console.error(`[IO] Connection Error on ${socket.id}. Reason: ${error}`);
         socket.disconnect();
       }
     })
@@ -181,6 +215,30 @@ export default class CuteServerIO {
 
 
 
+
+  /**
+   * 
+   * @param {string?} toBrowserId 
+   * @param {string?} event Convention: Action_Receiver
+   * @param {any} msg 
+   * @param {Socket?} excludedSocket sometimes we dont wanna send some message back to the sender (client). That's when this is helpful :)
+   */
+  sendToBrowser = (toBrowserId, event, msg, excludedSocket) => {
+    const roomName = this.#BROWSER_ROOM_PREFIX + toBrowserId
+
+    if (
+      excludedSocket && excludedSocket.broadcast
+      && excludedSocket.rooms.has(roomName)
+    ) {
+      excludedSocket.broadcast.to(roomName).emit(event, msg)
+    }
+    else
+      this.#io.in(roomName).emit(event, msg)
+  }
+
+
+
+
   /**
    * 
    * @param {string?} toUserId
@@ -189,7 +247,6 @@ export default class CuteServerIO {
    * @param {Socket?} excludedSocket sometimes we dont wanna send some message back to the sender (client). That's when this is helpful :)
    */
   sendToUser = (toUserId, event, msg, excludedSocket) => {
-    console.log("sent to user", toUserId);
     const roomName = this.#USER_ROOM_PREFIX + toUserId
 
     if (excludedSocket && excludedSocket.broadcast) {
@@ -214,6 +271,17 @@ export default class CuteServerIO {
     else
       this.#io.emit(event, msg)
   }
+
+
+
+  countUserSockets = (userId) => {
+    userId = userId.toString();
+    const room = this.#io?.sockets.adapter.rooms.get(this.#USER_ROOM_PREFIX + userId);
+    if (room)
+      return room.size;
+
+    return 0;
+  }
 }
 
 
@@ -226,6 +294,7 @@ export default class CuteServerIO {
  * @typedef {object} OnReceiveParams
  * @property {string?} userId
  * @property {string?} token
+ * @property {string?} browserId
  * @property {Socket?} socket
  * @property {string?} eventName
  * @property {CuteServerIO} cuteServerIo

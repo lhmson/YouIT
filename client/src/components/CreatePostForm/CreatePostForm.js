@@ -1,21 +1,20 @@
 import React, { useEffect, useState } from "react";
-import { Button } from "antd";
+import { Button, message } from "antd";
 import CreatePostPrivacySelect from "./CreatePostPrivacySelect/CreatePostPrivacySelect.js";
 import CreatePostSpaceAutoComplete from "./CreatePostSpaceAutoComplete/CreatePostSpaceAutoComplete.js";
 import CreatePostTagSelect from "./CreatePostTagSelect/CreatePostTagSelect.js";
 import CreatePostTitleInput from "./CreatePostTitleInput/CreatePostTitleInput.js";
 import styles from "./styles.js";
-import { createPost } from "../../api/post.js";
-import { useHistory, useLocation } from "react-router";
+import * as api from "../../api/post.js";
+import { useHistory } from "react-router";
 import PostEditor from "./PostEditor/PostEditor.js";
-import { io } from "socket.io-client";
 
-function CreatePostForm() {
-  const [postTitle, setPostTitle] = useState("");
-  const [postContent, setPostContent] = useState("");
-  const [postSpace, setPostSpace] = useState("");
-  const [postPrivacy, setPostPrivacy] = useState("");
-  const [socket, setSocket] = useState(io("http://localhost:5000"));
+function CreatePostForm({ postId, title, content, privacy }) {
+  const [postTitle, setPostTitle] = useState(title ?? "");
+  const [postContent, setPostContent] = useState(content ?? "");
+  const [postSpace, setPostSpace] = useState(""); // just text
+  const [selectedGroup, setSelectedGroup] = useState(null); // actual group
+  const [postPrivacy, setPostPrivacy] = useState(privacy ?? "");
 
   const history = useHistory();
 
@@ -25,17 +24,37 @@ function CreatePostForm() {
       content: postContent,
       privacy: postPrivacy,
     };
+
+    if (selectedGroup) {
+      result.groupId = selectedGroup._id;
+    }
+
     return result;
   };
 
   const handleSavePostButtonClick = () => {
     const newPost = wrapPostData();
-    createPost(newPost)
-      .then((res) => history.push(`/post/${res.data._id}`)) // go to specific post
-      .catch((error) => {
-        alert("Something goes wrong");
-        console.log(error);
-      });
+    if (!postId) {
+      api
+        .createPost(newPost)
+        .then((res) => history.push(`/post/${res.data._id}`)) // go to specific post
+        .catch((error) => {
+          message.error("Something goes wrong. Check all fields");
+          console.log(error);
+        });
+    } else {
+      api
+        .updatePost(postId, newPost)
+        .then((res) => history.push(`/post/${res.data._id}`))
+        .catch((error) => {
+          message.error("Something goes wrong. Check all fields");
+          console.log(error);
+        });
+    }
+  };
+
+  const handleSelectedGroupChange = (group) => {
+    setSelectedGroup(group);
   };
 
   return (
@@ -45,7 +64,11 @@ function CreatePostForm() {
           <CreatePostTitleInput title={postTitle} setTitle={setPostTitle} />
         </div>
         <div className="col-4">
-          <CreatePostSpaceAutoComplete setPostSpace={setPostSpace} />
+          <CreatePostSpaceAutoComplete
+            postSpace={postSpace}
+            setPostSpace={setPostSpace}
+            onSelectedGroupChange={handleSelectedGroupChange}
+          />
         </div>
       </div>
 

@@ -9,8 +9,9 @@ import {
   Dropdown,
   message,
   Tooltip,
+  Modal,
 } from "antd";
-import { MdPublic } from "react-icons/md";
+
 import {
   EllipsisOutlined,
   ArrowUpOutlined,
@@ -21,7 +22,11 @@ import {
   CaretRightOutlined,
   DeleteFilled,
   BellOutlined,
+  ExclamationCircleOutlined,
 } from "@ant-design/icons";
+import { MdPublic } from "react-icons/md";
+import { GiThreeFriends } from "react-icons/gi";
+import { IoPerson } from "react-icons/io5";
 import styles from "./styles";
 import { useLocalStorage } from "../../../hooks/useLocalStorage";
 import {
@@ -30,7 +35,12 @@ import {
   downvotePost,
   getMyInteractions,
 } from "../../../api/post";
+import { Link, useHistory } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { deletePost } from "../../../redux/actions/posts";
+
 const { Title, Text, Paragraph } = Typography;
+const { confirm } = Modal;
 
 const allInteractionReducer = (state, action) => {
   switch (action.type) {
@@ -48,6 +58,8 @@ const allInteractionReducer = (state, action) => {
 };
 
 function FullPost({ post }) {
+  const dispatch = useDispatch();
+  const history = useHistory();
   // alert(JSON.stringify(post));
   const [myInteractions, setMyInteractions] = useState({});
   const [listInteractions, setListInteractions] = useState({});
@@ -145,17 +157,62 @@ function FullPost({ post }) {
 
   const tagList = ["Tag 1", "Tag 2", "Tag 3", "Tag 4", "Tag 5"];
 
+  //#region menu more
+
+  const showConfirmDeletePost = (id) => {
+    confirm({
+      title: "Do you Want to delete this post?",
+      icon: <ExclamationCircleOutlined />,
+      content: "You cannot undo this action",
+      onOk() {
+        dispatch(deletePost(id));
+        message.success("Post has been deleted");
+        history.push("/feed");
+        window.location.reload(); // load feed to have new items
+      },
+      onCancel() {
+        message.info("Post is not deleted");
+      },
+    });
+  };
+
+  const handleDeletePost = (id) => {
+    showConfirmDeletePost(id);
+  };
+
+  const handleEditPost = (postId, postTitle, postPrivacy, postContent) => {
+    history.push({
+      pathname: "/post/create",
+      state: { postId, postTitle, postContent, postPrivacy },
+    });
+  };
+
   const menuMore = (
     <Menu>
-      {user?.result?._id === post?.userId?._id ? (
+      {user?.result._id === post?.userId._id ? (
         <>
-          <Menu.Item key="1">
+          <Menu.Item
+            key="edit"
+            onClick={() =>
+              handleEditPost(
+                post?._id,
+                post?.title,
+                post?.privacy,
+                post?.content
+              )
+            }
+          >
             <Row align="middle">
               <EditFilled className="mr-2" />
               <Text>Edit post</Text>
             </Row>
           </Menu.Item>
-          <Menu.Item key="2">
+          <Menu.Item
+            key="delete"
+            onClick={() => {
+              handleDeletePost(post?._id);
+            }}
+          >
             <Row align="middle">
               <DeleteFilled className="red mr-2" />
               <Text className="red">Delete post</Text>
@@ -163,7 +220,7 @@ function FullPost({ post }) {
           </Menu.Item>
         </>
       ) : (
-        <Menu.Item key="0">
+        <Menu.Item key="follow">
           <Row align="middle">
             <BellOutlined className="mr-2" />
             <Text>Follow post</Text>
@@ -173,6 +230,36 @@ function FullPost({ post }) {
     </Menu>
   );
 
+  //#endregion
+
+  // const menuMore = (
+  //   <Menu>
+  //     {user?.result?._id === post?.userId?._id ? (
+  //       <>
+  //         <Menu.Item key="1">
+  //           <Row align="middle">
+  //             <EditFilled className="mr-2" />
+  //             <Text>Edit post</Text>
+  //           </Row>
+  //         </Menu.Item>
+  //         <Menu.Item key="2">
+  //           <Row align="middle">
+  //             <DeleteFilled className="red mr-2" />
+  //             <Text className="red">Delete post</Text>
+  //           </Row>
+  //         </Menu.Item>
+  //       </>
+  //     ) : (
+  //       <Menu.Item key="0">
+  //         <Row align="middle">
+  //           <BellOutlined className="mr-2" />
+  //           <Text>Follow post</Text>
+  //         </Row>
+  //       </Menu.Item>
+  //     )}
+  //   </Menu>
+  // );
+
   const copyLink = (id) => {
     navigator.clipboard
       .writeText(`localhost:3000/post/${id}`) // change to deployment link later
@@ -181,6 +268,23 @@ function FullPost({ post }) {
         message.error("Something goes wrong copying link");
         console.log(id);
       });
+  };
+
+  const groupId = post?.groupPostInfo?.groupId;
+
+  const renderPrivacyIcon = (privacy) => {
+    switch (privacy) {
+      case "Friend":
+        return <GiThreeFriends className="gray mr-1 icon" />;
+      case "Private":
+        return <IoPerson className="gray mr-1 icon" />;
+      case "Public":
+        return <MdPublic className="gray mr-1 icon" />;
+      case "Group":
+        return <MdPublic className="gray mr-1 icon" />;
+      default:
+        return <MdPublic className="gray mr-1 icon" />;
+    }
   };
 
   return (
@@ -206,26 +310,34 @@ function FullPost({ post }) {
                   >
                     {post?.userId?.name}
                   </Text>
-                  <CaretRightOutlined
-                    style={{ fontSize: 18, paddingBottom: 5 }}
-                  />
-                  <Text
-                    className="clickable"
-                    strong
-                    style={{ fontSize: "1.2rem" }}
-                  >
-                    Trại tâm thần đa ngôn ngữ*
-                  </Text>
+                  {groupId && (
+                    <>
+                      <CaretRightOutlined
+                        style={{ fontSize: 18, paddingBottom: 5 }}
+                      />
+                      <Link to={`/group/${groupId._id}`}>
+                        <Text
+                          className="clickable"
+                          strong
+                          style={{ fontSize: "1.2rem" }}
+                        >
+                          {groupId.name}
+                        </Text>
+                      </Link>
+                    </>
+                  )}
                 </Space>
               </Row>
               <Text>Fullstack Developer</Text>
             </div>
           </Row>
           <Row className="justify-content-end align-items-center pb-3">
-            <MdPublic className="gray mr-1" style={{ fontSize: 16 }} />
-            <div className="mr-4">
-              <Text type="secondary">Public</Text>
-            </div>
+            {renderPrivacyIcon(post?.privacy)}
+            <Tooltip title="Privacy">
+              <div className="mr-4">
+                <Text type="secondary">{post?.privacy}</Text>
+              </div>
+            </Tooltip>
             <div className="mr-4">
               <Text className="clickable" underline type="secondary">
                 Last edited {post?.updatedAt?.toString().slice(0, 10)}

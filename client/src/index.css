@@ -49,6 +49,10 @@ body {
   background-color: white;
 }
 
+.bg-green {
+  background-color: var(--green-smoke);
+}
+
 .black {
   color: var(--black);
 }
@@ -249,3 +253,17 @@ input:-webkit-autofill:active {
 /* background: var(--light-green); */
 /* -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.5); */
 /* } */
+
+.ant-menu.ant-menu-dark .ant-menu-item:hover.navitem {
+  background-color: var(--dark-green); /*Overriden property*/
+}
+
+.ant-menu.ant-menu-dark > .ant-menu-item-active.pickitem,
+.ant-menu.ant-menu-dark > .ant-menu-item-selected.pickitem {
+  background-color: var(--green-smoke); /*Overriden property*/
+}
+
+.ant-menu.ant-menu-dark > .ant-menu-item-active.notpickitem,
+.ant-menu.ant-menu-dark > .ant-menu-item-selected.notpickitem {
+  background-color: transparent; /*Overriden property*/
+}

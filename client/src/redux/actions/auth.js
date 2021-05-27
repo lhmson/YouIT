@@ -14,9 +14,10 @@ export const signin =
       // setTimeout(() => {
       //   setToken(JSON.parse(localStorage.getItem("user"))?.token);
       // }, 2000);
-      forceGetNewLocalStorageToken(oldToken, setToken);
+      // forceGetNewLocalStorageToken(oldToken, setToken);
 
-      router.push("/");
+      // router.push("/");
+      window.location.reload();
       message.success("Login successfully!");
     } catch (error) {
       const code = error.response.status;
@@ -50,12 +51,15 @@ export const signup = (formData, setResend) => async (dispatch) => {
   }
 };
 
-export const logout =
-  (setLocalStorageUser, oldToken, setToken) => async (dispatch) => {
-    dispatch({ type: LOGOUT, setLocalStorageUser });
-    // setTimeout(() => {
-    //   setToken(JSON.parse(localStorage.getItem("user"))?.token);
-    //   // setToken(null);
-    // }, 2000);
-    forceGetNewLocalStorageToken(oldToken, setToken);
-  };
+export const signout = (browserId) => async (dispatch) => {
+  api.signOut(browserId);
+};
+// (setLocalStorageUser, oldToken, setToken) => async (dispatch) => {
+// dispatch({ type: LOGOUT, setLocalStorageUser });
+// setTimeout(() => {
+//   setToken(JSON.parse(localStorage.getItem("user"))?.token);
+//   // setToken(null);
+// }, 2000);
+// window.location.reload(); // this is to make force log out work :)
+// forceGetNewLocalStorageToken(oldToken, setToken);
+// };

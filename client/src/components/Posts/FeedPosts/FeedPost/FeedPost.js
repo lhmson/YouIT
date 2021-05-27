@@ -17,6 +17,7 @@ import {
   ArrowDownOutlined,
   LinkOutlined,
   ShareAltOutlined,
+  CaretRightOutlined,
   EditFilled,
   DeleteFilled,
   BellOutlined,
@@ -101,18 +102,28 @@ function FeedPost({ post, setCurrentId }) {
     showConfirmDeletePost(id);
   };
 
-  const handleEditPost = (id) => {
+  const handleEditPost = (postId, postTitle, postPrivacy, postContent) => {
     history.push({
       pathname: "/post/create",
-      state: { postId: id },
+      state: { postId, postTitle, postContent, postPrivacy },
     });
   };
 
   const menuMore = (
     <Menu>
-      {user.result._id === post?.userId._id ? (
+      {user?.result._id === post?.userId._id ? (
         <>
-          <Menu.Item key="edit" onClick={() => handleEditPost(post._id)}>
+          <Menu.Item
+            key="edit"
+            onClick={() =>
+              handleEditPost(
+                post?._id,
+                post?.title,
+                post?.privacy,
+                post?.content
+              )
+            }
+          >
             <Row align="middle">
               <EditFilled className="mr-2" />
               <Text>Edit post</Text>
@@ -220,6 +231,23 @@ function FeedPost({ post, setCurrentId }) {
       });
   };
 
+  const groupId = post?.groupPostInfo?.groupId;
+
+  const renderPrivacyIcon = (privacy) => {
+    switch (privacy) {
+      case "Friend":
+        return <GiThreeFriends className="gray mr-1 icon" />;
+      case "Private":
+        return <IoPerson className="gray mr-1 icon" />;
+      case "Public":
+        return <MdPublic className="gray mr-1 icon" />;
+      case "Group":
+        return <MdPublic className="gray mr-1 icon" />;
+      default:
+        return <MdPublic className="gray mr-1 icon" />;
+    }
+  };
+
   return (
     <div style={styles.item}>
       <div style={{ margin: 12 }}>
@@ -242,19 +270,30 @@ function FeedPost({ post, setCurrentId }) {
                       {post?.userId?.name}
                     </Text>
                   </Link>
+
+                  {groupId && (
+                    <>
+                      <CaretRightOutlined
+                        style={{ fontSize: 18, paddingBottom: 5 }}
+                      />
+                      <Link to={`/group/${groupId._id}`} target="_blank">
+                        <Text
+                          className="clickable"
+                          strong
+                          style={{ fontSize: "1.2rem" }}
+                        >
+                          {groupId.name}
+                        </Text>
+                      </Link>
+                    </>
+                  )}
                 </Space>
               </Row>
               <Text>Fullstack Developer</Text>
             </div>
           </Row>
           <Row className="justify-content-end align-items-center pb-3">
-            {post?.privacy === "Friend" ? (
-              <GiThreeFriends className="gray mr-1 icon" />
-            ) : post?.privacy === "Private" ? (
-              <IoPerson className="gray mr-1 icon" />
-            ) : (
-              <MdPublic className="gray mr-1 icon" />
-            )}
+            {renderPrivacyIcon(post?.privacy)}
             <Tooltip title="Privacy">
               <div className="mr-4">
                 <Text type="secondary">{post?.privacy}</Text>

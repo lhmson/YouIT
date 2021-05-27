@@ -1,9 +1,9 @@
 import CuteClientIO from "../socket/CuteClientIO"
-import { notifyOnUpvote } from "./postHandlers"
+import { handleSignInOutBrowser } from "./authHandlers"
 
 /**
  * @param {CuteClientIO} cuteIO
  */
 export const handleNewIOConnection = (cuteIO) => {
-  notifyOnUpvote(cuteIO);
+  handleSignInOutBrowser(cuteIO);
 }

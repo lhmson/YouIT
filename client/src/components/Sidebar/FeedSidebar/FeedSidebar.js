@@ -1,73 +1,50 @@
-import React, { useState, useEffect } from "react";
-import { Layout, Menu, Avatar, Typography } from "antd";
-import {
-  UserOutlined,
-  LaptopOutlined,
-  NotificationOutlined,
-} from "@ant-design/icons";
+import React, { useEffect } from "react";
+import { Layout } from "antd";
 import styles from "./styles.js";
 import { useLocalStorage } from "../../../hooks/useLocalStorage.js";
-import { Link } from "react-router-dom";
 
-const { SubMenu } = Menu;
+import { fetchUserJoinedGroups } from "../../../redux/actions/group";
+import { useSelector, useDispatch } from "react-redux";
+import FeedMenu from "./FeedMenu/FeedMenu.js";
+
 const { Sider } = Layout;
-const { Title, Text } = Typography;
 
 function FeedSidebar() {
   const [user] = useLocalStorage("user");
+  // const [visible, setVisible] = useState(false);
+  const dispatch = useDispatch();
 
-  useEffect(() => {}, []);
+  useEffect(() => {
+    dispatch(fetchUserJoinedGroups());
+  }, []);
+
+  const groups = useSelector((state) => state.groups);
 
   return (
-    <Sider
-      width={200}
-      style={{
-        ...styles.paleBackground,
-        ...styles.fixedSider,
-      }}
-    >
-      <Menu
-        mode="inline"
-        defaultSelectedKeys={["username"]}
-        // defaultOpenKeys={["1"]}
+    <div>
+      <Sider
+        breakpoint="lg"
+        // width={200}
+        collapsedWidth="0"
+        // trigger={null}
         style={{
-          height: "100%",
-          borderRight: 0,
-          fontWeight: 500,
-          fontSize: "1rem",
+          ...styles.paleBackground,
+          ...styles.fixedSider,
         }}
       >
-        {/* <SubMenu key="sub1" title="subnav 1"> */}
-
-        <Menu.Item
-          key="username"
-          style={styles.item}
-          icon={
-            <Avatar alt={user?.result?.name} src={user?.result?.imageUrl}>
-              {user?.result?.name.charAt(0)}
-            </Avatar>
-          }
-        >
-          <Link to={`/userinfo/${user?.result._id}`}>{user?.result?.name}</Link>
-        </Menu.Item>
-
-        <Menu.Item
-          key="friends"
-          style={styles.item}
-          icon={<Avatar style={styles.transparent} />}
-        >
-          Friends
-        </Menu.Item>
-        <Menu.Item
-          key="group"
-          style={styles.item}
-          icon={<Avatar style={styles.transparent} />}
-        >
-          Groups
-        </Menu.Item>
-        {/* </SubMenu> */}
-      </Menu>
-    </Sider>
+        <FeedMenu user={user} groups={groups} />
+      </Sider>
+      {/* <Drawer
+        title="Topics"
+        placement="left"
+        onClick={() => setVisible(false)}
+        onClose={() => setVisible(false)}
+        visible={visible}
+        style={{ zIndex: 100 }}
+      >
+        <FeedMenu user={user} groups={groups} />
+      </Drawer> */}
+    </div>
   );
 }
 
