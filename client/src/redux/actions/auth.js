@@ -21,7 +21,7 @@ export const signin =
     } catch (error) {
       const code = error.response.status;
       const data = error.response.data;
-      if (code === 401) {
+      if (code === 401 || code === 404) {
         if (data.message === "Unactivated") {
           setResend(true);
           message.success("Please check your email to verify.");

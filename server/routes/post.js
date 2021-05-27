@@ -22,6 +22,7 @@ import {
 import {
   createComment,
   getComments,
+  getCommentsNumber,
   replyComment,
 } from "../controllers/comment.js";
 
@@ -35,6 +36,7 @@ router.get("/", getPostsPagination);
 router.get("/:id", getAPost);
 router.get("/:id/others", getOtherPosts);
 router.get("/:id/comment", getComments);
+router.get("/:id/commentsNumber", getCommentsNumber);
 router.get("/list/all", getPosts);
 router.get("/:id/myInteractions/", auth, getMyPostInteractions);
 
