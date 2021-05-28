@@ -21,6 +21,7 @@ import {
   MessageFilled,
   LogoutOutlined,
   EllipsisOutlined,
+  SettingOutlined,
 } from "@ant-design/icons";
 import { useMobile } from "../../utils/responsiveQuery";
 import { useMediaQuery } from "react-responsive";
@@ -197,8 +198,18 @@ function Navbar({ selectedMenu, setTxtSearch, txtInitSearch }) {
     window.location.reload();
   };
 
+  const handleSettings = async () => {
+    history.push("/settings");
+  };
+
   const menuMore = (
     <Menu>
+      <Menu.Item key="settings" onClick={() => handleSettings()}>
+        <Row align="middle">
+          <SettingOutlined className="mr-lg-2" />
+          <Text>Settings</Text>
+        </Row>
+      </Menu.Item>
       {isSmallScreen && <MainMenuItems />}
       <Menu.Item key="logout" onClick={() => handleLogOut()}>
         <Row align="middle">

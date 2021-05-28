@@ -35,6 +35,7 @@ import {
   unvotePost,
   downvotePost,
   getMyInteractions,
+  getCommentsNumber,
 } from "../../../../api/post";
 import { deletePost } from "../../../../redux/actions/posts";
 import { HashLink } from "react-router-hash-link";
@@ -67,6 +68,7 @@ function FeedPost({ post, setCurrentId }) {
   const [user] = useLocalStorage("user");
 
   const [myInteractions, setMyInteractions] = useState({});
+  const [commentsNumber, setCommentsNumber] = useState(0);
 
   const [allInteractions, dispatchInteractions] = useReducer(
     allInteractionReducer,
@@ -150,6 +152,9 @@ function FeedPost({ post, setCurrentId }) {
   //#region handle interaction
   useEffect(() => {
     fetchMyInteractions();
+    getCommentsNumber(post?._id).then((cn) => {
+      setCommentsNumber(cn.data);
+    });
   }, []);
 
   const handleUpvoteClick = async (id) => {
@@ -376,7 +381,7 @@ function FeedPost({ post, setCurrentId }) {
                 <Text
                   style={{ fontSize: "1.2rem" }}
                   className=" clickable bold mx-2"
-                >{`Comment (${post?.comments.length})`}</Text>
+                >{`Comment (${commentsNumber})`}</Text>
               </Link>
             </Space>
           </Row>

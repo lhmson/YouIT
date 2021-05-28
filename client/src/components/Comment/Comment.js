@@ -34,6 +34,7 @@ function Comment({
 }) {
   const [isReply, setIsReply] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
+  const [ellipsis, setEllipsis] = useState("full");
 
   const toggleReply = () => {
     setIsReply(1 - isReply);
@@ -189,8 +190,11 @@ function Comment({
           </a> */}
             </div>
           ) : null}
-          <div className="pb-2">
-            <Paragraph>{comment?.content}</Paragraph>
+          <div className="mb-2">
+            <div className={ellipsis !== "full" && "ellipsis"}>
+              <Paragraph className="">{comment?.content}</Paragraph>
+            </div>
+            {ellipsis !== "full" && <div className="bottom-fade"></div>}
           </div>
           <Row className="justify-content-between mb-4">
             <Row>

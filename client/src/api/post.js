@@ -24,3 +24,6 @@ export const unvotePost = (id) => API.put(`/post/${id}/unvote`);
 export const downvotePost = (id) => API.put(`/post/${id}/downvote`);
 
 export const getMyInteractions = (id) => API.get(`/post/${id}/myInteractions`);
+
+export const getCommentsNumber = (postId) =>
+  API.get(`post/${postId}/commentsNumber`);

@@ -77,10 +77,43 @@ export const getComments = async (req, res) => {
     .then(
       (post) => {
         // console.log(post.comments.length);
+
         post.comments.map((c) => {
           if (c.quotedCommentId === null) console.log("null quoted comment", c);
         });
         res.status(200).json(post.comments);
+      },
+      (err) => {
+        res.status(500).json({ message: err.message });
+      }
+    );
+};
+
+export const getCommentsNumber = async (req, res) => {
+  const { id } = req.params;
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(400).send(`Id ${id} is invalid.`);
+  }
+  Post.findById(id)
+    .populate({
+      path: "comments",
+      populate: {
+        path: "quotedCommentId",
+        populate: {
+          path: "userId",
+          select: "name",
+        },
+      },
+    })
+    .then(
+      (post) => {
+        // console.log(post.comments.length);
+        const commentsNumber = post.comments.length;
+        // post.comments.map((c) => {
+        //   if (c.quotedCommentId === null) commentsNumber = commentsNumber - 1;
+        // });
+        res.status(200).json(commentsNumber);
+        // res.status(200).json(post);
       },
       (err) => {
         res.status(500).json({ message: err.message });

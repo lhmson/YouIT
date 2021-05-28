@@ -33,6 +33,8 @@ import DemoSocket from "./socket/DemoComponent/DemoSocket.js";
 import { useToken } from "./context/TokenContext.js";
 import PrivateRoute from "./utils/PrivateRoute.js";
 import { handleNewIOConnection } from "./notifications/index.js";
+import SettingsPage from "./pages/SettingsPage/SettingsPage.js";
+import ActivationPage from "./pages/ActivationPage/ActivationPage.js";
 
 const loggedIn = () => {
   const user = JSON.parse(localStorage.getItem("user"));
@@ -73,6 +75,8 @@ function App() {
           <Route path="/demoSocketIO" component={DemoSocket} />
           <Route exact path="/group/create" component={CreateGroupPage} />
           <Route exact path="/group/:id" component={GroupPage} />
+          <Route exact path="/settings" component={SettingsPage} />
+          <Route exac path="/activate/:token" component={ActivationPage} />
           <PrivateRoute exact path="/message" component={MessagePage} />
           <Route>
             <ErrorPage code="404" />
