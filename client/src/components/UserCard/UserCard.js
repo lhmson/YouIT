@@ -47,13 +47,38 @@ function UserCard(props) {
     dispatch(addFriendRequest(data));
     await addSendingFriendRequest(data);
   };
+  // xem lai ham nay, cach khac
+  const getMatchFriendRequest = async () => {
+    const listFriendRequests = (await fetchAllFriendRequests()).data;
 
-  const changeStateButton = () => {
-    console.log(txtButton);
+    const friendRequest = listFriendRequests.map((request) => {
+      const listUserId = [request.userConfirmId, request.userSendRequestId];
+      if (listUserId.includes(_id) && listUserId.includes(user?.result?._id))
+        return request;
+    });
+    console.log("friend req", friendRequest[0]);
+    return friendRequest[0];
+  };
+
+  const cancelFriendRequest = async (request) => {
+    deleteFriendRequest(request?._id);
+
+    if (user?._id === request?.userConfirmId) {
+      await removeSendingFriendRequest(request);
+    } else if (user?._id === request?.userSendRequestId) {
+      await removeReceivingFriendRequest(request);
+    }
+    dispatch(removeFriendRequest(request, user));
+  };
+
+  const changeStateButton = async () => {
     if (txtButton === "Add Friend") {
-      handleAddingFriend(_id, user?.result?._id);
+      await handleAddingFriend(_id, user?.result?._id);
       setTxtButton("Cancel Request");
-    } else setTxtButton("Add Friend");
+    } else if (txtButton === "Cancel Request") {
+      await cancelFriendRequest(await getMatchFriendRequest());
+      setTxtButton("Add Friend");
+    }
   };
 
   useEffect(() => {
@@ -61,6 +86,17 @@ function UserCard(props) {
       .fetchCountMutualFriends(user?.result?._id, _id)
       .then((res) => {
         if (res.data) setNumberMutual(res.data);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  }, []);
+
+  useEffect(() => {
+    api
+      .checkFriends(user?.result?._id, _id)
+      .then((res) => {
+        if (res.data) setTxtButton("Friends");
       })
       .catch((e) => {
         console.log(e);
