@@ -15,7 +15,8 @@ import LoginPage from "./LoginPage/LoginPage";
 import RegisterPage from "./RegisterPage/RegisterPage";
 import ErrorPage from "./ErrorPage/ErrorPage";
 import HomePage from "./HomePage/HomePage";
-
+import FriendMangementPage from "./FriendMangementPage/FriendMangementPage";
+import MutualFriendPage from "./FriendMangementPage/MutualFriendPage";
 export {
   HomePage,
   AboutPage,
@@ -34,4 +35,6 @@ export {
   RegisterPage,
   ErrorPage,
   MessagePage,
+  FriendMangementPage,
+  MutualFriendPage,
 };

@@ -126,9 +126,11 @@ function FriendCard(props) {
                 content={popupListMutualFriend(listMutual ?? [])}
                 trigger="hover"
               >
-                <Text style={styles.text}>
-                  {numberMutual} mutual friend{numberMutual >= 2 ? "s" : ""}
-                </Text>
+                <Link to={`/mutualFriends/${_id}`}>
+                  <Text style={styles.text}>
+                    {numberMutual} mutual friend{numberMutual >= 2 ? "s" : ""}
+                  </Text>
+                </Link>
               </Popover>
             </div>
           </div>

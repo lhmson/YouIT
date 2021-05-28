@@ -22,9 +22,10 @@ import {
   ErrorPage,
   HomePage,
   MessagePage,
+  FriendMangementPage,
+  MutualFriendPage,
 } from "./pages/index";
 
-import FriendMangementPage from "./pages/FriendMangementPage/FriendMangementPage";
 import { CuteClientIOProvider } from "./socket/CuteClientIOProvider.js";
 import { useLocalStorage } from "./hooks/useLocalStorage.js";
 import DemoSocket from "./socket/DemoComponent/DemoSocket.js";
@@ -66,6 +67,7 @@ function App() {
           <Route path="/userinfo/:id/about" component={AboutPage} />
           <Route exact path="/group/about" component={GroupAboutPage} />
           <Route exact path="/friends" component={FriendMangementPage} />
+          <Route exact path="/mutualFriends/:id" component={MutualFriendPage} />
           <Route path="/demoSocketIO" component={DemoSocket} />
           <Route exact path="/group/create" component={CreateGroupPage} />
           <Route exact path="/group/:id" component={GroupPage} />
