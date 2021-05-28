@@ -1,22 +1,21 @@
 import mongoose from "mongoose";
 
-const messageSchema = mongoose.Schema(
+export const messageSchema = mongoose.Schema(
   {
-    userIdReceive: {
+    senderId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
     },
-    userIdSendMess: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-    },
+
     status: {
       type: String,
+      enum: ["Sending", "Sent", "Seen"],
       default: "Sending",
     },
-    message: { type: String },
+
+    text: {
+      type: String
+    },
   },
   { timestamps: true }
 );
-
-export default messageSchema;

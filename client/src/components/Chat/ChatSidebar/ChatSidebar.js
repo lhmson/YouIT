@@ -1,5 +1,5 @@
-import React, { useEffect, useRef } from "react";
-import { Input, Button, Drawer, Typography, Badge, Tooltip } from "antd";
+import React, { useEffect, useState, useRef } from "react";
+import { Input, Button, Drawer, Typography, Badge, Tooltip, Select } from "antd";
 
 import { SearchOutlined, PlusCircleOutlined } from "@ant-design/icons";
 
@@ -10,7 +10,11 @@ import "../styles.css";
 import COLOR from "../../../constants/colors.js";
 import { useMobile } from "../../../utils/responsiveQuery.js";
 
+import * as api from '../../../api/friend'
+
 const { Title } = Typography;
+
+const { Option } = Select;
 
 const testData = [
   {
@@ -67,9 +71,27 @@ function ChatSidebar({ isOpen, setIsOpen }) {
 
   const searchInputRef = useRef();
 
-  useEffect(() => {}, []);
+  const [listFriends, setListFriends] = useState([]);
 
-  const handleSearch = () => {};
+  const [usersToAdd, setUsersToAdd] = useState([])
+
+  useEffect(() => {
+    api.fetchListMyFriends(user?.result?._id).then((res) => {
+      setListFriends(res.data?.map((item, i) => ({ _id: item._id, name: item.name })));
+    })
+  }, []);
+
+  const handleSearch = () => { };
+
+  const handleChangeUserToAdd = (value, options) => {
+    // console.log('opt', option)
+    // console.log(`selected ${value}`);
+    setUsersToAdd(options.map((item) => item.key))
+  }
+
+  const handleAddConversation = () => {
+    alert(JSON.stringify(usersToAdd))
+  }
 
   const renderStatus = (status) => {
     switch (status) {
@@ -90,8 +112,18 @@ function ChatSidebar({ isOpen, setIsOpen }) {
         <div className="d-flex justify-content-between align-items-center">
           <Title>Messages</Title>
           <Tooltip title="Create new conversation">
+            <Select
+              mode="tags"
+              placeholder="Add friend"
+              value={usersToAdd}
+              onChange={handleChangeUserToAdd}
+              style={{ width: "100%" }}
+            >
+              {listFriends?.map((item) => <Option key={item._id}>{item.name}</Option>)}
+            </Select>
             <Button
               className="d-flex justify-content-center align-items-center green-button mr-3"
+              onClick={handleAddConversation}
               icon={<PlusCircleOutlined />}
             >
               Add
@@ -99,7 +131,7 @@ function ChatSidebar({ isOpen, setIsOpen }) {
           </Tooltip>
         </div>
 
-        <div class="search-container">
+        <div className="search-container">
           <Input
             onPressEnter={() => handleSearch()}
             allowClear
@@ -125,6 +157,7 @@ function ChatSidebar({ isOpen, setIsOpen }) {
       title={<Header />}
       placement="left"
       width={isMobile ? "80%" : "50%"}
+      // closable={false}
       // onClick={() => setDrawerVisible(false)}
       onClose={() => setIsOpen(false)}
       visible={isOpen}

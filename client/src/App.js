@@ -60,17 +60,17 @@ function App() {
           </Route>
           <PrivateRoute exact path="/feed" component={FeedPage} />
           <PrivateRoute exact path="/post/create" component={CreatePostPage} />
-          <Route path="/userinfo/:id" exact component={UserInfoPage} />
+          <PrivateRoute path="/userinfo/:id" exact component={UserInfoPage} />
           <Route exact path="/post/:id" component={SpecificPostPage} />
           <Route path="/post/:id/:commentId" component={SpecificPostPage} />
           <Route exact path="/search" component={UserResultSearchPage} />
-          <Route exact path="/requests" component={RequestsInGroupsPage} />
+          <PrivateRoute exact path="/requests" component={RequestsInGroupsPage} />
           <Route exact path="/wall" component={WallPage} />
           <Route path="/userinfo/:id/about" component={AboutPage} />
-          <Route exact path="/friends" component={FriendMangementPage} />
-          <Route exact path="/mutualFriends/:id" component={MutualFriendPage} />
+          <PrivateRoute exact path="/friends" component={FriendMangementPage} />
+          <PrivateRoute exact path="/mutualFriends/:id" component={MutualFriendPage} />
           <Route path="/demoSocketIO" component={DemoSocket} />
-          <Route exact path="/group/create" component={CreateGroupPage} />
+          <PrivateRoute exact path="/group/create" component={CreateGroupPage} />
           <Route exact path="/group/:id" component={GroupPage} />
           <Route exact path="/settings" component={SettingsPage} />
           <Route exact path="/activate/:token" component={ActivationPage} />

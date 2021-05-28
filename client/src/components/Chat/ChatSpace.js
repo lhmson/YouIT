@@ -4,7 +4,7 @@ import { Button } from "antd";
 import "./styles.css";
 import ChatSidebar from "./ChatSidebar/ChatSidebar";
 import MessageHeader from "./MessageHeader/MessageHeader";
-import ConversationList from "./ConversationList/ConversationList";
+import MessageList from "./MessageList/MessageList";
 import MessageForm from "./MessageForm/MessageForm";
 
 function ChatSpace() {
@@ -15,7 +15,7 @@ function ChatSpace() {
       <div className="chat-container">
         <ChatSidebar isOpen={isSidebarOpen} setIsOpen={setIsSidebarOpen} />
         <MessageHeader setOpenSidebar={setIsSidebarOpen} />
-        <ConversationList />
+        <MessageList />
         <MessageForm />
       </div>
     </div>
