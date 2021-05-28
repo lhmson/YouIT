@@ -61,7 +61,10 @@ function App() {
           <PrivateRoute exact path="/post/create" component={CreatePostPage} />
           <Route path="/userinfo/:id" exact component={UserInfoPage} />
           <Route exact path="/post/:id" component={SpecificPostPage} />
-          <Route path="/post/:id/:commentId" component={SpecificPostPage} />
+          <Route
+            path="/post/:id/:focusedCommentId"
+            component={SpecificPostPage}
+          />
           <Route exact path="/search" component={UserResultSearchPage} />
           <Route exact path="/requests" component={RequestsInGroupsPage} />
           <Route exact path="/wall" component={WallPage} />

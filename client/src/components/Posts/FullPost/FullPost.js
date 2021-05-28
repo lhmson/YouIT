@@ -143,7 +143,6 @@ function FullPost({ post }) {
     getMyInteractions(post._id)
       .then((res) => {
         setMyInteractions(res.data);
-        console.log("aaaaaaaaaaaaaaaaaa", res, post);
       })
       .catch((error) => {
         message.error("Something goes wrong with post interactions");
