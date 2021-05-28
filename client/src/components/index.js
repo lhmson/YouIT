@@ -38,6 +38,7 @@ import GroupBasicInfo from "./GroupPage/GroupBasicInfo/GroupBasicInfo";
 import GroupAboutCard from "./GroupPage/GroupAboutCard/GroupAboutCard";
 import IntroCard from "./IntroCard/IntroCard";
 import GroupMenu from "./GroupPage/GroupMenu/GroupMenu";
+import GroupFunctionButtons from "./GroupPage/GroupFunctionButtons/GroupFunctionButtons";
 
 export {
   SignInForm,
@@ -72,4 +73,5 @@ export {
   GroupAboutCard,
   IntroCard,
   GroupMenu,
+  GroupFunctionButtons,
 };

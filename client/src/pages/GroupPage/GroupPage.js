@@ -1,4 +1,4 @@
-import { Button, Layout, Row, Col, message } from "antd";
+import { Layout, Row, Col } from "antd";
 import Sider from "antd/lib/layout/Sider";
 import React, { createContext, useEffect, useState } from "react";
 import { BsThreeDots } from "react-icons/bs";
@@ -9,11 +9,11 @@ import {
   FeedPosts,
   GroupAboutCard,
   GroupBasicInfo,
+  GroupFunctionButtons,
   GroupMenu,
-  ListButtons,
   Navbar,
 } from "../../components/index.js";
-import { Route, Switch, useHistory, useLocation } from "react-router";
+import { useLocation } from "react-router";
 import styles from "./styles.js";
 import * as api from "../../api/group";
 const { Content } = Layout;
@@ -25,7 +25,6 @@ export const GroupContext = createContext({
 
 function GroupPage(props) {
   const { id } = props.match.params;
-  const history = useHistory();
   const location = useLocation();
 
   const [group, setGroup] = useState(null);
@@ -41,15 +40,6 @@ function GroupPage(props) {
     setGroup(data);
   };
 
-  const handleDeleteGroup = (id) => {
-    api
-      .deleteGroup(id)
-      .then((res) => {
-        message.success(res.data.message);
-        history.push(`/group/create`);
-      })
-      .catch((error) => message.success(error.message));
-  };
   return (
     <GroupContext.Provider value={valueContext}>
       <Layout>
@@ -74,31 +64,7 @@ function GroupPage(props) {
                 }}
               >
                 <GroupBasicInfo />
-                <Row
-                  style={{
-                    display: "flex",
-                    flexDirection: "row",
-                    justifyContent: "flex-end",
-                    alignItems: "center",
-                    width: "50%",
-                  }}
-                >
-                  <Button type="primary" style={styles.button}>
-                    Create Post
-                  </Button>
-                  <Button type="primary" style={styles.button}>
-                    Invite
-                  </Button>
-                  <Button
-                    type="primary"
-                    style={styles.button}
-                    onClick={() => {
-                      handleDeleteGroup(id);
-                    }}
-                  >
-                    Delete
-                  </Button>
-                </Row>
+                <GroupFunctionButtons />
               </Row>
               <Row style={{ justifyContent: "space-between" }}>
                 <GroupMenu />
