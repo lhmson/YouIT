@@ -31,15 +31,21 @@ function SpecificPostPage(props) {
   ];
 
   const { id, commentId } = props.match.params;
-  const [post, setPost] = useState();
+  const [post, setPost] = useState(null);
   const [comments, setComments] = useState([]);
   const [otherPosts, setOtherPosts] = useState([]);
   const [sort, setSort] = useState(sorts[0]);
   const [focusedCommentIndex, setFocusedCommentIndex] = useState(-1);
 
   const fetchPost = async () => {
-    const { data } = await postsApi.fetchAPost(id);
-    setPost(data);
+    postsApi
+      .fetchAPost(id)
+      .then((res) => {
+        setPost(res.data);
+      })
+      .catch((err) => {
+        if (err.response.status === 404) history.push("/error404");
+      });
   };
 
   const fetchOtherPosts = async () => {
