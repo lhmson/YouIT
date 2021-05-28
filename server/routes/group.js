@@ -7,6 +7,7 @@ import {
   getJoinedGroups,
 } from "../controllers/group.js";
 import auth from "../middleware/auth.js";
+import { isOwner } from "../middleware/groupRole.js";
 const router = express.Router();
 
 router.get("/:id", auth, getAGroup);
@@ -16,6 +17,6 @@ router.post("/", auth, createGroup);
 
 router.put("/:id/addMember/:memberId", auth, addGroupMember);
 
-router.delete("/:id", auth, deleteGroup);
+router.delete("/:id", auth, isOwner, deleteGroup);
 
 export default router;
