@@ -109,6 +109,7 @@ function UserCard(props) {
             style={{
               justifyContent: "flex-end",
               alignItems: "flex-end",
+              display: user?.result?._id === _id ? "none" : "block",
             }}
           >
             <Button

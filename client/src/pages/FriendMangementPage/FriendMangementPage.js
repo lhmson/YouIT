@@ -36,6 +36,8 @@ function FriendMangementPage() {
       });
   }, [user]);
 
+  const numberTotalFriend = listFriend.length;
+
   const listFilter = listFriend.filter((user) =>
     user.name.toLowerCase().includes(txtSearch.toLowerCase())
   );
@@ -72,6 +74,7 @@ function FriendMangementPage() {
   const handleSearch = () => {
     setTxtSearch(inputRef.current.state.value);
   };
+
   return (
     <>
       <Layout>
@@ -124,7 +127,7 @@ function FriendMangementPage() {
                         justifyContent: "center",
                       }}
                     >
-                      Friends(503)
+                      Friends ({numberTotalFriend})
                     </Button>
                   </div>
                 </div>
