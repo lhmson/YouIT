@@ -247,7 +247,7 @@ const handleUpdateCommentInteraction = (actions) => async (req, res) => {
             // );
             sendNotificationUser({
               userId: newComment.userId.toString(),
-              kind: "UpvoteComment_PostOwner",
+              kind: "UpvotePost_PostOwner",
               content: {
                 description: `${user?.name} has upvoted your comment.`,
               },
