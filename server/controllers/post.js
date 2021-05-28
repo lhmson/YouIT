@@ -12,7 +12,7 @@ import { httpStatusCodes } from "../utils/httpStatusCode.js";
 import { sendNotificationUser } from "../businessLogics/notification.js";
 import User from "../models/user.js";
 import Group from "../models/group.js";
-import { asyncFilter } from '../utils/asyncFilter.js'
+import { asyncFilter } from "../utils/asyncFilter.js";
 import { customPagination } from "../utils/customPagination.js";
 import { isMemberOfGroup } from "../businessLogics/group.js";
 
@@ -49,7 +49,11 @@ export const getAPost = async (req, res) => {
         if (isPostVisibleByUser(postObj, userId))
           return res.status(200).json(post);
         else
-          return res.status(httpStatusCodes.forbidden).json("You don't have permission to access this post due to its privacy");
+          return res
+            .status(httpStatusCodes.forbidden)
+            .json(
+              "You don't have permission to access this post due to its privacy"
+            );
       })
       .catch((err) => {
         return res
@@ -92,7 +96,7 @@ export const createPost = async (req, res) => {
     if (!isMemberOfGroup(req.userId, group.toObject()))
       return res
         .status(httpStatusCodes.forbidden)
-        .send({ message: `You are not in this group` })
+        .send({ message: `You are not in this group` });
 
     post.groupPostInfo = {
       groupId,
@@ -198,6 +202,7 @@ export const getMyPostInteractions = async (req, res) => {
   const { filter } = req.query;
 
   try {
+    console.log("mlem mlem", filter);
     // auth
     const { userId } = req;
     if (!userId) {
@@ -207,7 +212,7 @@ export const getMyPostInteractions = async (req, res) => {
     let filterJson = undefined;
     try {
       filterJson = JSON.parse(filter);
-    } catch { }
+    } catch {}
 
     const interactions = await getInteractionOfAUser(id, userId, filterJson);
     return res.status(httpStatusCodes.ok).json(interactions);
@@ -325,14 +330,10 @@ export const getPostsPagination = async (req, res) => {
   //get _page and _limit params from url
   // joinedGroupOnly: cut out the posts of group of which this user is not a member
   let { _page, _limit, ownerId, groupId, joinedGroupOnly } = req.query;
-  if (_page)
-    _page = parseInt(_page);
-  else
-    _page = 0;
-  if (_limit)
-    _limit = parseInt(_limit);
-  else
-    _limit = 100; // sorry for the magic :)
+  if (_page) _page = parseInt(_page);
+  else _page = 0;
+  if (_limit) _limit = parseInt(_limit);
+  else _limit = 100; // sorry for the magic :)
 
   joinedGroupOnly = joinedGroupOnly?.toUpperCase() === "TRUE";
 
@@ -348,34 +349,47 @@ export const getPostsPagination = async (req, res) => {
       // .skip(_page > 0 ? _page * _limit : 0)
       // .limit(_limit) // because the last filter would filter out even more element :)
       .then((rawPosts) => {
-        const posts = rawPosts.map(p => p.toObject());
+        const posts = rawPosts.map((p) => p.toObject());
 
-        asyncFilter(posts, async p => {
+        asyncFilter(posts, async (p) => {
           const stdObj = {
             ...p,
-            userId: p.userId._id
+            userId: p.userId._id,
           };
-          let result = await isPostVisibleByUser(stdObj, userId, !joinedGroupOnly);
+          let result = await isPostVisibleByUser(
+            stdObj,
+            userId,
+            !joinedGroupOnly
+          );
           return result;
-        }).then(filteredPosts => {
+        }).then((filteredPosts) => {
           if (ownerId)
-            filteredPosts = filteredPosts.filter(p => p.userId._id.equals(ownerId));
+            filteredPosts = filteredPosts.filter((p) =>
+              p.userId._id.equals(ownerId)
+            );
 
           if (groupId)
-            filteredPosts = filteredPosts.filter(p => p.privacy === "Group" && p.groupPostInfo.groupId._id.equals(groupId));
+            filteredPosts = filteredPosts.filter(
+              (p) =>
+                p.privacy === "Group" &&
+                p.groupPostInfo.groupId._id.equals(groupId)
+            );
 
-          return res.status(200).send(customPagination(filteredPosts, _limit, _page));
-        })
+          return res
+            .status(200)
+            .send(customPagination(filteredPosts, _limit, _page));
+        });
       })
       .catch((err) => {
-        return res.status(500).send({ message: `Cannot get posts`, error: err });
+        return res
+          .status(500)
+          .send({ message: `Cannot get posts`, error: err });
       });
 
     // const filteredPosts = [];
     // posts.forEach(p => {
 
     // });
-
   } catch (error) {
     return res.status(500).send(error.message);
   }

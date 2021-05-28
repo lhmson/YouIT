@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useReducer } from "react";
 import {
   Avatar,
   Typography,
@@ -8,6 +8,8 @@ import {
   Menu,
   Dropdown,
   message,
+  Tooltip,
+  Modal,
 } from "antd";
 import {
   EllipsisOutlined,
@@ -16,13 +18,37 @@ import {
   LinkOutlined,
   DeleteFilled,
   EditOutlined,
+  ExclamationCircleOutlined,
 } from "@ant-design/icons";
 import styles from "./styles";
 import COLOR from "../../constants/colors";
 import CommentForm from "../CommentForm/CommentForm";
-import { Link } from "react-router-dom";
+import {
+  upvoteComment,
+  downvoteComment,
+  unvoteComment,
+  getMyCommentInteractions,
+} from "../../api/comment";
+import { Link, useHistory } from "react-router-dom";
+import { useDispatch } from "react-redux";
 
 const { Title, Text, Paragraph } = Typography;
+const { confirm } = Modal;
+
+const allInteractionReducer = (state, action) => {
+  switch (action.type) {
+    case "upvote":
+      return { ...state, upvotes: state.upvotes + 1 };
+    case "downvote":
+      return { ...state, downvotes: state.downvotes + 1 };
+    case "unupvote":
+      return { ...state, upvotes: state.upvotes - 1 };
+    case "undownvote":
+      return { ...state, downvotes: state.downvotes - 1 };
+    default:
+      return state;
+  }
+};
 
 function Comment({
   comment,
@@ -32,9 +58,97 @@ function Comment({
   onCopyCommentLink,
   isFocus,
 }) {
+  const dispatch = useDispatch();
+  const history = useHistory();
+  const [myInteractions, setMyInteractions] = useState({});
   const [isReply, setIsReply] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
   const [ellipsis, setEllipsis] = useState("full");
+
+  const [allInteractions, dispatchInteractions] = useReducer(
+    allInteractionReducer,
+    {
+      upvotes: comment?.interactionInfo?.listUpvotes?.length,
+      downvotes: comment?.interactionInfo?.listDownvotes?.length,
+      // upvotes: listInteractions.upvoteslength,
+      // downvotes: listInteractions.downvoteslength,
+      // add more items later
+    }
+  );
+
+  useEffect(() => {
+    // setPost(props.post);
+    fetchMyInteractions();
+    // setListInteractions({
+    //   upvoteslength: post?.interactionInfo?.listUpvotes?.length,
+    //   downvoteslength: post?.interactionInfo?.listDownvotes?.length,
+    // });
+  }, [comment]);
+
+  const fetchMyInteractions = () => {
+    getMyCommentInteractions(comment._id)
+      .then((res) => {
+        setMyInteractions(res.data);
+      })
+      .catch((error) => {
+        message.error("Something goes wrong with comment interactions");
+        console.log("uwuwuuw", error, comment);
+      });
+  };
+
+  const handleUpvoteClick = async (id) => {
+    if (myInteractions?.upvote) {
+      await unvoteComment(id)
+        .then((res) => {
+          fetchMyInteractions();
+          dispatchInteractions({ type: "unupvote" });
+        })
+        .catch((error) => {
+          message.error("Something goes wrong with comment upvote");
+          console.log(error);
+        });
+    } else {
+      await upvoteComment(id)
+        .then((res) => {
+          if (myInteractions?.downvote) {
+            dispatchInteractions({ type: "undownvote" });
+          }
+          fetchMyInteractions();
+          dispatchInteractions({ type: "upvote" });
+        })
+        .catch((error) => {
+          message.error("Something goes wrong with comment unvote");
+          console.log(error);
+        });
+    }
+  };
+
+  const handleDownvoteClick = async (id) => {
+    if (myInteractions?.downvote) {
+      await unvoteComment(id)
+        .then((res) => {
+          fetchMyInteractions();
+          dispatchInteractions({ type: "undownvote" });
+        })
+        .catch((error) => {
+          message.error("Something goes wrong with comment downvote");
+          console.log(error);
+        });
+    } else {
+      await downvoteComment(id)
+        .then((res) => {
+          if (myInteractions?.upvote) {
+            dispatchInteractions({ type: "unupvote" });
+          }
+          fetchMyInteractions();
+          dispatchInteractions({ type: "downvote" });
+        })
+        .catch((error) => {
+          message.error("Something goes wrong with comment unvote");
+          console.log(error);
+        });
+    }
+  };
 
   const toggleReply = () => {
     setIsReply(1 - isReply);
@@ -56,8 +170,22 @@ function Comment({
         break;
     }
   };
+  const showConfirmDeleteComment = (id) => {
+    confirm({
+      title: "Do you Want to delete this comment?",
+      icon: <ExclamationCircleOutlined />,
+      content: "You cannot undo this action",
+      onOk() {
+        onDelete(id);
+        message.success("Comment has been deleted");
+      },
+      onCancel() {
+        message.info("Comment is not deleted");
+      },
+    });
+  };
   const handleDelete = () => {
-    onDelete(comment?._id);
+    showConfirmDeleteComment(comment?._id);
   };
   const renderEdit = () => {
     const handleDiscard = () => {
@@ -200,9 +328,28 @@ function Comment({
             <Row>
               <Space size="large">
                 <Space>
-                  <ArrowUpOutlined className="clickable icon" />
-                  <Text strong>150</Text>
-                  <ArrowDownOutlined className="clickable icon" />
+                  <Text strong style={{ fontSize: "1.5rem" }}>
+                    {allInteractions.upvotes}
+                  </Text>
+                  <Tooltip title="Upvote">
+                    <ArrowUpOutlined
+                      className={`clickable icon ${
+                        myInteractions?.upvote ? "green" : "black"
+                      }`}
+                      onClick={() => handleUpvoteClick(comment._id)}
+                    />
+                  </Tooltip>
+                  <Tooltip title="Downvote">
+                    <ArrowDownOutlined
+                      className={`clickable icon ${
+                        myInteractions?.downvote ? "green" : "black"
+                      }`}
+                      onClick={() => handleDownvoteClick(comment._id)}
+                    />
+                  </Tooltip>
+                  <Text strong style={{ fontSize: "1.5rem" }}>
+                    {allInteractions.downvotes}
+                  </Text>
                 </Space>
                 <Text onClick={toggleReply} className="clickable" strong>
                   {isReply ? `Discard` : `Reply`}
@@ -211,10 +358,12 @@ function Comment({
             </Row>
             <Row>
               <Space size="large">
-                <LinkOutlined
-                  className="clickable icon"
-                  onClick={() => copyLink(comment?._id)}
-                />
+                <Tooltip title="Get link">
+                  <LinkOutlined
+                    className="clickable icon"
+                    onClick={() => copyLink(comment?._id)}
+                  />
+                </Tooltip>
               </Space>
             </Row>
           </Row>
