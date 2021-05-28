@@ -46,7 +46,8 @@ function LoginPage() {
   };
 
   const handleFinish = async (values) => {
-    dispatch(signin(form, history, setUser, token, setToken, setResend));
+    const browserId = JSON.parse(localStorage.getItem("browser"))?.id;
+    dispatch(signin({ ...form, browserId }, history, setUser, token, setToken, setResend));
   };
 
   const handleResend = async () => {
