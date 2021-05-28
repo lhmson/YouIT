@@ -3,8 +3,17 @@ import mongoose from "mongoose";
 
 import Post from "../models/post.js";
 import Comment from "../models/comment.js";
+import User from "../models/user.js";
 
 import { httpStatusCodes } from "../utils/httpStatusCode.js";
+
+import {
+  addInteraction,
+  getInteractionOfAUser,
+  removeInteraction,
+} from "../businessLogics/comment.js";
+
+import { sendNotificationUser } from "../businessLogics/notification.js";
 
 export const createComment = async (req, res) => {
   const { postId } = req.params;
@@ -168,3 +177,110 @@ export const deleteComment = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+export const getMyCommentInteractions = async (req, res) => {
+  const { id } = req.params;
+  const { filter } = req.query;
+
+  try {
+    // auth
+    const { userId } = req;
+    if (!userId) {
+      return res.json({ message: "Unauthenticated" });
+    }
+
+    let filterJson = undefined;
+    try {
+      filterJson = JSON.parse(filter);
+    } catch {}
+
+    const interactions = await getInteractionOfAUser(id, userId, filterJson);
+    return res.status(httpStatusCodes.ok).json(interactions);
+  } catch (error) {
+    return res
+      .status(httpStatusCodes.internalServerError)
+      .json({ message: error.message });
+  }
+};
+
+// currying function for different type of adding interaction, such as: upvote, downvote, follow, hide
+/**
+ * @param {[{actionType: "add"|"remove", interactionType: "upvote"|"downvote"|"react"|"hide"|"follow"}]} actions
+ */
+const handleUpdateCommentInteraction = (actions) => async (req, res) => {
+  const { postId, id } = req.params;
+
+  try {
+    // auth
+    const { userId } = req;
+    if (!userId) {
+      return res.json({ message: "Unauthenticated" });
+    }
+
+    if (!mongoose.Types.ObjectId.isValid(id))
+      return res
+        .status(httpStatusCodes.badContent)
+        .send(`comment id ${id} is invalid`);
+
+    // user who act
+    const user = await User.findById(userId);
+
+    const comment = await Comment.findById(id);
+    if (!comment)
+      return res
+        .status(httpStatusCodes.notFound)
+        .json(`Cannot find a comment with id: ${id}`);
+
+    let newComment = { ...comment.toObject() };
+
+    actions.forEach((a) => {
+      switch (a.actionType) {
+        case "add":
+          newComment = addInteraction(newComment, userId, a.interactionType);
+
+          // Test socket.io
+          if (a.interactionType === "upvote") {
+            // cuteIO.sendToUser(
+            //   newPost.userId.toString(),
+            //   "UpvotePost_PostOwner",
+            //   { upvoter: userId, post: newPost }
+            // );
+            sendNotificationUser({
+              userId: newComment.userId.toString(),
+              kind: "UpvoteComment_PostOwner",
+              content: {
+                description: `${user?.name} has upvoted your comment.`,
+              },
+              link: `/post/${postId}/${newComment._id}`,
+            });
+          }
+
+          break;
+        case "remove":
+          newComment = removeInteraction(newComment, userId, a.interactionType);
+          break;
+      }
+    });
+
+    newComment = await Comment.findByIdAndUpdate(id, newComment, { new: true });
+    return res.status(httpStatusCodes.ok).json(newComment);
+  } catch (error) {
+    // return res.status(httpStatusCodes.internalServerError).json({ message: error.message });
+    throw error;
+  }
+};
+
+export const unvoteComment = handleUpdateCommentInteraction([
+  { actionType: "remove", interactionType: "upvote" },
+  { actionType: "remove", interactionType: "downvote" },
+]);
+
+export const upvoteComment = handleUpdateCommentInteraction([
+  { actionType: "remove", interactionType: "downvote" },
+  { actionType: "add", interactionType: "upvote" },
+]);
+
+export const downvoteComment = handleUpdateCommentInteraction([
+  { actionType: "remove", interactionType: "upvote" },
+  { actionType: "add", interactionType: "downvote" },
+]);

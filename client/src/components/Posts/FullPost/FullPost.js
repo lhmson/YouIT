@@ -146,7 +146,7 @@ function FullPost({ post }) {
       })
       .catch((error) => {
         message.error("Something goes wrong with post interactions");
-        console.log("uwuwuuw", error, post);
+        console.log(error, post);
       });
   };
 
