@@ -1,26 +1,45 @@
 import { Button, Layout, Row, Col, message } from "antd";
 import Sider from "antd/lib/layout/Sider";
-import React from "react";
+import React, { createContext, useEffect, useState } from "react";
 import { BsThreeDots } from "react-icons/bs";
 import { GoSearch } from "react-icons/go";
 import {
   AdminGroupSidebar,
   CoverPhoto,
   FeedPosts,
+  GroupAboutCard,
   GroupBasicInfo,
+  GroupMenu,
   ListButtons,
   Navbar,
 } from "../../components/index.js";
-import { useHistory } from "react-router";
+import { Route, Switch, useHistory, useLocation } from "react-router";
 import styles from "./styles.js";
 import * as api from "../../api/group";
 const { Content } = Layout;
 
+export const GroupContext = createContext({
+  group: {},
+  setGroup: () => {},
+});
+
 function GroupPage(props) {
   const { id } = props.match.params;
-  console.log(id);
-
   const history = useHistory();
+  const location = useLocation();
+
+  const [group, setGroup] = useState(null);
+  const valueContext = { group, setGroup };
+
+  useEffect(async () => {
+    await fetchGroupInfo();
+    //console.log(group);
+  }, []);
+
+  const fetchGroupInfo = async () => {
+    const { data } = await api.fetchAGroup(id);
+    setGroup(data);
+  };
 
   const handleDeleteGroup = (id) => {
     api
@@ -32,65 +51,83 @@ function GroupPage(props) {
       .catch((error) => message.success(error.message));
   };
   return (
-    <Layout>
-      <Navbar />
-      <Sider>
-        <AdminGroupSidebar />
-      </Sider>
-      <Layout style={styles.mainArea}>
-        <Content>
-          <Layout className="container">
-            <CoverPhoto />
-            <Row style={{ display: "flex", flexDirection: "row" }}>
-              <Col span={12}>
-                <GroupBasicInfo />
-              </Col>
-              <Col
-                span={6}
-                offset={6}
+    <GroupContext.Provider value={valueContext}>
+      <Layout>
+        <Navbar />
+        <Sider>
+          <AdminGroupSidebar />
+        </Sider>
+        <Col>
+          <Layout style={styles.avatarView}>
+            <Content
+              className="container"
+              style={{
+                padding: 8,
+              }}
+            >
+              <CoverPhoto />
+              <Row
                 style={{
                   display: "flex",
-                  alignItems: "center",
+                  flexDirection: "row",
+                  justifyContent: "space-between",
                 }}
               >
-                <Button type="primary" style={styles.button}>
-                  Create Post
-                </Button>
-                <Button type="primary" style={styles.button}>
-                  Invite
-                </Button>
-                <Button
-                  type="primary"
-                  style={styles.button}
-                  onClick={() => {
-                    handleDeleteGroup(id);
+                <GroupBasicInfo />
+                <Row
+                  style={{
+                    display: "flex",
+                    flexDirection: "row",
+                    justifyContent: "flex-end",
+                    alignItems: "center",
+                    width: "50%",
                   }}
                 >
-                  Delete
-                </Button>
-              </Col>
-            </Row>
-            <Row>
-              <Col span={12}>
-                <ListButtons />
-              </Col>
-              <Col
-                span={3}
-                offset={9}
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                }}
-              >
-                <GoSearch size={24} style={styles.icon} onClick={() => {}} />
-                <BsThreeDots size={24} style={styles.icon} />
-              </Col>
-            </Row>
-            <FeedPosts />
+                  <Button type="primary" style={styles.button}>
+                    Create Post
+                  </Button>
+                  <Button type="primary" style={styles.button}>
+                    Invite
+                  </Button>
+                  <Button
+                    type="primary"
+                    style={styles.button}
+                    onClick={() => {
+                      handleDeleteGroup(id);
+                    }}
+                  >
+                    Delete
+                  </Button>
+                </Row>
+              </Row>
+              <Row style={{ justifyContent: "space-between" }}>
+                <GroupMenu />
+                <Row
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                  }}
+                >
+                  <GoSearch size={24} style={styles.icon} onClick={() => {}} />
+                  <BsThreeDots size={24} style={styles.icon} />
+                </Row>
+              </Row>
+            </Content>
           </Layout>
-        </Content>
+          <Layout style={styles.mainArea}>
+            <Content>
+              <Layout className="container">
+                {location.pathname === `/group/${group?._id}` ? (
+                  <FeedPosts />
+                ) : (
+                  <GroupAboutCard />
+                )}
+              </Layout>
+            </Content>
+          </Layout>
+        </Col>
       </Layout>
-    </Layout>
+    </GroupContext.Provider>
   );
 }
 

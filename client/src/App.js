@@ -63,11 +63,11 @@ function App() {
           <Route exact path="/requests" component={RequestsInGroupsPage} />
           <Route exact path="/wall" component={WallPage} />
           <Route path="/userinfo/:id/about" component={AboutPage} />
-          <Route exact path="/group/about" component={GroupAboutPage} />
           <Route exact path="/friends" component={FriendMangementPage} />
           <Route path="/demoSocketIO" component={DemoSocket} />
           <Route exact path="/group/create" component={CreateGroupPage} />
           <Route exact path="/group/:id" component={GroupPage} />
+          <Route path="/group/:id/about" component={GroupPage} />
           <Route>
             <ErrorPage code="404" />
           </Route>

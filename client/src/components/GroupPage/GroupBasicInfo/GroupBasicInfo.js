@@ -1,18 +1,26 @@
-import { Layout, Typography } from "antd";
-import React from "react";
+import { Col, Layout, Typography } from "antd";
+import React, { useContext } from "react";
+import { GroupContext } from "../../../pages/GroupPage/GroupPage.js";
 import styles from "./styles.js";
 
-const { Title, Text } = Typography;
+const { Text } = Typography;
 
 function GroupBasicInfo() {
+  const { group } = useContext(GroupContext);
+
   return (
     <>
-      <Layout style={{ marginBottom: 32 }}>
-        <Text style={{ fontSize: 40, fontWeight: "bold" }}>
-          T2Team Community
-        </Text>
-        <Text style={{ fontSize: 16 }}>Public group</Text>
-      </Layout>
+      <Col
+        style={{
+          marginBottom: 32,
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "space-between",
+        }}
+      >
+        <Text style={{ fontSize: 40, fontWeight: "bold" }}>{group?.name}</Text>
+        <Text style={{ fontSize: 16 }}>{`${group?.privacy} Group`}</Text>
+      </Col>
     </>
   );
 }
