@@ -1,8 +1,5 @@
 import mongoose from "mongoose";
-import Group from "../models/group.js";
-import Post from "../models/post.js";
-import { isMemberOfGroup } from "./group.js";
-import { getRelationship } from "./user.js";
+import Comment from "../models/comment.js";
 
 /**
  * [immutable function] Return an object showing user's interaction with a post
@@ -11,16 +8,21 @@ import { getRelationship } from "./user.js";
  * @param {[("upvote"|"downvote"|"react"|"hide"|"follow")]} interactionType filter out the wanted interaction type. Get all by default
  * @returns {object} An object, whose properties indicate how a user interact with a post
  */
-export const getInteractionOfAUser = async (post, userId, interactionType) => {
+export const getInteractionOfAUser = async (
+  comment,
+  userId,
+  interactionType
+) => {
   // cast post into mongoose document type :)
-  const postDoc = typeof post === "string" ? await Post.findById(post) : post;
+  const commentDoc =
+    typeof comment === "string" ? await Comment.findById(comment) : comment;
 
   // cast userId into mongoose id type :)
   const userObjId = new mongoose.Types.ObjectId(userId);
 
   const result = {
     userId: userObjId,
-    postId: postDoc._id,
+    commentId: commentDoc._id,
   };
 
   // CuteTN Note: only user operator '==' to check for both null and undefine
@@ -33,7 +35,7 @@ export const getInteractionOfAUser = async (post, userId, interactionType) => {
 
     const listName = getListName(type);
     result[type] =
-      postDoc.interactionInfo[listName]?.find((u) => userObjId.equals(u)) !=
+      commentDoc.interactionInfo[listName]?.find((u) => userObjId.equals(u)) !=
       undefined;
   });
 
@@ -82,8 +84,8 @@ const addIfNotExist = (list, item, isEqual = (a, b) => a.equals(b)) => {
  * @param {string} reaction
  * @return {mongoose.Document}
  */
-export const addInteraction = (post, userId, interactionType, reaction) => {
-  const interactionInfo = post.interactionInfo;
+export const addInteraction = (comment, userId, interactionType, reaction) => {
+  const interactionInfo = comment.interactionInfo;
 
   let listName = getListName(interactionType);
   interactionInfo[listName] = addIfNotExist(
@@ -91,12 +93,12 @@ export const addInteraction = (post, userId, interactionType, reaction) => {
     new mongoose.Types.ObjectId(userId)
   );
 
-  const newPost = {
-    ...post,
+  const newComment = {
+    ...comment,
     interactionInfo,
   };
 
-  return newPost;
+  return newComment;
 };
 
 /**
@@ -106,20 +108,20 @@ export const addInteraction = (post, userId, interactionType, reaction) => {
  * @param {"upvote"|"downvote"|"react"|"hide"|"follow"} interactionType
  * @return {mongoose.Document}
  */
-export const removeInteraction = (post, userId, interactionType) => {
-  const interactionInfo = post.interactionInfo;
+export const removeInteraction = (comment, userId, interactionType) => {
+  const interactionInfo = comment.interactionInfo;
 
   let listName = getListName(interactionType);
   interactionInfo[listName] = interactionInfo[listName]?.filter(
     (x) => !x.equals(userId)
   );
 
-  const newPost = {
-    ...post,
+  const newComment = {
+    ...comment,
     interactionInfo,
   };
 
-  return newPost;
+  return newComment;
 };
 
 /**
@@ -130,29 +132,3 @@ export const removeInteraction = (post, userId, interactionType) => {
  * @param {boolean=} allowedUnjoinedGroups
  * @returns {boolean}
  */
-export const isPostVisibleByUser = async (
-  post,
-  userId,
-  allowedUnjoinedGroups = true
-) => {
-  if (post.privacy === "Group") {
-    const group = (await Group.findById(post.groupPostInfo.groupId)).toObject();
-
-    if (!group) return false;
-
-    if (group.privacy === "Public" && allowedUnjoinedGroups) return true;
-    else return isMemberOfGroup(userId, group);
-  }
-
-  const rela = await getRelationship(userId, post.userId);
-  switch (post.privacy) {
-    case "Public":
-      return true;
-    case "Friend":
-      return rela === "Friend" || rela === "Self";
-    case "Private":
-      return rela === "Self";
-  }
-
-  return false;
-};
