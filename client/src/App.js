@@ -24,6 +24,7 @@ import {
   MessagePage,
   FriendMangementPage,
   MutualFriendPage,
+  GroupManagementPage,
 } from "./pages/index";
 
 import { CuteClientIOProvider } from "./socket/CuteClientIOProvider.js";
@@ -68,6 +69,7 @@ function App() {
           <Route exact path="/group/about" component={GroupAboutPage} />
           <Route exact path="/friends" component={FriendMangementPage} />
           <Route exact path="/mutualFriends/:id" component={MutualFriendPage} />
+          <Route exact path="/groups/" component={GroupManagementPage} />
           <Route path="/demoSocketIO" component={DemoSocket} />
           <Route exact path="/group/create" component={CreateGroupPage} />
           <Route exact path="/group/:id" component={GroupPage} />

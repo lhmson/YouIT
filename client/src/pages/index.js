@@ -17,6 +17,7 @@ import ErrorPage from "./ErrorPage/ErrorPage";
 import HomePage from "./HomePage/HomePage";
 import FriendMangementPage from "./FriendMangementPage/FriendMangementPage";
 import MutualFriendPage from "./FriendMangementPage/MutualFriendPage";
+import GroupManagementPage from "./GroupManagementPage/GroupMangagementPage";
 export {
   HomePage,
   AboutPage,
@@ -37,4 +38,5 @@ export {
   MessagePage,
   FriendMangementPage,
   MutualFriendPage,
+  GroupManagementPage,
 };
