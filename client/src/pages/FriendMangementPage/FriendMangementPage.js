@@ -20,7 +20,9 @@ function FriendMangementPage() {
   const [user, setUser] = useLocalStorage("user");
   const inputRef = useRef();
   const [listFriend, setListFriend] = useState([]);
+  const [listRequest, setListRequest] = useState([]);
   const [txtSearch, setTxtSearch] = useState("");
+  const [mode, setMode] = useState("Friends");
 
   useEffect(() => {
     console.log("User", user);
@@ -36,11 +38,30 @@ function FriendMangementPage() {
       });
   }, [user]);
 
+  useEffect(() => {
+    api
+      .fetchListRequestFriends(user?.result?._id)
+      .then((res) => {
+        console.log("Lala", res.data);
+        if (res.data instanceof Array) setListRequest(res.data);
+        else setListRequest([]);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  }, [user]);
+
   const numberTotalFriend = listFriend.length;
 
-  const listFilter = listFriend.filter((user) =>
-    user.name.toLowerCase().includes(txtSearch.toLowerCase())
-  );
+  let listFilter = listFriend.filter((user) =>
+    user.name.toLowerCase().includes(txtSearch.toLowerCase()));
+
+  if (mode === "Invites")
+  {
+    listFilter = listRequest.filter((user) =>
+    user.name.toLowerCase().includes(txtSearch.toLowerCase()));
+  }
+
   const listUserCardLeft = useMemo(
     () =>
       listFilter?.map((user, i) => {
@@ -101,6 +122,7 @@ function FriendMangementPage() {
                   </div>
                   <div className="offset-5 col-2">
                     <Button
+                      onClick = {() => setMode("Invites")}
                       type="primary"
                       style={{
                         background: "#27AE60",
@@ -111,12 +133,13 @@ function FriendMangementPage() {
                         justifyContent: "center",
                       }}
                     >
-                      Invites (5)
+                      Invites ({listRequest.length})
                     </Button>
                   </div>
 
                   <div className="col-2">
                     <Button
+                      onClick = {() => setMode("Friends")}
                       type="primary"
                       style={{
                         background: "#27AE60",
