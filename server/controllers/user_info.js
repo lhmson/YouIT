@@ -139,11 +139,13 @@ export const addFriend = async (req, res) => {
 
   try {
     // add friendId to user's list friends
-    await User.findById(userId).then(async (user) => {
-      user.listFriends.push(friend?._id);
-      await user.save();
-      res.status(httpStatusCodes.ok).json(user);
-    });
+    const acceptingUser = await User.findById(userId);
+
+    if (!acceptingUser)
+      return res.status(httpStatusCodes.notFound).send("Accepting user not found");
+
+    acceptingUser.listFriends.push(friend?._id);
+    await acceptingUser.save();
 
     // add userId to friend's list friends
     await User.findById(friend?._id).then(async (user) => {
@@ -155,9 +157,16 @@ export const addFriend = async (req, res) => {
     // notification
     sendNotificationUser({
       userId: friend?._id,
-      content: { acceptingUserId: userId, acceptedUserId: friend._id },
+      content: {
+        acceptingUserId: userId,
+        acceptedUserId: friend._id,
+        description: `${acceptingUser.name} accepted your friend request!`,
+      },
+      link: `/userinfo/${acceptingUser._id}`,
       kind: "AcceptFriend_AcceptedFriend",
     });
+
+    return res.status(httpStatusCodes.ok).json(acceptingUser);
   } catch (error) {
     console.log(error.message);
     res

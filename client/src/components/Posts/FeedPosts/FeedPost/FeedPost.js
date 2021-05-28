@@ -338,7 +338,7 @@ function FeedPost({ post, setCurrentId }) {
               nulla pariatur. Excepteur sint occaecat cupidatat non proident,
               sunt in culpa qui officia deserunt mollit anim id est laborum.
             </Paragraph>
-            <Paragraph>{post?.content}</Paragraph>
+            <Paragraph>{post?.content?.text}</Paragraph>
             <Link to={`/post/${post._id}`} target="_blank">
               <Text className="clickable bold">Click here to read more</Text>
             </Link>
@@ -353,17 +353,15 @@ function FeedPost({ post, setCurrentId }) {
                 </Text>
                 <Tooltip title="Upvote">
                   <ArrowUpOutlined
-                    className={`clickable icon ${
-                      myInteractions?.upvote ? "green" : "black"
-                    }`}
+                    className={`clickable icon ${myInteractions?.upvote ? "green" : "black"
+                      }`}
                     onClick={() => handleUpvoteClick(post._id)}
                   />
                 </Tooltip>
                 <Tooltip title="Downvote">
                   <ArrowDownOutlined
-                    className={`clickable icon ${
-                      myInteractions?.downvote ? "green" : "black"
-                    }`}
+                    className={`clickable icon ${myInteractions?.downvote ? "green" : "black"
+                      }`}
                     onClick={() => handleDownvoteClick(post._id)}
                   />
                 </Tooltip>

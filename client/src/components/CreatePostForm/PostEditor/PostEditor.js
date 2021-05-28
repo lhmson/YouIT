@@ -4,8 +4,8 @@ import MDEditor from "@uiw/react-md-editor";
 import styles from "./styles.js";
 import { postEditorCommands } from "./commands.js";
 
-function PostEditor({ postContent, setPostContent }) {
-  if (postContent === null || postContent === undefined || !setPostContent)
+function PostEditor({ postContentText, setPostContentText }) {
+  if (postContentText === null || postContentText === undefined || !setPostContentText)
     return (
       <div>
         <p>postContent and setPostContent is required!</p>
@@ -16,8 +16,8 @@ function PostEditor({ postContent, setPostContent }) {
     <div>
       <MDEditor
         commands={postEditorCommands}
-        value={postContent}
-        onChange={setPostContent}
+        value={postContentText}
+        onChange={setPostContentText}
         highlightEnable={false} // dis is veri buggi idk
         visiableDragbar={false} // dis dun allow resizing editor
         height={580}

@@ -15,8 +15,6 @@ function CreatePostPage() {
   const postTitle = location.state?.postTitle;
   const postContent = location.state?.postContent;
 
-  useEffect(() => {}, []);
-
   return (
     <>
       <Layout style={{}}>

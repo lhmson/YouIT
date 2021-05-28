@@ -153,7 +153,7 @@ function FullPost({ post }) {
 
   const [user] = useLocalStorage("user");
 
-  const handleMore = () => {};
+  const handleMore = () => { };
 
   const tagList = ["Tag 1", "Tag 2", "Tag 3", "Tag 4", "Tag 5"];
 
@@ -364,7 +364,7 @@ function FullPost({ post }) {
         <div>
           <Title level={2}>{post?.title}</Title>
           <div className="pb-2">
-            <Paragraph>{post?.content}</Paragraph>
+            <Paragraph>{post?.content?.text}</Paragraph>
           </div>
         </div>
         <Row className="justify-content-between mb-4">
@@ -376,17 +376,15 @@ function FullPost({ post }) {
                 </Text>
                 <Tooltip title="Upvote">
                   <ArrowUpOutlined
-                    className={`clickable icon ${
-                      myInteractions?.upvote ? "green" : "black"
-                    }`}
+                    className={`clickable icon ${myInteractions?.upvote ? "green" : "black"
+                      }`}
                     onClick={() => handleUpvoteClick(post._id)}
                   />
                 </Tooltip>
                 <Tooltip title="Downvote">
                   <ArrowDownOutlined
-                    className={`clickable icon ${
-                      myInteractions?.downvote ? "green" : "black"
-                    }`}
+                    className={`clickable icon ${myInteractions?.downvote ? "green" : "black"
+                      }`}
                     onClick={() => handleDownvoteClick(post._id)}
                   />
                 </Tooltip>
