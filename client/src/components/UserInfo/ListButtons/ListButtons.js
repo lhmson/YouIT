@@ -191,13 +191,13 @@ const ListButtons = () => {
             selectedKeys={[selectedMenu]}
             mode="horizontal"
           >
-            <Menu.Item key="post" icon={<MailOutlined />}>
+            <Menu.Item key="post">
               <Link to={`/userinfo/${user?._id}`} style={styles.linkView}>
                 Post
               </Link>
             </Menu.Item>
 
-            <Menu.Item key="about" icon={<MailOutlined />}>
+            <Menu.Item key="about">
               <Link to={`/userinfo/${user?._id}/about`} style={styles.linkView}>
                 About
               </Link>
