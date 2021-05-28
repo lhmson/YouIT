@@ -1,11 +1,11 @@
 import mongoose from "mongoose";
 
-const groupPendingMemberSchema = mongoose.Schema(
+export const groupPendingMemberSchema = mongoose.Schema(
   {
-    groupId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Group",
-    },
+    // groupId: {
+    //   type: mongoose.Schema.Types.ObjectId,
+    //   ref: "Group",
+    // },
     userId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
@@ -13,5 +13,3 @@ const groupPendingMemberSchema = mongoose.Schema(
   },
   { timestamps: true }
 );
-
-export default mongoose.model("GroupPendingMember", groupPendingMemberSchema);

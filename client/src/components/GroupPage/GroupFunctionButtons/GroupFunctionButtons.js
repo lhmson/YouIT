@@ -2,7 +2,6 @@ import { Button, message, Row } from "antd";
 import React, { useContext } from "react";
 import styles from "./styles.js";
 import * as api from "../../../api/group";
-import { addGroupPendingMember } from "../../../api/groupPendingMember";
 import { useHistory } from "react-router";
 import { GroupContext } from "../../../pages/GroupPage/GroupPage";
 
@@ -36,7 +35,8 @@ function GroupFunctionButtons() {
       groupId: group?._id,
       userId: user?._id,
     };
-    addGroupPendingMember(pendingMember);
+    // addGroupPendingMember(pendingMember);
+    api.addPendingMemberGroup(group?._id, user?._id);
   };
 
   const JoinGroupButton = () => {

@@ -1,5 +1,7 @@
 import mongoose from "mongoose";
 import { groupMemberSchema } from "./groupMember.js";
+import { groupPendingMemberSchema } from "./groupPendingMember.js";
+
 const groupSchema = mongoose.Schema(
   {
     // userId: {
@@ -32,6 +34,13 @@ const groupSchema = mongoose.Schema(
     listMembers: [
       {
         type: groupMemberSchema,
+        default: [],
+      },
+    ],
+
+    listPendingMembers: [
+      {
+        type: groupPendingMemberSchema,
         default: [],
       },
     ],

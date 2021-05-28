@@ -20,7 +20,7 @@ export const signin =
       window.location.reload();
       message.success("Login successfully!");
     } catch (error) {
-      const code = error.response.status;
+      const code = error.response?.status;
       const data = error.response.data;
       if (code === 401 || code === 404) {
         if (data.message === "Unactivated") {
@@ -40,7 +40,7 @@ export const signup = (formData, setResend) => async (dispatch) => {
     message.success("Please check your email to verify.");
   } catch (error) {
     var errorMessage;
-    switch (error.response.status) {
+    switch (error.response?.status) {
       case 409:
         errorMessage = "User already exists.";
         break;
