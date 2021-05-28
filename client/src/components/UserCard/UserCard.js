@@ -5,10 +5,28 @@ import styles from "./styles.js";
 import { Link, useHistory, useLocation } from "react-router-dom";
 import * as api from "../../api/friend";
 import { useLocalStorage } from "../../hooks/useLocalStorage";
+import {
+  createFriendRequest,
+  deleteFriendRequest,
+  fetchAllFriendRequests,
+} from "../../api/friendRequest";
+import {
+  addFriendRequest,
+  removeFriendRequest,
+} from "../../redux/actions/user";
+import {
+  addFriend,
+  addSendingFriendRequest,
+  removeReceivingFriendRequest,
+  removeSendingFriendRequest,
+} from "../../api/user_info.js";
+
+import { useDispatch, useSelector } from "react-redux";
 
 const { Title, Text } = Typography;
 
 function UserCard(props) {
+  const dispatch = useDispatch();
   const [user, setUser] = useLocalStorage("user");
   const { name } = props;
   const { _id } = props;
@@ -17,10 +35,25 @@ function UserCard(props) {
     props.relationship ?? "Add Friend"
   );
   const [listMutual, setListMutual] = useState([]);
+
+  const handleAddingFriend = async (confirmId, senderId) => {
+    // create friend request
+    const friendRequest = {
+      userConfirmId: confirmId,
+      userSendRequestId: senderId,
+    };
+    const { data } = await createFriendRequest(friendRequest);
+
+    dispatch(addFriendRequest(data));
+    await addSendingFriendRequest(data);
+  };
+
   const changeStateButton = () => {
     console.log(txtButton);
-    if (txtButton === "Add Friend") setTxtButton("Cancel Request");
-    else setTxtButton("Add Friend");
+    if (txtButton === "Add Friend") {
+      handleAddingFriend(_id, user?.result?._id);
+      setTxtButton("Cancel Request");
+    } else setTxtButton("Add Friend");
   };
 
   useEffect(() => {
