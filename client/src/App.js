@@ -68,7 +68,6 @@ function App() {
           <Route exact path="/requests" component={RequestsInGroupsPage} />
           <Route exact path="/wall" component={WallPage} />
           <Route path="/userinfo/:id/about" component={AboutPage} />
-          <Route exact path="/group/about" component={GroupAboutPage} />
           <Route exact path="/friends" component={FriendMangementPage} />
           <Route exact path="/mutualFriends/:id" component={MutualFriendPage} />
           <Route exact path="/groups/" component={GroupManagementPage} />
@@ -76,8 +75,9 @@ function App() {
           <Route exact path="/group/create" component={CreateGroupPage} />
           <Route exact path="/group/:id" component={GroupPage} />
           <Route exact path="/settings" component={SettingsPage} />
-          <Route exac path="/activate/:token" component={ActivationPage} />
+          <Route exact path="/activate/:token" component={ActivationPage} />
           <PrivateRoute exact path="/message" component={MessagePage} />
+          <Route path="/group/:id/about" component={GroupPage} />
           <Route>
             <ErrorPage code="404" />
           </Route>
