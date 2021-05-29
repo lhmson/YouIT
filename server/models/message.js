@@ -7,12 +7,6 @@ export const messageSchema = mongoose.Schema(
       ref: "User",
     },
 
-    status: {
-      type: String,
-      enum: ["Sending", "Sent", "Seen"],
-      default: "Sending",
-    },
-
     text: {
       type: String
     },
