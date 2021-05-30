@@ -16,17 +16,16 @@ import { ReactComponent as ReactLogo } from "../../assets/add-user.svg";
 import logo from "../../assets/lightlogo.png";
 
 import styles from "./styles";
-import { Option } from "antd/lib/mentions";
 import { Link } from "react-router-dom";
 import { signup } from "../../redux/actions/auth";
 import { useDispatch } from "react-redux";
-import { useHistory } from "react-router";
 import moment from "moment";
 import COLOR from "../../constants/colors";
-import { useLocalStorage } from "../../hooks/useLocalStorage";
-import { useToken } from "../../context/TokenContext";
+import { resendVerificationMail } from "../../api/auth";
 
 const { Title, Text } = Typography;
+
+const { Option } = Select;
 
 const dateFormat = "DD/MM/YYYY";
 
@@ -42,14 +41,12 @@ const initialState = {
 
 function RegisterPage() {
   const [form, setForm] = useState(initialState);
-  const [user, setUser] = useLocalStorage("user");
-  const [dobError, setDobError] = useState(null);
   const dispatch = useDispatch();
-  const history = useHistory();
-  const [token, setToken] = useToken();
+  const [resend, setResend] = useState(false);
 
   const handleChange = (e) => {
     setForm({ ...form, [e?.target.name]: e?.target.value });
+    if (resend) setResend(false);
   };
 
   const handleChangeDob = (date) => {
@@ -77,7 +74,12 @@ function RegisterPage() {
       gender: form.gender,
       dob: form.dob,
     };
-    dispatch(signup(data, history, setUser));
+    dispatch(signup(data, setResend));
+  };
+
+  const handleResend = () => {
+    resendVerificationMail(form.newEmail);
+    message.success("Verification mail sent!");
   };
 
   const handleFinishFailed = (errorInfo) => {
@@ -118,7 +120,7 @@ function RegisterPage() {
               <Form
                 name="basic"
                 size="large"
-                onFinish={handleFinish}
+                onFinish={resend ? handleResend : handleFinish}
                 onFinishFailed={handleFinishFailed}
               >
                 <Form.Item
@@ -304,7 +306,7 @@ function RegisterPage() {
                     className="green-button"
                     htmlType="submit"
                   >
-                    Create account
+                    {resend ? "Resend verification mail" : "Create account"}
                   </Button>
                 </Form.Item>
               </Form>

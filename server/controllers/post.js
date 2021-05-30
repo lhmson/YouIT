@@ -3,17 +3,22 @@ import mongoose from "mongoose";
 import {
   addInteraction,
   getInteractionOfAUser,
+  isPostVisibleByUser,
   removeInteraction,
 } from "../businessLogics/post.js";
 
 import Post from "../models/post.js";
 import { httpStatusCodes } from "../utils/httpStatusCode.js";
-import { cuteIO } from "../index.js";
 import { sendNotificationUser } from "../businessLogics/notification.js";
 import User from "../models/user.js";
+import Group from "../models/group.js";
+import { asyncFilter } from "../utils/asyncFilter.js";
+import { customPagination } from "../utils/customPagination.js";
+import { isMemberOfGroup } from "../businessLogics/group.js";
 
 //#region CRUD
 // GET post/list/all
+/** @deprecated */
 export const getPosts = async (req, res) => {
   try {
     const posts = await Post.find();
@@ -26,25 +31,45 @@ export const getPosts = async (req, res) => {
 };
 
 // GET post/:id
-
 export const getAPost = async (req, res) => {
+  const { userId } = req;
   const { id } = req.params;
 
   try {
     await Post.findById(id)
       .populate("userId", "name") // need to populate more item (avatar, )
+      .populate({
+        path: "groupPostInfo.groupId",
+        select: "name",
+        model: "Group",
+      })
       .then((post) => {
-        return res.status(200).json(post);
+        const postObj = post.toObject();
+
+        if (isPostVisibleByUser(postObj, userId))
+          return res.status(200).json(post);
+        else
+          return res
+            .status(httpStatusCodes.forbidden)
+            .json(
+              "You don't have permission to access this post due to its privacy"
+            );
       })
       .catch((err) => {
-        return res.status(404).json(`Cannot find a post with id: ${id}`);
+        return res
+          .status(404)
+          .json({ message: `Cannot find a post with id: ${id}`, error: err });
       });
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
 };
 
-// POST post/
+/**
+ * @param {express.Request<ParamsDictionary, any, any, QueryString.ParsedQs, Record<string, any>>} req
+ * @param {express.Response<any, Record<string, any>, number>} res
+ * @param {express.NextFunction} next
+ */
 export const createPost = async (req, res) => {
   const post = req.body;
 
@@ -53,19 +78,42 @@ export const createPost = async (req, res) => {
     return res.status(400).json("New post mustn't have _id field");
   }
 
+  // handle post in group
+  if (post.privacy === "Group") {
+    const { groupId } = post;
+
+    if (!groupId)
+      return res
+        .status(httpStatusCodes.badContent)
+        .json({ message: `Field groupId is required when privacy is "Group"` });
+
+    const group = await Group.findById(groupId);
+    if (!group)
+      return res
+        .status(httpStatusCodes.notFound)
+        .send({ message: `Cannot find group with group ID = ${groupId}` });
+
+    if (!isMemberOfGroup(req.userId, group.toObject()))
+      return res
+        .status(httpStatusCodes.forbidden)
+        .send({ message: `You are not in this group` });
+
+    post.groupPostInfo = {
+      groupId,
+    };
+  }
+  delete post.groupId;
+
   const newPost = new Post({
     ...post,
     userId: req.userId,
   });
-  // console.log("userid", req.userId);
 
   try {
-    // console.log(newPost);
     await newPost.save();
-
-    res.status(httpStatusCodes.created).json(newPost);
+    return res.status(httpStatusCodes.created).json(newPost);
   } catch (error) {
-    res
+    return res
       .status(httpStatusCodes.internalServerError)
       .json({ message: error.message });
   }
@@ -74,6 +122,8 @@ export const createPost = async (req, res) => {
 // PUT post/:id
 export const updatePost = async (req, res) => {
   const { id } = req.params;
+  const { userId } = req;
+
   try {
     const newPost = req.body;
 
@@ -82,17 +132,22 @@ export const updatePost = async (req, res) => {
         .status(httpStatusCodes.badContent)
         .send(`New post information is required`);
 
-    if (!Post.findById(id))
+    const post = await (await Post.findById(id)).toObject();
+    if (!post)
       return res
         .status(httpStatusCodes.notFound)
         .send(`Cannot find a post with id: ${id}`);
+
+    if (!userId || !post.userId.equals(userId)) {
+      return res
+        .status(httpStatusCodes.unauthorized)
+        .json({ message: `You don't have permission to edit this post` });
+    }
 
     const updatedPost = {
       ...newPost,
       _id: id,
     };
-
-    console.log("update post", updatedPost);
 
     await Post.findByIdAndUpdate(id, updatedPost, { new: true });
     return res.status(httpStatusCodes.ok).json(updatedPost);
@@ -106,6 +161,7 @@ export const updatePost = async (req, res) => {
 // DELETE post/:id
 export const deletePost = async (req, res) => {
   const { id } = req.params;
+  const { userId } = req;
 
   try {
     // auth
@@ -113,10 +169,17 @@ export const deletePost = async (req, res) => {
       return res.json({ message: "Unauthenticated" });
     }
 
-    if (!(await Post.findById(id))) {
+    const post = await (await Post.findById(id))?.toObject();
+    if (!post) {
       return res
         .status(httpStatusCodes.notFound)
         .send(`No post with id: ${id}`);
+    }
+
+    if (!userId || !post.userId.equals(userId)) {
+      return res
+        .status(httpStatusCodes.unauthorized)
+        .json({ message: `You don't have permission to delete this post` });
     }
 
     await Post.findByIdAndRemove(id);
@@ -139,6 +202,7 @@ export const getMyPostInteractions = async (req, res) => {
   const { filter } = req.query;
 
   try {
+    console.log("mlem mlem", filter);
     // auth
     const { userId } = req;
     if (!userId) {
@@ -148,7 +212,7 @@ export const getMyPostInteractions = async (req, res) => {
     let filterJson = undefined;
     try {
       filterJson = JSON.parse(filter);
-    } catch {}
+    } catch { }
 
     const interactions = await getInteractionOfAUser(id, userId, filterJson);
     return res.status(httpStatusCodes.ok).json(interactions);
@@ -180,7 +244,6 @@ const handleUpdateInteraction = (actions) => async (req, res) => {
 
     // user who act
     const user = await User.findById(userId);
-    // console.log(user);
 
     const post = await Post.findById(id);
     if (!post)
@@ -262,23 +325,71 @@ export const unfollowPost = handleUpdateInteraction([
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 export const getPostsPagination = async (req, res) => {
+  const { userId } = req;
+
   //get _page and _limit params from url
-  let { _page, _limit } = req.query;
-  _page = parseInt(_page);
-  _limit = parseInt(_limit);
+  // joinedGroupOnly: cut out the posts of group of which this user is not a member
+  let { _page, _limit, ownerId, groupId, joinedGroupOnly } = req.query;
+  if (_page) _page = parseInt(_page);
+  else _page = 0;
+  if (_limit) _limit = parseInt(_limit);
+  else _limit = 100; // sorry for the magic :)
+
+  joinedGroupOnly = joinedGroupOnly?.toUpperCase() === "TRUE";
+
   try {
     await Post.find()
       .populate("userId", "name")
+      .populate({
+        path: "groupPostInfo.groupId",
+        select: "name",
+        model: "Group",
+      })
       .sort({ createdAt: -1 })
-      .skip(_page > 0 ? _page * _limit : 0)
-      .limit(_limit)
+      // .skip(_page > 0 ? _page * _limit : 0)
+      // .limit(_limit) // because the last filter would filter out even more element :)
+      .then((rawPosts) => {
+        const posts = rawPosts.map((p) => p.toObject());
 
-      .then((posts) => {
-        return res.status(200).json(posts);
+        asyncFilter(posts, async (p) => {
+          const stdObj = {
+            ...p,
+            userId: p.userId._id,
+          };
+          let result = await isPostVisibleByUser(
+            stdObj,
+            userId,
+            !joinedGroupOnly
+          );
+          return result;
+        }).then((filteredPosts) => {
+          if (ownerId)
+            filteredPosts = filteredPosts.filter((p) =>
+              p.userId._id.equals(ownerId)
+            );
+
+          if (groupId)
+            filteredPosts = filteredPosts.filter(
+              (p) =>
+                p.privacy === "Group" &&
+                p.groupPostInfo.groupId._id.equals(groupId)
+            );
+
+          return res
+            .status(200)
+            .send(customPagination(filteredPosts, _limit, _page));
+        });
       })
       .catch((err) => {
-        return res.status(500).json(`Cannot get posts`);
+        return res
+          .status(500)
+          .send({ message: `Cannot get posts`, error: err });
       });
+
+    // const filteredPosts = [];
+    // posts.forEach(p => {
+
+    // });
   } catch (error) {
     return res.status(500).send(error.message);
   }

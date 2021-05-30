@@ -13,6 +13,7 @@ import CommentForm from "../../components/CommentForm/CommentForm.js";
 import Comment from "../../components/Comment/Comment.js";
 import COLOR from "../../constants/colors.js";
 import { useHistory } from "react-router-dom";
+import Loading from "../../components/Loading/Loading.js";
 
 const { Content } = Layout;
 const { Title, Text } = Typography;
@@ -29,16 +30,22 @@ function SpecificPostPage(props) {
     },
   ];
 
-  const { id, commentId } = props.match.params;
-  const [post, setPost] = useState([]);
+  const { id, focusedCommentId } = props.match.params;
+  const [post, setPost] = useState(null);
   const [comments, setComments] = useState([]);
   const [otherPosts, setOtherPosts] = useState([]);
   const [sort, setSort] = useState(sorts[0]);
   const [focusedCommentIndex, setFocusedCommentIndex] = useState(-1);
 
   const fetchPost = async () => {
-    const { data } = await postsApi.fetchAPost(id);
-    setPost(data);
+    postsApi
+      .fetchAPost(id)
+      .then((res) => {
+        setPost(res.data);
+      })
+      .catch((err) => {
+        if (err.response.status === 404) history.push("/error404");
+      });
   };
 
   const fetchOtherPosts = async () => {
@@ -49,17 +56,19 @@ function SpecificPostPage(props) {
   const fetchComments = async () => {
     const { data } = await commentsApi.fetchComments(id);
     const sortedData = sort?.function(data);
-    if (commentId) {
-      const i = sortedData.findIndex((c) => c._id === commentId);
+    if (focusedCommentId) {
+      const i = sortedData.findIndex((c) => c._id === focusedCommentId);
+      console.log(i);
       if (i > -1) {
         const temp = sortedData[0];
         sortedData[0] = sortedData[i];
         sortedData[i] = temp;
       } else {
-        history.push(`/post/${post?._id}`);
+        history.push(`/post/${id}`);
       }
       setFocusedCommentIndex(i);
     }
+
     setComments(sortedData);
   };
 
@@ -83,8 +92,8 @@ function SpecificPostPage(props) {
   const handleSubmitComment = async (newComment) => {
     await commentsApi.createComment(post._id, newComment);
 
-    if (commentId) {
-      history.push(`/post/${post?._id}`);
+    if (focusedCommentId) {
+      history.push(`/post/${id}`);
       history.go(0);
     } else fetchComments();
   };
@@ -147,7 +156,7 @@ function SpecificPostPage(props) {
           <Content>
             <div className="mr-4">
               <Card style={{ padding: 16 }}>
-                <FullPost post={post} />
+                {post ? <FullPost post={post} /> : <Loading />}
                 {/* put there for anchor link to comments */}
                 <div id="comments"></div>
                 <CommentForm

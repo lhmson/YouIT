@@ -15,7 +15,8 @@ const SearchPostResult = ({ txtSearch }) => {
       .then((res) => {
         // console.log("LISTALLPOSTS", txtSearch);
         // console.log(res.data);
-        setListPost(res.data);
+        if (res.data instanceof Array) setListPost(res.data);
+        else setListPost([]);
       })
       .catch((e) => {
         console.log(e);

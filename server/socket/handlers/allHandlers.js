@@ -1,9 +1,10 @@
 import CuteServerIO from "../CuteServerIO.js";
-import { setupDemoOnReceive } from "./demoHandlers.js";
+import { setUpOnReceiveMessages } from "./MessageHandlers.js";
 
 /**
  * @param {CuteServerIO} cuteIO
  */
 export const setUpCuteIO = (cuteIO) => {
-  setupDemoOnReceive(cuteIO);
+  // setupDemoOnReceive(cuteIO);
+  setUpOnReceiveMessages(cuteIO);
 };

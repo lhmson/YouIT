@@ -26,7 +26,11 @@ function EditableText({
   const EditIcon = () => {
     if (editable) {
       return (
-        <AiOutlineEdit style={styles.icon} onClick={() => setIsEditing(true)} />
+        <AiOutlineEdit
+          className="clickable"
+          style={styles.icon}
+          onClick={() => setIsEditing(true)}
+        />
       );
     }
     return <></>;

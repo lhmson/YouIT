@@ -26,6 +26,7 @@ export default class CuteClientIO {
 
   #uri = null;
   #token = null;
+  #browserId = null;
 
   /**
    * this is to store a list of event handlers in case you might try to subscribe onReceive to socket before connection :)
@@ -45,15 +46,43 @@ export default class CuteClientIO {
 
     this.#uri = serverUri;
     this.#token = token;
+    this.#browserId = JSON.parse(localStorage.getItem("browser"))?.id;
+
     this.close();
 
-    this.#socket = io(this.#uri, { query: { token: this.#token } });
+    const query = {
+      token: this.#token
+    };
+    if (this.#browserId)
+      query.browserId = this.#browserId;
+
+    this.#socket = io(this.#uri, { query });
 
     this.#socket.on("connect", () => {
       this.#socketId = this.#socket.id;
-      console.log(
-        `[IO] Connected to server with token ${token}. Socket ID: ${this.#socketId} at ${this.#uri}`
+      console.info(
+        `[IO] Connected to ${this.#socketId} at ${this.#uri}`
       );
+
+      this.socket.once("System-AcceptBrowserId", (msg) => {
+        // DANGER: async accross tabs here
+
+        // fetch again to ensure the last update...
+        this.#browserId = JSON.parse(localStorage.getItem("browser"))?.id;
+
+        // if the browser is not yet assigned an ID, then do it and reconnect
+        if (!this.#browserId) {
+          localStorage.setItem("browser", JSON.stringify({ id: msg.browserId }));
+          this.connect(serverUri, token);
+          return;
+        }
+
+        // if there's a conflict between the browser's current ID and the one assign by server, reconnect
+        if (this.#browserId !== msg.browserId) {
+          this.connect(serverUri, token);
+          return;
+        }
+      })
 
       this.onReceiveMulti(this.#queueEventHandlersOnConnection);
       this.#queueEventHandlersOnConnection = [];
@@ -62,8 +91,8 @@ export default class CuteClientIO {
       this.#queueAnyEventHandlersOnConnection = [];
 
       this.#socket.on("disconnect", (reason) => {
-        console.log(
-          `[IO] Disconnected from socket ${this.#socketId}. Reason: ${reason}`
+        console.info(
+          `[IO] Disconnected from ${this.#socketId}. Reason: ${reason}`
         );
       });
     });
@@ -93,6 +122,8 @@ export default class CuteClientIO {
   onReceive = (event, handleFunction) => {
     if (this.#socket) this.#socket.on(event, handleFunction);
     else this.#queueEventHandlersOnConnection.push({ event, handleFunction });
+
+    return () => this.stopReceive(event, handleFunction);
   };
 
   /**
@@ -101,6 +132,8 @@ export default class CuteClientIO {
   onReceiveAny = (handleFunction) => {
     if (this.#socket) this.#socket.onAny(handleFunction);
     else this.#queueAnyEventHandlersOnConnection.push(handleFunction)
+
+    return () => this.stopReceiveAny(handleFunction);
   }
 
   /**
@@ -109,6 +142,8 @@ export default class CuteClientIO {
    */
   onReceiveMulti = (eventHandlers) => {
     eventHandlers.forEach((e) => this.onReceive(e.event, e.handleFunction));
+
+    return () => this.stopReceiveMulti(eventHandlers);
   };
 
   /**

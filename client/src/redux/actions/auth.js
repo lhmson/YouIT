@@ -1,48 +1,64 @@
 import { AUTH, LOGOUT } from "../actionTypes";
 import * as api from "../../api/auth";
 import { message } from "antd";
-import { forceGetNewLocalStorageToken } from "../../utils/forceGetNewLocalStorageToken";
 
 export const signin =
-  (formData, router, setLocalStorageUser, oldToken, setToken) =>
-  async (dispatch) => {
-    try {
-      console.log("signin");
-      const { data } = await api.signIn(formData);
-      dispatch({ type: AUTH, data, setLocalStorageUser });
-      // dirty code to force sign in
-      // setTimeout(() => {
-      //   setToken(JSON.parse(localStorage.getItem("user"))?.token);
-      // }, 2000);
-      forceGetNewLocalStorageToken(oldToken, setToken);
+  (formData, router, setLocalStorageUser, oldToken, setToken, setResend) =>
+    async (dispatch) => {
+      try {
+        console.log("signin");
+        const { data } = await api.signIn(formData);
+        dispatch({ type: AUTH, data, setLocalStorageUser });
+        // dirty code to force sign in
+        // setTimeout(() => {
+        //   setToken(JSON.parse(localStorage.getItem("user"))?.token);
+        // }, 2000);
+        // forceGetNewLocalStorageToken(oldToken, setToken);
 
-      router.push("/");
-      message.success("Login successfully!");
-    } catch (error) {
-      console.log("Error sign in", error);
-      message.error("Something went wrong, please try again.");
-    }
-  };
+        // router.push("/");
+        window.location.reload();
+        message.success("Login successfully!");
+      } catch (error) {
+        const code = error.response?.status;
+        const data = error.response.data;
+        if (code === 401 || code === 404) {
+          if (data.message === "Unactivated") {
+            setResend(true);
+            message.success("Please check your email to verify.");
+          } else message.error("Wrong username or password.");
+        } else if (code === 500) message.error("Something went wrong.");
+      }
+    };
 
-export const signup = (formData, router) => async (dispatch) => {
+export const signup = (formData, setResend) => async (dispatch) => {
   try {
     console.log("signup");
     await api.signUp(formData);
     // dispatch({ type: AUTH, data });
-    router.push("/login");
-    message.success("Register successfully!");
+    setResend(true);
+    message.success("Please check your email to verify.");
   } catch (error) {
-    console.log(error);
-    message.error("This email has already been used.");
+    var errorMessage;
+    switch (error.response?.status) {
+      case 409:
+        errorMessage = "User already exists.";
+        break;
+      default:
+        errorMessage = "Something went wrong.";
+    }
+    message.error(errorMessage);
   }
 };
 
-export const logout =
-  (setLocalStorageUser, oldToken, setToken) => async (dispatch) => {
-    dispatch({ type: LOGOUT, setLocalStorageUser });
-    // setTimeout(() => {
-    //   setToken(JSON.parse(localStorage.getItem("user"))?.token);
-    //   // setToken(null);
-    // }, 2000);
-    forceGetNewLocalStorageToken(oldToken, setToken);
-  };
+export const signout = (browserId) => async (dispatch) => {
+  api.signOut(browserId);
+};
+// (setLocalStorageUser, oldToken, setToken) => async (dispatch) => {
+// dispatch({ type: LOGOUT, setLocalStorageUser });
+// setTimeout(() => {
+//   setToken(JSON.parse(localStorage.getItem("user"))?.token);
+//   // setToken(null);
+// }, 2000);
+// window.location.reload(); // this is to make force log out work :)
+// forceGetNewLocalStorageToken(oldToken, setToken);
+// };

@@ -1,4 +1,14 @@
 import mongoose from "mongoose";
+import {
+  interactionInfoSchema,
+  defaultInteractionInfoValue,
+} from "./interactionInfo.js";
+
+import {
+  addInteraction,
+  getInteractionOfAUser,
+  removeInteraction,
+} from "../businessLogics/post.js";
 
 export const commentSchema = mongoose.Schema(
   {
@@ -13,6 +23,11 @@ export const commentSchema = mongoose.Schema(
     quotedCommentId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Comment",
+    },
+    interactionInfo: {
+      type: interactionInfoSchema,
+      required: true,
+      default: defaultInteractionInfoValue,
     },
   },
   {

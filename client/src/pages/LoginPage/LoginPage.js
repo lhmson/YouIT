@@ -21,6 +21,7 @@ import { Link, useHistory } from "react-router-dom";
 import COLOR from "../../constants/colors";
 import { useToken } from "../../context/TokenContext";
 import { useLocalStorage } from "../../hooks/useLocalStorage";
+import { resendVerificationMail } from "../../api/auth";
 
 const { Title, Text, Paragraph } = Typography;
 
@@ -35,19 +36,27 @@ function LoginPage() {
   const [user, setUser] = useLocalStorage("user");
   const dispatch = useDispatch();
   const history = useHistory();
+  const [resend, setResend] = useState(false);
 
   const [token, setToken] = useToken();
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
+    if (resend === true) setResend(false);
   };
 
   const handleFinish = async (values) => {
-    dispatch(signin(form, history, setUser, token, setToken));
+    const browserId = JSON.parse(localStorage.getItem("browser"))?.id;
+    dispatch(signin({ ...form, browserId }, history, setUser, token, setToken, setResend));
+  };
+
+  const handleResend = async () => {
+    resendVerificationMail(form.email);
+    message.success("Verification mail sent!");
   };
 
   const handleFinishFailed = (errorInfo) => {
-    errorInfo.errorFields.map((err) => {
+    errorInfo.errorFields.forEach((err) => {
       message.error(err.errors[0]);
     });
   };
@@ -84,7 +93,7 @@ function LoginPage() {
               <Form
                 name="basic"
                 size="large"
-                onFinish={handleFinish}
+                onFinish={resend ? handleResend : handleFinish}
                 onFinishFailed={handleFinishFailed}
               >
                 <Form.Item
@@ -135,7 +144,7 @@ function LoginPage() {
                     className="green-button"
                     htmlType="submit"
                   >
-                    Sign in
+                    {resend ? "Resend verification mail" : "Sign in"}
                   </Button>
                 </Form.Item>
                 <div

@@ -37,6 +37,10 @@ import CoverPhoto from "./GroupPage/CoverPhoto/CoverPhoto";
 import GroupBasicInfo from "./GroupPage/GroupBasicInfo/GroupBasicInfo";
 import GroupAboutCard from "./GroupPage/GroupAboutCard/GroupAboutCard";
 import IntroCard from "./IntroCard/IntroCard";
+import GroupMenu from "./GroupPage/GroupMenu/GroupMenu";
+import GroupFunctionButtons from "./GroupPage/GroupFunctionButtons/GroupFunctionButtons";
+
+import ChatSidebar from "./Chat/ChatSidebar/ChatSidebar";
 
 export {
   SignInForm,
@@ -70,4 +74,7 @@ export {
   GroupBasicInfo,
   GroupAboutCard,
   IntroCard,
+  ChatSidebar,
+  GroupMenu,
+  GroupFunctionButtons,
 };

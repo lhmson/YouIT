@@ -1,5 +1,8 @@
 import mongoose from "mongoose";
+import Group from "../models/group.js";
 import Post from "../models/post.js";
+import { isMemberOfGroup } from "./group.js";
+import { getRelationship } from "./user.js";
 
 /**
  * [immutable function] Return an object showing user's interaction with a post
@@ -117,4 +120,39 @@ export const removeInteraction = (post, userId, interactionType) => {
   };
 
   return newPost;
+};
+
+/**
+ * Check if a user can view a post
+ * - if the post is group post. first check if the group if this post exists, return false if no. otherwise, check the group's privacy.
+ * @param {any} post
+ * @param {string | mongoose.Types.ObjectId} userId
+ * @param {boolean=} allowedUnjoinedGroups
+ * @returns {boolean}
+ */
+export const isPostVisibleByUser = async (
+  post,
+  userId,
+  allowedUnjoinedGroups = true
+) => {
+  if (post.privacy === "Group") {
+    const group = (await Group.findById(post.groupPostInfo.groupId)).toObject();
+
+    if (!group) return false;
+
+    if (group.privacy === "Public" && allowedUnjoinedGroups) return true;
+    else return isMemberOfGroup(userId, group);
+  }
+
+  const rela = await getRelationship(userId, post.userId);
+  switch (post.privacy) {
+    case "Public":
+      return true;
+    case "Friend":
+      return rela === "Friend" || rela === "Self";
+    case "Private":
+      return rela === "Self";
+  }
+
+  return false;
 };

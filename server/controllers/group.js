@@ -1,5 +1,6 @@
 import express from "express";
 import Group from "../models/group.js";
+import { isMemberOfGroup } from "../businessLogics/group.js";
 import { httpStatusCodes } from "../utils/httpStatusCode.js";
 
 /**
@@ -28,12 +29,35 @@ export const getAGroup = async (req, res, next) => {
       .catch((err) => {
         return res
           .status(httpStatusCodes.internalServerError)
-          .json({ message: error.message });
+          .json({ message: err.message });
       });
   } catch (error) {
     return res
       .status(httpStatusCodes.internalServerError)
       .json({ message: error.message });
+  }
+};
+
+/**
+ * @param {express.Request<ParamsDictionary, any, any, QueryString.ParsedQs, Record<string, any>>} req
+ * @param {express.Response<any, Record<string, any>, number>} res
+ * @param {express.NextFunction} next
+ */
+export const getJoinedGroups = async (req, res) => {
+  const { userId } = req;
+
+  if (!userId)
+    return res
+      .status(httpStatusCodes.unauthorized)
+      .json({ message: "You must sign in to fetch list of your group" });
+
+  try {
+    const groups = await (await Group.find())
+      .map((g) => g.toObject())
+      .filter((g) => isMemberOfGroup(userId, g));
+    return res.status(httpStatusCodes.accepted).json(groups);
+  } catch (error) {
+    return res.status(httpStatusCodes.internalServerError).json({ error });
   }
 };
 
@@ -53,7 +77,7 @@ export const createGroup = async (req, res) => {
     await newGroup.save();
     const groupOwner = { role: "Owner", userId: req.userId };
     newGroup.listMembers.push(groupOwner);
-    newGroup.save();
+    await newGroup.save();
     res.status(httpStatusCodes.created).json(newGroup);
   } catch (error) {
     res
@@ -64,19 +88,53 @@ export const createGroup = async (req, res) => {
 
 export const addGroupMember = async (req, res) => {
   const { id, memberId } = req.params;
-  const addMember = { role: "Member", userId: memberId };
+  const { role } = req.query ?? "Member";
+  const addMember = { role, userId: memberId };
 
   try {
-    // const updatedGroup = {
-    //   ...newGroup,
-    //   _id: id,
-    // };
-    // await Group.findByIdAndUpdate(id, updatedGroup, { new: true });
-    await Group.findById(id).then((group) => {
+    await Group.findById(id).then(async (group) => {
       group.listMembers.push(addMember);
-      group.save();
+      await group.save();
       return res.status(httpStatusCodes.ok).json(group);
     });
+  } catch (error) {
+    return res
+      .status(httpStatusCodes.internalServerError)
+      .json({ message: error.message });
+  }
+};
+
+export const addGroupPendingMember = async (req, res) => {
+  const { id, memberId } = req.params;
+  const pendingMember = { userId: memberId };
+
+  try {
+    const group = await Group.findById(id);
+    if (!group) {
+      return res
+        .status(httpStatusCodes.notFound)
+        .json({ message: "Group not exists" });
+    }
+
+    const { listPendingMembers } = group;
+
+    const mapPendingMembers = listPendingMembers?.filter((member) =>
+      member.userId.equals(memberId)
+    );
+
+    if (isMemberOfGroup(memberId, group))
+      return res
+        .status(httpStatusCodes.badContent)
+        .json({ message: "Member existed" });
+
+    if (mapPendingMembers.length !== 0)
+      return res
+        .status(httpStatusCodes.badContent)
+        .json({ message: "Member existed" });
+
+    group.listPendingMembers.push(pendingMember);
+    await group.save();
+    return res.status(httpStatusCodes.ok).json(group);
   } catch (error) {
     return res
       .status(httpStatusCodes.internalServerError)

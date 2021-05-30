@@ -17,6 +17,7 @@ import {
   ArrowDownOutlined,
   LinkOutlined,
   ShareAltOutlined,
+  CaretRightOutlined,
   EditFilled,
   DeleteFilled,
   BellOutlined,
@@ -34,6 +35,7 @@ import {
   unvotePost,
   downvotePost,
   getMyInteractions,
+  getCommentsNumber,
 } from "../../../../api/post";
 import { deletePost } from "../../../../redux/actions/posts";
 import { HashLink } from "react-router-hash-link";
@@ -66,6 +68,7 @@ function FeedPost({ post, setCurrentId }) {
   const [user] = useLocalStorage("user");
 
   const [myInteractions, setMyInteractions] = useState({});
+  const [commentsNumber, setCommentsNumber] = useState(0);
 
   const [allInteractions, dispatchInteractions] = useReducer(
     allInteractionReducer,
@@ -99,18 +102,28 @@ function FeedPost({ post, setCurrentId }) {
     showConfirmDeletePost(id);
   };
 
-  const handleEditPost = (id) => {
+  const handleEditPost = (postId, postTitle, postPrivacy, postContent) => {
     history.push({
       pathname: "/post/create",
-      state: { postId: id },
+      state: { postId, postTitle, postContent, postPrivacy },
     });
   };
 
   const menuMore = (
     <Menu>
-      {user.result._id === post?.userId._id ? (
+      {user?.result._id === post?.userId._id ? (
         <>
-          <Menu.Item key="edit" onClick={() => handleEditPost(post._id)}>
+          <Menu.Item
+            key="edit"
+            onClick={() =>
+              handleEditPost(
+                post?._id,
+                post?.title,
+                post?.privacy,
+                post?.content
+              )
+            }
+          >
             <Row align="middle">
               <EditFilled className="mr-2" />
               <Text>Edit post</Text>
@@ -139,6 +152,9 @@ function FeedPost({ post, setCurrentId }) {
   //#region handle interaction
   useEffect(() => {
     fetchMyInteractions();
+    getCommentsNumber(post?._id).then((cn) => {
+      setCommentsNumber(cn.data);
+    });
   }, []);
 
   const handleUpvoteClick = async (id) => {
@@ -215,6 +231,23 @@ function FeedPost({ post, setCurrentId }) {
       });
   };
 
+  const groupId = post?.groupPostInfo?.groupId;
+
+  const renderPrivacyIcon = (privacy) => {
+    switch (privacy) {
+      case "Friend":
+        return <GiThreeFriends className="gray mr-1 icon" />;
+      case "Private":
+        return <IoPerson className="gray mr-1 icon" />;
+      case "Public":
+        return <MdPublic className="gray mr-1 icon" />;
+      case "Group":
+        return <MdPublic className="gray mr-1 icon" />;
+      default:
+        return <MdPublic className="gray mr-1 icon" />;
+    }
+  };
+
   return (
     <div style={styles.item}>
       <div style={{ margin: 12 }}>
@@ -237,19 +270,30 @@ function FeedPost({ post, setCurrentId }) {
                       {post?.userId?.name}
                     </Text>
                   </Link>
+
+                  {groupId && (
+                    <>
+                      <CaretRightOutlined
+                        style={{ fontSize: 18, paddingBottom: 5 }}
+                      />
+                      <Link to={`/group/${groupId._id}`} target="_blank">
+                        <Text
+                          className="clickable"
+                          strong
+                          style={{ fontSize: "1.2rem" }}
+                        >
+                          {groupId.name}
+                        </Text>
+                      </Link>
+                    </>
+                  )}
                 </Space>
               </Row>
               <Text>Fullstack Developer</Text>
             </div>
           </Row>
           <Row className="justify-content-end align-items-center pb-3">
-            {post?.privacy === "Friend" ? (
-              <GiThreeFriends className="gray mr-1 icon" />
-            ) : post?.privacy === "Private" ? (
-              <IoPerson className="gray mr-1 icon" />
-            ) : (
-              <MdPublic className="gray mr-1 icon" />
-            )}
+            {renderPrivacyIcon(post?.privacy)}
             <Tooltip title="Privacy">
               <div className="mr-4">
                 <Text type="secondary">{post?.privacy}</Text>
@@ -294,7 +338,7 @@ function FeedPost({ post, setCurrentId }) {
               nulla pariatur. Excepteur sint occaecat cupidatat non proident,
               sunt in culpa qui officia deserunt mollit anim id est laborum.
             </Paragraph>
-            <Paragraph>{post?.content}</Paragraph>
+            <Paragraph>{post?.content?.text}</Paragraph>
             <Link to={`/post/${post._id}`} target="_blank">
               <Text className="clickable bold">Click here to read more</Text>
             </Link>
@@ -309,17 +353,15 @@ function FeedPost({ post, setCurrentId }) {
                 </Text>
                 <Tooltip title="Upvote">
                   <ArrowUpOutlined
-                    className={`clickable icon ${
-                      myInteractions?.upvote ? "green" : "black"
-                    }`}
+                    className={`clickable icon ${myInteractions?.upvote ? "green" : "black"
+                      }`}
                     onClick={() => handleUpvoteClick(post._id)}
                   />
                 </Tooltip>
                 <Tooltip title="Downvote">
                   <ArrowDownOutlined
-                    className={`clickable icon ${
-                      myInteractions?.downvote ? "green" : "black"
-                    }`}
+                    className={`clickable icon ${myInteractions?.downvote ? "green" : "black"
+                      }`}
                     onClick={() => handleDownvoteClick(post._id)}
                   />
                 </Tooltip>
@@ -337,7 +379,7 @@ function FeedPost({ post, setCurrentId }) {
                 <Text
                   style={{ fontSize: "1.2rem" }}
                   className=" clickable bold mx-2"
-                >{`Comment (${post?.comments.length})`}</Text>
+                >{`Comment (${commentsNumber})`}</Text>
               </Link>
             </Space>
           </Row>
