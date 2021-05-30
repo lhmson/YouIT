@@ -1,30 +1,28 @@
-import { Server, Socket } from 'socket.io'
-import { verifyJwt } from '../utils/verfifyAuth.js'
+import { Server, Socket } from "socket.io";
+import { verifyJwt } from "../utils/verfifyAuth.js";
 
 /**
- * A simplified interface to use socket.io by CuteTN, for YouIT only. :)   
+ * A simplified interface to use socket.io by CuteTN, for YouIT only. :)
  * [Full documentation](https://www.google.com)
  */
 export default class CuteServerIO {
-  /** 
+  /**
    * A wrapped reference to socket.io "Server".
-   * @type Server<DefaultEventsMap, DefaultEventsMap>? 
+   * @type Server<DefaultEventsMap, DefaultEventsMap>?
    */
   #io = null;
 
   /**
    * @deprecated Just in case you really need to access the real socket.io's API, I provide this to you. But try to use the supported methods or contact CuteTN first, thank you.
    */
-  get io() { return this.#io; }
+  get io() {
+    return this.#io;
+  }
 
-
-
-  #ANONYMOUS_ROOM_PREFIX = "ANONYMOUS~"
-  #USER_ROOM_PREFIX = "USER~"
-  #TOKEN_ROOM_PREFIX = "TOKEN~"
-  #BROWSER_ROOM_PREFIX = "BROWSER~"
-
-
+  #ANONYMOUS_ROOM_PREFIX = "ANONYMOUS~";
+  #USER_ROOM_PREFIX = "USER~";
+  #TOKEN_ROOM_PREFIX = "TOKEN~";
+  #BROWSER_ROOM_PREFIX = "BROWSER~";
 
   /**
    * onReceiveCallbacks Define a set of tasks to handle when server receive something from client
@@ -32,9 +30,7 @@ export default class CuteServerIO {
    */
   #onReceiveCallbacks = [];
 
-
-
-  /** 
+  /**
    * @param {Server<DefaultEventsMap, DefaultEventsMap>} io
    */
   constructor(io) {
@@ -42,11 +38,9 @@ export default class CuteServerIO {
     this.#onReceiveCallbacks = [];
   }
 
-
-
   /**
    * extract token and userId from a socket.
-   * @param {Socket} socket 
+   * @param {Socket} socket
    * @returns {{socket: string, token: string, userId: string, browserId: string}}
    */
   #extractInfoSocket = (socket) => {
@@ -55,26 +49,21 @@ export default class CuteServerIO {
     const browserId = socket.handshake.query.browserId;
     const userId = verifyJwt(token)?.id;
 
-    return { socket, token, userId, browserId }
-  }
-
-
+    return { socket, token, userId, browserId };
+  };
 
   /** @param {string} id */
-  #getSocket = (id) => this.#io.sockets.sockets.get(id)
-
-
+  #getSocket = (id) => this.#io.sockets.sockets.get(id);
 
   /**
    * Add handlers when receiving a message from specific client (by its socket Id). Subscribe immediately
    * @param {Socket | string} socket
-   * @param {string} eventName 
-   * @param {OnReceiveDelegate} handleFunction 
+   * @param {string} eventName
+   * @param {OnReceiveDelegate} handleFunction
    */
   onReceive = (socket, eventName, handleFunction) => {
-    if (typeof socket === "string")
-      socket = this.#getSocket(socket);
-    const { userId, token, browserId } = this.#extractInfoSocket(socket)
+    if (typeof socket === "string") socket = this.#getSocket(socket);
+    const { userId, token, browserId } = this.#extractInfoSocket(socket);
 
     socket.on(eventName, (msg) => {
       handleFunction({
@@ -84,32 +73,28 @@ export default class CuteServerIO {
         browserId,
         msg,
         cuteServerIo: this,
-      })
-    })
-  }
-
-
+      });
+    });
+  };
 
   /**
    * Add handlers when receiving a message from client. automatically subscribe to client's socket ON CONNECTION
-   * @param {string} eventName 
-   * @param {OnReceiveDelegate} handleFunction 
+   * @param {string} eventName
+   * @param {OnReceiveDelegate} handleFunction
    */
   queueReceiveHandler = (eventName, handleFunction) => {
     this.#onReceiveCallbacks.push({
       eventName,
-      handleFunction
-    })
-  }
+      handleFunction,
+    });
+  };
 
-
-
-  /** 
+  /**
    * start waiting for new clients to connect to this server. The more the merrier!
-  */
+   */
   start = () => {
-    this.#io.on("connection", async socket => {
-      let { token, userId, browserId } = this.#extractInfoSocket(socket)
+    this.#io.on("connection", async (socket) => {
+      let { token, userId, browserId } = this.#extractInfoSocket(socket);
       let logOutTask;
 
       if (!browserId) {
@@ -124,15 +109,15 @@ export default class CuteServerIO {
           socket.join([
             this.#ANONYMOUS_ROOM_PREFIX,
             this.#BROWSER_ROOM_PREFIX + browserId,
-          ])
+          ]);
 
           // force user to log out if the token is not valid
           if (token && token !== "undefined" && token !== "null" && !userId) {
-            this.sendToSocket(socket, "System-InvalidToken", { enableAlert: true });
+            this.sendToSocket(socket, "System-InvalidToken", {
+              enableAlert: true,
+            });
           }
-
-        }
-        else {
+        } else {
           // Add this socket to a room with id User. every socket here belongs to this user only.
           socket.join([
             this.#USER_ROOM_PREFIX + userId,
@@ -143,150 +128,129 @@ export default class CuteServerIO {
           const { exp } = verifyJwt(token);
           // auto logout on expiration
           if (exp) {
-            logOutTask = setTimeout(
-              () => {
-                this.sendToSocket(socket, "System-InvalidToken", { enableAlert: true });
-              },
-              exp * 1000 - Date.now()
-            )
+            logOutTask = setTimeout(() => {
+              this.sendToSocket(socket, "System-InvalidToken", {
+                enableAlert: true,
+              });
+            }, exp * 1000 - Date.now());
           }
         }
 
         // add handlers to call whenever this client send something to the server
         if (this.#onReceiveCallbacks) {
-          this.#onReceiveCallbacks.forEach(cb => {
+          this.#onReceiveCallbacks.forEach((cb) => {
             this.onReceive(socket, cb.eventName, cb.handleFunction);
-          })
+          });
         }
 
         socket.on("disconnect", (reason) => {
-          if (logOutTask)
-            clearTimeout(logOutTask);
+          if (logOutTask) clearTimeout(logOutTask);
 
-          console.info(`[IO] Disconnected from ${socket.id}. Reason: ${reason}`)
-        })
+          console.info(
+            `[IO] Disconnected from ${socket.id}. Reason: ${reason}`
+          );
+        });
 
         if (userId)
           console.info(`[IO] Connected to ${socket.id}: User ${userId}.`);
-        else
-          console.info(`[IO] Connected to ${socket.id}: Anonymous`);
-      }
-      catch (error) {
-        // CuteTN Todo: send something back to client maybe
-        console.error(`[IO] Connection Error on ${socket.id}. Reason: ${error}`);
+        else console.info(`[IO] Connected to ${socket.id}: Anonymous`);
+      } catch (error) {
+        // CuteTN TODO: send something back to client maybe
+        console.error(
+          `[IO] Connection Error on ${socket.id}. Reason: ${error}`
+        );
         socket.disconnect();
       }
-    })
-  }
-
-
+    });
+  };
 
   /**
-   * 
-   * @param {Socket?} toSocket 
+   *
+   * @param {Socket?} toSocket
    * @param {string?} event Convention: Action_Receiver
-   * @param {object} msg 
+   * @param {object} msg
    */
   sendToSocket = (toSocket, event, msg) => {
-    toSocket.emit(event, msg)
-  }
-
-
+    toSocket.emit(event, msg);
+  };
 
   /**
-   * 
-   * @param {string?} toTokenId 
+   *
+   * @param {string?} toTokenId
    * @param {string?} event Convention: Action_Receiver
-   * @param {any} msg 
+   * @param {any} msg
    * @param {Socket?} excludedSocket sometimes we dont wanna send some message back to the sender (client). That's when this is helpful :)
    */
   sendToToken = (toTokenId, event, msg, excludedSocket) => {
-    const roomName = this.#TOKEN_ROOM_PREFIX + toTokenId
+    const roomName = this.#TOKEN_ROOM_PREFIX + toTokenId;
 
     if (
-      excludedSocket && excludedSocket.broadcast
-      && excludedSocket.rooms.has(roomName)
+      excludedSocket &&
+      excludedSocket.broadcast &&
+      excludedSocket.rooms.has(roomName)
     ) {
-      excludedSocket.broadcast.to(roomName).emit(event, msg)
-    }
-    else
-      this.#io.in(roomName).emit(event, msg)
-  }
-
-
-
+      excludedSocket.broadcast.to(roomName).emit(event, msg);
+    } else this.#io.in(roomName).emit(event, msg);
+  };
 
   /**
-   * 
-   * @param {string?} toBrowserId 
+   *
+   * @param {string?} toBrowserId
    * @param {string?} event Convention: Action_Receiver
-   * @param {any} msg 
+   * @param {any} msg
    * @param {Socket?} excludedSocket sometimes we dont wanna send some message back to the sender (client). That's when this is helpful :)
    */
   sendToBrowser = (toBrowserId, event, msg, excludedSocket) => {
-    const roomName = this.#BROWSER_ROOM_PREFIX + toBrowserId
+    const roomName = this.#BROWSER_ROOM_PREFIX + toBrowserId;
 
     if (
-      excludedSocket && excludedSocket.broadcast
-      && excludedSocket.rooms.has(roomName)
+      excludedSocket &&
+      excludedSocket.broadcast &&
+      excludedSocket.rooms.has(roomName)
     ) {
-      excludedSocket.broadcast.to(roomName).emit(event, msg)
-    }
-    else
-      this.#io.in(roomName).emit(event, msg)
-  }
-
-
-
+      excludedSocket.broadcast.to(roomName).emit(event, msg);
+    } else this.#io.in(roomName).emit(event, msg);
+  };
 
   /**
-   * 
+   *
    * @param {string?} toUserId
    * @param {string?} event Convention: Action_Receiver
-   * @param {any} msg 
+   * @param {any} msg
    * @param {Socket?} excludedSocket sometimes we dont wanna send some message back to the sender (client). That's when this is helpful :)
    */
   sendToUser = (toUserId, event, msg, excludedSocket) => {
-    const roomName = this.#USER_ROOM_PREFIX + toUserId
+    const roomName = this.#USER_ROOM_PREFIX + toUserId;
 
     if (excludedSocket && excludedSocket.broadcast) {
-      excludedSocket.broadcast.to(roomName).emit(event, msg)
-    }
-    else
-      this.#io.in(roomName).emit(event, msg)
-  }
-
-
+      excludedSocket.broadcast.to(roomName).emit(event, msg);
+    } else this.#io.in(roomName).emit(event, msg);
+  };
 
   /**
-   * 
+   *
    * @param {string?} event
-   * @param {any} msg 
+   * @param {any} msg
    * @param {string?} excludedSocket sometimes we dont wanna send some message back to the sender (client). That's when this is helpful :)
    */
   sendToAll = (event, msg, excludedSocket) => {
     if (excludedSocket && excludedSocket.broadcast) {
-      excludedSocket.broadcast.emit(event, msg)
-    }
-    else
-      this.#io.emit(event, msg)
-  }
-
-
+      excludedSocket.broadcast.emit(event, msg);
+    } else this.#io.emit(event, msg);
+  };
 
   countUserSockets = (userId) => {
     userId = userId.toString();
-    const room = this.#io?.sockets.adapter.rooms.get(this.#USER_ROOM_PREFIX + userId);
-    if (room)
-      return room.size;
+    const room = this.#io?.sockets.adapter.rooms.get(
+      this.#USER_ROOM_PREFIX + userId
+    );
+    if (room) return room.size;
 
     return 0;
-  }
+  };
 }
 
-
 // test
-
 
 //#region typedefs
 ////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -28,20 +28,18 @@ const statusList = [
 function MessageHeader({ setOpenSidebar, currentId }) {
   const isMobile = useMobile();
 
-  useEffect(() => {
-
-  }, []);
+  useEffect(() => {}, []);
 
   const handleOpenSidebar = () => {
     setOpenSidebar((prev) => !prev);
   };
 
-  const handleChangeStatus = () => { };
+  const handleChangeStatus = () => {};
 
   const menuStatus = (
     <Menu>
       {statusList.map((item, i) => (
-        <Menu.Item key="i" onClick={() => handleChangeStatus(item.title)}>
+        <Menu.Item key={i} onClick={() => handleChangeStatus(item.title)}>
           <Row align="middle" style={{ color: item.color }}>
             <EnvironmentOutlined className="mr-2" />
             <Text>{item.title}</Text>
@@ -71,7 +69,10 @@ function MessageHeader({ setOpenSidebar, currentId }) {
         </Dropdown>
       </div>
 
-      <span className="text-center">{currentId && (isMobile ? currentId.substring(0, 12) + "..." : currentId)}</span>
+      <span className="text-center">
+        {currentId &&
+          (isMobile ? currentId.substring(0, 12) + "..." : currentId)}
+      </span>
       <Tooltip title="Delete conversation">
         <DeleteOutlined className="clickable icon" />
       </Tooltip>
