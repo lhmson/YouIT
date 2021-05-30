@@ -1,5 +1,6 @@
 import mongoose from 'mongoose'
 import Conversation from '../models/conversation.js';
+import Message from '../models/message.js';
 import { httpStatusCodes } from '../utils/httpStatusCode.js';
 
 /**
@@ -29,10 +30,10 @@ export const isOwnerOfConversation = checkMemberOfConversationFunc("listOwners")
  * @param {mongoose.Types.ObjectId | string} userId 
  * @param {mongoose.Types.ObjectId | string} conversationId 
  * @param {{ text: string, senderId }} message
- * @returns {Promise<{status: {code: string, msg: any}, newConversation: any?, req: {userId: any, conversationId: any, message: any}}>}
+ * @returns {Promise<{status: {code: string, msg: any}, res: {senderId: any, conversationId: any, message: any, receiverIds: any}}>}
  */
 export const addMessageToConversation = async (userId, conversationId, message) => {
-  const req = {
+  const res = {
     userId,
     conversationId,
     message,
@@ -44,7 +45,7 @@ export const addMessageToConversation = async (userId, conversationId, message) 
         code: httpStatusCodes.unauthorized,
         msg: "No userId",
       },
-      req,
+      res,
     }
   }
 
@@ -54,7 +55,7 @@ export const addMessageToConversation = async (userId, conversationId, message) 
         code: httpStatusCodes.badContent,
         msg: "No message"
       },
-      req,
+      res,
     }
   }
 
@@ -67,7 +68,7 @@ export const addMessageToConversation = async (userId, conversationId, message) 
         code: httpStatusCodes.notFound,
         msg: `There's no conversation with id ${conversationId}`
       },
-      req,
+      res,
     }
   }
 
@@ -77,15 +78,34 @@ export const addMessageToConversation = async (userId, conversationId, message) 
         code: httpStatusCodes.forbidden,
         msg: "Not a member of conversation"
       },
-      req,
+      res,
     }
   }
 
   message.senderId = userId;
+  let newMessage = null;
+
+  try {
+    newMessage = new Message({
+      ...message,
+    });
+
+    await newMessage.save();
+  } catch (error) {
+    return {
+      status: {
+        code: httpStatusCodes.internalServerError,
+        msg: error,
+      },
+      res,
+    }
+  }
+  const msgObj = newMessage.toObject();
+
   if (conversation?.listMessages)
-    conversation.listMessages = [message, ...conversation.listMessages];
+    conversation.listMessages = [msgObj._id, ...conversation.listMessages];
   else
-    conversation.listMessages = [message];
+    conversation.listMessages = [msgObj._id];
 
   const newConversation = await Conversation.findByIdAndUpdate(conversationId, conversation);
 
@@ -93,7 +113,11 @@ export const addMessageToConversation = async (userId, conversationId, message) 
     status: {
       code: httpStatusCodes.ok,
     },
-    newConversation: newConversation.toObject(),
-    req,
+    res: {
+      senderId: userId,
+      conversationId,
+      message: msgObj,
+      receiverIds: newConversation?.toObject?.().listMembers,
+    },
   }
 }

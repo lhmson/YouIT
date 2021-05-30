@@ -108,7 +108,12 @@ export const getAConversation = async (req, res, next) => {
   const { conversationId } = req.params;
 
   try {
-    const conversation = await Conversation.findById(conversationId);
+    const conversation = await Conversation
+      .findById(conversationId)
+      .populate({
+        path: `listMessages`,
+        model: `Message`,
+      });
 
     if (!conversation) {
       return res.status(httpStatusCodes.notFound).send(`There's no conversation with id ${conversationId}`);
@@ -148,6 +153,10 @@ export const getConversationsOfUser = async (req, res, next) => {
     await Conversation
       .find()
       .sort({ 'updatedAt': -1 })
+      .populate({
+        path: `listMessages`,
+        model: `Message`,
+      })
       .exec()
       .then((conversations) => {
         const conversationObjs = conversations.map(c => c.toObject())

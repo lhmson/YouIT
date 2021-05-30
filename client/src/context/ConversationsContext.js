@@ -20,6 +20,16 @@ function conversationReducer(state, action) {
         ...state.listConversations,
       ];
       return { ...state, listConversations: newArr };
+    case "ADD_SENDING": {
+      const clone = new Set(state.conversationsSending);
+      clone.add(action.payload.conversationId);
+      return { ...state, conversationsSending: clone }
+    }
+    case "REMOVE_SENDING": {
+      const clone = new Set(state.conversationsSending);
+      clone.delete(action.payload.conversationId);
+      return { ...state, conversationsSending: clone };
+    }
     default: {
       throw new Error(`Unsupported action type: ${action.type}`);
     }
@@ -32,6 +42,7 @@ function ConversationsProvider(props) {
   const [state, dispatch] = useReducer(conversationReducer, {
     listConversations: [],
     currentId: null,
+    conversationsSending: new Set(),
   });
   const value = useMemo(() => [state, dispatch], [state]);
   return <ConversationsContext.Provider value={value} {...props} />;
@@ -64,11 +75,30 @@ function useConversations() {
     });
   };
 
+  const addSending = (conversationId) => {
+    dispatch({
+      type: "ADD_SENDING",
+      payload: { conversationId },
+    });
+  };
+
+  const removeSending = (conversationId) => {
+    dispatch({
+      type: "REMOVE_SENDING",
+      payload: { conversationId },
+    });
+  };
+
+  const checkSending = (conversationId) => state.conversationsSending.has(conversationId);
+
   return {
     state,
     updateCurrentId,
     updateListConversations,
     addConversation,
+    addSending,
+    checkSending,
+    removeSending
   };
 }
 

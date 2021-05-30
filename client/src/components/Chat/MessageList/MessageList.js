@@ -60,22 +60,12 @@ const { Text } = Typography;
 //   },
 // ];
 
-function ConversationList({ currentId, isAddMessage, setIsAddMessage }) {
-  const message = useMessage();
+function ConversationList({ currentId, isAddMessage, setIsAddMessage, messageHandle }) {
+
 
   const [listMessages, setListMessages] = useState([]);
 
   const [user] = useLocalStorage("user");
-
-  // test notification message
-  useEffect(() => {
-    message.onReceive((msg) => {
-      console.log(`user ${msg.req?.userId} said: ${msg.req?.message.text}`);
-      setIsAddMessage(true);
-    });
-
-    return message.cleanUpAll;
-  }, []);
 
   useEffect(() => {
     // alert("current" + currentId);
@@ -92,17 +82,16 @@ function ConversationList({ currentId, isAddMessage, setIsAddMessage }) {
     <div className="chat-message-list">
       {listMessages.length === 0 ? (
         <div className="text-center" style={{ fontSize: "1.5rem" }}>
-          <Text>You have not sent any message to each other</Text>
+          <Text>You have not sent any message to others</Text>
         </div>
       ) : (
         listMessages.map((item, i) => (
           <div
             key={i}
-            className={`message-row ${
-              item.senderId === user?.result?._id
-                ? "you-message"
-                : "other-message"
-            }`}
+            className={`message-row ${item.senderId === user?.result?._id
+              ? "you-message"
+              : "other-message"
+              }`}
           >
             <div className="message-content">
               <Tooltip title={item.senderId} placement="bottom">

@@ -127,7 +127,7 @@ function ChatSidebar({
   // }, []);
   // need real time update there
 
-  const handleSearch = () => {};
+  const handleSearch = () => { };
 
   const handleChangeUserToAdd = (value, options) => {
     // console.log("opt", options);
@@ -253,14 +253,13 @@ function ChatSidebar({
         <>
           <div className="conversation-list">
             {currentId &&
-            listConversations &&
-            listConversations.length !== 0 ? (
+              listConversations &&
+              listConversations.length !== 0 ? (
               listConversations.map((item, i) => (
                 <div key={item._id} onClick={() => updateCurrentId(item._id)}>
                   <div
-                    className={`conversation ${
-                      item._id === currentId && "active"
-                    }`}
+                    className={`conversation ${item._id === currentId && "active"
+                      }`}
                   >
                     <Badge dot color={renderStatus(item.status)}>
                       <img src={renderAvatar(item)} alt={item._id} />

@@ -28,7 +28,8 @@ const conversationSchema = mongoose.Schema(
 
     listMessages: [
       {
-        type: messageSchema,
+        type: mongoose.Types.ObjectId,
+        ref: "Message",
       }
     ],
   },
