@@ -8,12 +8,12 @@ import {
   CoverPhoto,
   FeedPosts,
   GroupBasicInfo,
-  ListButtons,
   Navbar,
 } from "../../components/index.js";
 import { useHistory } from "react-router";
 import styles from "./styles.js";
 import * as api from "../../api/group";
+import ListButtons from "../../components/GroupPage/ListButtons/ListButtons.js";
 const { Content } = Layout;
 
 function GroupPage(props) {
@@ -63,7 +63,7 @@ function GroupPage(props) {
                   type="primary"
                   style={styles.button}
                   onClick={() => {
-                    handleDeleteGroup(id);
+                    // handleDeleteGroup(id);
                   }}
                 >
                   Delete

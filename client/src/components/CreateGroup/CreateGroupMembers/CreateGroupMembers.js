@@ -1,18 +1,27 @@
 import { Select } from "antd";
 import React from "react";
+import { useLocalStorage } from "../../../hooks/useLocalStorage.js";
+
 import styles from "./styles.js";
 
 const { Option } = Select;
-
-const children = [];
-
-children.push(<Option></Option>);
 
 function handleChange(value) {
   console.log(`Selected: ${value}`);
 }
 
 function CreateGroupMembers() {
+  console.log("Thycute");
+  const [user] = useLocalStorage("user");
+  const array = [];
+  //array = user?.listFriends;
+  const children = [];
+  console.log(array.length);
+  // for (let i = 0; i < user?.result.listFriends.length; i++) {
+  //   children.push(
+  //     <Option key={i.toString(36) + i}>{i.toString(36) + i}</Option>
+  //   );
+  // }
   return (
     <>
       <Select

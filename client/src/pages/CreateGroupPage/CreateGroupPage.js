@@ -17,27 +17,22 @@ import {
 import { Link } from "react-router-dom";
 import COLOR from "../../constants/colors.js";
 import { useHistory } from "react-router";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { createGroup } from "../../api/group";
-import { CoverPhoto, GroupAboutCard } from "../../components/index.js";
+import { CoverPhoto } from "../../components/index.js";
 import { BsThreeDots } from "react-icons/bs";
 import { GoSearch } from "react-icons/go";
-import { MailOutlined, ShopOutlined } from "@ant-design/icons";
+import { MailOutlined } from "@ant-design/icons";
 import Navbar from "../../components/Navbar/Navbar";
 import CreateGroupName from "../../components/CreateGroup/CreateGroupName/CreateGroupName";
 import CreateGroupDescription from "../../components/CreateGroup/CreateGroupDescription/CreateGroupDescription";
 import CreateGroupMembers from "../../components/CreateGroup/CreateGroupMembers/CreateGroupMembers";
 import { OverviewRow } from "../../components/UserInfo/AboutCard/index.js";
 import { IoMdLock } from "react-icons/all";
-import { isLoginUser } from "../../utils/user.js";
 import CreateGroupNameAdmin from "../../components/CreateGroup/CreateGroupNameAdmin/CreateGroupNameAdmin.js";
 import styles from "./styles.js";
 
 const { Title, Text } = Typography;
-
-const initialState = {
-  groupName: "",
-};
 
 const optionsPrivacy = ["Public", "Private"];
 const optionsTopic = [
@@ -58,7 +53,7 @@ function CreateGroupPage() {
   const [groupPrivacy, setGroupPrivacy] = useState("");
   const [groupTopic, setGroupTopic] = useState("");
 
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
   const history = useHistory();
 
   const Data = () => {
@@ -127,6 +122,7 @@ function CreateGroupPage() {
               </Row>
               <Row style={{ marginBottom: 18, marginTop: 18 }}>
                 <CreateGroupNameAdmin />
+                {/* <AvatarView /> */}
               </Row>
               <Form
                 style={{ marginTop: 40 }}

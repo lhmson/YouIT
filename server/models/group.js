@@ -15,17 +15,17 @@ const groupSchema = mongoose.Schema(
 
     topic: {
       type: String,
-      enum: [
-        "General",
-        "Game",
-        "Language",
-        "Mobile",
-        "Web Dev",
-        "System",
-        "Jobs",
-        "Data",
-        "School",
-      ],
+      // enum: [
+      //   "General",
+      //   "Game",
+      //   "Language",
+      //   "Mobile",
+      //   "Web Dev",
+      //   "System",
+      //   "Jobs",
+      //   "Data",
+      //   "School",
+      // ],
       required: true,
     },
 
