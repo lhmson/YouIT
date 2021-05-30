@@ -111,6 +111,7 @@
 .other-message .message-content {
   grid-template-columns: 48px 1fr;
   grid-column-gap: 15px;
+  justify-items: start;
 }
 
 .message-row img {

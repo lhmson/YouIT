@@ -172,6 +172,8 @@ const SecurityTab = () => {
             break;
           case 500:
             message.error("There was an error.");
+            break;
+          default:
         }
       });
   };
