@@ -32,7 +32,7 @@ function GroupPage(props) {
 
   useEffect(async () => {
     await fetchGroupInfo();
-    //console.log(group);
+    console.log(group);
   }, []);
 
   const fetchGroupInfo = async () => {
