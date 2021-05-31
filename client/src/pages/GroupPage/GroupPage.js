@@ -12,11 +12,14 @@ import {
   GroupFunctionButtons,
   GroupMenu,
   Navbar,
+  GroupMember,
 } from "../../components/index.js";
 import { useLocation } from "react-router";
 import styles from "./styles.js";
 import * as api from "../../api/group";
 import ListButtons from "../../components/GroupPage/ListButtons/ListButtons.js";
+import MemberRequestsResult from "../RequestsInGroupsPage/MemberRequestsResult/MemberRequestsResult.js";
+import PostRequestsResult from "../RequestsInGroupsPage/PostRequestsResult/PostRequestsResult.js";
 const { Content } = Layout;
 
 export const GroupContext = createContext({
@@ -30,6 +33,8 @@ function GroupPage(props) {
 
   const [group, setGroup] = useState(null);
   const valueContext = { group, setGroup };
+
+  const [modeSearch, setModeSearch] = useState("group");
 
   useEffect(async () => {
     await fetchGroupInfo();
@@ -46,26 +51,30 @@ function GroupPage(props) {
       <Layout>
         <Navbar />
         <Sider>
-          <AdminGroupSidebar />
+          <AdminGroupSidebar setModeSearch={setModeSearch} />
         </Sider>
-        <Col>
-          <Layout style={styles.avatarView}>
-            <Content
-              className="container"
-              style={{
-                padding: 8,
-              }}
-            >
-              <CoverPhoto />
-              <Row
-                style={{
-                  display: "flex",
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                }}
-              >
-
-                {/* <Button type="primary" style={styles.button}>
+        <Layout style={styles.mainArea}>
+          <Content>
+            {modeSearch === "memberRequests" ? (
+              <MemberRequestsResult />
+            ) : modeSearch === "group" ? (
+              <Col>
+                <Layout style={styles.avatarView}>
+                  <Content
+                    className="container"
+                    style={{
+                      padding: 8,
+                    }}
+                  >
+                    <CoverPhoto />
+                    <Row
+                      style={{
+                        display: "flex",
+                        flexDirection: "row",
+                        justifyContent: "space-between",
+                      }}
+                    >
+                      {/* <Button type="primary" style={styles.button}>
                   Create Post
                 </Button>
                 <Button type="primary" style={styles.button}>
@@ -77,36 +86,47 @@ function GroupPage(props) {
                   onClick={() => {
                     // handleDeleteGroup(id); */}
 
-                <GroupBasicInfo />
-                <GroupFunctionButtons />
-              </Row>
-              <Row style={{ justifyContent: "space-between" }}>
-                <GroupMenu />
-                <Row
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-// >>>>>>> 098a8ac7966c917f19624865c1d0397ae2264172
-                  }}
-                >
-                  <GoSearch size={24} style={styles.icon} onClick={() => {}} />
-                  <BsThreeDots size={24} style={styles.icon} />
-                </Row>
-              </Row>
-            </Content>
-          </Layout>
-          <Layout style={styles.mainArea}>
-            <Content>
-              <Layout className="container">
-                {location.pathname === `/group/${group?._id}` ? (
-                  <FeedPosts />
-                ) : (
-                  <GroupAboutCard />
-                )}
-              </Layout>
-            </Content>
-          </Layout>
-        </Col>
+                      <GroupBasicInfo />
+                      <GroupFunctionButtons />
+                    </Row>
+                    <Row style={{ justifyContent: "space-between" }}>
+                      <GroupMenu />
+                      <Row
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          // >>>>>>> 098a8ac7966c917f19624865c1d0397ae2264172
+                        }}
+                      >
+                        <GoSearch
+                          size={24}
+                          style={styles.icon}
+                          onClick={() => {}}
+                        />
+                        <BsThreeDots size={24} style={styles.icon} />
+                      </Row>
+                    </Row>
+                  </Content>
+                </Layout>
+                <Layout style={styles.mainArea}>
+                  <Content>
+                    <Layout className="container">
+                      {location.pathname === `/group/${group?._id}` ? (
+                        <FeedPosts />
+                      ) : location.pathname === `/group/${group?._id}/about` ? (
+                        <GroupAboutCard />
+                      ) : (
+                        <GroupMember />
+                      )}
+                    </Layout>
+                  </Content>
+                </Layout>
+              </Col>
+            ) : (
+              <PostRequestsResult />
+            )}
+          </Content>
+        </Layout>
       </Layout>
     </GroupContext.Provider>
   );

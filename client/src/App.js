@@ -15,7 +15,6 @@ import {
   AboutPage,
   GroupPage,
   GroupAboutPage,
-  RequestsInGroupsPage,
   CreateGroupPage,
   LoginPage,
   RegisterPage,
@@ -64,18 +63,26 @@ function App() {
           <Route exact path="/post/:id" component={SpecificPostPage} />
           <Route path="/post/:id/:commentId" component={SpecificPostPage} />
           <Route exact path="/search" component={UserResultSearchPage} />
-          <PrivateRoute exact path="/requests" component={RequestsInGroupsPage} />
           <Route exact path="/wall" component={WallPage} />
           <Route path="/userinfo/:id/about" component={AboutPage} />
           <PrivateRoute exact path="/friends" component={FriendMangementPage} />
-          <PrivateRoute exact path="/mutualFriends/:id" component={MutualFriendPage} />
+          <PrivateRoute
+            exact
+            path="/mutualFriends/:id"
+            component={MutualFriendPage}
+          />
           <Route path="/demoSocketIO" component={DemoSocket} />
-          <PrivateRoute exact path="/group/create" component={CreateGroupPage} />
+          <PrivateRoute
+            exact
+            path="/group/create"
+            component={CreateGroupPage}
+          />
           <Route exact path="/group/:id" component={GroupPage} />
           <Route exact path="/settings" component={SettingsPage} />
           <Route exact path="/activate/:token" component={ActivationPage} />
           <PrivateRoute exact path="/message" component={MessagePage} />
           <Route path="/group/:id/about" component={GroupPage} />
+          <Route path="/group/:id/member" component={GroupPage} />
           <Route>
             <ErrorPage code="404" />
           </Route>

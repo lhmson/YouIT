@@ -8,7 +8,6 @@ import UserInfoPage from "./UserInfoPage/UserInfoPage";
 import UserResultSearchPage from "./UserResultSearch/UserResultSearchPage";
 import GroupPage from "./GroupPage/GroupPage";
 import GroupAboutPage from "./GroupAboutPage/GroupAboutPage";
-import RequestsInGroupsPage from "./RequestsInGroupsPage/RequestsInGroupsPage";
 import CreateGroupPage from "./CreateGroupPage/CreateGroupPage";
 import MessagePage from "./ChatPage/ChatPage";
 import LoginPage from "./LoginPage/LoginPage";
@@ -30,7 +29,6 @@ export {
   UserResultSearchPage,
   GroupPage,
   GroupAboutPage,
-  RequestsInGroupsPage,
   CreateGroupPage,
   LoginPage,
   RegisterPage,

@@ -101,9 +101,9 @@ function PostRequests() {
             pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
             culpa qui officia deserunt mollit anim id est laborum.
           </Paragraph>
-          <Link href="#" target="_blank" strong style={{ color: COLOR.green }}>
+          {/* <Link href="#" target="_blank" strong style={{ color: COLOR.green }}>
             Xem toàn bộ bài viết
-          </Link>
+          </Link> */}
         </div>
       </div>
     </>

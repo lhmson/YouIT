@@ -1,7 +1,7 @@
 import { Select } from "antd";
-import React from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { useLocalStorage } from "../../../hooks/useLocalStorage.js";
-
+import * as api from "../../../api/friend";
 import styles from "./styles.js";
 
 const { Option } = Select;
@@ -11,17 +11,31 @@ function handleChange(value) {
 }
 
 function CreateGroupMembers() {
-  console.log("Thycute");
-  const [user] = useLocalStorage("user");
-  const array = [];
-  //array = user?.listFriends;
-  const children = [];
-  console.log(array.length);
-  // for (let i = 0; i < user?.result.listFriends.length; i++) {
-  //   children.push(
-  //     <Option key={i.toString(36) + i}>{i.toString(36) + i}</Option>
-  //   );
-  // }
+  const [user, setUser] = useLocalStorage("user");
+  const [listFriend, setListFriend] = useState([]);
+
+  useEffect(() => {
+    console.log("User", user);
+    api
+      .fetchListMyFriends(user?.result?._id)
+      .then((res) => {
+        console.log(res.data);
+        if (res.data instanceof Array) setListFriend(res.data);
+        else setListFriend([]);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  }, [user]);
+
+  const listYourFriend = useMemo(
+    () =>
+      listFriend?.map((user, i) => {
+        return <Option key={user._id}>{user.name}</Option>;
+      }),
+    [listFriend]
+  );
+
   return (
     <>
       <Select
@@ -31,7 +45,7 @@ function CreateGroupMembers() {
         onChange={handleChange}
         style={{ width: "100%" }}
       >
-        {children}
+        {listYourFriend}
       </Select>
     </>
   );
