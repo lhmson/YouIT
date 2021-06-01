@@ -22,6 +22,7 @@ function GroupCard({ nameGroup, _id }) {
             style={{
               display: "flex",
               justifyContent: "center",
+              minWidth: 600,
             }}
           >
             <Avatar

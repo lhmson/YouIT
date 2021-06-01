@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo } from "react";
 import GroupCard from "../../../components/GroupCard/GroupCard";
 import * as api from "../../../api/search";
+import ErrorPage from "../../../pages/ErrorPage/ErrorPage";
 
 const SearchGroupResult = ({ txtSearch }) => {
   const [listGroup, setListGroup] = useState([]);
@@ -19,41 +20,29 @@ const SearchGroupResult = ({ txtSearch }) => {
       });
   }, [txtSearch]);
 
-  const listGroupCardLeft = useMemo(
+  const listGroupCard = useMemo(
     () =>
       listGroup?.map((group, i) => {
-        if (i % 2 == 0)
-          return <GroupCard _id={group._id} nameGroup={group.name}></GroupCard>;
-      }),
-    [listGroup]
-  );
-
-  const listGroupCardRight = useMemo(
-    () =>
-      listGroup?.map((group, i) => {
-        if (i % 2 == 1)
-          return <GroupCard _id={group._id} nameGroup={group.name}></GroupCard>;
+        return <GroupCard _id={group._id} nameGroup={group.name}></GroupCard>;
       }),
     [listGroup]
   );
 
   return (
-    <div className="col-10 offset-1">
+    <div className="col-12">
       <div
         className="row"
         style={{
-          height: 900,
           paddingTop: 16,
           paddingLeft: 32,
-          marginLeft: 128,
+          paddingRight: 32,
         }}
       >
-        <div className="col-6">
-          <ul>{listGroupCardLeft}</ul>
-        </div>
-        <div className="col-6">
-          <ul>{listGroupCardRight}</ul>
-        </div>
+        {listGroupCard.length === 0 ? (
+          <ErrorPage code={404}></ErrorPage>
+        ) : (
+          listGroupCard
+        )}
       </div>
     </div>
   );

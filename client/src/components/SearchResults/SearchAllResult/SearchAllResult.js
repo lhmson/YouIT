@@ -5,6 +5,7 @@ import * as api from "../../../api/search";
 import * as api1 from "../../../api/friend";
 import GroupCard from "../../../components/GroupCard/GroupCard";
 import UserCard from "../../../components/UserCard/UserCard";
+import ErrorPage from "../../../pages/ErrorPage/ErrorPage";
 
 const SearchAllResult = ({ txtSearch }) => {
   const [listPost, setListPost] = useState([]);
@@ -83,19 +84,24 @@ const SearchAllResult = ({ txtSearch }) => {
     [listUser]
   );
 
+  let checkNoData =
+    listPostCard.length === 0 &&
+    listGroupCard.length === 0 &&
+    listUserCard.length === 0;
+
   return (
-    <div className="col-10 offset-1">
+    <div className="col-12">
       <div
         className="row"
         style={{
-          height: 900,
           paddingTop: 16,
           paddingLeft: 32,
-          marginLeft: 128,
+          paddingRight: 32,
         }}
       >
-        <div className="col-10 offset-1">
+        <div className="col-12" style={{ marginRight: checkNoData ? 32 : 0 }}>
           {listPostCard} {listGroupCard} {listUserCard}
+          {checkNoData ? <ErrorPage code={404}></ErrorPage> : null}
         </div>
       </div>
     </div>

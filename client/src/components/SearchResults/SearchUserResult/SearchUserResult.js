@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo } from "react";
 import UserCard from "../../../components/UserCard/UserCard";
 import * as api from "../../../api/search";
+import ErrorPage from "../../../pages/ErrorPage/ErrorPage";
 
 function SearchUserResult({ userNameSearch }) {
   const [listUser, setListUser] = useState([]);
@@ -18,52 +19,35 @@ function SearchUserResult({ userNameSearch }) {
       });
   }, [userNameSearch]);
 
-  const listUserCardLeft = useMemo(
+  const listUserCard = useMemo(
     () =>
       listUser?.map((user, i) => {
-        if (i % 2 == 0)
-          return (
-            <UserCard
-              _id={user._id}
-              name={user.name}
-              relationship="Add Friend"
-            ></UserCard>
-          );
-      }),
-    [listUser]
-  );
-
-  const listUserCardRight = useMemo(
-    () =>
-      listUser?.map((user, i) => {
-        if (i % 2 == 1)
-          return (
-            <UserCard
-              _id={user._id}
-              name={user.name}
-              relationship="Add Friend"
-            ></UserCard>
-          );
+        return (
+          <UserCard
+            _id={user._id}
+            name={user.name}
+            relationship="Add Friend"
+          ></UserCard>
+        );
       }),
     [listUser]
   );
 
   return (
-    <div className="col-10 offset-1">
+    <div className="col-12">
       <div
         className="row"
         style={{
-          height: 900,
           paddingTop: 16,
           paddingLeft: 32,
-          marginLeft: 128,
         }}
       >
-        <div className="col-6">
-          <ul>{listUserCardLeft}</ul>
-        </div>
-        <div className="col-6">
-          <ul>{listUserCardRight}</ul>
+        <div className="col-12">
+          {listUserCard.length === 0 ? (
+            <ErrorPage code={404}></ErrorPage>
+          ) : (
+            listUserCard
+          )}
         </div>
       </div>
     </div>
