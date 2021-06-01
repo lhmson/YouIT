@@ -32,20 +32,17 @@ function RequestsInGroupsPage({ modeSearch }) {
   return (
     <>
       <Layout>
-        <Navbar />
-        <Layout>
-          {/* <AdminGroupSidebar setModeSearch={setModeSearch} /> */}
-          <Layout style={styles.mainArea}>
-            <Content>
-              {modeSearch === "approvePosts" ? (
-                <PostRequestsResult></PostRequestsResult>
-              ) : modeSearch === "memberRequests" ? (
-                <MemberRequestsResult></MemberRequestsResult>
-              ) : (
-                <Text></Text>
-              )}
-            </Content>
-          </Layout>
+        {/* <AdminGroupSidebar setModeSearch={setModeSearch} /> */}
+        <Layout style={styles.mainArea}>
+          <Content>
+            {modeSearch === "approvePosts" ? (
+              <PostRequestsResult></PostRequestsResult>
+            ) : modeSearch === "memberRequests" ? (
+              <MemberRequestsResult></MemberRequestsResult>
+            ) : (
+              <Text></Text>
+            )}
+          </Content>
         </Layout>
       </Layout>
     </>

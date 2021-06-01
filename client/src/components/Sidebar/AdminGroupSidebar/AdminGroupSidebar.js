@@ -36,13 +36,16 @@ function AdminGroupSidebar(props) {
           setSelectedKey(selectedItem.key);
         }}
       >
+        <Text className="container" style={styles.item}>
+          {group?.name}
+        </Text>
         <Menu.Item
           key="group"
           style={styles.item}
           icon={<IoHome style={styles.transparent} />}
           onClick={() => {}}
         >
-          <Link to={`/group/${group?._id}`}>Group</Link>
+          <Link to={`/group/${group?._id}`}>Home</Link>
         </Menu.Item>
         <Text className="container" style={styles.item}>
           Admin Tools

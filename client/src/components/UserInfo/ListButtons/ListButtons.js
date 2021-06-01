@@ -15,6 +15,7 @@ import {
 import {
   addFriendRequest,
   removeFriendRequest,
+  unfriend,
 } from "../../../redux/actions/user";
 import {
   addFriend,
@@ -94,6 +95,10 @@ const ListButtons = () => {
     }
   };
 
+  const handleUnfriend = () => {
+    dispatch(unfriend(loginUser?._id, user?._id));
+  };
+
   // xem lai ham nay, cach khac
   const getMatchFriendRequest = async () => {
     const listFriendRequests = (await fetchAllFriendRequests()).data;
@@ -110,7 +115,11 @@ const ListButtons = () => {
     return (
       <Row>
         <Button style={{ marginLeft: 16 }}>Friends</Button>
-        <Button className="green-button" style={{ marginLeft: 16 }}>
+        <Button
+          className="green-button"
+          style={{ marginLeft: 16 }}
+          onClick={handleUnfriend}
+        >
           Unfriend
         </Button>
       </Row>

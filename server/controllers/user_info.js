@@ -159,7 +159,41 @@ export const addFriend = async (req, res) => {
       kind: "AcceptFriend_AcceptedFriend",
     });
   } catch (error) {
-    console.log(error.message);
+    //console.log(error.message);
+    res
+      .status(httpStatusCodes.internalServerError)
+      .json({ message: error.message });
+  }
+};
+
+/**
+ * @param {express.Request<ParamsDictionary, any, any, QueryString.ParsedQs, Record<string, any>>} req
+ * @param {express.Response<any, Record<string, any>, number>} res
+ * @param {express.NextFunction} next
+ */
+export const unfriend = async (req, res, next) => {
+  const { friendId } = req.params;
+  const { userId } = req;
+
+  if (!userId)
+    return res
+      .status(httpStatusCodes.unauthorized)
+      .json({ message: "Unauthorized" });
+
+  try {
+    // remove friend from user's list friends
+    await User.findById(userId).then(async (user) => {
+      user.listFriends = user.listFriends.filter((id) => id != friendId);
+      await user.save();
+    });
+
+    // remove user from friend's list friends
+    await User.findById(friendId).then(async (friend) => {
+      friend.listFriends = friend.listFriends.filter((id) => id != userId);
+      await friend.save();
+      res.status(httpStatusCodes.ok).json(friend);
+    });
+  } catch (error) {
     res
       .status(httpStatusCodes.internalServerError)
       .json({ message: error.message });
