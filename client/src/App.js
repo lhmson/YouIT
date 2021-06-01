@@ -68,7 +68,11 @@ function App() {
             component={SpecificPostPage}
           />
           <Route exact path="/search" component={UserResultSearchPage} />
-          <Route exact path="/requests" component={RequestsInGroupsPage} />
+          <PrivateRoute
+            exact
+            path="/group/:id/requests"
+            component={GroupPage}
+          />
           <Route exact path="/wall" component={WallPage} />
           <Route path="/userinfo/:id/about" component={AboutPage} />
           <Route exact path="/friends" component={FriendMangementPage} />

@@ -15,25 +15,31 @@ import AdminGroupSidebar from "../../components/Sidebar/AdminGroupSidebar/AdminG
 // import SearchPostResult from "../../components/SearchResults/SearchPostResult/SearchPostResult";
 import MemberRequestsResult from "./MemberRequestsResult/MemberRequestsResult.js";
 import PostRequestsResult from "./PostRequestsResult/PostRequestsResult.js";
+import { useParams } from "react-router";
 const { Content } = Layout;
 const { Title, Text } = Typography;
 
-function UserResultSearchPage() {
-  const [currentId, setCurrentId] = useState(null);
-  const dispatch = useDispatch();
-  const [modeSearch, setModeSearch] = useState("User");
+function RequestsInGroupsPage({ modeSearch }) {
+  // const [currentId, setCurrentId] = useState(null);
+  // const dispatch = useDispatch();
+  // const [modeSearch, setModeSearch] = useState("User");
+
+  const { id } = useParams();
+  console.log(id);
+  // nen load lai data tao them group context o day
+  // hay quang requestpage vo group page?
 
   return (
     <>
       <Layout>
         <Navbar />
         <Layout>
-          <AdminGroupSidebar setModeSearch={setModeSearch} />
+          {/* <AdminGroupSidebar setModeSearch={setModeSearch} /> */}
           <Layout style={styles.mainArea}>
             <Content>
-              {modeSearch === "User" ? (
+              {modeSearch === "approvePosts" ? (
                 <PostRequestsResult></PostRequestsResult>
-              ) : modeSearch === "Post" ? (
+              ) : modeSearch === "memberRequests" ? (
                 <MemberRequestsResult></MemberRequestsResult>
               ) : (
                 <Text></Text>
@@ -46,4 +52,4 @@ function UserResultSearchPage() {
   );
 }
 
-export default UserResultSearchPage;
+export default RequestsInGroupsPage;

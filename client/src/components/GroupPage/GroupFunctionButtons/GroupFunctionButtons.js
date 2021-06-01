@@ -83,7 +83,14 @@ function GroupFunctionButtons() {
         }}
       >
         {isJoinedGroup() ? (
-          <div>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "flex-end",
+              width: "100%",
+            }}
+          >
             <Button type="primary" style={styles.button}>
               Create Post
             </Button>
