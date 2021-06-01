@@ -75,10 +75,15 @@ const ListButtons = () => {
 
     dispatch(addFriendRequest(data));
     await addSendingFriendRequest(data);
+
+    dispatch(followUser(user?._id));
   };
 
   const cancelFriendRequest = async (request) => {
-    deleteFriendRequest(request?._id);
+    // const { status } = await deleteFriendRequest(request?._id);
+    // console.log(status);
+
+    await deleteFriendRequest(request?._id);
 
     if (user?._id === request?.userConfirmId) {
       await removeSendingFriendRequest(request);
@@ -90,6 +95,7 @@ const ListButtons = () => {
 
   const acceptFriendRequest = async () => {
     await addFriend(loginUser, user);
+    dispatch(followUser(user?._id));
 
     if (matchingFriendRequest) {
       const request = matchingFriendRequest[0];
@@ -99,6 +105,7 @@ const ListButtons = () => {
 
   const handleUnfriend = () => {
     dispatch(unfriend(loginUser?._id, user?._id));
+    dispatch(unfollowUser(user?._id));
   };
 
   // xem lai ham nay, cach khac
@@ -131,7 +138,7 @@ const ListButtons = () => {
   const AcceptDenyButtons = () => {
     const friendRequest = matchingFriendRequest[0];
     return (
-      <Row style={{ marginTop: 16 }}>
+      <Row>
         <Button
           className="green-button"
           style={styles.button}
@@ -250,10 +257,10 @@ const ListButtons = () => {
             </Menu.Item>
           </Menu>
         </div>
-        <div>
+        <Row style={{ marginTop: 16 }}>
           <AddFriendButton />
           {FollowButton()}
-        </div>
+        </Row>
       </Row>
     </>
   );
