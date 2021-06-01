@@ -5,6 +5,7 @@ const styles = {
     background: "white",
     padding: 16,
     margin: 16,
+    flex: 1,
   },
   tag: {
     color: "#219653",
