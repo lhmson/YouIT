@@ -20,15 +20,15 @@ function GroupManagementPage() {
   const [user, setUser] = useLocalStorage("user");
   const inputRef = useRef();
   const [listGroup, setListGroup] = useState([]);
-  const [listRequest, setListRequest] = useState([]);
+  const [listPending, setlistPending] = useState([]);
   const [txtSearch, setTxtSearch] = useState("");
-  const [mode, setMode] = useState("Friends");
+  const [mode, setMode] = useState("Groups");
 
   useEffect(() => {
     api
       .fetchUserJoinedGroups()
       .then((res) => {
-        console.log("group", res.data);
+        console.log("group joined", res.data);
         if (res.data instanceof Array) setListGroup(res.data);
         else setListGroup([]);
       })
@@ -37,18 +37,18 @@ function GroupManagementPage() {
       });
   }, [user]);
 
-  // useEffect(() => {
-  //   api
-  //     .fetchListRequestFriends(user?.result?._id)
-  //     .then((res) => {
-  //       console.log("Lala", res.data);
-  //       if (res.data instanceof Array) setListRequest(res.data);
-  //       else setListRequest([]);
-  //     })
-  //     .catch((e) => {
-  //       console.log(e);
-  //     });
-  // }, [user]);
+  useEffect(() => {
+    api
+      .fetchUserPendingGroups()
+      .then((res) => {
+        console.log("group pending", res.data);
+        if (res.data instanceof Array) setlistPending(res.data);
+        else setlistPending([]);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  }, [user]);
 
   const numberTotalGroup = listGroup.length;
 
@@ -56,8 +56,8 @@ function GroupManagementPage() {
     user.name.toLowerCase().includes(txtSearch.toLowerCase())
   );
 
-  if (mode === "Invites") {
-    listFilter = listRequest.filter((user) =>
+  if (mode === "Pending") {
+    listFilter = listPending.filter((user) =>
       user.name.toLowerCase().includes(txtSearch.toLowerCase())
     );
   }
@@ -71,6 +71,7 @@ function GroupManagementPage() {
             nameGroup={group.name}
             description={group.description}
             totalMembers={group.listMembers?.length}
+            joined={mode === "Groups"}
           ></GroupJoinedCard>
         );
       }),
@@ -107,7 +108,7 @@ function GroupManagementPage() {
                   </div>
                   <div className="offset-5 col-2">
                     <Button
-                      onClick={() => setMode("Invites")}
+                      onClick={() => setMode("Pending")}
                       type="primary"
                       style={{
                         background: "#27AE60",
@@ -118,13 +119,13 @@ function GroupManagementPage() {
                         justifyContent: "center",
                       }}
                     >
-                      Waiting ({listRequest.length})
+                      Pending ({listPending.length})
                     </Button>
                   </div>
 
                   <div className="col-2">
                     <Button
-                      onClick={() => setMode("Friends")}
+                      onClick={() => setMode("Groups")}
                       type="primary"
                       style={{
                         background: "#27AE60",

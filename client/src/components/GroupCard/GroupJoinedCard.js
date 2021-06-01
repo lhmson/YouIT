@@ -6,8 +6,15 @@ import { Link, useHistory, useLocation } from "react-router-dom";
 
 const { Title, Text } = Typography;
 
-function GroupJoinedCard({ nameGroup, _id, description, totalMembers }) {
+function GroupJoinedCard({
+  nameGroup,
+  _id,
+  description,
+  totalMembers,
+  joined,
+}) {
   console.log("aa", totalMembers);
+  const txtButton = joined ? "Post" : "Cancel request";
   return (
     <>
       <div style={styles.card}>
@@ -59,7 +66,7 @@ function GroupJoinedCard({ nameGroup, _id, description, totalMembers }) {
                 fontWeight: 500,
               }}
             >
-              Đăng bài
+              {txtButton}
             </Button>
             <div>
               <Text style={styles.text}>
