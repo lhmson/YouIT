@@ -78,8 +78,8 @@ export const getListRequestFriends = async (req, res) => {
   const { userId } = req.params;
   try {
     const listReq = await FriendRequest.find();
-    const listReqID = listReq.filter(
-      (reqFriend) => reqFriend.userConfirmId === userId
+    const listReqID = listReq.filter((reqFriend) =>
+      reqFriend.userConfirmId.equals(userId)
     );
 
     const result = [];
