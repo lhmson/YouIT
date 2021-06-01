@@ -28,3 +28,5 @@ export const addFriend = (user, friend) =>
   API.put(`/userInfo/${user._id}/addfriend`, friend);
 export const unfriend = (userId, friendId) =>
   API.put(`/userInfo/${userId}/unfriend/${friendId}`);
+export const followUser = (userId, followedId) =>
+  API.put(`/userInfo/${userId}/follow/${followedId}`);

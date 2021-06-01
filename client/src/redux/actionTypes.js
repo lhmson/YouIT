@@ -19,6 +19,7 @@ export const UPDATE_USER = "UPDATE_USER";
 export const ADD_FRIEND_REQUEST = "ADD_FRIEND_REQUEST";
 export const REMOVE_FRIEND_REQUEST = "REMOVE_FRIEND_REQUEST";
 export const UNFRIEND = "UNFRIEND";
+export const FOLLOW_USER = "FOLLOW_USER";
 
 // Search
 export const FETCH_SEARCH_USER = "FETCH_SEARCH_USER";

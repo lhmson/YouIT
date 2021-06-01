@@ -3,6 +3,7 @@ import {
   addFriend,
   addReceivingFriendRequest,
   addSendingFriendRequest,
+  followUser,
   getUserInfo,
   removeReceivingFriendRequest,
   removeSendingFriendRequest,
@@ -26,5 +27,6 @@ router.put(
 router.put("/:id/sendFriendRequest/remove", auth, removeSendingFriendRequest);
 router.put("/:id/addfriend", auth, addFriend);
 router.put("/:id/unfriend/:friendId", auth, unfriend);
+router.put("/:id/follow/:followedId", auth, followUser);
 
 export default router;

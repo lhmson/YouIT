@@ -4,7 +4,7 @@ const styles = {
     width: "20%",
   },
   button: {
-    width: "100%",
+    marginRight: 16,
   },
 };
 

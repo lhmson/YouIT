@@ -14,6 +14,7 @@ import {
 } from "../../../api/friendRequest";
 import {
   addFriendRequest,
+  followUser,
   removeFriendRequest,
   unfriend,
 } from "../../../redux/actions/user";
@@ -114,10 +115,10 @@ const ListButtons = () => {
   const FriendButtons = () => {
     return (
       <Row>
-        <Button style={{ marginLeft: 16 }}>Friends</Button>
+        <Button style={styles.button}>Friends</Button>
         <Button
           className="green-button"
-          style={{ marginLeft: 16 }}
+          style={styles.button}
           onClick={handleUnfriend}
         >
           Unfriend
@@ -132,13 +133,13 @@ const ListButtons = () => {
       <Row style={{ marginTop: 16 }}>
         <Button
           className="green-button"
-          style={{ marginLeft: 16 }}
+          style={styles.button}
           onClick={acceptFriendRequest}
         >
           Accept
         </Button>
         <Button
-          style={{ marginLeft: 16 }}
+          style={styles.button}
           onClick={() => cancelFriendRequest(friendRequest)}
         >
           Deny
@@ -164,6 +165,7 @@ const ListButtons = () => {
             return (
               <Button
                 className="green-button"
+                style={styles.button}
                 onClick={() => cancelFriendRequest(friendRequest)}
               >
                 Cancel Request
@@ -174,13 +176,43 @@ const ListButtons = () => {
         // if not my profile and have no friend request, display add friend button
         //console.log("have no request");
         return (
-          <Button className="green-button" onClick={handleAddingFriend}>
+          <Button
+            className="green-button"
+            style={styles.button}
+            onClick={handleAddingFriend}
+          >
             Add friend
           </Button>
         );
       }
     }
     // if my profile, show nothing
+    return <></>;
+  };
+
+  const FollowButton = () => {
+    if (!isMyProfile) {
+      // check if login user followed this user
+      const listFollowingFriends = user?.listFriendFollows ?? [];
+      const isFollowed = listFollowingFriends.includes(loginUser?._id);
+
+      if (isFollowed) {
+        return (
+          <Button className="green-button" style={styles.button}>
+            Unfollow
+          </Button>
+        );
+      }
+      return (
+        <Button
+          className="green-button"
+          style={styles.button}
+          onClick={() => dispatch(followUser(loginUser?._id, user?._id))}
+        >
+          Follow
+        </Button>
+      );
+    }
     return <></>;
   };
 
@@ -213,7 +245,10 @@ const ListButtons = () => {
             </Menu.Item>
           </Menu>
         </div>
-        <AddFriendButton />
+        <div>
+          <AddFriendButton />
+          {FollowButton()}
+        </div>
       </Row>
     </>
   );

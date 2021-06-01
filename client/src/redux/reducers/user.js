@@ -4,6 +4,7 @@ import {
   ADD_FRIEND_REQUEST,
   REMOVE_FRIEND_REQUEST,
   UNFRIEND,
+  FOLLOW_USER,
 } from "../actionTypes";
 
 const userReducer = (user = null, action) => {
@@ -17,6 +18,8 @@ const userReducer = (user = null, action) => {
     case REMOVE_FRIEND_REQUEST:
       return action.payload;
     case UNFRIEND:
+      return action.payload;
+    case FOLLOW_USER:
       return action.payload;
     default:
       return user;
