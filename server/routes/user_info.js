@@ -7,6 +7,7 @@ import {
   getUserInfo,
   removeReceivingFriendRequest,
   removeSendingFriendRequest,
+  unfollowUser,
   unfriend,
   updateUserInfo,
 } from "../controllers/user_info.js";
@@ -27,6 +28,7 @@ router.put(
 router.put("/:id/sendFriendRequest/remove", auth, removeSendingFriendRequest);
 router.put("/:id/addfriend", auth, addFriend);
 router.put("/:id/unfriend/:friendId", auth, unfriend);
-router.put("/:id/follow/:followedId", auth, followUser);
+router.put("/:followedId/follow", auth, followUser);
+router.put("/:followedId/unfollow", auth, unfollowUser);
 
 export default router;

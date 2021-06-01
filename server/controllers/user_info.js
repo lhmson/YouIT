@@ -208,7 +208,7 @@ export const unfriend = async (req, res) => {
 export const followUser = async (req, res) => {
   const { followedId } = req.params;
   const { userId } = req;
-  console.log("follow");
+
   if (!userId)
     return res
       .status(httpStatusCodes.unauthorized)
@@ -220,6 +220,46 @@ export const followUser = async (req, res) => {
         user.listFriendFollows.push(userId);
         await user.save();
         res.status(httpStatusCodes.ok).json(user);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  } catch (error) {
+    console.log(error);
+    res
+      .status(httpStatusCodes.internalServerError)
+      .json({ message: error.message });
+  }
+};
+
+/**
+ * @param {express.Request<ParamsDictionary, any, any, QueryString.ParsedQs, Record<string, any>>} req
+ * @param {express.Response<any, Record<string, any>, number>} res
+ * @param {express.NextFunction} next
+ */
+export const unfollowUser = async (req, res) => {
+  const { followedId } = req.params;
+  const { userId } = req;
+  // dang lam
+  if (!userId)
+    return res
+      .status(httpStatusCodes.unauthorized)
+      .json({ message: "Unauthorized" });
+
+  try {
+    await User.findById(followedId)
+      .then(async (user) => {
+        if (user.listFriendFollows.includes(userId)) {
+          user.listFriendFollows = user.listFriendFollows.filter(
+            (followingId) => followingId != userId
+          );
+          await user.save();
+          res.status(httpStatusCodes.ok).json(user);
+        } else {
+          res
+            .status(httpStatusCodes.notFound)
+            .json("You have not followed this user");
+        }
       })
       .catch((error) => {
         console.log(error);

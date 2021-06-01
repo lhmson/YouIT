@@ -5,6 +5,7 @@ import {
   REMOVE_FRIEND_REQUEST,
   UNFRIEND,
   FOLLOW_USER,
+  UNFOLLOW_USER,
 } from "../actionTypes";
 
 const userReducer = (user = null, action) => {
@@ -20,6 +21,8 @@ const userReducer = (user = null, action) => {
     case UNFRIEND:
       return action.payload;
     case FOLLOW_USER:
+      return action.payload;
+    case UNFOLLOW_USER:
       return action.payload;
     default:
       return user;

@@ -16,6 +16,7 @@ import {
   addFriendRequest,
   followUser,
   removeFriendRequest,
+  unfollowUser,
   unfriend,
 } from "../../../redux/actions/user";
 import {
@@ -198,7 +199,11 @@ const ListButtons = () => {
 
       if (isFollowed) {
         return (
-          <Button className="green-button" style={styles.button}>
+          <Button
+            className="green-button"
+            style={styles.button}
+            onClick={() => dispatch(unfollowUser(user?._id))}
+          >
             Unfollow
           </Button>
         );
@@ -207,7 +212,7 @@ const ListButtons = () => {
         <Button
           className="green-button"
           style={styles.button}
-          onClick={() => dispatch(followUser(loginUser?._id, user?._id))}
+          onClick={() => dispatch(followUser(user?._id))}
         >
           Follow
         </Button>
