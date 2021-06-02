@@ -405,6 +405,8 @@ export const getPostsPagination = async (req, res) => {
                 const group = await Group.findById(stdPostObj?.groupPostInfo?.groupId);
                 if (!group)
                   return false;
+                if (stdPostObj?.groupPostInfo?.status !== "Approved")
+                  return false;
 
                 if (!isMemberOfGroup(userId, group))
                   return false;
