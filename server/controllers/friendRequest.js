@@ -3,7 +3,7 @@ import FriendRequest from "../models/friendrequest.js";
 import User from "../models/user.js";
 import { httpStatusCodes } from "../utils/httpStatusCode.js";
 import { sendRequestUser } from "../businessLogics/notification.js";
-
+import { isUserA_sendedRequestFriend_UserB } from "../businessLogics/user.js";
 /**
  * @param {express.Request<ParamsDictionary, any, any, QueryString.ParsedQs, Record<string, any>>} req
  * @param {express.Response<any, Record<string, any>, number>} res
@@ -48,7 +48,7 @@ export const createFriendRequest = async (req, res) => {
  * @param {express.Response<any, Record<string, any>, number>} res
  * @param {express.NextFunction} next
  */
-export const getAFriendRequest = async (req, res) => { };
+export const getAFriendRequest = async (req, res) => {};
 
 /**
  * @param {express.Request<ParamsDictionary, any, any, QueryString.ParsedQs, Record<string, any>>} req
@@ -92,6 +92,19 @@ export const deleteFriendRequest = async (req, res) => {
       .json({ message: "Friend request deleted successfully." });
   } catch (error) {
     res
+      .status(httpStatusCodes.internalServerError)
+      .json({ message: error.message });
+  }
+};
+
+export const checkUserASendedRequestUserB = async (req, res) => {
+  try {
+    const { userA, userB } = req.params;
+    const value = await isUserA_sendedRequestFriend_UserB(userA, userB);
+    console.log("value", value);
+    return res.status(httpStatusCodes.ok).json(value);
+  } catch (error) {
+    return res
       .status(httpStatusCodes.internalServerError)
       .json({ message: error.message });
   }

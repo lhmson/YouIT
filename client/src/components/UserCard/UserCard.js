@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { Button, Typography, List } from "antd";
-import { Avatar, Tag, Popover } from "antd";
+import { Avatar, Tag, Popover, message } from "antd";
 import styles from "./styles.js";
 import { Link, useHistory, useLocation } from "react-router-dom";
 import * as api from "../../api/friend";
+import { checkUserASendedUserB } from "../../api/friendRequest";
 import { useLocalStorage } from "../../hooks/useLocalStorage";
 import {
   createFriendRequest,
@@ -73,11 +74,15 @@ function UserCard(props) {
 
   const changeStateButton = async () => {
     if (txtButton === "Add Friend") {
+      message.success("You sended request successfully");
       await handleAddingFriend(_id, user?.result?._id);
       setTxtButton("Cancel Request");
     } else if (txtButton === "Cancel Request") {
+      message.success("You cancel request successfully");
       await cancelFriendRequest(await getMatchFriendRequest());
       setTxtButton("Add Friend");
+    } else if (txtButton === "Waiting you accept") {
+      message.info("You can go to the user profile to accept or deny");
     }
   };
 
@@ -114,6 +119,24 @@ function UserCard(props) {
           setListMutual(tempList);
           console.log(tempList);
         }
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  }, []);
+
+  useEffect(() => {
+    checkUserASendedUserB(user?.result?._id, _id)
+      .then((res) => {
+        if (res.data) setTxtButton("Cancel Request");
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+
+    checkUserASendedUserB(_id, user?.result?._id)
+      .then((res) => {
+        if (res.data) setTxtButton("Waiting you accept");
       })
       .catch((e) => {
         console.log(e);
