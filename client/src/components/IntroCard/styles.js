@@ -19,7 +19,7 @@ const styles = {
   header: {
     fontSize: 28,
     fontWeight: 700,
-    marginLeft: 30,
+    marginLeft: 8,
   },
   lineinfo: {
     marginTop: 15,
@@ -29,10 +29,11 @@ const styles = {
     // width: 350,
     minHeight: 300,
     marginTop: 24,
+    padding: 8,
   },
-  editinfo: {
-    width: 200,
-    marginLeft: 90,
+  editBtn: {
+    width: "30%",
+    marginBottom: 16,
   },
 };
 

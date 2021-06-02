@@ -14,7 +14,10 @@ import {
 } from "../../../api/friendRequest";
 import {
   addFriendRequest,
+  followUser,
   removeFriendRequest,
+  unfollowUser,
+  unfriend,
 } from "../../../redux/actions/user";
 import {
   addFriend,
@@ -72,10 +75,15 @@ const ListButtons = () => {
 
     dispatch(addFriendRequest(data));
     await addSendingFriendRequest(data);
+
+    dispatch(followUser(user?._id));
   };
 
   const cancelFriendRequest = async (request) => {
-    deleteFriendRequest(request?._id);
+    // const { status } = await deleteFriendRequest(request?._id);
+    // console.log(status);
+
+    await deleteFriendRequest(request?._id);
 
     if (user?._id === request?.userConfirmId) {
       await removeSendingFriendRequest(request);
@@ -87,11 +95,17 @@ const ListButtons = () => {
 
   const acceptFriendRequest = async () => {
     await addFriend(loginUser, user);
+    dispatch(followUser(user?._id));
 
     if (matchingFriendRequest) {
       const request = matchingFriendRequest[0];
       await cancelFriendRequest(request);
     }
+  };
+
+  const handleUnfriend = () => {
+    dispatch(unfriend(loginUser?._id, user?._id));
+    dispatch(unfollowUser(user?._id));
   };
 
   // xem lai ham nay, cach khac
@@ -109,8 +123,12 @@ const ListButtons = () => {
   const FriendButtons = () => {
     return (
       <Row>
-        <Button style={{ marginLeft: 16 }}>Friends</Button>
-        <Button className="green-button" style={{ marginLeft: 16 }}>
+        <Button style={styles.button}>Friends</Button>
+        <Button
+          className="green-button"
+          style={styles.button}
+          onClick={handleUnfriend}
+        >
           Unfriend
         </Button>
       </Row>
@@ -120,16 +138,16 @@ const ListButtons = () => {
   const AcceptDenyButtons = () => {
     const friendRequest = matchingFriendRequest[0];
     return (
-      <Row style={{ marginTop: 16 }}>
+      <Row>
         <Button
           className="green-button"
-          style={{ marginLeft: 16 }}
+          style={styles.button}
           onClick={acceptFriendRequest}
         >
           Accept
         </Button>
         <Button
-          style={{ marginLeft: 16 }}
+          style={styles.button}
           onClick={() => cancelFriendRequest(friendRequest)}
         >
           Deny
@@ -155,6 +173,7 @@ const ListButtons = () => {
             return (
               <Button
                 className="green-button"
+                style={styles.button}
                 onClick={() => cancelFriendRequest(friendRequest)}
               >
                 Cancel Request
@@ -165,13 +184,47 @@ const ListButtons = () => {
         // if not my profile and have no friend request, display add friend button
         //console.log("have no request");
         return (
-          <Button className="green-button" onClick={handleAddingFriend}>
+          <Button
+            className="green-button"
+            style={styles.button}
+            onClick={handleAddingFriend}
+          >
             Add friend
           </Button>
         );
       }
     }
     // if my profile, show nothing
+    return <></>;
+  };
+
+  const FollowButton = () => {
+    if (!isMyProfile) {
+      // check if login user followed this user
+      const listFollowingFriends = user?.listFriendFollows ?? [];
+      const isFollowed = listFollowingFriends.includes(loginUser?._id);
+
+      if (isFollowed) {
+        return (
+          <Button
+            className="green-button"
+            style={styles.button}
+            onClick={() => dispatch(unfollowUser(user?._id))}
+          >
+            Unfollow
+          </Button>
+        );
+      }
+      return (
+        <Button
+          className="green-button"
+          style={styles.button}
+          onClick={() => dispatch(followUser(user?._id))}
+        >
+          Follow
+        </Button>
+      );
+    }
     return <></>;
   };
 
@@ -191,20 +244,23 @@ const ListButtons = () => {
             selectedKeys={[selectedMenu]}
             mode="horizontal"
           >
-            <Menu.Item key="post" icon={<MailOutlined />}>
+            <Menu.Item key="post">
               <Link to={`/userinfo/${user?._id}`} style={styles.linkView}>
                 Post
               </Link>
             </Menu.Item>
 
-            <Menu.Item key="about" icon={<MailOutlined />}>
+            <Menu.Item key="about">
               <Link to={`/userinfo/${user?._id}/about`} style={styles.linkView}>
                 About
               </Link>
             </Menu.Item>
           </Menu>
         </div>
-        <AddFriendButton />
+        <Row style={{ marginTop: 16 }}>
+          <AddFriendButton />
+          {FollowButton()}
+        </Row>
       </Row>
     </>
   );

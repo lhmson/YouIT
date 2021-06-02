@@ -3,6 +3,11 @@ const styles = {
     marginRight: 16,
     fontSize: 24,
   },
+  iconDelete: {
+    marginRight: 16,
+    fontSize: 24,
+    color: "red",
+  },
   input: {
     marginBottom: 16,
   },

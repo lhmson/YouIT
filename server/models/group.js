@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { groupPendingMemberSchema } from "./groupPendingMember.js";
 import { groupMemberSchema } from "./groupMember.js";
 const groupSchema = mongoose.Schema(
   {
@@ -15,23 +16,30 @@ const groupSchema = mongoose.Schema(
 
     topic: {
       type: String,
-      enum: [
-        "General",
-        "Game",
-        "Language",
-        "Mobile",
-        "Web Dev",
-        "System",
-        "Jobs",
-        "Data",
-        "School",
-      ],
+      // enum: [
+      //   "General",
+      //   "Game",
+      //   "Language",
+      //   "Mobile",
+      //   "Web Dev",
+      //   "System",
+      //   "Jobs",
+      //   "Data",
+      //   "School",
+      // ],
       required: true,
     },
 
     listMembers: [
       {
         type: groupMemberSchema,
+        default: [],
+      },
+    ],
+
+    listPendingMembers: [
+      {
+        type: groupPendingMemberSchema,
         default: [],
       },
     ],

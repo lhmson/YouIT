@@ -9,7 +9,7 @@ function CreateGroupDescription({ description, setDescription }) {
 
   return (
     <div>
-      <Input
+      <Input.TextArea
         name="description"
         placeholder="Description"
         value={description}

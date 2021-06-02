@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Row, Col, Divider, Form, Typography, Input, Card } from "antd";
 import { Avatar, Image, Tag } from "antd";
 import styles from "./styles.js";
@@ -14,8 +14,11 @@ import {
   AiOutlineInstagram,
   AiFillInstagram,
 } from "react-icons/all";
+import * as api from "../../api/user_info";
+import { Link } from "react-router-dom";
+import { FETCH_USER_JOINED_GROUPS } from "../../redux/actionTypes.js";
 
-const { Title, Text, Paragraph, Link } = Typography;
+const { Title, Text, Paragraph } = Typography;
 
 const schoolIcon = () => {
   return <IoSchoolSharp style={styles.icon} />;
@@ -24,14 +27,19 @@ const homeIcon = () => {
   return <IoHome style={styles.icon} />;
 };
 
-function MemberRequests() {
-  const user = useSelector((state) => state.user);
+function MemberRequests(props) {
+  const { name } = props;
+  const { _id } = props;
 
-  const dateOfBirth = user?.userInfo?.dateOfBirth;
-  const address = user?.userInfo?.address ?? "Quang Nam, Viet Nam";
-  const workLocation = user?.userInfo?.workLocation ?? "Quang Nam, Viet Nam";
-  const Education =
-    user?.userInfo?.Education ?? "Trường ĐH Công nghệ Thông tin";
+  const [userInfo, setUserInfo] = useState([]);
+
+  useEffect(() => {
+    api.fetchUserInfo(_id).then((res) => {
+      setUserInfo(res.data.userInfo);
+      console.log("thy", res.data.userInfo);
+    });
+  }, []);
+
   return (
     <>
       <div style={styles.card}>
@@ -49,7 +57,9 @@ function MemberRequests() {
             />
 
             <div className="col-9" style={{ alignSelf: "center" }}>
-              <Text style={styles.textUser}>Lalisa Manobal</Text>
+              <Link to={`/userinfo/${_id}`}>
+                <Text style={styles.textUser}>{name ?? "Lalisa Manobal"}</Text>
+              </Link>
               <div style={{ marginTop: 0 }}></div>
               <Text>React Native Developer</Text>
             </div>
@@ -80,6 +90,7 @@ function MemberRequests() {
                 fontWeight: 500,
                 width: 120,
               }}
+              // onClick={() => handleAccept(post._id)}
             >
               Accept
             </Button>
@@ -141,27 +152,19 @@ function MemberRequests() {
           <div className="col-7" style={{ marginTop: 10 }}>
             <OverviewRow
               firstIcon={<IoSchoolSharp style={styles.icon} />}
-              text={Education}
+              text={userInfo.gender}
             />
             <OverviewRow
               firstIcon={<IoSchoolSharp style={styles.icon} />}
-              text={Education}
+              text={userInfo.gender}
             />
             <OverviewRow
               firstIcon={<MdLocationOn style={styles.icon} />}
-              text={workLocation}
+              text={userInfo.gender}
             />
             <OverviewRow
               firstIcon={<MdLocationOn style={styles.icon} />}
-              text={workLocation}
-            />
-            <OverviewRow
-              firstIcon={<AiFillHeart style={styles.icon} />}
-              text={workLocation}
-            />
-            <OverviewRow
-              firstIcon={<AiOutlineInstagram style={styles.icon} />}
-              text={workLocation}
+              text="Lives in Ho Chi Minh City, Vietnam"
             />
           </div>
         </div>

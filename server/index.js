@@ -21,9 +21,11 @@ import groupRouter from "./routes/group.js";
 import searchRouter from "./routes/search.js";
 import friendRequestRouter from "./routes/friendRequest.js";
 import notificationRouter from "./routes/notification.js";
+import conversationRouter from "./routes/conversation.js";
 import CuteServerIO from "./socket/CuteServerIO.js";
 import friendRouter from "./routes/friend.js";
 import { setUpCuteIO } from "./socket/handlers/allHandlers.js";
+import hashtagRouter from "./routes/hashtag.js";
 
 dotenv.config();
 
@@ -65,6 +67,9 @@ app.use("/search", searchRouter);
 app.use("/friendRequest", friendRequestRouter);
 app.use("/notification", notificationRouter);
 app.use("/friend", friendRouter);
+app.use("/conversation", conversationRouter);
+// app.use("/groupPendingMember", groupPendingMemberRouter);
+app.use("/hashtag", hashtagRouter);
 
 const PORT = process.env.PORT || 5000;
 

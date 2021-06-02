@@ -15,16 +15,16 @@ import {
   AboutPage,
   GroupPage,
   GroupAboutPage,
-  RequestsInGroupsPage,
   CreateGroupPage,
   LoginPage,
   RegisterPage,
   ErrorPage,
   HomePage,
   MessagePage,
+  FriendMangementPage,
+  MutualFriendPage,
 } from "./pages/index";
 
-import FriendMangementPage from "./pages/FriendMangementPage/FriendMangementPage";
 import { CuteClientIOProvider } from "./socket/CuteClientIOProvider.js";
 import { useLocalStorage } from "./hooks/useLocalStorage.js";
 import DemoSocket from "./socket/DemoComponent/DemoSocket.js";
@@ -59,24 +59,38 @@ function App() {
           </Route>
           <PrivateRoute exact path="/feed" component={FeedPage} />
           <PrivateRoute exact path="/post/create" component={CreatePostPage} />
-          <Route path="/userinfo/:id" exact component={UserInfoPage} />
+          <PrivateRoute path="/userinfo/my">
+            <Redirect to={`/userinfo/${loggedIn()?.result?._id}`} />
+          </PrivateRoute>
+          <PrivateRoute path="/userinfo/:id" exact component={UserInfoPage} />
           <Route exact path="/post/:id" component={SpecificPostPage} />
-          <Route
-            path="/post/:id/:focusedCommentId"
-            component={SpecificPostPage}
-          />
+          <Route path="/post/:id/:commentId" component={SpecificPostPage} />
           <Route exact path="/search" component={UserResultSearchPage} />
-          <Route exact path="/requests" component={RequestsInGroupsPage} />
+          <PrivateRoute
+            exact
+            path="/group/:id/requests"
+            component={GroupPage}
+          />
           <Route exact path="/wall" component={WallPage} />
           <Route path="/userinfo/:id/about" component={AboutPage} />
-          <Route exact path="/group/about" component={GroupAboutPage} />
-          <Route exact path="/friends" component={FriendMangementPage} />
+          <PrivateRoute exact path="/friends" component={FriendMangementPage} />
+          <PrivateRoute
+            exact
+            path="/mutualFriends/:id"
+            component={MutualFriendPage}
+          />
           <Route path="/demoSocketIO" component={DemoSocket} />
-          <Route exact path="/group/create" component={CreateGroupPage} />
+          <PrivateRoute
+            exact
+            path="/group/create"
+            component={CreateGroupPage}
+          />
           <Route exact path="/group/:id" component={GroupPage} />
           <Route exact path="/settings" component={SettingsPage} />
-          <Route exac path="/activate/:token" component={ActivationPage} />
+          <Route exact path="/activate/:token" component={ActivationPage} />
           <PrivateRoute exact path="/message" component={MessagePage} />
+          <Route path="/group/:id/about" component={GroupPage} />
+          <Route path="/group/:id/members" component={GroupPage} />
           <Route>
             <ErrorPage code="404" />
           </Route>

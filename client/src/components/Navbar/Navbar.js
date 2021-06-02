@@ -9,11 +9,11 @@ import {
   Dropdown,
   Avatar,
   Badge,
-  Button,
   Tooltip,
   Space,
 } from "antd";
 import styles from "./styles";
+import logo from "../../assets/lightlogo.png";
 import {
   SearchOutlined,
   BellFilled,
@@ -44,7 +44,6 @@ import NotificationList from "./NotificationList/NotificationList";
 
 const { Header } = Layout;
 const { Text } = Typography;
-const { SubMenu } = Menu;
 
 function Navbar({ selectedMenu, setTxtSearch, txtInitSearch }) {
   // const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")));
@@ -57,7 +56,7 @@ function Navbar({ selectedMenu, setTxtSearch, txtInitSearch }) {
   const history = useHistory();
 
   // const isMobile = useMobile();
-  const isSmallScreen = useMediaQuery({ query: "(max-width: 910px)" }); // return true if right size
+  const isSmallScreen = useMediaQuery({ query: "(max-width: 990px)" }); // return true if right size
 
   const cuteIO = useCuteClientIO();
 
@@ -204,18 +203,33 @@ function Navbar({ selectedMenu, setTxtSearch, txtInitSearch }) {
 
   const menuMore = (
     <Menu>
+      {isSmallScreen && <MainMenuItems />}
       <Menu.Item key="settings" onClick={() => handleSettings()}>
         <Row align="middle">
           <SettingOutlined className="mr-lg-2" />
           <Text>Settings</Text>
         </Row>
       </Menu.Item>
-      {isSmallScreen && <MainMenuItems />}
       <Menu.Item key="logout" onClick={() => handleLogOut()}>
         <Row align="middle">
           <LogoutOutlined className=" red mr-2" />
           <Text>Logout</Text>
         </Row>
+      </Menu.Item>
+    </Menu>
+  );
+
+  const menuAuth = (
+    <Menu className="bg-green-smoke">
+      <Menu.Item key="login" className="text-center">
+        <Link to="/login">
+          <Text>Login</Text>
+        </Link>
+      </Menu.Item>
+      <Menu.Item key="signup" className="text-center">
+        <Link to="/register">
+          <Text>Register</Text>
+        </Link>
       </Menu.Item>
     </Menu>
   );
@@ -244,26 +258,30 @@ function Navbar({ selectedMenu, setTxtSearch, txtInitSearch }) {
       }}
     >
       <Row className="align-items-center justify-content-between">
-        <div style={styles.logo}>
-          <Link to="/">
-            <Text style={styles.title}>YouIT</Text>
-          </Link>
+        <div
+          className="d-flex align-items-center justify-content-between"
+          style={{ width: isSmallScreen ? "80%" : "50%" }}
+        >
+          <div style={styles.logo}>
+            <Link to="/">
+              <img src={logo} alt="Logo" height="58" className="mr-2" />
+            </Link>
+          </div>
+          <Input
+            onPressEnter={handleSearch}
+            allowClear
+            suffix={
+              <SearchOutlined
+                onClick={handleSearch}
+                style={{ fontSize: 24, color: COLOR.white }}
+              />
+            }
+            ref={inputRef}
+            bordered={false}
+            style={{ backgroundColor: COLOR.lightGreen }}
+            defaultValue={txtInitSearch}
+          />
         </div>
-
-        <Input
-          onPressEnter={handleSearch}
-          allowClear
-          suffix={
-            <SearchOutlined
-              onClick={handleSearch}
-              style={{ fontSize: 24, color: COLOR.white }}
-            />
-          }
-          ref={inputRef}
-          bordered={false}
-          style={{ backgroundColor: COLOR.lightGreen, width: "40%" }}
-          defaultValue={txtInitSearch}
-        />
 
         {user ? (
           <div className="d-flex">
@@ -283,12 +301,26 @@ function Navbar({ selectedMenu, setTxtSearch, txtInitSearch }) {
           </div>
         ) : (
           <>
-            <Link to="/login">
-              <Button>Login</Button>
-            </Link>
-            <Link to="/register">
-              <Button>Regiter</Button>
-            </Link>
+            <Menu
+              style={styles.greenBackground}
+              theme="dark"
+              mode={!isSmallScreen ? "horizontal" : "vertical"}
+              defaultSelectedKeys={[selectedMenu]}
+            >
+              {!isSmallScreen ? (
+                menuAuth
+              ) : (
+                <Dropdown
+                  overlay={menuAuth}
+                  trigger={["click"]}
+                  placement="bottomCenter"
+                >
+                  <EllipsisOutlined
+                    style={{ fontSize: 24, color: COLOR.white }}
+                  />
+                </Dropdown>
+              )}
+            </Menu>
           </>
         )}
       </Row>

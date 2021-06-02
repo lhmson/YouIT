@@ -140,7 +140,7 @@ function FullPost({ post }) {
   };
 
   const fetchMyInteractions = () => {
-    getMyInteractions(post._id)
+    getMyInteractions(post?._id)
       .then((res) => {
         setMyInteractions(res.data);
       })
@@ -188,7 +188,7 @@ function FullPost({ post }) {
 
   const menuMore = (
     <Menu>
-      {user?.result._id === post?.userId._id ? (
+      {user?.result?._id === post?.userId?._id ? (
         <>
           <Menu.Item
             key="edit"
@@ -363,7 +363,7 @@ function FullPost({ post }) {
         <div>
           <Title level={2}>{post?.title}</Title>
           <div className="pb-2">
-            <Paragraph>{post?.content}</Paragraph>
+            <Paragraph>{post?.content?.text}</Paragraph>
           </div>
         </div>
         <Row className="justify-content-between mb-4">

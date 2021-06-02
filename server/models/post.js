@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import { groupPostInfoSchema } from "./groupPostInfo.js";
+import { postContentSchema } from "./postContent.js";
 import {
   interactionInfoSchema,
   defaultInteractionInfoValue,
@@ -19,7 +20,7 @@ const postSchema = mongoose.Schema(
     },
 
     content: {
-      type: String,
+      type: postContentSchema,
       required: true,
     },
 

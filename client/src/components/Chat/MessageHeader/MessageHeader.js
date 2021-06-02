@@ -15,6 +15,8 @@ import { Link } from "react-router-dom";
 import "../styles.css";
 import COLOR from "../../../constants/colors.js";
 
+import { useMobile } from "../../../utils/responsiveQuery";
+
 const { Text } = Typography;
 
 const statusList = [
@@ -23,7 +25,9 @@ const statusList = [
   { title: "offline", color: COLOR.gray },
 ];
 
-function MessageHeader({ setOpenSidebar }) {
+function MessageHeader({ setOpenSidebar, currentId }) {
+  const isMobile = useMobile();
+
   useEffect(() => {}, []);
 
   const handleOpenSidebar = () => {
@@ -35,7 +39,7 @@ function MessageHeader({ setOpenSidebar }) {
   const menuStatus = (
     <Menu>
       {statusList.map((item, i) => (
-        <Menu.Item key="i" onClick={() => handleChangeStatus(item.title)}>
+        <Menu.Item key={i} onClick={() => handleChangeStatus(item.title)}>
           <Row align="middle" style={{ color: item.color }}>
             <EnvironmentOutlined className="mr-2" />
             <Text>{item.title}</Text>
@@ -65,7 +69,10 @@ function MessageHeader({ setOpenSidebar }) {
         </Dropdown>
       </div>
 
-      <span className="text-center">Batman</span>
+      <span className="text-center">
+        {currentId &&
+          (isMobile ? currentId.substring(0, 12) + "..." : currentId)}
+      </span>
       <Tooltip title="Delete conversation">
         <DeleteOutlined className="clickable icon" />
       </Tooltip>

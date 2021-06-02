@@ -16,18 +16,16 @@ import { ReactComponent as ReactLogo } from "../../assets/add-user.svg";
 import logo from "../../assets/lightlogo.png";
 
 import styles from "./styles";
-import { Option } from "antd/lib/mentions";
 import { Link } from "react-router-dom";
 import { signup } from "../../redux/actions/auth";
 import { useDispatch } from "react-redux";
-import { useHistory } from "react-router";
 import moment from "moment";
 import COLOR from "../../constants/colors";
-import { useLocalStorage } from "../../hooks/useLocalStorage";
-import { useToken } from "../../context/TokenContext";
 import { resendVerificationMail } from "../../api/auth";
 
 const { Title, Text } = Typography;
+
+const { Option } = Select;
 
 const dateFormat = "DD/MM/YYYY";
 
@@ -43,11 +41,7 @@ const initialState = {
 
 function RegisterPage() {
   const [form, setForm] = useState(initialState);
-  const [user, setUser] = useLocalStorage("user");
-  const [dobError, setDobError] = useState(null);
   const dispatch = useDispatch();
-  const history = useHistory();
-  const [token, setToken] = useToken();
   const [resend, setResend] = useState(false);
 
   const handleChange = (e) => {

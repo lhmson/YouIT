@@ -7,15 +7,21 @@ export const defaultUserInfoValue = {
   gender: "Male",
 };
 
-const workSchema = mongoose.Schema({
-  location: { type: String },
-  position: { type: String },
-});
+const workSchema = mongoose.Schema(
+  {
+    location: { type: String },
+    position: { type: String },
+  },
+  { timestamps: true }
+);
 
-const educationSchema = mongoose.Schema({
-  schoolName: { type: String },
-  moreInfo: { type: String },
-});
+const educationSchema = mongoose.Schema(
+  {
+    schoolName: { type: String },
+    moreInfo: { type: String },
+  },
+  { timestamps: true }
+);
 
 export const userInfoSchema = mongoose.Schema(
   {

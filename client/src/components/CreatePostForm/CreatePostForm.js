@@ -8,10 +8,12 @@ import styles from "./styles.js";
 import * as api from "../../api/post.js";
 import { useHistory } from "react-router";
 import PostEditor from "./PostEditor/PostEditor.js";
+import CreatePostContentPinnedUrlInput from "./CreatePostContentPinnedUrlInput/CreatePostContentPinnedUrlInput.js";
 
 function CreatePostForm({ postId, title, content, privacy }) {
   const [postTitle, setPostTitle] = useState(title ?? "");
-  const [postContent, setPostContent] = useState(content ?? "");
+  const [postContentText, setPostContentText] = useState(content?.text ?? "");
+  const [postContentPinnedUrl, setPostContentPinnedUrl] = useState(content?.pinnedUrl ?? "");
   const [postSpace, setPostSpace] = useState(""); // just text
   const [selectedGroup, setSelectedGroup] = useState(null); // actual group
   const [postPrivacy, setPostPrivacy] = useState(privacy ?? "");
@@ -21,7 +23,10 @@ function CreatePostForm({ postId, title, content, privacy }) {
   const wrapPostData = () => {
     const result = {
       title: postTitle,
-      content: postContent,
+      content: {
+        text: postContentText,
+        pinnedUrl: postContentPinnedUrl,
+      },
       privacy: postPrivacy,
     };
 
@@ -103,8 +108,16 @@ function CreatePostForm({ postId, title, content, privacy }) {
       <div className="d-flex justify-content-start py-2">
         <div className="col-12">
           <PostEditor
-            postContent={postContent}
-            setPostContent={setPostContent}
+            postContentText={postContentText}
+            setPostContentText={setPostContentText}
+          />
+        </div>
+      </div>
+      <div className="d-flex justify-content-start py-2">
+        <div className="col-12">
+          <CreatePostContentPinnedUrlInput
+            contentPinnedUrl={postContentPinnedUrl}
+            setContentPinnedUrl={setPostContentPinnedUrl}
           />
         </div>
       </div>

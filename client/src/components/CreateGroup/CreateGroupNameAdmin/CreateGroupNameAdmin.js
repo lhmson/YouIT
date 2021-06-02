@@ -1,22 +1,17 @@
 import React from "react";
 import { Avatar, Typography, Layout, Row } from "antd";
 import { Link } from "react-router-dom";
-
-import * as api from "../../../api/user_info";
-import { useSelector } from "react-redux";
-import { isLoginUser } from "../../../utils/user.js";
+import { useLocalStorage } from "../../../hooks/useLocalStorage.js";
 import COLOR from "../../../constants/colors";
-
 const { Title, Text } = Typography;
 
 const CreateGroupNameAdmin = () => {
-  const user = useSelector((state) => state.user);
+  const [user] = useLocalStorage("user");
+  const displayName = user?.result?.name ?? "Nguoi dung YouIT";
 
   const avatarUrl =
     user?.avatarUrl ??
     "https://pbs.twimg.com/profile_images/1247161286518964226/m92qVTIT_400x400.jpg";
-
-  const displayName = user?.name ?? "Nguoi dung YouIT";
 
   return (
     <Row style={{ marginBottom: 18, marginTop: 18 }}>

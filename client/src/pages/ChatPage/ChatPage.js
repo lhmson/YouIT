@@ -4,6 +4,7 @@ import styles from "./styles.js";
 import Navbar from "../../components/Navbar/Navbar";
 
 import ChatSpace from "../../components/Chat/ChatSpace.js";
+import { ConversationsProvider } from "../../context/ConversationsContext.js";
 
 function MessagePage() {
   return (
@@ -11,7 +12,9 @@ function MessagePage() {
       <Layout>
         <Navbar selectedMenu="message" />
         <Layout style={styles.mainArea}>
-          <ChatSpace />
+          <ConversationsProvider>
+            <ChatSpace />
+          </ConversationsProvider>
         </Layout>
       </Layout>
     </div>

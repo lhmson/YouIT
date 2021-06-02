@@ -17,27 +17,24 @@ import {
 import { Link } from "react-router-dom";
 import COLOR from "../../constants/colors.js";
 import { useHistory } from "react-router";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { createGroup } from "../../api/group";
-import { CoverPhoto, GroupAboutCard } from "../../components/index.js";
+import { CoverPhoto } from "../../components/index.js";
 import { BsThreeDots } from "react-icons/bs";
 import { GoSearch } from "react-icons/go";
-import { MailOutlined, ShopOutlined } from "@ant-design/icons";
+import { MailOutlined } from "@ant-design/icons";
 import Navbar from "../../components/Navbar/Navbar";
 import CreateGroupName from "../../components/CreateGroup/CreateGroupName/CreateGroupName";
 import CreateGroupDescription from "../../components/CreateGroup/CreateGroupDescription/CreateGroupDescription";
 import CreateGroupMembers from "../../components/CreateGroup/CreateGroupMembers/CreateGroupMembers";
 import { OverviewRow } from "../../components/UserInfo/AboutCard/index.js";
 import { IoMdLock } from "react-icons/all";
-import { isLoginUser } from "../../utils/user.js";
+import { useLocalStorage } from "../../hooks/useLocalStorage";
 import CreateGroupNameAdmin from "../../components/CreateGroup/CreateGroupNameAdmin/CreateGroupNameAdmin.js";
+
 import styles from "./styles.js";
 
 const { Title, Text } = Typography;
-
-const initialState = {
-  groupName: "",
-};
 
 const optionsPrivacy = ["Public", "Private"];
 const optionsTopic = [
@@ -57,8 +54,11 @@ function CreateGroupPage() {
   const [groupDescription, setGroupDescription] = useState("");
   const [groupPrivacy, setGroupPrivacy] = useState("");
   const [groupTopic, setGroupTopic] = useState("");
+  const [groupMembers, setGroupMembers] = useState();
 
-  const dispatch = useDispatch();
+  const [user] = useLocalStorage("user");
+
+  // const dispatch = useDispatch();
   const history = useHistory();
 
   const Data = () => {
@@ -67,6 +67,7 @@ function CreateGroupPage() {
       description: groupDescription,
       privacy: groupPrivacy,
       topic: groupTopic,
+      listMembers: groupMembers,
     };
     return result;
   };
@@ -111,6 +112,12 @@ function CreateGroupPage() {
     return <IoMdLock style={styles.icon} />;
   };
 
+  const onSelectedGroupMembersChange = (value) => {
+    setGroupMembers(
+      value.map((memberId) => ({ userId: memberId, role: "Member" }))
+    );
+  };
+
   return (
     <Layout>
       <Navbar />
@@ -127,6 +134,7 @@ function CreateGroupPage() {
               </Row>
               <Row style={{ marginBottom: 18, marginTop: 18 }}>
                 <CreateGroupNameAdmin />
+                {/* <AvatarView /> */}
               </Row>
               <Form
                 style={{ marginTop: 40 }}
@@ -204,7 +212,7 @@ function CreateGroupPage() {
                     name="inviteFriends"
                     placeholder="Invite your friends"
                   /> */}
-                  <CreateGroupMembers />
+                  <CreateGroupMembers onChange={onSelectedGroupMembersChange} />
                 </Form.Item>
                 <Form.Item name="description">
                   <CreateGroupDescription

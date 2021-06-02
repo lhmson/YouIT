@@ -1,12 +1,12 @@
-import React, { useState, useEffect, useMemo } from "react";
-import { Button, Row, Col, Divider, Form, Typography, Input, Card } from "antd";
-import { Avatar, Image, Tag, Popover, List } from "antd";
+import React, { useState, useEffect } from "react";
+import { Button, Typography } from "antd";
+import { Avatar, Tag, Popover, List } from "antd";
 import styles from "./styles.js";
-import { Link, useHistory, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useLocalStorage } from "../../hooks/useLocalStorage";
 import * as api from "../../api/friend";
 
-const { Title, Text } = Typography;
+const { Text } = Typography;
 
 function FriendCard(props) {
   const [user, setUser] = useLocalStorage("user");
@@ -36,7 +36,7 @@ function FriendCard(props) {
         if (res.data && res.data instanceof Array) {
           const tempList = [];
           for (let i = 0; i < res.data.length; i++)
-            tempList.push(res.data[i].name);
+            tempList.push({ name: res.data[i].name, id: res.data[i]._id });
           setListMutual(tempList);
           console.log(tempList);
         }
@@ -57,7 +57,9 @@ function FriendCard(props) {
             dataSource={data}
             renderItem={(item) => (
               <List.Item>
-                <Text style={styles.text}>{item}</Text>
+                <Link to={`/userinfo/${item.id}`}>
+                  <Text style={styles.text}>{item.name}</Text>
+                </Link>
               </List.Item>
             )}
           />
@@ -102,6 +104,7 @@ function FriendCard(props) {
             style={{
               justifyContent: "flex-end",
               alignItems: "flex-end",
+              display: user?.result?._id === _id ? "none" : "block",
             }}
           >
             <Button
@@ -123,9 +126,11 @@ function FriendCard(props) {
                 content={popupListMutualFriend(listMutual ?? [])}
                 trigger="hover"
               >
-                <Text style={styles.text}>
-                  {numberMutual} mutual friend{numberMutual >= 2 ? "s" : ""}
-                </Text>
+                <Link to={`/mutualFriends/${_id}`}>
+                  <Text style={styles.text}>
+                    {numberMutual} mutual friend{numberMutual >= 2 ? "s" : ""}
+                  </Text>
+                </Link>
               </Popover>
             </div>
           </div>

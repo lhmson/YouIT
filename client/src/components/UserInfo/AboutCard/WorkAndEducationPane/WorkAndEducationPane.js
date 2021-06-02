@@ -26,6 +26,15 @@ const WorkAndEducationPane = () => {
     setEducations(user?.userInfo?.educations);
   }, [user]);
 
+  const saveWorks = () => {
+    const updatedUser = {
+      ...user,
+      userInfo: { ...user.userInfo, works: works },
+    };
+    console.log(updatedUser);
+    dispatch(updateUser(updatedUser));
+  };
+
   // add new work
   const addWorkLocation = (value) => {
     const newLocation = value.target.value;
@@ -63,10 +72,16 @@ const WorkAndEducationPane = () => {
     //console.log(works);
   };
 
-  const saveWorks = () => {
+  // delete a work
+  const deleteWork = (index) => {
+    works.splice(index, 1);
+    saveWorks();
+  };
+
+  const saveEducations = () => {
     const updatedUser = {
       ...user,
-      userInfo: { ...user.userInfo, works: works },
+      userInfo: { ...user.userInfo, educations: educations },
     };
     console.log(updatedUser);
     dispatch(updateUser(updatedUser));
@@ -117,13 +132,10 @@ const WorkAndEducationPane = () => {
     //console.log(works);
   };
 
-  const saveEducations = () => {
-    const updatedUser = {
-      ...user,
-      userInfo: { ...user.userInfo, educations: educations },
-    };
-    console.log(updatedUser);
-    dispatch(updateUser(updatedUser));
+  // delete education
+  const deleteEducation = (index) => {
+    educations.splice(index, 1);
+    saveEducations();
   };
 
   return (
@@ -142,6 +154,9 @@ const WorkAndEducationPane = () => {
             }}
             onNewSubTextChange={(value) => addWorkPosition(value)}
             onAdd={addWork}
+            onDelete={(index) => deleteWork(index)}
+            newPlaceholder="Work location"
+            newSubPlaceholder="Work position"
           />
         </Row>
         <Row style={styles.headingView}>
@@ -155,6 +170,9 @@ const WorkAndEducationPane = () => {
             onNewTextChange={(value) => addSchoolName(value)}
             onNewSubTextChange={(value) => addMoreInfo(value)}
             onAdd={addEducation}
+            onDelete={(index) => deleteEducation(index)}
+            newPlaceholder="School name"
+            newSubPlaceholder="More info (major, time,...)"
           />
         </Row>
       </Col>

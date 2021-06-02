@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { Button, Input, Layout, Row, Typography } from "antd";
 
 import { OverviewRow } from "../../index.js";
-import { AiOutlineEdit } from "react-icons/all";
+import { AiOutlineEdit, FaRegTrashAlt } from "react-icons/all";
 
 import styles from "./styles.js";
 
@@ -22,13 +22,21 @@ function EditableWorkEdu({
   setPreviousState,
   editable,
   index,
+  onDelete,
 }) {
   const [isEditing, setIsEditing] = useState(false);
 
   const EditIcon = () => {
     if (editable) {
       return (
-        <AiOutlineEdit style={styles.icon} onClick={() => setIsEditing(true)} />
+        <Row>
+          <AiOutlineEdit
+            className="clickable"
+            style={styles.icon}
+            onClick={() => setIsEditing(true)}
+          />
+          <FaRegTrashAlt style={styles.iconDelete} onClick={onDelete} />
+        </Row>
       );
     }
     return <></>;
