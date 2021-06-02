@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from "react";
 import styles from "./styles.js";
 import { Layout, Typography, Menu, Card, Row, Dropdown, message } from "antd";
-import { DownOutlined, FieldTimeOutlined } from "@ant-design/icons";
+import {
+  DownOutlined,
+  FieldTimeOutlined,
+  StarOutlined,
+} from "@ant-design/icons";
 
 import Navbar from "../../components/Navbar/Navbar";
 import FullPost from "../../components/Posts/FullPost/FullPost.js";
@@ -24,9 +28,15 @@ function SpecificPostPage(props) {
   const sorts = [
     {
       type: "new",
-      name: "Newest",
+      name: "Newest comments first",
       icon: <FieldTimeOutlined />,
-      function: sortByUpdatedTime,
+      function: sortByTime,
+    },
+    {
+      type: "hot",
+      name: "Top comments first",
+      icon: <StarOutlined />,
+      function: sortByInteraction,
     },
   ];
 
@@ -36,6 +46,19 @@ function SpecificPostPage(props) {
   const [otherPosts, setOtherPosts] = useState([]);
   const [sort, setSort] = useState(sorts[0]);
   const [focusedCommentIndex, setFocusedCommentIndex] = useState(-1);
+
+  const fetchPageContent = () => {
+    fetchPost();
+    fetchOtherPosts();
+    fetchComments();
+  };
+  useEffect(() => {
+    fetchPageContent();
+  }, [id]);
+  useEffect(() => {
+    fetchPost();
+    fetchComments();
+  }, [sort]);
 
   const fetchPost = async () => {
     postsApi
@@ -73,17 +96,26 @@ function SpecificPostPage(props) {
   };
 
   useEffect(() => {
-    fetchPost();
-    fetchOtherPosts();
-    fetchComments();
+    fetchPageContent();
   }, []);
 
-  function sortByUpdatedTime(data) {
+  function sortByTime(data) {
     const sortedData = data?.sort(function (a, b) {
-      var atime = a.updatedAt;
-      var btime = b.updatedAt;
-      if (atime > btime) return -1;
-      if (atime < btime) return 1;
+      var _a = a.createdAt;
+      var _b = b.createdAt;
+      if (_a > _b) return -1;
+      if (_a < _b) return 1;
+      return 0;
+    });
+    return sortedData;
+  }
+
+  function sortByInteraction(data) {
+    const sortedData = data?.sort(function (a, b) {
+      var _a = a.interactionInfo?.listUpvotes?.length;
+      var _b = b.interactionInfo?.listUpvotes?.length;
+      if (_a > _b) return -1;
+      if (_a < _b) return 1;
       return 0;
     });
     return sortedData;
@@ -114,13 +146,7 @@ function SpecificPostPage(props) {
   };
 
   const handleSortMenuClick = ({ key }) => {
-    switch (key) {
-      case "0":
-        setSort(sorts[0]);
-        break;
-      default:
-        setSort(sorts[0]);
-    }
+    setSort(sorts[key]);
   };
 
   const sortMenu = (
@@ -152,9 +178,9 @@ function SpecificPostPage(props) {
     <>
       <Layout>
         <Navbar />
-        <Layout style={styles.mainArea}>
-          <Content>
-            <div className="mr-4">
+        <div style={styles.mainArea} className="row">
+          <div className="col-sm-8 mb-4">
+            <div>
               <Card style={{ padding: 16 }}>
                 {post ? <FullPost post={post} /> : <Loading />}
                 {/* put there for anchor link to comments */}
@@ -167,7 +193,7 @@ function SpecificPostPage(props) {
                   <Title className="mb-4" level={2}>
                     {`Comments (${comments?.length})`}
                   </Title>
-                  <Dropdown overlay={sortMenu}>
+                  <Dropdown overlay={sortMenu} className="clickable">
                     <Row
                       align="middle"
                       style={{
@@ -213,12 +239,12 @@ function SpecificPostPage(props) {
                 </div>
               </Card>
             </div>
-          </Content>
-          <FixedRightPanel>
+          </div>
+          <div className="col-sm-4">
             <RelatedCard title="From this user" posts={otherPosts} />
             <RelatedCard title="Related posts" posts={otherPosts} />
-          </FixedRightPanel>
-        </Layout>
+          </div>
+        </div>
       </Layout>
     </>
   );

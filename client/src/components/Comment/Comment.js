@@ -91,7 +91,7 @@ function Comment({
         setMyInteractions(res.data);
       })
       .catch((error) => {
-        message.error("Something goes wrong with comment interactions");
+        // message.error("Something goes wrong with comment interactions");
         console.log("uwuwuuw", error, comment);
       });
   };
@@ -104,7 +104,7 @@ function Comment({
           dispatchInteractions({ type: "unupvote" });
         })
         .catch((error) => {
-          message.error("Something goes wrong with comment upvote");
+          // message.error("Something goes wrong with comment upvote");
           console.log(error);
         });
     } else {
@@ -117,7 +117,7 @@ function Comment({
           dispatchInteractions({ type: "upvote" });
         })
         .catch((error) => {
-          message.error("Something goes wrong with comment unvote");
+          // message.error("Something goes wrong with comment unvote");
           console.log(error);
         });
     }
@@ -131,7 +131,7 @@ function Comment({
           dispatchInteractions({ type: "undownvote" });
         })
         .catch((error) => {
-          message.error("Something goes wrong with comment downvote");
+          // message.error("Something goes wrong with comment downvote");
           console.log(error);
         });
     } else {
@@ -144,7 +144,7 @@ function Comment({
           dispatchInteractions({ type: "downvote" });
         })
         .catch((error) => {
-          message.error("Something goes wrong with comment unvote");
+          // message.error("Something goes wrong with comment unvote");
           console.log(error);
         });
     }
