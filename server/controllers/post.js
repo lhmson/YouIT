@@ -46,7 +46,7 @@ export const getAPost = async (req, res) => {
       .then((post) => {
         const postObj = post.toObject();
 
-        if (isPostVisibleByUser(postObj, userId))
+        if (isPostVisibleByUser({ ...postObj, userId: postObj.userId._id }, userId))
           return res.status(200).json(post);
         else
           return res
@@ -202,7 +202,6 @@ export const getMyPostInteractions = async (req, res) => {
   const { filter } = req.query;
 
   try {
-    console.log("mlem mlem", filter);
     // auth
     const { userId } = req;
     if (!userId) {
@@ -329,13 +328,37 @@ export const getPostsPagination = async (req, res) => {
 
   //get _page and _limit params from url
   // joinedGroupOnly: cut out the posts of group of which this user is not a member
-  let { _page, _limit, ownerId, groupId, joinedGroupOnly } = req.query;
+  /** @type {{space: "news_feed"|"user_profile"|"pending_in_group"|"group", help: boolean}} */
+  let { _page, _limit, ownerId, groupId, space, help } = req.query;
   if (_page) _page = parseInt(_page);
   else _page = 0;
   if (_limit) _limit = parseInt(_limit);
   else _limit = 100; // sorry for the magic :)
 
-  joinedGroupOnly = joinedGroupOnly?.toUpperCase() === "TRUE";
+  space = space?.toLowerCase();
+
+  // joinedGroupOnly = joinedGroupOnly?.toUpperCase() === "TRUE";
+  // profileWallOnly = profileWallOnly?.toUpperCase() === "TRUE";
+
+  if (help !== undefined) {
+    return res.status(httpStatusCodes.ok).send(
+      `space query:\n`
+      + ` - (empty): All visible posts\n`
+      + ` - news_feed: All posts from other users and posts in joined group\n`
+      + ` - user_profile: All posts of a user which are not in group (ownerId query is required)\n`
+      + ` - pending_in_group: All posts that's currently pending in a group (groupId query is required)\n`
+      + ` - group: All approved posts in the same group (groupId query is required)\n`
+      + `\n`
+      + `ownerId query: Filter out all posts of just 1 user\n`
+      + `groupId query: Filter out all posts of just 1 group\n`
+    )
+  }
+
+  if ((space === "group" || space === "pending_in_group") && !groupId)
+    return res.status(httpStatusCodes.badContent).send(`groupId query is required when space is ${space}`);
+
+  if (space === "user_profile" && !ownerId)
+    return res.status(httpStatusCodes.badContent).send(`ownerId query is required when space is ${space}`);
 
   try {
     await Post.find()
@@ -352,29 +375,77 @@ export const getPostsPagination = async (req, res) => {
         const posts = rawPosts.map((p) => p.toObject());
 
         asyncFilter(posts, async (p) => {
-          const stdObj = {
+          /** unpopulate userId */
+          const stdPostObj = {
             ...p,
             userId: p.userId._id,
           };
-          let result = await isPostVisibleByUser(
-            stdObj,
-            userId,
-            !joinedGroupOnly
+          let visible = await isPostVisibleByUser(
+            stdPostObj,
+            userId
           );
-          return result;
-        }).then((filteredPosts) => {
-          if (ownerId)
-            filteredPosts = filteredPosts.filter((p) =>
-              p.userId._id.equals(ownerId)
-            );
+
+          if (!visible)
+            return false;
 
           if (groupId)
-            filteredPosts = filteredPosts.filter(
-              (p) =>
-                p.privacy === "Group" &&
-                p.groupPostInfo.groupId._id.equals(groupId)
-            );
+            if (!stdPostObj?.groupPostInfo?.groupId?._id.equals(groupId))
+              return false;
 
+          if (ownerId)
+            if (!stdPostObj.userId.equals(ownerId))
+              return false;
+
+          if (stdPostObj.privacy === "Group") {
+            switch (space) {
+              case "user_profile": {
+                return false;
+              };
+              case "news_feed": {
+                const group = (await Group.findById(stdPostObj?.groupPostInfo?.groupId))?.toObject();
+                if (!group)
+                  return false;
+
+                if (!isMemberOfGroup(userId, group))
+                  return false;
+                break;
+              };
+              case "pending_in_group": {
+                if (!groupId)
+                  return false;
+                if (stdPostObj?.groupPostInfo?.status !== "Pending")
+                  return false;
+                break;
+              }
+              case "group": {
+                if (!groupId)
+                  return false;
+                if (stdPostObj?.groupPostInfo?.status !== "Approved")
+                  return false;
+                break;
+              }
+            }
+          } else {
+            switch (space) {
+              case "user_profile": {
+                if (!ownerId)
+                  return false;
+                break;
+              }
+              case "news_feed": {
+                break;
+              }
+              case "pending_in_group": {
+                return false;
+              }
+              case "group": {
+                return false;
+              }
+            }
+          }
+
+          return true;
+        }).then((filteredPosts) => {
           return res
             .status(200)
             .send(customPagination(filteredPosts, _limit, _page));
