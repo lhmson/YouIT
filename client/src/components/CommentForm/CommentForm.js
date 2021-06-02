@@ -12,7 +12,7 @@ const loggedIn = () => {
   return user?.result?.name;
 };
 
-function CommentForm({ onSubmit, label, onDiscard }) {
+function CommentForm({ onSubmit, label, onDiscard, initContent }) {
   const [inputComment, setInputComment] = useState(null);
   const [errors, setErrors] = useState({});
   const [form] = Form.useForm();
@@ -35,9 +35,11 @@ function CommentForm({ onSubmit, label, onDiscard }) {
   };
 
   const handleFinish = () => {
+    if (!inputComment) onSubmit({ content: initContent });
     onSubmit(inputComment);
     onReset();
   };
+
   return (
     <div>
       {loggedIn() ? (
@@ -54,9 +56,11 @@ function CommentForm({ onSubmit, label, onDiscard }) {
             rules={[
               {
                 required: true,
+                whitespace: true,
                 message: "Please write something.",
               },
             ]}
+            initialValue={initContent}
           >
             <TextArea
               style={{ height: 200 }}
