@@ -2,8 +2,19 @@ import API from "./index";
 
 export const fetchPosts = () => API.get("/post/list/all");
 export const fetchAPost = (id) => API.get(`/post/${id}`);
-export const fetchPostsPagination = (page, limit, space, ownerId, groupId, help) => {
-  let url = "/post?"
+
+/**
+ * @param {"news_feed"|"user_profile"|"pending_in_group"|"group"} space
+ */
+export const fetchPostsPagination = (
+  page,
+  limit,
+  space,
+  ownerId,
+  groupId,
+  help
+) => {
+  let url = "/post?";
   if (page) url += `&_page=${page}`;
   if (limit) url += `&_limit=${limit}`;
   if (space) url += `&space=${space}`;
@@ -11,7 +22,7 @@ export const fetchPostsPagination = (page, limit, space, ownerId, groupId, help)
   if (groupId) url += `&groupId=${groupId}`;
   if (help) url = "/post?help";
   return API.get(url);
-}
+};
 export const fetchOtherPosts = (id) => API.get(`post/${id}/others`);
 
 export const createPost = (newPost) => API.post("/post", newPost);

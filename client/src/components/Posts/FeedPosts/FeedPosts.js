@@ -11,7 +11,13 @@ import * as api from "../../../api/post";
 
 import FeedPost from "./FeedPost/FeedPost";
 
-function FeedPosts({ setCurrentId }) {
+function FeedPosts({
+  setCurrentId,
+  limitPagination = 2,
+  space,
+  ownerId,
+  groupId,
+}) {
   // const posts = useSelector((state) => state.posts);
   const [posts, setPosts] = useState([]);
 
@@ -31,7 +37,7 @@ function FeedPosts({ setCurrentId }) {
 
   useEffect(() => {
     api
-      .fetchPostsPagination(0, 2)
+      .fetchPostsPagination(0, limitPagination, space, ownerId, groupId) // very good
       .then((res) => {
         handleFetchPosts(res);
       })
@@ -47,7 +53,7 @@ function FeedPosts({ setCurrentId }) {
     // }, 2000);
     if (hasMore) {
       api
-        .fetchPostsPagination(page, 2)
+        .fetchPostsPagination(page, limitPagination, space, ownerId, groupId)
         .then((res) => {
           handleFetchPosts(res);
         })

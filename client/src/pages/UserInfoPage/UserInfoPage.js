@@ -50,7 +50,11 @@ function UserInfoPage() {
                 <IntroCard />
               </Col>
               <Col span={16}>
-                <FeedPosts />
+                <FeedPosts
+                  space="user_profile"
+                  limitPagination={5}
+                  ownerId={id}
+                />
               </Col>
             </Row>
           </Content>

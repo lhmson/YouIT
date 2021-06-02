@@ -5,7 +5,6 @@ import { BsThreeDots, GoSearch } from "react-icons/all";
 import {
   AdminGroupSidebar,
   CoverPhoto,
-  FeedPosts,
   GroupAboutCard,
   GroupBasicInfo,
   ListButtons,

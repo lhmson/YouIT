@@ -24,7 +24,7 @@ function FeedPage() {
           <div className="feed-container">
             <FeedSidebar className="sidebar" />
             <div className="mainContent" id="scrollableDiv">
-              <FeedPosts />
+              <FeedPosts space="news_feed" />
             </div>
           </div>
         </Layout>
