@@ -7,6 +7,7 @@ import {
   getJoinedGroups,
   addGroupPendingMember,
   getListMembers,
+  getListPendingMembers,
   deleteMember,
   leaveGroup,
 } from "../controllers/group.js";
@@ -17,6 +18,7 @@ const router = express.Router();
 router.get("/:id", auth, getAGroup);
 router.get("/list/joinedByMe", auth, getJoinedGroups);
 router.get("/:id/members", auth, getListMembers);
+router.get("/:id/pendingMembers", auth, getListPendingMembers);
 
 router.post("/", auth, createGroup);
 

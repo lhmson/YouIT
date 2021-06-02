@@ -1,12 +1,41 @@
-import React from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { Layout, Typography } from "antd";
-
+import { GroupContext } from "../../GroupPage/GroupPage";
 import MemberRequests from "../../../components/MemberRequests/MemberRequests";
+import { useLocalStorage } from "../../../hooks/useLocalStorage";
+import * as api from "../../../api/group";
 
 const { Content } = Layout;
 const { Title, Text } = Typography;
 
-const MemberRequestsResult = () => {
+function MemberRequestsResult() {
+  const { group } = useContext(GroupContext);
+  const [listMembersRequest, setListMembersRequest] = useState([]);
+  const [user] = useLocalStorage("user");
+
+  useEffect(() => {
+    api
+      .getListPendingMembers(group?._id)
+      .then((res) => {
+        if (res.data instanceof Array) setListMembersRequest(res.data);
+        else setListMembersRequest([]);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  }, [group]);
+
+  const listMembersRequestCard = () =>
+    listMembersRequest?.map((user, i) => (
+      <MemberRequests
+        _id={user.userId._id}
+        name={user.userId.name}
+        dateOfBirth={user.userId.dateOfBirth}
+        role={user.role}
+        relationship="Add Friend"
+      ></MemberRequests>
+    ));
+
   return (
     <div className="col-10 offset-1">
       <div
@@ -18,13 +47,11 @@ const MemberRequestsResult = () => {
       >
         <div className="col-10 offset-1">
           {/* <Text style={{ fontSize: 32, fontWeight: "bold" }}>Member</Text> */}
-          <MemberRequests></MemberRequests>
-          <MemberRequests></MemberRequests>
-          <MemberRequests></MemberRequests>
+          {listMembersRequestCard()}
         </div>
       </div>
     </div>
   );
-};
+}
 
 export default MemberRequestsResult;

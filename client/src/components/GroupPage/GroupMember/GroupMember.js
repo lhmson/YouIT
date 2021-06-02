@@ -22,8 +22,6 @@ function GroupMember() {
     api
       .getListMembers(group?._id)
       .then((res) => {
-        console.log("thycute", res.data);
-
         if (res.data instanceof Array) setListMembers(res.data);
         else setListMembers([]);
       })
@@ -31,12 +29,6 @@ function GroupMember() {
         console.log(e);
       });
   }, [group]);
-
-  console.log("soluong", listMembers);
-
-  // let listFilter = listMembers.filter((user) =>
-  //   user.name.toLowerCase().includes(txtSearch.toLowerCase())
-  // );
 
   const listMembersCard = () =>
     listMembers?.map((user, i) => (
