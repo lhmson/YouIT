@@ -60,9 +60,12 @@ const { Text } = Typography;
 //   },
 // ];
 
-function ConversationList({ currentId, isAddMessage, setIsAddMessage, messageHandle }) {
-
-
+function ConversationList({
+  currentId,
+  isAddMessage,
+  setIsAddMessage,
+  messageHandle,
+}) {
   const [listMessages, setListMessages] = useState([]);
 
   const [user] = useLocalStorage("user");
@@ -88,10 +91,11 @@ function ConversationList({ currentId, isAddMessage, setIsAddMessage, messageHan
         listMessages.map((item, i) => (
           <div
             key={i}
-            className={`message-row ${item.senderId === user?.result?._id
-              ? "you-message"
-              : "other-message"
-              }`}
+            className={`message-row ${
+              item.senderId === user?.result?._id
+                ? "you-message"
+                : "other-message"
+            }`}
           >
             <div className="message-content">
               <Tooltip title={item.senderId} placement="bottom">

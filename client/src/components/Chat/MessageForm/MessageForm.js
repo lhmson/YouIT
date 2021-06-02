@@ -1,16 +1,21 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef } from "react";
 import { Tooltip, Input, message } from "antd";
 import "../styles.css";
 import { SendOutlined, PaperClipOutlined } from "@ant-design/icons";
 import { Loading } from "../..";
 
-function ChatForm({ currentId, setIsAddMessage, messageHandle, listConversations, updateListConversations, checkSending, addSending }) {
-
+function ChatForm({
+  currentId,
+  setIsAddMessage,
+  messageHandle,
+  listConversations,
+  updateListConversations,
+  checkSending,
+  addSending,
+}) {
   // const [text, setText] = useState("");
 
   const inputRef = useRef();
-
-  const [currentConversation, setCurrentConversation] = useState();
 
   // const handleChange = (e) => {
   //   e.preventDefault();
@@ -27,7 +32,7 @@ function ChatForm({ currentId, setIsAddMessage, messageHandle, listConversations
 
   const handleSendMessage = () => {
     if (!currentId) {
-      message.error('No conversation selected');
+      message.error("No conversation selected");
       return;
     }
     // alert(currentId + " || " + inputRef.current.state.value);
@@ -52,17 +57,18 @@ function ChatForm({ currentId, setIsAddMessage, messageHandle, listConversations
         ref={inputRef}
         disabled={currentId ? false : true}
         onPressEnter={() => handleSendMessage()}
-      // onChange={(e) => handleChange(e)}
+        // onChange={(e) => handleChange(e)}
       />
-      {
-        !checkSending(currentId) ? (<Tooltip title="Send">
+      {!checkSending(currentId) ? (
+        <Tooltip title="Send">
           <SendOutlined
             className="clickable icon white"
             onClick={() => handleSendMessage()}
           />
-        </Tooltip>) : <Loading />
-      }
-
+        </Tooltip>
+      ) : (
+        <Loading />
+      )}
     </div>
   );
 }

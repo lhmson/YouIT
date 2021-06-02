@@ -32,7 +32,6 @@ const router = express.Router();
 
 // router.get("/", getPosts);
 router.get("/", auth, getPostsPagination);
-// router.get("/", getPosts);
 router.get("/:id", auth, getAPost);
 router.get("/:id/others", getOtherPosts);
 router.get("/:id/comment", getComments);

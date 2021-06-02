@@ -10,7 +10,6 @@ import MessageForm from "./MessageForm/MessageForm";
 import * as apiConversation from "../../api/conversation";
 import { useMessage } from "../../hooks/useMessage";
 import { useConversations } from "../../context/ConversationsContext";
-import { Loading } from "..";
 
 function ChatSpace() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -22,10 +21,16 @@ function ChatSpace() {
   const conversations = useConversations();
   // console.log(conversations);
 
-  const { currentId, listConversations, conversationsSending } = conversations.state;
+  const { currentId, listConversations } = conversations.state;
 
-  const { updateCurrentId, updateListConversations, addConversation, addSending, removeSending, checkSending } =
-    conversations;
+  const {
+    updateCurrentId,
+    updateListConversations,
+    addConversation,
+    addSending,
+    removeSending,
+    checkSending,
+  } = conversations;
 
   // const [isAddConversation, setIsAdd] = useState(false); // to render conversation when add
 
@@ -52,9 +57,9 @@ function ChatSpace() {
     });
 
     messageHandle.onFailed((msg) => {
-      message.error("Fail to send message, try again")
+      message.error("Fail to send message, try again");
       removeSending(msg?.res?.conversationId);
-    })
+    });
 
     return messageHandle.cleanUpAll;
   }, []);
@@ -76,9 +81,9 @@ function ChatSpace() {
           updateCurrentId={updateCurrentId}
           addConversation={addConversation}
           updateListConversations={updateListConversations}
-        // setCurrentId={setCurrentId}
-        // isAddConversation={isAddConversation}
-        // setIsAdd={setIsAdd}
+          // setCurrentId={setCurrentId}
+          // isAddConversation={isAddConversation}
+          // setIsAdd={setIsAdd}
         />
         <MessageHeader
           setOpenSidebar={setIsSidebarOpen}
@@ -90,7 +95,15 @@ function ChatSpace() {
           setIsAddMessage={setIsAddMessage}
           messageHandle={messageHandle}
         />
-        <MessageForm currentId={currentId} setIsAddMessage={setIsAddMessage} messageHandle={messageHandle} listConversations={listConversations} updateListConversations={updateListConversations} addSending={addSending} checkSending={checkSending} />
+        <MessageForm
+          currentId={currentId}
+          setIsAddMessage={setIsAddMessage}
+          messageHandle={messageHandle}
+          listConversations={listConversations}
+          updateListConversations={updateListConversations}
+          addSending={addSending}
+          checkSending={checkSending}
+        />
       </div>
     </div>
   );

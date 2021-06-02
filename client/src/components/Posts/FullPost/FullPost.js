@@ -140,7 +140,7 @@ function FullPost({ post }) {
   };
 
   const fetchMyInteractions = () => {
-    getMyInteractions(post._id)
+    getMyInteractions(post?._id)
       .then((res) => {
         setMyInteractions(res.data);
       })
@@ -152,7 +152,7 @@ function FullPost({ post }) {
 
   const [user] = useLocalStorage("user");
 
-  const handleMore = () => { };
+  const handleMore = () => {};
 
   const tagList = ["Tag 1", "Tag 2", "Tag 3", "Tag 4", "Tag 5"];
 
@@ -188,7 +188,7 @@ function FullPost({ post }) {
 
   const menuMore = (
     <Menu>
-      {user?.result._id === post?.userId._id ? (
+      {user?.result?._id === post?.userId?._id ? (
         <>
           <Menu.Item
             key="edit"
@@ -375,15 +375,17 @@ function FullPost({ post }) {
                 </Text>
                 <Tooltip title="Upvote">
                   <ArrowUpOutlined
-                    className={`clickable icon ${myInteractions?.upvote ? "green" : "black"
-                      }`}
+                    className={`clickable icon ${
+                      myInteractions?.upvote ? "green" : "black"
+                    }`}
                     onClick={() => handleUpvoteClick(post._id)}
                   />
                 </Tooltip>
                 <Tooltip title="Downvote">
                   <ArrowDownOutlined
-                    className={`clickable icon ${myInteractions?.downvote ? "green" : "black"
-                      }`}
+                    className={`clickable icon ${
+                      myInteractions?.downvote ? "green" : "black"
+                    }`}
                     onClick={() => handleDownvoteClick(post._id)}
                   />
                 </Tooltip>
