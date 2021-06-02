@@ -207,6 +207,31 @@ export const getListMembers = async (req, res) => {
   }
 };
 
+export const getListPendingMembers = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const group = await Group.findById(id).populate({
+      path: "listPendingMembers",
+      populate: {
+        path: "userId",
+        select: "name",
+        model: "User",
+      },
+    });
+
+    const listUsers = group.listPendingMembers;
+    // const listMembers = [];
+
+    // for (let i = 0; i < listUsers.length; i++)
+    //   listMembers.push(await User.findById(listUsers[i].userID));
+
+    res.status(httpStatusCodes.ok).json(listUsers); // groupMemberSchema
+  } catch (error) {
+    res.status(404).json({ message: error.message });
+    console.log(error.message);
+  }
+};
+
 export const deleteGroup = async (req, res) => {
   const { id } = req.params;
 
@@ -235,9 +260,6 @@ export const deleteGroup = async (req, res) => {
 
 export const deleteMember = async (req, res) => {
   const { id, deletedUserId } = req.params;
-
-  console.log("groupid", id);
-  console.log("userid", deletedUserId);
 
   try {
     const group = await Group.findById(id);
