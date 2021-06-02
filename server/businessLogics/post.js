@@ -135,7 +135,7 @@ export const isPostVisibleByUser = async (
   userId,
 ) => {
   if (post.privacy === "Group") {
-    const group = (await Group.findById(post?.groupPostInfo?.groupId)).toObject();
+    const group = (await Group.findById(post?.groupPostInfo?.groupId));
 
     if (!group)
       return false;
