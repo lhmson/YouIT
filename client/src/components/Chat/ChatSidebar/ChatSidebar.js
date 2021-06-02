@@ -27,54 +27,6 @@ const { Title } = Typography;
 
 const { Option } = Select;
 
-// const testData = [
-//   {
-//     title: "Batman",
-//     avatar:
-//       "https://st4.depositphotos.com/4329009/19956/v/380/depositphotos_199564354-stock-illustration-creative-vector-illustration-default-avatar.jpg",
-//     newestTime: "Apr 16",
-//     newestContent: "This is a message",
-//     current: true,
-//     status: "online",
-//   },
-//   {
-//     title: "Kim Neil",
-//     avatar:
-//       "https://st4.depositphotos.com/4329009/19956/v/380/depositphotos_199564354-stock-illustration-creative-vector-illustration-default-avatar.jpg",
-//     newestTime: "6 days ago",
-//     newestContent: "Yes I love how Python does that",
-//     current: false,
-//     status: "offline",
-//   },
-//   {
-//     title: "Kim Neil",
-//     avatar:
-//       "https://st4.depositphotos.com/4329009/19956/v/380/depositphotos_199564354-stock-illustration-creative-vector-illustration-default-avatar.jpg",
-//     newestTime: "6 days ago",
-//     newestContent: "Yes I love how Python does that",
-//     current: false,
-//     status: "online",
-//   },
-//   {
-//     title: "Kim Neil",
-//     avatar:
-//       "https://st4.depositphotos.com/4329009/19956/v/380/depositphotos_199564354-stock-illustration-creative-vector-illustration-default-avatar.jpg",
-//     newestTime: "6 days ago",
-//     newestContent: "Yes I love how Python does that",
-//     current: false,
-//     status: "busy",
-//   },
-//   {
-//     title: "Kim Neil",
-//     avatar:
-//       "https://st4.depositphotos.com/4329009/19956/v/380/depositphotos_199564354-stock-illustration-creative-vector-illustration-default-avatar.jpg",
-//     newestTime: "6 days ago",
-//     newestContent: "Yes I love how Python does that",
-//     current: false,
-//     status: "offline",
-//   },
-// ];
-
 function ChatSidebar({
   isOpen,
   setIsOpen,
@@ -91,6 +43,8 @@ function ChatSidebar({
   const [user] = useLocalStorage("user");
 
   const searchInputRef = useRef();
+
+  const titleRef = useRef();
 
   const [visibleAdd, setVisibleAdd] = useState(false); // select display
 
@@ -125,20 +79,20 @@ function ChatSidebar({
   // }, []);
   // need real time update there
 
-  const handleSearch = () => {};
+  const handleSearch = () => { };
 
   const handleChangeUserToAdd = (value, options) => {
     // console.log("opt", options);
     // console.log(`selected ${value}`);
-    setUsersToAdd(options.map((item) => item.key));
+    setUsersToAdd(options?.map((item) => item.key));
   };
 
   const handleAddConversation = () => {
-    // alert(JSON.stringify(usersToAdd));
     if (usersToAdd.length > 0) {
       apiConversation
         .createConversation({
           listMembers: usersToAdd,
+          title: titleRef.current.state.value,
         })
         .then((res) => {
           addConversation(res.data);
@@ -183,12 +137,22 @@ function ChatSidebar({
       <div>
         <div className="d-flex justify-content-between align-items-center">
           <Title>Messages</Title>
-          <Tooltip title="Create new conversation">
-            <Popover
-              content={
+
+          <Popover
+            content={
+              <>
                 <Button onClick={() => handleAddConversation()}>Create</Button>
-              }
-              title={
+              </>
+            }
+            title={
+              <div>
+                <Input
+                  type="text"
+                  placeholder="Title"
+                  ref={titleRef}
+                  // onChange={(e) => handleChangeTitle(e)}
+                  style={{ margin: "5px 0" }}
+                />
                 <Select
                   mode="tags"
                   placeholder="Add friend"
@@ -200,19 +164,19 @@ function ChatSidebar({
                     <Option key={item._id}>{item.name}</Option>
                   ))}
                 </Select>
-              }
-              trigger="click"
-              visible={visibleAdd}
-              onVisibleChange={handleVisibleChange}
+              </div>
+            }
+            trigger="click"
+            visible={visibleAdd}
+            onVisibleChange={handleVisibleChange}
+          >
+            <Button
+              className="d-flex justify-content-center align-items-center green-button mr-3"
+              icon={<PlusCircleOutlined />}
             >
-              <Button
-                className="d-flex justify-content-center align-items-center green-button mr-3"
-                icon={<PlusCircleOutlined />}
-              >
-                Add
+              Add
               </Button>
-            </Popover>
-          </Tooltip>
+          </Popover>
         </div>
 
         <div className="search-container">
@@ -238,7 +202,7 @@ function ChatSidebar({
 
   return (
     <Drawer
-      title={<Header />}
+      title={Header()}
       placement="left"
       width={isMobile ? "80%" : "50%"}
       // closable={false}
@@ -251,19 +215,18 @@ function ChatSidebar({
         <>
           <div className="conversation-list">
             {currentId &&
-            listConversations &&
-            listConversations.length !== 0 ? (
+              listConversations &&
+              listConversations.length !== 0 ? (
               listConversations.map((item, i) => (
                 <div key={item._id} onClick={() => updateCurrentId(item._id)}>
                   <div
-                    className={`conversation ${
-                      item._id === currentId && "active"
-                    }`}
+                    className={`conversation ${item._id === currentId && "active"
+                      }`}
                   >
                     <Badge dot color={renderStatus(item.status)}>
                       <img src={renderAvatar(item)} alt={item._id} />
                     </Badge>
-                    <div className="title-text">{item._id}</div>
+                    <div className="title-text">{item.title}</div>
                     <div className="update-date">
                       {moment(item.updatedAt).fromNow()}
                     </div>

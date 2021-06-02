@@ -35,6 +35,9 @@ function ChatSpace() {
   // const [isAddConversation, setIsAdd] = useState(false); // to render conversation when add
 
   const [isAddMessage, setIsAddMessage] = useState(false);
+  const toggleIsAddMessage = () => {
+    setIsAddMessage(prev => !prev);
+  }
 
   useEffect(() => {
     apiConversation.fetchConversationsOfUser().then((res) => {
@@ -81,9 +84,9 @@ function ChatSpace() {
           updateCurrentId={updateCurrentId}
           addConversation={addConversation}
           updateListConversations={updateListConversations}
-          // setCurrentId={setCurrentId}
-          // isAddConversation={isAddConversation}
-          // setIsAdd={setIsAdd}
+        // setCurrentId={setCurrentId}
+        // isAddConversation={isAddConversation}
+        // setIsAdd={setIsAdd}
         />
         <MessageHeader
           setOpenSidebar={setIsSidebarOpen}
@@ -93,7 +96,6 @@ function ChatSpace() {
           currentId={currentId}
           isAddMessage={isAddMessage}
           setIsAddMessage={setIsAddMessage}
-          messageHandle={messageHandle}
         />
         <MessageForm
           currentId={currentId}

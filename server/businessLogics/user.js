@@ -57,3 +57,6 @@ export const isUserA_sendedRequestFriend_UserB = async (userId1, userId2) => {
     return "Unknown";
   }
 };
+
+/** @param {string} userId */
+export const isValidUser = async (userId) => (userId && await User.exists({ _id: userId }));

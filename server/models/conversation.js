@@ -3,6 +3,11 @@ import { messageSchema } from "./message.js";
 
 const conversationSchema = mongoose.Schema(
   {
+    title: {
+      type: String,
+      require: false,
+    },
+
     listOwners: [
       {
         type: mongoose.Schema.Types.ObjectId,

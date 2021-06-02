@@ -15,7 +15,7 @@ const checkMemberOfConversationFunc = (pathName) =>
     const listUsers = conversation[pathName];
 
     if (listUsers) {
-      return listUsers.some(m => userId.equals(m));
+      return listUsers.some(m => userId.equals(m) || userId.equals(m?._id));
     }
 
     // there's not currently a list user in this conversation

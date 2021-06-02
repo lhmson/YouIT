@@ -17,7 +17,7 @@ export const useMessage = () => {
 
   /**
    * add handler to handle on new message is sent successfully (i.e saved to DB)
-   * @param {(msg: { status: { code: string, msg: any }, newConversation: any, res: { senderId: any, conversationId: any, message: any, }}) => any} handler 
+   * @param {(msg: MessageEventParams) => any} handler
    */
   const onSent = (handler) => {
     const cleanUp = cuteIO.onReceive("Message-ok", handler);
@@ -27,7 +27,7 @@ export const useMessage = () => {
 
   /**
    * add handler to handle on new message is failed to be sent
-   * @param {(msg: { status: { code: string, msg: any }, newConversation: any, res: { senderId: any, conversationId: any, message: any, }}) => any} handler 
+   * @param {(msg: MessageEventParams) => any} handler
    */
   const onFailed = (handler) => {
     const cleanUp = cuteIO.onReceive("Message-error", handler);
@@ -36,7 +36,7 @@ export const useMessage = () => {
 
   /**
    * add handler to handle on new message received by others
-   * @param {(msg: { status: { code: string, msg: any }, newConversation: any, res: { senderId: any, conversationId: any, message: any, }}) => any} handler 
+   * @param {(msg: MessageEventParams) => any} handler
    */
   const onReceive = (handler) => {
     const cleanUp = cuteIO.onReceive("Message-receive", handler);
@@ -55,3 +55,8 @@ export const useMessage = () => {
     cleanUpAll,
   }
 }
+
+/** @typedef {object} MessageEventParams
+ * @property {{code: string, msg: string}} Status
+ * @property {{senderId: string, conversationId: string, message: any}} res
+ */

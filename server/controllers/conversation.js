@@ -1,6 +1,7 @@
 import express from 'express'
 import { isMemberOfConversation } from '../businessLogics/conversation.js';
 import Conversation from '../models/conversation.js';
+import { customPagination } from '../utils/customPagination.js';
 import { httpStatusCodes } from '../utils/httpStatusCode.js';
 
 /**
@@ -22,6 +23,7 @@ export const createConversation = async (req, res, next) => {
   let { listMembers, listOwners } = conversation;
   listOwners = [...new Set(listOwners).add(userId)];
   listMembers = [...new Set(listMembers).add(userId)];
+  conversation.title = conversation.title ?? "Untitled group";
 
   if (listMembers.length <= 1) {
     return res.status(httpStatusCodes.badContent).send("A conversation should have at least 2 members");
@@ -113,6 +115,16 @@ export const getAConversation = async (req, res, next) => {
       .populate({
         path: `listMessages`,
         model: `Message`,
+        populate: {
+          path: `senderId`,
+          select: `name`,
+          model: `User`
+        }
+      })
+      .populate({
+        path: `listMembers`,
+        select: `name`,
+        model: `User`,
       });
 
     if (!conversation) {
@@ -125,9 +137,13 @@ export const getAConversation = async (req, res, next) => {
     }
 
     // pagination
-    const msgLimit = req.query.msgLimit ?? 1;
-    conversationObj.listMessages =
-      conversationObj?.listMessages?.slice?.(Math.max(0, conversationObj?.listMessages?.length - msgLimit), conversationObj?.listMessages?.length);
+    let msgStart = req.query.msgStart ?? 0;
+    let msgEnd = req.query.msgEnd ?? 0;
+
+    msgStart = parseInt(msgStart);
+    msgEnd = parseInt(msgEnd);
+
+    conversationObj.listMessages = conversationObj?.listMessages?.slice(msgStart, msgEnd + 1);
 
     return res.status(httpStatusCodes.ok).send(conversationObj);
   } catch (error) {
@@ -149,6 +165,11 @@ export const getConversationsOfUser = async (req, res, next) => {
     return res.status(httpStatusCodes.unauthorized).send("You must sign in to get your conversations");
   }
 
+  const msgLimit = req.query.msgLimit ?? 1;
+  const msgPage = req.query.msgPage ?? 0;
+  const limit = req.query.limit ?? 1;
+  const page = req.query.page ?? 0;
+
   try {
     await Conversation
       .find()
@@ -156,6 +177,16 @@ export const getConversationsOfUser = async (req, res, next) => {
       .populate({
         path: `listMessages`,
         model: `Message`,
+        populate: {
+          path: `senderId`,
+          select: `name`,
+          model: `User`
+        }
+      })
+      .populate({
+        path: `listMembers`,
+        select: `name`,
+        model: `User`,
       })
       .exec()
       .then((conversations) => {

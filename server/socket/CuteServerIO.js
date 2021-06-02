@@ -55,6 +55,12 @@ export default class CuteServerIO {
   /** @param {string} id */
   #getSocket = (id) => this.#io.sockets.sockets.get(id);
 
+  /** 
+   * @param {string} userId
+   * @returns {Boolean}
+  */
+  verifyUser
+
   /**
    * Add handlers when receiving a message from specific client (by its socket Id). Subscribe immediately
    * @param {Socket | string} socket
@@ -112,11 +118,12 @@ export default class CuteServerIO {
           ]);
 
           // force user to log out if the token is not valid
-          if (token && token !== "undefined" && token !== "null" && !userId) {
-            this.sendToSocket(socket, "System-InvalidToken", {
-              enableAlert: true,
-            });
-          }
+          if (token && token !== "undefined" && token !== "null")
+            if (this.verifyUser?.(userId)) {
+              this.sendToSocket(socket, "System-InvalidToken", {
+                enableAlert: true,
+              });
+            }
         } else {
           // Add this socket to a room with id User. every socket here belongs to this user only.
           socket.join([

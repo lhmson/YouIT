@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Tooltip, Dropdown, Menu, Row, Typography } from "antd";
 
 import {
@@ -17,32 +17,43 @@ import COLOR from "../../../constants/colors.js";
 
 import { useMobile } from "../../../utils/responsiveQuery";
 
+import * as apiConversation from "../../../api/conversation";
+
 const { Text } = Typography;
 
 const statusList = [
-  { title: "online", color: COLOR.green },
-  { title: "busy", color: COLOR.red },
-  { title: "offline", color: COLOR.gray },
+  { status: "online", color: COLOR.green },
+  { status: "busy", color: COLOR.red },
+  { status: "offline", color: COLOR.gray },
 ];
 
 function MessageHeader({ setOpenSidebar, currentId }) {
   const isMobile = useMobile();
 
-  useEffect(() => {}, []);
+  const [title, setTitle] = useState("");
+
+  useEffect(() => {
+    // alert("current" + currentId);
+    if (currentId) {
+      apiConversation.fetchAConversation(currentId, 0, 5).then((res) => {
+        setTitle(res.data.title)
+      });
+    }
+  }, [currentId]);
 
   const handleOpenSidebar = () => {
     setOpenSidebar((prev) => !prev);
   };
 
-  const handleChangeStatus = () => {};
+  const handleChangeStatus = () => { };
 
   const menuStatus = (
     <Menu>
       {statusList.map((item, i) => (
-        <Menu.Item key={i} onClick={() => handleChangeStatus(item.title)}>
+        <Menu.Item key={i} onClick={() => handleChangeStatus(item.status)}>
           <Row align="middle" style={{ color: item.color }}>
             <EnvironmentOutlined className="mr-2" />
-            <Text>{item.title}</Text>
+            <Text>{item.status}</Text>
           </Row>
         </Menu.Item>
       ))}
@@ -71,7 +82,7 @@ function MessageHeader({ setOpenSidebar, currentId }) {
 
       <span className="text-center">
         {currentId &&
-          (isMobile ? currentId.substring(0, 12) + "..." : currentId)}
+          (isMobile ? title.substring(0, 12) + "..." : title)}
       </span>
       <Tooltip title="Delete conversation">
         <DeleteOutlined className="clickable icon" />
