@@ -9,7 +9,7 @@ import {
   FaMale,
   FaBirthdayCake,
 } from "react-icons/all";
-import { Typography } from "antd";
+import { Row, Typography } from "antd";
 import styles from "./styles.js";
 import { Layout, Button } from "antd";
 import { Link } from "react-router-dom";
@@ -24,21 +24,26 @@ const IntroCard = () => {
   const user = useSelector((state) => state.user);
 
   const dateOfBirth = moment(user?.userInfo?.dateOfBirth).format("DD/MM/YYYY");
-  const address = user?.userInfo?.address ?? "Quang Nam, Viet Nam";
-  const workLocation = user?.userInfo?.workLocation ?? "Quang Nam, Viet Nam";
+  const address = user?.userInfo?.address ?? "Viet Nam";
+  const workLocation = user?.userInfo?.workLocation ?? "Viet Nam";
   const gender = user?.userInfo?.gender;
   // educations la array, coi lai
-  const education =
-    user?.userInfo?.education ?? "Trường ĐH Công nghệ Thông tin";
+  const educations = user?.userInfo?.educations;
+
+  let education = "Trường ĐH Công nghệ Thông tin";
+  if (educations) {
+    education = educations[educations.length - 1];
+  }
+
   return (
-    <div style={styles.backgroundheader}>
-      <div className="row">
+    <Layout style={styles.backgroundheader}>
+      <Row className="container">
         <Text style={styles.header}>Intro</Text>
-      </div>
+      </Row>
       <div className="row" style={styles.lineinfo}>
         <OverviewRow
           firstIcon={<IoSchoolSharp style={styles.icon} />}
-          text={education}
+          text={education?.schoolName}
         />
         <OverviewRow
           firstIcon={<IoHome style={styles.icon} />}
@@ -55,20 +60,18 @@ const IntroCard = () => {
         />
       </div>
 
-      <div className="row">
-        <Link to="/userinfo/about">
-          <Button type="primary" style={styles.editinfo}>
-            Edit
-          </Button>
-        </Link>
-      </div>
+      <Row style={{ width: "100%", justifyContent: "center" }}>
+        <Button type="primary" style={styles.editBtn}>
+          <Link to={`/userinfo/${user?._id}/about`}>Edit</Link>
+        </Button>
+      </Row>
 
       {/* <div className="row">
         <Button type="primary" style={styles.editinfo}>
           Edit
         </Button>
       </div> */}
-    </div>
+    </Layout>
     // <Layout style={{ backgroundColor: "white", width: 350, height: 350 }}>
     //   <Header>
     //     <Text style={{ fontSize: 28, fontWeight: 600, marginLeft: 30 }}>

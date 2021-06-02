@@ -69,8 +69,8 @@ function App() {
           <Route exact path="/search" component={UserResultSearchPage} />
           <PrivateRoute
             exact
-            path="/requests"
-            component={RequestsInGroupsPage}
+            path="/group/:id/requests"
+            component={GroupPage}
           />
           <Route exact path="/wall" component={WallPage} />
           <Route path="/userinfo/:id/about" component={AboutPage} />

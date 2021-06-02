@@ -86,12 +86,18 @@ export const createGroup = async (req, res) => {
   }
 };
 
+/**
+ * @param {express.Request<ParamsDictionary, any, any, QueryString.ParsedQs, Record<string, any>>} req
+ * @param {express.Response<any, Record<string, any>, number>} res
+ * @param {express.NextFunction} next
+ */
 export const addGroupMember = async (req, res) => {
   const { id, memberId } = req.params;
-  const { role } = req.query ?? "Member";
+  //const { role } = req.query ?? "Member";
+  const role = "Member";
   const addMember = { role, userId: memberId };
-
   try {
+    // chua check group ton tai, user da la member trong group,...
     await Group.findById(id).then(async (group) => {
       group.listMembers.push(addMember);
       await group.save();
@@ -135,6 +141,37 @@ export const addGroupPendingMember = async (req, res) => {
     group.listPendingMembers.push(pendingMember);
     await group.save();
     return res.status(httpStatusCodes.ok).json(group);
+  } catch (error) {
+    return res
+      .status(httpStatusCodes.internalServerError)
+      .json({ message: error.message });
+  }
+};
+
+/**
+ * @param {express.Request<ParamsDictionary, any, any, QueryString.ParsedQs, Record<string, any>>} req
+ * @param {express.Response<any, Record<string, any>, number>} res
+ * @param {express.NextFunction} next
+ */
+export const removeGroupPendingMember = async (req, res) => {
+  const { id, memberId } = req.params;
+
+  try {
+    const group = await Group.findById(id);
+
+    if (!group) {
+      return res
+        .status(httpStatusCodes.notFound)
+        .json({ message: "Group not exists" });
+    }
+
+    const newPendingMembers = group.listPendingMembers.filter(
+      (member) => member?.userId != memberId
+    );
+    group.listPendingMembers = newPendingMembers;
+
+    await group.save();
+    res.status(httpStatusCodes.ok).json(group);
   } catch (error) {
     return res
       .status(httpStatusCodes.internalServerError)

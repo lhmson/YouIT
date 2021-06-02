@@ -3,9 +3,12 @@ import {
   addFriend,
   addReceivingFriendRequest,
   addSendingFriendRequest,
+  followUser,
   getUserInfo,
   removeReceivingFriendRequest,
   removeSendingFriendRequest,
+  unfollowUser,
+  unfriend,
   updateUserInfo,
 } from "../controllers/user_info.js";
 import auth from "../middleware/auth.js";
@@ -24,5 +27,8 @@ router.put(
 );
 router.put("/:id/sendFriendRequest/remove", auth, removeSendingFriendRequest);
 router.put("/:id/addfriend", auth, addFriend);
+router.put("/:id/unfriend/:friendId", auth, unfriend);
+router.put("/:followedId/follow", auth, followUser);
+router.put("/:followedId/unfollow", auth, unfollowUser);
 
 export default router;
