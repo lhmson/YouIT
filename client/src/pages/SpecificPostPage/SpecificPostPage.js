@@ -31,6 +31,14 @@ function SpecificPostPage(props) {
   ];
 
   const { id, focusedCommentId } = props.match.params;
+  const fetchPageContent = () => {
+    fetchPost();
+    fetchOtherPosts();
+    fetchComments();
+  };
+  useEffect(() => {
+    fetchPageContent();
+  }, [id]);
   const [post, setPost] = useState(null);
   const [comments, setComments] = useState([]);
   const [otherPosts, setOtherPosts] = useState([]);
@@ -73,9 +81,7 @@ function SpecificPostPage(props) {
   };
 
   useEffect(() => {
-    fetchPost();
-    fetchOtherPosts();
-    fetchComments();
+    fetchPageContent();
   }, []);
 
   function sortByUpdatedTime(data) {
@@ -152,9 +158,9 @@ function SpecificPostPage(props) {
     <>
       <Layout>
         <Navbar />
-        <Layout style={styles.mainArea}>
-          <Content>
-            <div className="mr-4">
+        <div style={styles.mainArea} className="row">
+          <div className="col-sm-8 mb-4">
+            <div>
               <Card style={{ padding: 16 }}>
                 {post ? <FullPost post={post} /> : <Loading />}
                 {/* put there for anchor link to comments */}
@@ -213,12 +219,12 @@ function SpecificPostPage(props) {
                 </div>
               </Card>
             </div>
-          </Content>
-          <FixedRightPanel>
+          </div>
+          <div className="col-sm-4">
             <RelatedCard title="From this user" posts={otherPosts} />
             <RelatedCard title="Related posts" posts={otherPosts} />
-          </FixedRightPanel>
-        </Layout>
+          </div>
+        </div>
       </Layout>
     </>
   );
