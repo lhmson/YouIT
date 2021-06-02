@@ -196,6 +196,7 @@ function Comment({
         label="Edit comment"
         onSubmit={handleEdit}
         onDiscard={handleDiscard}
+        initContent={comment?.content}
       />
     );
   };
@@ -235,6 +236,11 @@ function Comment({
     onCopyCommentLink(id);
   };
 
+  const isCommentOwner = () => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    return user?.result?._id.toString() === comment.userId._id;
+  };
+
   return (
     <div
       className={isFocus ? "bg-green-smoke pt-4" : ""}
@@ -271,15 +277,17 @@ function Comment({
               Last edited {comment?.updatedAt.toString().slice(0, 10)}
             </Text>
           </div>
-          <Dropdown
-            overlay={menuMore}
-            trigger={["click"]}
-            placement="bottomRight"
-          >
-            <div className="clickable">
-              <EllipsisOutlined className="clickable icon" />
-            </div>
-          </Dropdown>
+          {isCommentOwner() && (
+            <Dropdown
+              overlay={menuMore}
+              trigger={["click"]}
+              placement="bottomRight"
+            >
+              <div className="clickable">
+                <EllipsisOutlined className="clickable icon" />
+              </div>
+            </Dropdown>
+          )}
         </Row>
       </Row>
       {!isEdit ? (

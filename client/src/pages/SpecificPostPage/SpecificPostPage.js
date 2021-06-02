@@ -116,6 +116,12 @@ function SpecificPostPage(props) {
       var _b = b.interactionInfo?.listUpvotes?.length;
       if (_a > _b) return -1;
       if (_a < _b) return 1;
+      if (_a === _b) {
+        var c = a.interactionInfo?.listDownvotes?.length;
+        var d = b.interactionInfo?.listDownvotes?.length;
+        if (c < d) return -1;
+        if (c > d) return 1;
+      }
       return 0;
     });
     return sortedData;
