@@ -39,7 +39,7 @@ import GroupAboutCard from "./GroupPage/GroupAboutCard/GroupAboutCard";
 import IntroCard from "./IntroCard/IntroCard";
 import GroupMenu from "./GroupPage/GroupMenu/GroupMenu";
 import GroupFunctionButtons from "./GroupPage/GroupFunctionButtons/GroupFunctionButtons";
-
+import GroupMember from "./GroupPage/GroupMember/GroupMember";
 import ChatSidebar from "./Chat/ChatSidebar/ChatSidebar";
 
 export {
@@ -77,4 +77,5 @@ export {
   ChatSidebar,
   GroupMenu,
   GroupFunctionButtons,
+  GroupMember,
 };

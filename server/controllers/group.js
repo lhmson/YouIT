@@ -1,5 +1,7 @@
 import express from "express";
 import Group from "../models/group.js";
+import User from "../models/user.js";
+import { groupMemberSchema } from "../models/groupMember.js";
 import { isMemberOfGroup } from "../businessLogics/group.js";
 import { httpStatusCodes } from "../utils/httpStatusCode.js";
 
@@ -74,9 +76,10 @@ export const createGroup = async (req, res) => {
   });
 
   try {
-    await newGroup.save();
+    // await newGroup.save();
     const groupOwner = { role: "Owner", userId: req.userId };
-    newGroup.listMembers.push(groupOwner);
+    // newGroup.listMembers.push(groupOwner);
+    newGroup.listMembers = [groupOwner, ...newGroup?.listMembers];
     await newGroup.save();
     res.status(httpStatusCodes.created).json(newGroup);
   } catch (error) {
@@ -179,6 +182,31 @@ export const removeGroupPendingMember = async (req, res) => {
   }
 };
 
+export const getListMembers = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const group = await Group.findById(id).populate({
+      path: "listMembers",
+      populate: {
+        path: "userId",
+        select: "name",
+        model: "User",
+      },
+    });
+
+    const listUsers = group.listMembers;
+    // const listMembers = [];
+
+    // for (let i = 0; i < listUsers.length; i++)
+    //   listMembers.push(await User.findById(listUsers[i].userID));
+
+    res.status(httpStatusCodes.ok).json(listUsers); // groupMemberSchema
+  } catch (error) {
+    res.status(404).json({ message: error.message });
+    console.log(error.message);
+  }
+};
+
 export const deleteGroup = async (req, res) => {
   const { id } = req.params;
 
@@ -198,6 +226,81 @@ export const deleteGroup = async (req, res) => {
     res
       .status(httpStatusCodes.ok)
       .json({ message: "Group deleted successfully." });
+  } catch (error) {
+    res
+      .status(httpStatusCodes.internalServerError)
+      .json({ message: error.message });
+  }
+};
+
+export const deleteMember = async (req, res) => {
+  const { id, deletedUserId } = req.params;
+
+  console.log("groupid", id);
+  console.log("userid", deletedUserId);
+
+  try {
+    const group = await Group.findById(id);
+    if (!isMemberOfGroup(deletedUserId, group))
+      return res
+        .status(httpStatusCodes.badContent)
+        .json({ message: "User is not a member of the group" });
+
+    group.listMembers = group.listMembers.filter(
+      (member) =>
+        !member.userId.equals(deletedUserId) || member.role === "Owner"
+    );
+
+    const newGroup = await Group.findByIdAndUpdate(id, group, { new: true });
+    // await group.save();
+    // res.status(httpStatusCodes.ok).json(newGroup);
+    res
+      .status(httpStatusCodes.ok)
+      .json({ message: "Member removed successfully" });
+  } catch (error) {
+    res
+      .status(httpStatusCodes.internalServerError)
+      .json({ message: error.message });
+  }
+};
+
+export const leaveGroup = async (req, res) => {
+  const { id } = req.params;
+  const { userId } = req;
+  //console.log("thyyyyyyyyyyy", userId)
+  try {
+    const group = await Group.findById(id);
+    if (!isMemberOfGroup(userId, group))
+      return res
+        .status(httpStatusCodes.badContent)
+        .json({ message: "User is not a member of the group" });
+
+    if (
+      group.listMembers.length > 1 &&
+      group.listMembers.find((member) => member.userId.equals(userId)).role ===
+        "Owner"
+    )
+      return res
+        .status(httpStatusCodes.badContent)
+        .json({ message: "You're a group owner" });
+
+    if (
+      group.listMembers.find((member) => member.userId.equals(userId)).role ===
+      "Owner"
+    ) {
+      await Group.findByIdAndRemove(id);
+      return res
+        .status(httpStatusCodes.badContent)
+        .json("Group deleted successfully.");
+    }
+
+    group.listMembers = group.listMembers.filter(
+      (member) => !member.userId.equals(userId) || member.role === "Owner"
+    );
+
+    const newGroup = await Group.findByIdAndUpdate(id, group, { new: true });
+    // await group.save();
+    res.status(httpStatusCodes.ok).json(newGroup);
   } catch (error) {
     res
       .status(httpStatusCodes.internalServerError)

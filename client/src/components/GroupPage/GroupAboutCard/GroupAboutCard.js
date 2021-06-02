@@ -22,7 +22,7 @@ function GroupAboutCard() {
 
   return (
     <>
-      <Layout style={{ padding: 32, background: "white" }}>
+      <Layout style={{ padding: 32, background: "white", marginTop: 30 }}>
         <Text style={{ fontSize: 32, fontWeight: "bold" }}>
           About this group
         </Text>

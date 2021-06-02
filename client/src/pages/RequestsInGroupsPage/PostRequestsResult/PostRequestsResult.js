@@ -19,11 +19,8 @@ const PostRequestsResult = () => {
       <div
         className="row"
         style={{
-          background: "whitesmoke",
           height: 900,
           paddingTop: 16,
-          paddingLeft: 32,
-          marginLeft: 128,
         }}
       >
         <div className="col-10 offset-1">

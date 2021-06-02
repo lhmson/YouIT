@@ -29,7 +29,9 @@ import CreateGroupDescription from "../../components/CreateGroup/CreateGroupDesc
 import CreateGroupMembers from "../../components/CreateGroup/CreateGroupMembers/CreateGroupMembers";
 import { OverviewRow } from "../../components/UserInfo/AboutCard/index.js";
 import { IoMdLock } from "react-icons/all";
+import { useLocalStorage } from "../../hooks/useLocalStorage";
 import CreateGroupNameAdmin from "../../components/CreateGroup/CreateGroupNameAdmin/CreateGroupNameAdmin.js";
+
 import styles from "./styles.js";
 
 const { Title, Text } = Typography;
@@ -52,6 +54,9 @@ function CreateGroupPage() {
   const [groupDescription, setGroupDescription] = useState("");
   const [groupPrivacy, setGroupPrivacy] = useState("");
   const [groupTopic, setGroupTopic] = useState("");
+  const [groupMembers, setGroupMembers] = useState();
+
+  const [user] = useLocalStorage("user");
 
   // const dispatch = useDispatch();
   const history = useHistory();
@@ -62,6 +67,7 @@ function CreateGroupPage() {
       description: groupDescription,
       privacy: groupPrivacy,
       topic: groupTopic,
+      listMembers: groupMembers,
     };
     return result;
   };
@@ -104,6 +110,12 @@ function CreateGroupPage() {
 
   const PublicIcon = () => {
     return <IoMdLock style={styles.icon} />;
+  };
+
+  const onSelectedGroupMembersChange = (value) => {
+    setGroupMembers(
+      value.map((memberId) => ({ userId: memberId, role: "Member" }))
+    );
   };
 
   return (
@@ -200,7 +212,7 @@ function CreateGroupPage() {
                     name="inviteFriends"
                     placeholder="Invite your friends"
                   /> */}
-                  <CreateGroupMembers />
+                  <CreateGroupMembers onChange={onSelectedGroupMembersChange} />
                 </Form.Item>
                 <Form.Item name="description">
                   <CreateGroupDescription

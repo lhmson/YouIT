@@ -15,6 +15,8 @@ function GroupMenu() {
         return "groupPost";
       case `/group/${group?._id}/about`:
         return "about";
+      case `/group/${group?._id}/members`:
+        return "members";
       default:
         break;
     }
@@ -57,6 +59,11 @@ function GroupMenu() {
             <Menu.Item key="about">
               <Link to={`/group/${group?._id}/about`} style={styles.linkView}>
                 About
+              </Link>
+            </Menu.Item>
+            <Menu.Item key="members">
+              <Link to={`/group/${group?._id}/members`} style={styles.linkView}>
+                Members
               </Link>
             </Menu.Item>
           </Menu>

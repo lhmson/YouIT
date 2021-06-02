@@ -15,7 +15,6 @@ import {
   AboutPage,
   GroupPage,
   GroupAboutPage,
-  RequestsInGroupsPage,
   CreateGroupPage,
   LoginPage,
   RegisterPage,
@@ -91,6 +90,7 @@ function App() {
           <Route exact path="/activate/:token" component={ActivationPage} />
           <PrivateRoute exact path="/message" component={MessagePage} />
           <Route path="/group/:id/about" component={GroupPage} />
+          <Route path="/group/:id/members" component={GroupPage} />
           <Route>
             <ErrorPage code="404" />
           </Route>

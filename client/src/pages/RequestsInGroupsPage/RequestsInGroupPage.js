@@ -19,7 +19,7 @@ import { useParams } from "react-router";
 const { Content } = Layout;
 const { Title, Text } = Typography;
 
-function RequestsInGroupsPage({ modeSearch }) {
+function RequestsInGroupPage({ modeSearch }) {
   // const [currentId, setCurrentId] = useState(null);
   // const dispatch = useDispatch();
   // const [modeSearch, setModeSearch] = useState("User");
@@ -49,4 +49,4 @@ function RequestsInGroupsPage({ modeSearch }) {
   );
 }
 
-export default RequestsInGroupsPage;
+export default RequestsInGroupPage;

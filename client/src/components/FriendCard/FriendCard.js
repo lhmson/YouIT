@@ -1,12 +1,12 @@
-import React, { useState, useEffect, useMemo } from "react";
-import { Button, Row, Col, Divider, Form, Typography, Input, Card } from "antd";
-import { Avatar, Image, Tag, Popover, List } from "antd";
+import React, { useState, useEffect } from "react";
+import { Button, Typography } from "antd";
+import { Avatar, Tag, Popover, List } from "antd";
 import styles from "./styles.js";
-import { Link, useHistory, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useLocalStorage } from "../../hooks/useLocalStorage";
 import * as api from "../../api/friend";
 
-const { Title, Text } = Typography;
+const { Text } = Typography;
 
 function FriendCard(props) {
   const [user, setUser] = useLocalStorage("user");
