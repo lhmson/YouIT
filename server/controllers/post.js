@@ -169,7 +169,7 @@ export const deletePost = async (req, res) => {
       return res.json({ message: "Unauthenticated" });
     }
 
-    const post = await (await Post.findById(id))?.toObject();
+    const post = await (await Post.findById(id));
     if (!post) {
       return res
         .status(httpStatusCodes.notFound)
@@ -402,7 +402,7 @@ export const getPostsPagination = async (req, res) => {
                 return false;
               };
               case "news_feed": {
-                const group = (await Group.findById(stdPostObj?.groupPostInfo?.groupId))?.toObject();
+                const group = await Group.findById(stdPostObj?.groupPostInfo?.groupId);
                 if (!group)
                   return false;
 
