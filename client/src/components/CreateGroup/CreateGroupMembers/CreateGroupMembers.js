@@ -10,12 +10,11 @@ function handleChange(value) {
   console.log(`Selected: ${value}`);
 }
 
-function CreateGroupMembers() {
+function CreateGroupMembers({ onChange }) {
   const [user, setUser] = useLocalStorage("user");
   const [listFriend, setListFriend] = useState([]);
 
   useEffect(() => {
-    console.log("User", user);
     api
       .fetchListMyFriends(user?.result?._id)
       .then((res) => {
@@ -42,7 +41,7 @@ function CreateGroupMembers() {
         mode="tags"
         // size={size}
         placeholder="Invite your friends"
-        onChange={handleChange}
+        onChange={onChange}
         style={{ width: "100%" }}
       >
         {listYourFriend}

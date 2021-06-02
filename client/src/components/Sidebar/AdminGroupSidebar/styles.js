@@ -3,7 +3,6 @@ import COLOR from "../../../constants/colors";
 const styles = {
   paleBackground: {
     background: COLOR.white,
-    paddingTop: 16,
   },
   item: {
     display: "flex",

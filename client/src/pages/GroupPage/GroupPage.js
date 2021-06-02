@@ -20,6 +20,7 @@ import * as api from "../../api/group";
 import ListButtons from "../../components/GroupPage/ListButtons/ListButtons.js";
 import MemberRequestsResult from "../RequestsInGroupsPage/MemberRequestsResult/MemberRequestsResult.js";
 import PostRequestsResult from "../RequestsInGroupsPage/PostRequestsResult/PostRequestsResult.js";
+import COLOR from "../../constants/colors.js";
 const { Content } = Layout;
 
 export const GroupContext = createContext({
@@ -53,12 +54,13 @@ function GroupPage(props) {
         <Sider>
           <AdminGroupSidebar setModeSearch={setModeSearch} />
         </Sider>
-        <Layout style={styles.mainArea}>
+        {/* <Layout style={styles.mainArea}> */}
+        <Layout style={{ marginTop: 60 }}>
           <Content>
             {modeSearch === "memberRequests" ? (
               <MemberRequestsResult />
             ) : modeSearch === "group" ? (
-              <Col>
+              <Layout>
                 <Layout style={styles.avatarView}>
                   <Content
                     className="container"
@@ -108,7 +110,7 @@ function GroupPage(props) {
                     </Row>
                   </Content>
                 </Layout>
-                <Layout style={styles.mainArea}>
+                <Layout>
                   <Content>
                     <Layout className="container">
                       {location.pathname === `/group/${group?._id}` ? (
@@ -121,7 +123,7 @@ function GroupPage(props) {
                     </Layout>
                   </Content>
                 </Layout>
-              </Col>
+              </Layout>
             ) : (
               <PostRequestsResult />
             )}

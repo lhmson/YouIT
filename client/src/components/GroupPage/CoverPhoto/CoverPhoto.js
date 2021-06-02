@@ -6,7 +6,11 @@ function CoverPhoto() {
   return (
     <>
       <Layout
-        style={{ position: "relative", height: "40vh", marginBottom: 32 }}
+        style={{
+          position: "relative",
+          height: "40vh",
+          marginBottom: 32,
+        }}
       >
         <Image
           src="https://vnn-imgs-f.vgcloud.vn/2020/09/07/15/.jpg"

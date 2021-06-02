@@ -1,4 +1,8 @@
-import { CREATE_GROUP, FETCH_USER_JOINED_GROUPS } from "../actionTypes";
+import {
+  CREATE_GROUP,
+  FETCH_USER_JOINED_GROUPS,
+  FETCH_LIST_MEMBER_GROUP,
+} from "../actionTypes";
 
 import * as api from "../../api/group";
 
@@ -19,4 +23,4 @@ export const fetchUserJoinedGroups = () => async (dispatch) => {
   } catch (error) {
     console.error(error);
   }
-}
+};

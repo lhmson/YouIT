@@ -1,7 +1,6 @@
 import mongoose from "mongoose";
-import { groupMemberSchema } from "./groupMember.js";
 import { groupPendingMemberSchema } from "./groupPendingMember.js";
-
+import { groupMemberSchema } from "./groupMember.js";
 const groupSchema = mongoose.Schema(
   {
     // userId: {
