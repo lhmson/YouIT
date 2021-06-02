@@ -13,7 +13,7 @@ import {
   Space,
 } from "antd";
 import styles from "./styles";
-import logo from "../../assets/lightlogo.png";
+import logo from "../../assets/darklogo.png";
 import {
   SearchOutlined,
   BellFilled,
@@ -22,6 +22,7 @@ import {
   LogoutOutlined,
   EllipsisOutlined,
   SettingOutlined,
+  PicLeftOutlined,
 } from "@ant-design/icons";
 import { useMobile } from "../../utils/responsiveQuery";
 import { useMediaQuery } from "react-responsive";
@@ -201,6 +202,10 @@ function Navbar({ selectedMenu, setTxtSearch, txtInitSearch }) {
     history.push("/settings");
   };
 
+  const handleCreateGroup = async () => {
+    history.push("/group/create");
+  };
+
   const menuMore = (
     <Menu>
       {isSmallScreen && <MainMenuItems />}
@@ -208,6 +213,12 @@ function Navbar({ selectedMenu, setTxtSearch, txtInitSearch }) {
         <Row align="middle">
           <SettingOutlined className="mr-lg-2" />
           <Text>Settings</Text>
+        </Row>
+      </Menu.Item>
+      <Menu.Item key="createGroup" onClick={() => handleCreateGroup()}>
+        <Row align="middle">
+          <PicLeftOutlined className="mr-lg-2" />
+          <Text>Create group</Text>
         </Row>
       </Menu.Item>
       <Menu.Item key="logout" onClick={() => handleLogOut()}>
