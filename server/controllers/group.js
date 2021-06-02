@@ -1,8 +1,9 @@
 import express from "express";
 import Group from "../models/group.js";
-import User from "../models/user.js";
-import { groupMemberSchema } from "../models/groupMember.js";
-import { isMemberOfGroup } from "../businessLogics/group.js";
+import {
+  isMemberOfGroup,
+  isPendingMemberOfGroup,
+} from "../businessLogics/group.js";
 import { httpStatusCodes } from "../utils/httpStatusCode.js";
 
 /**
@@ -57,6 +58,24 @@ export const getJoinedGroups = async (req, res) => {
     const groups = await (await Group.find())
       .map((g) => g.toObject())
       .filter((g) => isMemberOfGroup(userId, g));
+    return res.status(httpStatusCodes.accepted).json(groups);
+  } catch (error) {
+    return res.status(httpStatusCodes.internalServerError).json({ error });
+  }
+};
+
+export const getPendingGroups = async (req, res) => {
+  const { userId } = req;
+
+  if (!userId)
+    return res.status(httpStatusCodes.unauthorized).json({
+      message: "You must sign in to fetch list of your pending group",
+    });
+
+  try {
+    const groups = await (await Group.find())
+      .map((g) => g.toObject())
+      .filter((g) => isPendingMemberOfGroup(userId, g));
     return res.status(httpStatusCodes.accepted).json(groups);
   } catch (error) {
     return res.status(httpStatusCodes.internalServerError).json({ error });

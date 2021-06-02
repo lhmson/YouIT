@@ -6,14 +6,15 @@ import { Link, useHistory, useLocation } from "react-router-dom";
 
 const { Title, Text } = Typography;
 
-function GroupCard({ nameGroup, _id }) {
-  const [txtButton, setTxtButton] = React.useState("Join");
-
-  const changeStateButton = () => {
-    if (txtButton === "Join") setTxtButton("Cancel Request");
-    else setTxtButton("Join");
-  };
-
+function GroupJoinedCard({
+  nameGroup,
+  _id,
+  description,
+  totalMembers,
+  joined,
+}) {
+  console.log("aa", totalMembers);
+  const txtButton = joined ? "Post" : "Cancel request";
   return (
     <>
       <div style={styles.card}>
@@ -22,12 +23,12 @@ function GroupCard({ nameGroup, _id }) {
             style={{
               display: "flex",
               justifyContent: "center",
-              minWidth: 600,
+              minWidth: 500,
             }}
           >
             <Avatar
               size={72}
-              src="https://vtv1.mediacdn.vn/thumb_w/650/2020/10/20/blackpink-lisa-mac-160316252527410005928.jpg"
+              src="https://i.pinimg.com/564x/03/d5/62/03d5624fae645eccaa74315f6ed49c03.jpg"
             />
 
             <div className="col-8" style={{ alignSelf: "center" }}>
@@ -35,7 +36,7 @@ function GroupCard({ nameGroup, _id }) {
                 <Text style={styles.textUser}>{nameGroup ?? "Name Group"}</Text>
               </Link>
               <div style={{ marginTop: 0 }}></div>
-              <Text>"Blackpink in your area"</Text>
+              <Text>{description ?? "Blackpink in your area"}</Text>
             </div>
             <div
               style={{
@@ -55,7 +56,7 @@ function GroupCard({ nameGroup, _id }) {
             }}
           >
             <Button
-              onClick={changeStateButton}
+              onClick={() => {}}
               className="mb-2"
               type="primary"
               style={{
@@ -68,7 +69,11 @@ function GroupCard({ nameGroup, _id }) {
               {txtButton}
             </Button>
             <div>
-              <Text style={styles.text}>12,8K Members</Text>
+              <Text style={styles.text}>
+                {(totalMembers ?? 0) +
+                  " Member" +
+                  (totalMembers > 2 ? "s" : "")}
+              </Text>
             </div>
           </div>
         </div>
@@ -85,4 +90,4 @@ function GroupCard({ nameGroup, _id }) {
   );
 }
 
-export default GroupCard;
+export default GroupJoinedCard;

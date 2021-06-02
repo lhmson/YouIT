@@ -11,6 +11,7 @@ import {
   getListPendingMembers,
   deleteMember,
   leaveGroup,
+  getPendingGroups,
 } from "../controllers/group.js";
 import auth from "../middleware/auth.js";
 import { haveGroupPermission, isOwner } from "../middleware/groupRole.js";
@@ -20,6 +21,7 @@ router.get("/:id", auth, getAGroup);
 router.get("/list/joinedByMe", auth, getJoinedGroups);
 router.get("/:id/members", auth, getListMembers);
 router.get("/:id/pendingMembers", auth, getListPendingMembers);
+router.get("/list/pendingByMe", auth, getPendingGroups);
 
 router.post("/", auth, createGroup);
 

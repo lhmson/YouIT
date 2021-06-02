@@ -1,14 +1,19 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
 /**
- * 
- * @param {mongoose.Document} group 
- * @param {string | mongoose.Types.ObjectId} userId 
+ *
+ * @param {mongoose.Document} group
+ * @param {string | mongoose.Types.ObjectId} userId
  * @returns {boolean}
  */
 export const isMemberOfGroup = (userId, group) => {
-  if (group.listMembers.find(member => member.userId.equals(userId)))
+  if (group.listMembers.find((member) => member.userId.equals(userId)))
     return true;
-  else
-    return false;
-}
+  else return false;
+};
+
+export const isPendingMemberOfGroup = (userId, group) => {
+  if (group?.listPendingMembers.find((member) => member.userId.equals(userId)))
+    return true;
+  else return false;
+};

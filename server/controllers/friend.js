@@ -78,8 +78,8 @@ export const getListRequestFriends = async (req, res) => {
   const { userId } = req.params;
   try {
     const listReq = await FriendRequest.find();
-    const listReqID = listReq.filter(
-      (reqFriend) => reqFriend.userConfirmId === userId
+    const listReqID = listReq.filter((reqFriend) =>
+      reqFriend.userConfirmId.equals(userId)
     );
 
     const result = [];
@@ -94,6 +94,21 @@ export const getListRequestFriends = async (req, res) => {
     }
 
     res.status(200).json(listUser);
+  } catch (error) {
+    res.status(404).json({ message: error.message });
+    console.log(error.message);
+  }
+};
+
+export const checkFriends = async (req, res) => {
+  const { userId1, userId2 } = req.params;
+  try {
+    const user = await User.findById(userId1);
+    if (!user) return res.status(404).json({ message: "User not exists" });
+
+    const { listFriends } = user;
+
+    res.status(200).json(listFriends.includes(userId2));
   } catch (error) {
     res.status(404).json({ message: error.message });
     console.log(error.message);
