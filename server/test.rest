@@ -13,5 +13,5 @@ Content-Type: application/json
 }
 
 ###
-GET http://localhost:5000/post?&_limit=5&space=group&groupId=60b73b6fed867308cc66d559 HTTP/1.1
+GET http://localhost:5000/post?&_limit=5&space=news_feed HTTP/1.1
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InNla2F0bzM3MjJAc2xvd2ltby5jb20iLCJpZCI6IjYwYjcyYmE0YTViN2ZlNTMyMGQwNmFhZCIsImlhdCI6MTYyMjYzMjU0MH0.ayjU5EBmgq8epDsGIEyqIpRsUQbSFJRLyKmO4RL70-Q

@@ -57,7 +57,7 @@ function Navbar({ selectedMenu, setTxtSearch, txtInitSearch }) {
   const history = useHistory();
 
   // const isMobile = useMobile();
-  const isSmallScreen = useMediaQuery({ query: "(max-width: 990px)" }); // return true if right size
+  const isSmallScreen = useMediaQuery({ query: "(max-width: 1042px)" }); // return true if right size
 
   const cuteIO = useCuteClientIO();
 
