@@ -18,6 +18,7 @@ function ConversationList({
   const MESSAGE_PER_LOAD = 5;
 
   const [listMessages, setListMessages] = useState([]);
+  const [listSeenMembers, setListSeenMembers] = useState([]);
   const [user] = useLocalStorage("user");
 
   //we need to know if there is more data
@@ -39,18 +40,38 @@ function ConversationList({
         }
       });
 
+      messageHandle.onSeen((msg) => {
+        if (msg.res.conversationId === currentId) {
+          handleLoadListSeenMembers();
+        }
+      });
+
       handleLoadMoreMessage(0);
+
+      handleSetSeenMessage();
+      handleLoadListSeenMembers();
     }
 
-    return messageHandle.cleanUpAll;
+    return () => {
+      messageHandle.cleanUpAll();
+      setListMessages([]);
+      setListSeenMembers([]);
+    };
   }, [currentId])
+
+  // test
+  useEffect(() => {
+    console.log(listSeenMembers);
+  }, [listSeenMembers])
 
   const handleLoadNewMessage = () => {
     apiConversation.fetchAConversation(currentId, 0, 0).then(
       res => {
         const fetchedMsgs = res.data?.listMessages;
-        if (fetchedMsgs)
+        if (fetchedMsgs) {
           setListMessages(prev => [...fetchedMsgs, ...prev]);
+          handleSetSeenMessage();
+        }
       }
     );
   }
@@ -69,9 +90,25 @@ function ConversationList({
     );
   }
 
+  const handleSetSeenMessage = () => {
+    if (currentId)
+      if (!listSeenMembers.includes(user?.result?._id))
+        messageHandle.setSeen(currentId, true);
+  }
+
+  const handleLoadListSeenMembers = () => {
+    apiConversation.fetchAConversation(currentId, 0, 0).then(
+      res => {
+        const fetchedSeenMembers = res.data?.listSeenMembers;
+        if (fetchedSeenMembers)
+          setListSeenMembers(fetchedSeenMembers);
+      }
+    )
+  }
+
   return (
     <div className="chat-message-list">
-      {listMessages.length === 0 ? (
+      {((!hasMore) && (listMessages.length === 0)) ? (
         <div className="text-center" style={{ fontSize: "1.5rem" }}>
           <Text>You have not sent any message to others</Text>
         </div>

@@ -50,7 +50,6 @@ function ChatSpace() {
   // test notification message
   useEffect(() => {
     messageHandle.onReceive((msg) => {
-      console.log(`user ${msg.res?.userId} said: ${msg.res?.message.text}`);
       setIsAddMessage(true);
     });
 

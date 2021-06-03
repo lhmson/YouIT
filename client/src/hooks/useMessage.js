@@ -13,7 +13,13 @@ export const useMessage = () => {
     cuteIO.send("Message-new", { conversationId, message })
   }
 
-
+  /**
+   * @param {string} conversationId 
+   * @param {boolean} newSeenValue 
+   */
+  const setSeen = (conversationId, newSeenValue) => {
+    cuteIO.send("Message-setSeen", { conversationId, newSeenValue });
+  }
 
   /**
    * add handler to handle on new message is sent successfully (i.e saved to DB)
@@ -43,8 +49,19 @@ export const useMessage = () => {
     cleanUpCallbacks.current.push(cleanUp);
   }
 
+
+  /**
+   * add handler to handle when a conversation is seen by ANYONE (including this user) 
+   * @param {(msg: MessageEventParams) => any} handler
+   */
+  const onSeen = (handler) => {
+    const cleanUp = cuteIO.onReceive("Message-seen", handler);
+    cleanUpCallbacks.current.push(cleanUp);
+  }
+
   const cleanUpAll = () => {
-    cleanUpCallbacks.current.forEach(clean => clean?.());
+    cleanUpCallbacks.current.forEach(clean => clean());
+    cleanUpCallbacks.current.length = 0;
   }
 
   return {
@@ -52,11 +69,15 @@ export const useMessage = () => {
     onSent,
     onFailed,
     onReceive,
+
+    setSeen,
+    onSeen,
+
     cleanUpAll,
   }
 }
 
 /** @typedef {object} MessageEventParams
  * @property {{code: string, msg: string}} Status
- * @property {{senderId: string, conversationId: string, message: any}} res
+ * @property {{senderId: string, conversationId: string, seenValue: boolean, message: any, listSeenMembers: [string]}} res
  */

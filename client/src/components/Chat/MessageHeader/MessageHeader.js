@@ -35,7 +35,7 @@ function MessageHeader({ setOpenSidebar, currentId }) {
   useEffect(() => {
     // alert("current" + currentId);
     if (currentId) {
-      apiConversation.fetchAConversation(currentId, 0, 5).then((res) => {
+      apiConversation.fetchAConversation(currentId, 0, 0).then((res) => {
         setTitle(res.data.title)
       });
     }
