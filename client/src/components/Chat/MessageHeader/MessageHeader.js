@@ -1,11 +1,22 @@
-import React, { useEffect, useState } from "react";
-import { Tooltip, Dropdown, Menu, Row, Typography } from "antd";
+import React, { useEffect, useRef, useState } from "react";
+import {
+  Tooltip,
+  Dropdown,
+  Menu,
+  Row,
+  Popover,
+  Button,
+  Typography,
+  Input,
+  Select,
+} from "antd";
 
 import {
   SearchOutlined,
   DeleteOutlined,
   EyeOutlined,
   ToolOutlined,
+  EditOutlined,
   EnvironmentOutlined,
 } from "@ant-design/icons";
 
@@ -13,13 +24,17 @@ import "../styles.css";
 
 import { Link } from "react-router-dom";
 import "../styles.css";
+import { useLocalStorage } from "../../../hooks/useLocalStorage.js";
 import COLOR from "../../../constants/colors.js";
 
 import { useMobile } from "../../../utils/responsiveQuery";
 
+import * as apiFriend from "../../../api/friend";
 import * as apiConversation from "../../../api/conversation";
 
 const { Text } = Typography;
+
+const { Option } = Select;
 
 const statusList = [
   { status: "online", color: COLOR.green },
@@ -30,7 +45,17 @@ const statusList = [
 function MessageHeader({ setOpenSidebar, currentId, listSeenMembers }) {
   const isMobile = useMobile();
 
+  const [user] = useLocalStorage("user");
+
   const [title, setTitle] = useState("");
+
+  const titleRef = useRef();
+
+  const [visibleEdit, setVisibleEdit] = useState(false); // select display
+
+  const [listFriends, setListFriends] = useState([]);
+
+  const [listMembers, setListMembers] = useState([]);
 
   useEffect(() => {
     // alert("current" + currentId);
@@ -41,11 +66,36 @@ function MessageHeader({ setOpenSidebar, currentId, listSeenMembers }) {
     }
   }, [currentId]);
 
+  useEffect(() => {
+    apiFriend.fetchListMyFriends(user?.result?._id).then((res) => {
+      setListFriends(
+        res.data?.map((item, i) => ({ _id: item._id, name: item.name }))
+      );
+    });
+  }, []);
+
   const handleOpenSidebar = () => {
     setOpenSidebar((prev) => !prev);
   };
 
   const handleChangeStatus = () => {};
+
+  const handleEditConversation = () => {};
+
+  const handleCancelEdit = () => {
+    setTitle("");
+    setListMembers("");
+  };
+
+  const handleChangeUserToAdd = (value, options) => {
+    // console.log("opt", options);
+    // console.log(`selected ${value}`);
+    setListMembers(options?.map((item) => item.key));
+  };
+
+  const handleVisibleChange = (visibleAdd) => {
+    setVisibleEdit(visibleAdd);
+  };
 
   const menuStatus = (
     <Menu>
@@ -78,6 +128,47 @@ function MessageHeader({ setOpenSidebar, currentId, listSeenMembers }) {
             <ToolOutlined className="clickable icon" />
           </Tooltip>
         </Dropdown>
+
+        <Popover
+          content={
+            <>
+              <Button onClick={() => handleEditConversation()}>Confirm</Button>
+              <Button onClick={() => handleCancelEdit()}>Cance;</Button>
+            </>
+          }
+          title={
+            <div>
+              <Input
+                type="text"
+                placeholder="Title"
+                ref={titleRef}
+                // onChange={(e) => handleChangeTitle(e)}
+                style={{ margin: "5px 0" }}
+              />
+              <Select
+                mode="tags"
+                placeholder="Add friend"
+                value={listMembers}
+                onChange={handleChangeUserToAdd}
+                style={{ width: "100%" }}
+              >
+                {listFriends?.map((item) => (
+                  <Option key={item._id}>{item.name}</Option>
+                ))}
+              </Select>
+            </div>
+          }
+          trigger="click"
+          visible={visibleEdit}
+          onVisibleChange={handleVisibleChange}
+        >
+          <Button
+            className="d-flex justify-content-center align-items-center green-button ml-3"
+            icon={<EditOutlined />}
+          >
+            Edit
+          </Button>
+        </Popover>
       </div>
 
       <span className="text-center">
@@ -89,7 +180,7 @@ function MessageHeader({ setOpenSidebar, currentId, listSeenMembers }) {
             title={
               <div>
                 {listSeenMembers.map((item) => (
-                  <div>{item}</div>
+                  <div>{item.name}</div>
                 ))}
               </div>
             }

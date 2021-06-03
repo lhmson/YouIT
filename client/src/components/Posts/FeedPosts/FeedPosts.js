@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { Row } from "antd";
+import { Row, Typography } from "antd";
 import Loading from "../../Loading/Loading";
 import styles from "./styles";
 
@@ -10,6 +10,8 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import * as api from "../../../api/post";
 
 import FeedPost from "./FeedPost/FeedPost";
+
+const {Text} = Typography
 
 function FeedPosts({
   setCurrentId,
@@ -68,7 +70,10 @@ function FeedPosts({
   return (
     <div>
       {!posts.length ? (
-        <Loading />
+        <div className="text-center">
+          <Loading />
+          <Text>No posts to show</Text>
+        </div>
       ) : (
         <div>
           <InfiniteScroll

@@ -1,8 +1,11 @@
-import express from 'express'
-import { isConversationSeenByUser, isMemberOfConversation } from '../businessLogics/conversation.js';
-import Conversation from '../models/conversation.js';
-import { customPagination } from '../utils/customPagination.js';
-import { httpStatusCodes } from '../utils/httpStatusCode.js';
+import express from "express";
+import {
+  isConversationSeenByUser,
+  isMemberOfConversation,
+} from "../businessLogics/conversation.js";
+import Conversation from "../models/conversation.js";
+import { customPagination } from "../utils/customPagination.js";
+import { httpStatusCodes } from "../utils/httpStatusCode.js";
 
 /**
  * @param {express.Request<ParamsDictionary, any, any, QueryString.ParsedQs, Record<string, any>>} req
@@ -12,12 +15,16 @@ import { httpStatusCodes } from '../utils/httpStatusCode.js';
 export const createConversation = async (req, res, next) => {
   const { userId } = req;
   if (!userId) {
-    return res.status(httpStatusCodes.unauthorized).send("You must sign in to create a conversation");
+    return res
+      .status(httpStatusCodes.unauthorized)
+      .send("You must sign in to create a conversation");
   }
 
   const conversation = req.body;
   if (conversation._id) {
-    return res.status(httpStatusCodes.badContent).send("New conversation mustn't have _id field");
+    return res
+      .status(httpStatusCodes.badContent)
+      .send("New conversation mustn't have _id field");
   }
 
   let { listMembers, listOwners } = conversation;
@@ -26,7 +33,9 @@ export const createConversation = async (req, res, next) => {
   conversation.title = conversation.title ?? "Untitled group";
 
   if (listMembers.length <= 1) {
-    return res.status(httpStatusCodes.badContent).send("A conversation should have at least 2 members");
+    return res
+      .status(httpStatusCodes.badContent)
+      .send("A conversation should have at least 2 members");
   }
 
   try {
@@ -43,7 +52,7 @@ export const createConversation = async (req, res, next) => {
       .status(httpStatusCodes.internalServerError)
       .json({ message: error });
   }
-}
+};
 
 /**
  * @param {express.Request<ParamsDictionary, any, any, QueryString.ParsedQs, Record<string, any>>} req
@@ -54,47 +63,53 @@ export const createConversation = async (req, res, next) => {
 export const addMessage = async (req, res, next) => {
   const { userId } = req;
   if (!userId) {
-    return res.status(httpStatusCodes.unauthorized).send("You must sign in to add a message");
+    return res
+      .status(httpStatusCodes.unauthorized)
+      .send("You must sign in to add a message");
   }
 
   const { conversationId } = req.params;
 
   const { message, socketId } = req.body;
   if (!message) {
-    return res.status(httpStatusCodes.badContent).send("Message field is required");
+    return res
+      .status(httpStatusCodes.badContent)
+      .send("Message field is required");
   }
 
   try {
     const conversation = await Conversation.findById(conversationId);
 
     if (!conversation) {
-      return res.status(httpStatusCodes.notFound).send(`There's no conversation with id ${conversationId}`);
+      return res
+        .status(httpStatusCodes.notFound)
+        .send(`There's no conversation with id ${conversationId}`);
     }
 
     const conversationObj = conversation.toObject();
 
     if (!isMemberOfConversation(userId, conversationObj)) {
-      return res.status(httpStatusCodes.forbidden).send(`You are not in this conversation`);
+      return res
+        .status(httpStatusCodes.forbidden)
+        .send(`You are not in this conversation`);
     }
 
     message.senderId = userId;
     if (conversationObj?.listMessages)
       conversationObj.listMessages.push(message);
-    else
-      conversationObj.listMessages = [message];
+    else conversationObj.listMessages = [message];
 
-    Conversation.findByIdAndUpdate(conversationId, conversationObj, { new: true }).then(
-      (newConversation) => {
-        return res.status(httpStatusCodes.ok).json(newConversation);
-      }
-    )
+    Conversation.findByIdAndUpdate(conversationId, conversationObj, {
+      new: true,
+    }).then((newConversation) => {
+      return res.status(httpStatusCodes.ok).json(newConversation);
+    });
   } catch (error) {
     return res
       .status(httpStatusCodes.internalServerError)
       .json({ message: error });
   }
-}
-
+};
 
 /**
  * @param {express.Request<ParamsDictionary, any, any, QueryString.ParsedQs, Record<string, any>>} req
@@ -104,36 +119,46 @@ export const addMessage = async (req, res, next) => {
 export const getAConversation = async (req, res, next) => {
   const { userId } = req;
   if (!userId) {
-    return res.status(httpStatusCodes.unauthorized).send("You must sign in to get your conversation");
+    return res
+      .status(httpStatusCodes.unauthorized)
+      .send("You must sign in to get your conversation");
   }
 
   const { conversationId } = req.params;
 
   try {
-    const conversation = await Conversation
-      .findById(conversationId)
+    const conversation = await Conversation.findById(conversationId)
       .populate({
         path: `listMessages`,
         model: `Message`,
         populate: {
           path: `senderId`,
           select: `name`,
-          model: `User`
-        }
+          model: `User`,
+        },
       })
       .populate({
         path: `listMembers`,
         select: `name`,
         model: `User`,
+      })
+      .populate({
+        path: `listSeenMembers`,
+        select: `name`,
+        model: `User`,
       });
 
     if (!conversation) {
-      return res.status(httpStatusCodes.notFound).send(`There's no conversation with id ${conversationId}`);
+      return res
+        .status(httpStatusCodes.notFound)
+        .send(`There's no conversation with id ${conversationId}`);
     }
 
     const conversationObj = conversation.toObject();
     if (!isMemberOfConversation(userId, conversationObj)) {
-      return res.status(httpStatusCodes.forbidden).send(`You are not in this conversation`);
+      return res
+        .status(httpStatusCodes.forbidden)
+        .send(`You are not in this conversation`);
     }
 
     // pagination
@@ -143,7 +168,10 @@ export const getAConversation = async (req, res, next) => {
     msgStart = parseInt(msgStart);
     msgEnd = parseInt(msgEnd);
 
-    conversationObj.listMessages = conversationObj?.listMessages?.slice(msgStart, msgEnd + 1);
+    conversationObj.listMessages = conversationObj?.listMessages?.slice(
+      msgStart,
+      msgEnd + 1
+    );
 
     return res.status(httpStatusCodes.ok).send(conversationObj);
   } catch (error) {
@@ -151,8 +179,7 @@ export const getAConversation = async (req, res, next) => {
       .status(httpStatusCodes.internalServerError)
       .json({ message: error });
   }
-}
-
+};
 
 /**
  * @param {express.Request<ParamsDictionary, any, any, QueryString.ParsedQs, Record<string, any>>} req
@@ -162,7 +189,9 @@ export const getAConversation = async (req, res, next) => {
 export const getConversationsOfUser = async (req, res, next) => {
   const { userId } = req;
   if (!userId) {
-    return res.status(httpStatusCodes.unauthorized).send("You must sign in to get your conversations");
+    return res
+      .status(httpStatusCodes.unauthorized)
+      .send("You must sign in to get your conversations");
   }
 
   const msgLimit = req.query.msgLimit ?? 1;
@@ -171,17 +200,16 @@ export const getConversationsOfUser = async (req, res, next) => {
   const page = req.query.page ?? 0;
 
   try {
-    await Conversation
-      .find()
-      .sort({ 'updatedAt': -1 })
+    await Conversation.find()
+      .sort({ updatedAt: -1 })
       .populate({
         path: `listMessages`,
         model: `Message`,
         populate: {
           path: `senderId`,
           select: `name`,
-          model: `User`
-        }
+          model: `User`,
+        },
       })
       .populate({
         path: `listMembers`,
@@ -190,8 +218,9 @@ export const getConversationsOfUser = async (req, res, next) => {
       })
       .exec()
       .then((conversations) => {
-        const conversationObjs = conversations.map(c => c.toObject())
-          .filter(c => isMemberOfConversation(userId, c))
+        const conversationObjs = conversations
+          .map((c) => c.toObject())
+          .filter((c) => isMemberOfConversation(userId, c));
 
         res.status(httpStatusCodes.ok).send(conversationObjs);
       })
@@ -199,13 +228,13 @@ export const getConversationsOfUser = async (req, res, next) => {
         return res
           .status(httpStatusCodes.internalServerError)
           .json({ message: error });
-      })
+      });
   } catch (error) {
     return res
       .status(httpStatusCodes.internalServerError)
       .json({ message: error });
   }
-}
+};
 
 /**
  * @param {express.Request<ParamsDictionary, any, any, QueryString.ParsedQs, Record<string, any>>} req
@@ -215,7 +244,9 @@ export const getConversationsOfUser = async (req, res, next) => {
 export const getUnseenConversationIds = async (req, res, next) => {
   const { userId } = req;
   if (!userId) {
-    return res.status(httpStatusCodes.unauthorized).send("You must sign in to get your conversations");
+    return res
+      .status(httpStatusCodes.unauthorized)
+      .send("You must sign in to get your conversations");
   }
 
   const result = [];
@@ -223,10 +254,9 @@ export const getUnseenConversationIds = async (req, res, next) => {
   try {
     const conversations = await Conversation.find();
 
-    conversations.forEach(c => {
-      if (!isConversationSeenByUser(userId, c))
-        result.push(c._id.toString());
-    })
+    conversations.forEach((c) => {
+      if (!isConversationSeenByUser(userId, c)) result.push(c._id.toString());
+    });
 
     return res.status(httpStatusCodes.ok).send(result);
   } catch (error) {
@@ -234,4 +264,4 @@ export const getUnseenConversationIds = async (req, res, next) => {
       .status(httpStatusCodes.internalServerError)
       .json({ message: error });
   }
-}
+};

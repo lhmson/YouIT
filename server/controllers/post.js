@@ -46,7 +46,12 @@ export const getAPost = async (req, res) => {
       .then((post) => {
         const postObj = post.toObject();
 
-        if (isPostVisibleByUser({ ...postObj, userId: postObj.userId._id }, userId))
+        if (
+          isPostVisibleByUser(
+            { ...postObj, userId: postObj.userId._id },
+            userId
+          )
+        )
           return res.status(200).json(post);
         else
           return res
@@ -149,7 +154,20 @@ export const updatePost = async (req, res) => {
       _id: id,
     };
 
-    await Post.findByIdAndUpdate(id, updatedPost, { new: true });
+    await Post.findByIdAndUpdate(id, updatedPost, { new: true }).then((res) => {
+      res?.interactionInfo?.listUsersFollowing?.forEach((item, i) => {
+        if (!item.equals(userId)) {
+          sendNotificationUser({
+            userId: item,
+            kind: "UpdatePost_PostFollowers",
+            content: {
+              description: `Post '${res?.title}' that you are following has been edited`,
+            },
+            link: `/post/${res?._id}`,
+          });
+        }
+      });
+    });
     return res.status(httpStatusCodes.ok).json(updatedPost);
   } catch (error) {
     return res
@@ -169,7 +187,7 @@ export const deletePost = async (req, res) => {
       return res.json({ message: "Unauthenticated" });
     }
 
-    const post = await (await Post.findById(id));
+    const post = await await Post.findById(id);
     if (!post) {
       return res
         .status(httpStatusCodes.notFound)
@@ -211,7 +229,7 @@ export const getMyPostInteractions = async (req, res) => {
     let filterJson = undefined;
     try {
       filterJson = JSON.parse(filter);
-    } catch { }
+    } catch {}
 
     const interactions = await getInteractionOfAUser(id, userId, filterJson);
     return res.status(httpStatusCodes.ok).json(interactions);
@@ -341,24 +359,30 @@ export const getPostsPagination = async (req, res) => {
   // profileWallOnly = profileWallOnly?.toUpperCase() === "TRUE";
 
   if (help !== undefined) {
-    return res.status(httpStatusCodes.ok).send(
-      `space query:\n`
-      + ` - (empty): All visible posts\n`
-      + ` - news_feed: All posts from other users and posts in joined group\n`
-      + ` - user_profile: All posts of a user which are not in group (ownerId query is required)\n`
-      + ` - pending_in_group: All posts that's currently pending in a group (groupId query is required)\n`
-      + ` - group: All approved posts in the same group (groupId query is required)\n`
-      + `\n`
-      + `ownerId query: Filter out all posts of just 1 user\n`
-      + `groupId query: Filter out all posts of just 1 group\n`
-    )
+    return res
+      .status(httpStatusCodes.ok)
+      .send(
+        `space query:\n` +
+          ` - (empty): All visible posts\n` +
+          ` - news_feed: All posts from other users and posts in joined group\n` +
+          ` - user_profile: All posts of a user which are not in group (ownerId query is required)\n` +
+          ` - pending_in_group: All posts that's currently pending in a group (groupId query is required)\n` +
+          ` - group: All approved posts in the same group (groupId query is required)\n` +
+          `\n` +
+          `ownerId query: Filter out all posts of just 1 user\n` +
+          `groupId query: Filter out all posts of just 1 group\n`
+      );
   }
 
   if ((space === "group" || space === "pending_in_group") && !groupId)
-    return res.status(httpStatusCodes.badContent).send(`groupId query is required when space is ${space}`);
+    return res
+      .status(httpStatusCodes.badContent)
+      .send(`groupId query is required when space is ${space}`);
 
   if (space === "user_profile" && !ownerId)
-    return res.status(httpStatusCodes.badContent).send(`ownerId query is required when space is ${space}`);
+    return res
+      .status(httpStatusCodes.badContent)
+      .send(`ownerId query is required when space is ${space}`);
 
   try {
     await Post.find()
@@ -380,48 +404,40 @@ export const getPostsPagination = async (req, res) => {
             ...p,
             userId: p.userId._id,
           };
-          let visible = await isPostVisibleByUser(
-            stdPostObj,
-            userId
-          );
+          let visible = await isPostVisibleByUser(stdPostObj, userId);
 
-          if (!visible)
-            return false;
+          if (!visible) return false;
 
           if (groupId)
             if (!stdPostObj?.groupPostInfo?.groupId?._id.equals(groupId))
               return false;
 
-          if (ownerId)
-            if (!stdPostObj.userId.equals(ownerId))
-              return false;
+          if (ownerId) if (!stdPostObj.userId.equals(ownerId)) return false;
 
           if (stdPostObj.privacy === "Group") {
             switch (space) {
               case "user_profile": {
                 return false;
-              };
+              }
               case "news_feed": {
-                const group = await Group.findById(stdPostObj?.groupPostInfo?.groupId);
-                if (!group)
-                  return false;
+                const group = await Group.findById(
+                  stdPostObj?.groupPostInfo?.groupId
+                );
+                if (!group) return false;
                 if (stdPostObj?.groupPostInfo?.status !== "Approved")
                   return false;
 
-                if (!isMemberOfGroup(userId, group))
-                  return false;
+                if (!isMemberOfGroup(userId, group)) return false;
                 break;
-              };
+              }
               case "pending_in_group": {
-                if (!groupId)
-                  return false;
+                if (!groupId) return false;
                 if (stdPostObj?.groupPostInfo?.status !== "Pending")
                   return false;
                 break;
               }
               case "group": {
-                if (!groupId)
-                  return false;
+                if (!groupId) return false;
                 if (stdPostObj?.groupPostInfo?.status !== "Approved")
                   return false;
                 break;
@@ -430,8 +446,7 @@ export const getPostsPagination = async (req, res) => {
           } else {
             switch (space) {
               case "user_profile": {
-                if (!ownerId)
-                  return false;
+                if (!ownerId) return false;
                 break;
               }
               case "news_feed": {
