@@ -59,4 +59,16 @@ export const isUserA_sendedRequestFriend_UserB = async (userId1, userId2) => {
 };
 
 /** @param {string} userId */
-export const isValidUser = async (userId) => (userId && await User.exists({ _id: userId }));
+export const isValidUser = async (userId) => {
+  if (!userId)
+    return false;
+
+  const user = await User.findById(userId);
+
+  if (!user)
+    return false;
+
+  console.log("wtf");
+
+  return true;
+}

@@ -56,8 +56,7 @@ export default class CuteServerIO {
   #getSocket = (id) => this.#io.sockets.sockets.get(id);
 
   /** 
-   * @param {string} userId
-   * @returns {Boolean}
+   * @type {(userId: string) => Promise<Boolean>}
   */
   verifyUser
 
@@ -109,6 +108,15 @@ export default class CuteServerIO {
 
       this.sendToSocket(socket, "System-AcceptBrowserId", { browserId });
 
+      // force user to log out if the token is not valid
+      if (token && token !== "undefined" && token !== "null")
+        this.verifyUser?.(userId).then(res => {
+          if (!res)
+            this.sendToSocket(socket, "System-InvalidToken", {
+              enableAlert: true,
+            })
+        })
+
       try {
         if (!token || !userId) {
           // signed in anonymously
@@ -116,14 +124,6 @@ export default class CuteServerIO {
             this.#ANONYMOUS_ROOM_PREFIX,
             this.#BROWSER_ROOM_PREFIX + browserId,
           ]);
-
-          // force user to log out if the token is not valid
-          if (token && token !== "undefined" && token !== "null")
-            if (this.verifyUser?.(userId)) {
-              this.sendToSocket(socket, "System-InvalidToken", {
-                enableAlert: true,
-              });
-            }
         } else {
           // Add this socket to a room with id User. every socket here belongs to this user only.
           socket.join([
