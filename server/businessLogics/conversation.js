@@ -24,6 +24,7 @@ const checkMemberOfConversationFunc = (pathName) =>
 
 export const isMemberOfConversation = checkMemberOfConversationFunc("listMembers");
 export const isOwnerOfConversation = checkMemberOfConversationFunc("listOwners");
+export const isConversationSeenByUser = checkMemberOfConversationFunc("listSeenMembers");
 
 /**
  * Return an immutable function to add new member to a specific list

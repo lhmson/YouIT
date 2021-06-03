@@ -7,6 +7,7 @@ const router = express.Router();
 // get
 router.get("/list/my", auth, controllers.getConversationsOfUser);
 router.get("/:conversationId", auth, controllers.getAConversation);
+router.get("/list/unseenIds", auth, controllers.getUnseenConversationIds);
 
 // post
 router.post("/", auth, controllers.createConversation);

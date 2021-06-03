@@ -1,5 +1,5 @@
 import express from 'express'
-import { isMemberOfConversation } from '../businessLogics/conversation.js';
+import { isConversationSeenByUser, isMemberOfConversation } from '../businessLogics/conversation.js';
 import Conversation from '../models/conversation.js';
 import { customPagination } from '../utils/customPagination.js';
 import { httpStatusCodes } from '../utils/httpStatusCode.js';
@@ -200,6 +200,35 @@ export const getConversationsOfUser = async (req, res, next) => {
           .status(httpStatusCodes.internalServerError)
           .json({ message: error });
       })
+  } catch (error) {
+    return res
+      .status(httpStatusCodes.internalServerError)
+      .json({ message: error });
+  }
+}
+
+/**
+ * @param {express.Request<ParamsDictionary, any, any, QueryString.ParsedQs, Record<string, any>>} req
+ * @param {express.Response<any, Record<string, any>, number>} res
+ * @param {express.NextFunction} next
+ */
+export const getUnseenConversationIds = async (req, res, next) => {
+  const { userId } = req;
+  if (!userId) {
+    return res.status(httpStatusCodes.unauthorized).send("You must sign in to get your conversations");
+  }
+
+  const result = [];
+
+  try {
+    const conversations = await Conversation.find();
+
+    conversations.forEach(c => {
+      if (!isConversationSeenByUser(userId, c))
+        result.push(c._id.toString());
+    })
+
+    return res.status(httpStatusCodes.ok).send(result);
   } catch (error) {
     return res
       .status(httpStatusCodes.internalServerError)
