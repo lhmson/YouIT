@@ -41,7 +41,9 @@ import {
   getUserUnseenNotifications,
   setSeenNotification,
 } from "../../redux/actions/notifications";
+import * as apiConversation from "../../api/conversation";
 import NotificationList from "./NotificationList/NotificationList";
+import { useMessage } from "../../hooks/useMessage";
 
 const { Header } = Layout;
 const { Text } = Typography;
@@ -152,7 +154,7 @@ function Navbar({ selectedMenu, setTxtSearch, txtInitSearch }) {
           className="text-center navitem pickitem"
           onClick={handleMessage}
         >
-          <Badge count={notifications.length} showZero>
+          <Badge count={numberUnseenMessages}>
             <Tooltip title="Message" placement="bottom">
               <MessageFilled style={{ fontSize: 24, color: COLOR.white }} />
             </Tooltip>
@@ -249,7 +251,31 @@ function Navbar({ selectedMenu, setTxtSearch, txtInitSearch }) {
 
   //#endregion
 
+  //#region message notifications
+
   const [numberUnseenMessages, setNumberUnseenMessages] = useState(0);
+
+  const messageHandle = useMessage();
+
+  const handleFetchListUnseenConversations = () => {
+    apiConversation
+      .fetchUnseenConversationId()
+      .then((res) => setNumberUnseenMessages(res.data.length));
+  };
+
+  useEffect(() => {
+    messageHandle.onReceive((msg) => {
+      handleFetchListUnseenConversations();
+    });
+
+    messageHandle.onSeen((msg) => {
+      handleFetchListUnseenConversations();
+    });
+
+    handleFetchListUnseenConversations();
+
+    return messageHandle.cleanUpAll;
+  }, []);
 
   // useEffect(() => {
   //   const token = user?.token;

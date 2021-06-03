@@ -93,8 +93,8 @@ function ConversationList({
 
   const handleSetSeenMessage = () => {
     if (currentId)
-      if (!listSeenMembers.includes(user?.result?._id))
-        messageHandle.setSeen(currentId, true);
+      // if (!listSeenMembers.includes(user?.result?._id))
+      messageHandle.setSeen(currentId, true);
   };
 
   const handleLoadListSeenMembers = () => {
