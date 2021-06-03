@@ -152,9 +152,11 @@ function Navbar({ selectedMenu, setTxtSearch, txtInitSearch }) {
           className="text-center navitem pickitem"
           onClick={handleMessage}
         >
-          <Tooltip title="Message" placement="bottom">
-            <MessageFilled style={{ fontSize: 24, color: COLOR.white }} />
-          </Tooltip>
+          <Badge count={notifications.length} showZero>
+            <Tooltip title="Message" placement="bottom">
+              <MessageFilled style={{ fontSize: 24, color: COLOR.white }} />
+            </Tooltip>
+          </Badge>
         </Menu.Item>
 
         <Menu.Item key="avatar" className="text-center navitem">
@@ -246,6 +248,8 @@ function Navbar({ selectedMenu, setTxtSearch, txtInitSearch }) {
   );
 
   //#endregion
+
+  const [numberUnseenMessages, setNumberUnseenMessages] = useState(0);
 
   // useEffect(() => {
   //   const token = user?.token;

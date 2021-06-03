@@ -4,7 +4,7 @@ import { Tooltip, Dropdown, Menu, Row, Typography } from "antd";
 import {
   SearchOutlined,
   DeleteOutlined,
-  EllipsisOutlined,
+  EyeOutlined,
   ToolOutlined,
   EnvironmentOutlined,
 } from "@ant-design/icons";
@@ -27,7 +27,7 @@ const statusList = [
   { status: "offline", color: COLOR.gray },
 ];
 
-function MessageHeader({ setOpenSidebar, currentId }) {
+function MessageHeader({ setOpenSidebar, currentId, listSeenMembers }) {
   const isMobile = useMobile();
 
   const [title, setTitle] = useState("");
@@ -36,7 +36,7 @@ function MessageHeader({ setOpenSidebar, currentId }) {
     // alert("current" + currentId);
     if (currentId) {
       apiConversation.fetchAConversation(currentId, 0, 0).then((res) => {
-        setTitle(res.data.title)
+        setTitle(res.data.title);
       });
     }
   }, [currentId]);
@@ -45,7 +45,7 @@ function MessageHeader({ setOpenSidebar, currentId }) {
     setOpenSidebar((prev) => !prev);
   };
 
-  const handleChangeStatus = () => { };
+  const handleChangeStatus = () => {};
 
   const menuStatus = (
     <Menu>
@@ -81,12 +81,28 @@ function MessageHeader({ setOpenSidebar, currentId }) {
       </div>
 
       <span className="text-center">
-        {currentId &&
-          (isMobile ? title.substring(0, 12) + "..." : title)}
+        {currentId && (isMobile ? title.substring(0, 12) + "..." : title)}
       </span>
-      <Tooltip title="Delete conversation">
-        <DeleteOutlined className="clickable icon" />
-      </Tooltip>
+      <div className="d-flex">
+        {listSeenMembers && (
+          <Tooltip
+            title={
+              <div>
+                {listSeenMembers.map((item) => (
+                  <div>{item}</div>
+                ))}
+              </div>
+            }
+            placement="bottom"
+          >
+            <EyeOutlined className="clickable icon mr-2" />
+          </Tooltip>
+        )}
+
+        <Tooltip title="Delete conversation">
+          <DeleteOutlined className="clickable icon" />
+        </Tooltip>
+      </div>
     </div>
   );
 }
