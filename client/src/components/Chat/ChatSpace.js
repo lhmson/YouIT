@@ -44,7 +44,7 @@ function ChatSpace() {
         conversations.updateCurrentId(res.data[0]?._id);
       }
     });
-  }, [conversations.state.listConversations]);
+  }, []);
 
   // test notification message
   useEffect(() => {

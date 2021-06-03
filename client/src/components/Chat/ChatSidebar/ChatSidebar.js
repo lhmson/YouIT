@@ -22,6 +22,7 @@ import { useMobile } from "../../../utils/responsiveQuery.js";
 
 import * as apiFriend from "../../../api/friend";
 import * as apiConversation from "../../../api/conversation";
+import { useMessage } from "../../../hooks/useMessage.js";
 
 const { Title } = Typography;
 
@@ -52,6 +53,10 @@ function ChatSidebar({
 
   const [usersToAdd, setUsersToAdd] = useState([]);
 
+  const [listUnseenConversations, setListUnseenConversations] = useState([]);
+
+  const messageHandle = useMessage();
+
   // const [listConversations, setListConversations] = useState([]);
 
   // const conversations = useConversations();
@@ -64,11 +69,36 @@ function ChatSidebar({
     });
   }, []);
 
-  useEffect(() => {
+  // useEffect(() => {
+  //   apiConversation.fetchConversationsOfUser().then((res) => {
+  //     updateListConversations(res.data);
+  //     // console.log("update list", res.data);
+  //   });
+  // }, []);
+
+  const handleFetchListUnseenConversations = () => {
+    apiConversation
+      .fetchUnseenConversationId()
+      .then((res) => setListUnseenConversations(res.data));
+
     apiConversation.fetchConversationsOfUser().then((res) => {
       updateListConversations(res.data);
       // console.log("update list", res.data);
     });
+  };
+
+  useEffect(() => {
+    messageHandle.onReceive((msg) => {
+      handleFetchListUnseenConversations();
+    });
+
+    messageHandle.onSeen((msg) => {
+      handleFetchListUnseenConversations();
+    });
+
+    handleFetchListUnseenConversations();
+
+    return messageHandle.cleanUpAll;
   }, []);
 
   // useEffect(() => {
@@ -79,7 +109,7 @@ function ChatSidebar({
   // }, []);
   // need real time update there
 
-  const handleSearch = () => { };
+  const handleSearch = () => {};
 
   const handleChangeUserToAdd = (value, options) => {
     // console.log("opt", options);
@@ -96,6 +126,7 @@ function ChatSidebar({
         })
         .then((res) => {
           addConversation(res.data);
+          updateCurrentId(res.data._id);
         });
       // setIsAdd(true);
     } else {
@@ -175,7 +206,7 @@ function ChatSidebar({
               icon={<PlusCircleOutlined />}
             >
               Add
-              </Button>
+            </Button>
           </Popover>
         </div>
 
@@ -215,23 +246,32 @@ function ChatSidebar({
         <>
           <div className="conversation-list">
             {currentId &&
-              listConversations &&
-              listConversations.length !== 0 ? (
+            listConversations &&
+            listConversations.length !== 0 ? (
               listConversations.map((item, i) => (
-                <div key={item._id} onClick={() => updateCurrentId(item._id)}>
+                <div key={item?._id} onClick={() => updateCurrentId(item?._id)}>
                   <div
-                    className={`conversation ${item._id === currentId && "active"
-                      }`}
+                    className={`conversation ${
+                      item?._id === currentId && "active"
+                    }`}
                   >
                     <Badge dot color={renderStatus(item.status)}>
-                      <img src={renderAvatar(item)} alt={item._id} />
+                      <img src={renderAvatar(item)} alt={item?._id} />
                     </Badge>
-                    <div className="title-text">{item.title}</div>
+                    <div className="title-text">{item?.title}</div>
                     <div className="update-date">
-                      {moment(item.updatedAt).fromNow()}
+                      {moment(item?.updatedAt).fromNow()}
                     </div>
-                    <div className="conversation-message">
-                      {item.newestContent ?? "You can have a chat now"}
+                    <div
+                      className="conversation-message"
+                      style={{
+                        fontWeight: listUnseenConversations.includes(item._id)
+                          ? "bold"
+                          : "normal",
+                      }}
+                    >
+                      {item?.listMessages?.[0]?.text ??
+                        "You can have a chat now"}
                     </div>
                   </div>
                 </div>

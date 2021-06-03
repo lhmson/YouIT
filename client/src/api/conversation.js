@@ -7,3 +7,5 @@ export const createConversation = (usersToAdd) => API.post(`/conversation/`, use
 export const addMessage = (conversationId, newMessage) =>
   API.put(`/conversation/${conversationId}/addMessage`, newMessage);
 
+export const fetchUnseenConversationId = () => API.get("/conversation/list/unseenIds")
+
