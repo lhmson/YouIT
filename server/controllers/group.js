@@ -222,7 +222,7 @@ export const deleteGroup = async (req, res) => {
 };
 
 export const deleteMember = async (req, res) => {
-  const { id, deletedUserId } = req.params;
+  const { id } = req.params;
 
   try {
     const group = await Group.findById(id);
@@ -250,8 +250,9 @@ export const deleteMember = async (req, res) => {
 };
 
 export const leaveGroup = async (req, res) => {
-  const { id } = req.params;
-  const { userId } = req;
+  const { id, userId } = req.params;
+  console.log("groupid", id);
+  console.log("userid", userId);
   //console.log("thyyyyyyyyyyy", userId)
   try {
     const group = await Group.findById(id);
@@ -273,10 +274,12 @@ export const leaveGroup = async (req, res) => {
       group.listMembers.find((member) => member.userId.equals(userId)).role ===
       "Owner"
     ) {
-      await Group.findByIdAndRemove(id);
-      return res
-        .status(httpStatusCodes.badContent)
-        .json("Group deleted successfully.");
+      return (
+        await Group.findByIdAndRemove(id),
+        res
+          .status(httpStatusCodes.ok)
+          .json({ message: "Group deleted successfully." })
+      );
     }
 
     group.listMembers = group.listMembers.filter(

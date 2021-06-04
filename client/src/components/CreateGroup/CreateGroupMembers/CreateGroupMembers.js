@@ -40,7 +40,7 @@ function CreateGroupMembers({ onChange }) {
       <Select
         mode="tags"
         // size={size}
-        placeholder="Invite your friends"
+        placeholder="Add Members"
         onChange={onChange}
         style={{ width: "100%" }}
       >

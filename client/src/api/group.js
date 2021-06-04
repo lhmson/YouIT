@@ -13,4 +13,7 @@ export const addPendingMemberGroup = (groupId, userId) =>
 
 export const deleteMember = (groupId, userId) =>
   API.put(`/group/${groupId}/deleteMember/${userId}`);
+export const leaveGroup = (groupId, userId) =>
+  API.put(`/group/${groupId}/leaveGroup/${userId}`);
+
 export const deleteGroup = (id) => API.delete(`/group/${id}`);

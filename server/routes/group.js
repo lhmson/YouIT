@@ -25,7 +25,7 @@ router.post("/", auth, createGroup);
 router.put("/:id/addMember/:memberId", auth, addGroupMember);
 router.put("/:id/addPendingMember/:memberId", auth, addGroupPendingMember);
 router.put("/:id/deleteMember/:deletedUserId", auth, isOwner, deleteMember);
-router.put("/:id/leaveGroup", auth, leaveGroup);
+router.put("/:id/leaveGroup/:userId", auth, leaveGroup);
 
 router.delete("/:id", auth, isOwner, deleteGroup);
 
