@@ -31,6 +31,9 @@ import { useMobile } from "../../../utils/responsiveQuery";
 
 import * as apiFriend from "../../../api/friend";
 import * as apiConversation from "../../../api/conversation";
+import { useForceUpdate } from "../../../hooks/useForceUpdate";
+import { useFriendsStatus } from "../../../context/FriendsStatusContext";
+import { GrStatusGoodSmall } from "react-icons/gr";
 
 const { Text } = Typography;
 
@@ -57,6 +60,9 @@ function MessageHeader({ setOpenSidebar, currentId, listSeenMembers }) {
 
   const [listMembers, setListMembers] = useState([]);
 
+  const friendsStatusManager = useFriendsStatus();
+  const [listMembersStatus, setListMembersStatus] = useState([]); // same as list members, but add new status property
+
   useEffect(() => {
     // alert("current" + currentId);
     if (currentId) {
@@ -74,13 +80,62 @@ function MessageHeader({ setOpenSidebar, currentId, listSeenMembers }) {
     });
   }, []);
 
+
+  useEffect(() => {
+    if (currentId) {
+      handleInitMembersStatus();
+      friendsStatusManager.onFriendStatusChange(handleUpdateMembersStatus);
+
+      return friendsStatusManager.cleanUpAll;
+    }
+  }, [currentId]);
+
+  const handleInitMembersStatus = () => {
+    if (!currentId)
+      return;
+
+    apiConversation.fetchAConversation(currentId, 0, 0).then(res => {
+      const { listMembers } = res.data;
+
+      if (listMembers) {
+        const newList = listMembers?.map(member => ({ ...member, status: friendsStatusManager.getStatus(member._id) }))
+        setListMembersStatus(newList);
+      }
+    })
+  }
+
+  const handleUpdateMembersStatus = (userId, newStatus) => {
+    if (!listMembersStatus)
+      return;
+
+    setListMembersStatus(oldList => {
+      const newList = oldList?.map(member => {
+        if (member?._id === userId)
+          return { ...member, status: newStatus }
+        else
+          return member;
+      })
+
+      return newList;
+    });
+
+    // doesn't work, don't know why :D
+    // const newList = listMembersStatus?.map(member => {
+    //   if (member?._id === userId)
+    //     return { ...member, status: newStatus }
+    //   else
+    //     return member;
+    // })
+    // setListMembersStatus(newList)
+  }
+
   const handleOpenSidebar = () => {
     setOpenSidebar((prev) => !prev);
   };
 
-  const handleChangeStatus = () => {};
+  const handleChangeStatus = () => { };
 
-  const handleEditConversation = () => {};
+  const handleEditConversation = () => { };
 
   const handleCancelEdit = () => {
     setTitle("");
@@ -88,8 +143,6 @@ function MessageHeader({ setOpenSidebar, currentId, listSeenMembers }) {
   };
 
   const handleChangeUserToAdd = (value, options) => {
-    // console.log("opt", options);
-    // console.log(`selected ${value}`);
     setListMembers(options?.map((item) => item.key));
   };
 
@@ -187,6 +240,20 @@ function MessageHeader({ setOpenSidebar, currentId, listSeenMembers }) {
             placement="bottom"
           >
             <EyeOutlined className="clickable icon mr-2" />
+          </Tooltip>
+        )}
+
+        {listMembersStatus && (
+          <Tooltip
+            title={
+              <div>
+                {listMembersStatus.map((item) => (
+                  <div>{`${item.name}: ${item.status}`}</div>
+                ))}
+              </div>
+            }
+          >
+            <GrStatusGoodSmall className="clickable icon mr-2" />
           </Tooltip>
         )}
 

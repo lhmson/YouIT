@@ -206,6 +206,30 @@ export const getFriendsStatus = async (req, res, next) => {
   }
 }
 
+
+/**
+ * @param {express.Request<ParamsDictionary, any, any, QueryString.ParsedQs, Record<string, any>>} req
+ * @param {express.Response<any, Record<string, any>, number>} res
+ * @param {express.NextFunction} next
+ */
+export const getUserStatus = async (req, res, next) => {
+  const { userId } = req;
+  const { newStatus } = req.params;
+
+  if (!userId) {
+    return res.status(httpStatusCodes.unauthorized).send("Not signed in");
+  }
+
+  try {
+    return res.status(httpStatusCodes.ok).send(usersStatusManager.getUserStatus(userId));
+  } catch (error) {
+    return res
+      .status(httpStatusCodes.internalServerError)
+      .json({ message: error });
+  }
+}
+
+
 /**
  * @param {express.Request<ParamsDictionary, any, any, QueryString.ParsedQs, Record<string, any>>} req
  * @param {express.Response<any, Record<string, any>, number>} res

@@ -63,11 +63,6 @@ function ConversationList({
     };
   }, [currentId]);
 
-  // test
-  useEffect(() => {
-    console.log(listSeenMembers);
-  }, [listSeenMembers]);
-
   const handleLoadNewMessage = () => {
     apiConversation.fetchAConversation(currentId, 0, 0).then((res) => {
       const fetchedMsgs = res.data?.listMessages;
@@ -115,11 +110,10 @@ function ConversationList({
           {listMessages.map((item, i) => (
             <div
               key={i}
-              className={`message-row ${
-                item.senderId._id === user?.result?._id
+              className={`message-row ${item.senderId._id === user?.result?._id
                   ? "you-message"
                   : "other-message"
-              }`}
+                }`}
             >
               <div className="message-content">
                 <Tooltip title={item.senderId.name} placement="bottom">

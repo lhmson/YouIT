@@ -72,7 +72,7 @@ export const isValidUser = async (userId) => {
 
 /**
  * @param {CuteServerIO} cuteIO 
- * @returns {(userId: string, newStatus: string)}
+ * @returns {(userId: string, newStatus: string) => any}
  */
 export const notifyUserStatusToFriendsFunc = (cuteIO) => (userId, newStatus) => {
   User.findById(userId).then(user => {
