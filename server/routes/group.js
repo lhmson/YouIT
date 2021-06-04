@@ -20,15 +20,15 @@ const router = express.Router();
 router.get("/:id", auth, getAGroup);
 router.get("/list/joinedByMe", auth, getJoinedGroups);
 router.get("/:id/members", auth, getListMembers);
-router.get("/:id/pendingMembers", auth, getListPendingMembers);
+router.get("/:groupId/pendingMembers", auth, getListPendingMembers);
 router.get("/list/pendingByMe", auth, getPendingGroups);
 
 router.post("/", auth, createGroup);
 
 router.put(
-  "/:groupId/addMember/:memberId",
+  "/:groupId/addGroupMember/:memberId",
   auth,
-  haveGroupPermission("Admin"),
+  // haveGroupPermission("Admin"),
   addGroupMember
 );
 router.put("/:id/addPendingMember/:memberId", auth, addGroupPendingMember);

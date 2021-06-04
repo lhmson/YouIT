@@ -11,8 +11,8 @@ const { Title, Text } = Typography;
 function MemberRequestsResult() {
   const { group } = useContext(GroupContext);
   const [listMembersRequest, setListMembersRequest] = useState([]);
-  const [user] = useLocalStorage("user");
-
+  // const [user] = useLocalStorage("user");
+  // const { listPendingMembers } = group;
   useEffect(() => {
     api
       .getListPendingMembers(group?._id)
@@ -30,9 +30,6 @@ function MemberRequestsResult() {
       <MemberRequests
         _id={user.userId._id}
         name={user.userId.name}
-        dateOfBirth={user.userId.dateOfBirth}
-        role={user.role}
-        relationship="Add Friend"
       ></MemberRequests>
     ));
 

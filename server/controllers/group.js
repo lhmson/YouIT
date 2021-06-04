@@ -115,12 +115,15 @@ export const createGroup = async (req, res) => {
  */
 export const addGroupMember = async (req, res) => {
   const { groupId, memberId } = req.params;
+  console.log("thyyyyyyyyyyyyyyyyyy");
+  console.log("groupid", groupId);
+  console.log("userid", memberId);
   //const { role } = req.query ?? "Member";
   const role = "Member";
   const addMember = { role, userId: memberId };
   try {
     const group = await Group.findById(groupId);
-    if (isMemberOfGroup(deletedUserId, group))
+    if (isMemberOfGroup(memberId, group))
       return res
         .status(httpStatusCodes.badContent)
         .json({ message: "User is a member of the group" });
@@ -236,9 +239,9 @@ export const getListMembers = async (req, res) => {
 };
 
 export const getListPendingMembers = async (req, res) => {
-  const { id } = req.params;
+  const { groupId } = req.params;
   try {
-    const group = await Group.findById(id).populate({
+    const group = await Group.findById(groupId).populate({
       path: "listPendingMembers",
       populate: {
         path: "userId",
@@ -320,9 +323,7 @@ export const deleteMember = async (req, res) => {
 
 export const leaveGroup = async (req, res) => {
   const { id, userId } = req.params;
-  console.log("groupid", id);
-  console.log("userid", userId);
-  //console.log("thyyyyyyyyyyy", userId)
+
   try {
     const group = await Group.findById(id);
     if (!isMemberOfGroup(userId, group))

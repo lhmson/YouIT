@@ -1,44 +1,43 @@
-import React, { useEffect, useState } from "react";
-import { Button, Row, Col, Divider, Form, Typography, Input, Card } from "antd";
-import { Avatar, Image, Tag } from "antd";
+import React, { useEffect, useState, useContext } from "react";
+import { Button, Typography, message } from "antd";
+import { Avatar, Tag } from "antd";
 import styles from "./styles.js";
 import COLOR from "../../constants/colors";
 import OverviewRow from "../IntroCard/OverviewRow/OverviewRow.js";
-import { useSelector } from "react-redux";
-import {
-  IoSchoolSharp,
-  IoHome,
-  MdPublic,
-  MdLocationOn,
-  AiFillHeart,
-  AiOutlineInstagram,
-  AiFillInstagram,
-} from "react-icons/all";
-import * as api from "../../api/user_info";
+import { IoSchoolSharp, IoHome, MdLocationOn } from "react-icons/all";
+import * as api from "../../api/group";
 import { Link } from "react-router-dom";
-import { FETCH_USER_JOINED_GROUPS } from "../../redux/actionTypes.js";
+import { GroupContext } from "../../pages/GroupPage/GroupPage";
 
-const { Title, Text, Paragraph } = Typography;
-
-const schoolIcon = () => {
-  return <IoSchoolSharp style={styles.icon} />;
-};
-const homeIcon = () => {
-  return <IoHome style={styles.icon} />;
-};
+const { Text } = Typography;
 
 function MemberRequests(props) {
   const { name } = props;
   const { _id } = props;
+  const { group } = useContext(GroupContext);
+
+  const acceptMemberRequest = async (groupId, memberId) => {
+    api
+      .addGroupMember(groupId, memberId)
+      .then((res) => {
+        message.success(res.data.message);
+        api.removePendingMember(groupId, memberId);
+        window.location.reload();
+      })
+      .catch((error) => message.success(error.message));
+  };
+
+  const declineMemberRequest = async (groupId, memberId) => {
+    api
+      .removePendingMember(groupId, memberId)
+      .then((res) => {
+        message.success(res.data.message);
+        window.location.reload();
+      })
+      .catch((error) => message.success(error.message));
+  };
 
   const [userInfo, setUserInfo] = useState([]);
-
-  useEffect(() => {
-    api.fetchUserInfo(_id).then((res) => {
-      setUserInfo(res.data.userInfo);
-      console.log("thy", res.data.userInfo);
-    });
-  }, []);
 
   return (
     <>
@@ -82,6 +81,7 @@ function MemberRequests(props) {
             }}
           >
             <Button
+              onClick={() => acceptMemberRequest(group?._id, _id)}
               type="primary"
               style={{
                 background: "#27AE60",
@@ -105,6 +105,7 @@ function MemberRequests(props) {
             }}
           >
             <Button
+              onClick={() => declineMemberRequest(group?._id, _id)}
               type="ghost"
               style={{
                 background: "#BDBDBD",
@@ -128,39 +129,18 @@ function MemberRequests(props) {
         </div>
 
         <div className="row" style={{ marginTop: 10, marginLeft: 0 }}>
-          {/* <Paragraph>
-            Some word Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-            sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-            Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris
-            nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in
-            reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-            pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-            culpa qui officia deserunt mollit anim id est laborum.
-          </Paragraph>
-          <Link href="#" target="_blank" strong style={{ color: COLOR.green }}>
-            Xem toàn bộ bài viết
-          </Link> */}
-          {/* <OverviewRow
-            firstIcon={schoolIcon()}
-            text="Went to Truong THPT Gia Dinh"
-          />
-
-          <OverviewRow
-            firstIcon={homeIcon()}
-            text="Lives in Ho Chi Minh City, Vietnam"
-          /> */}
           <div className="col-7" style={{ marginTop: 10 }}>
             <OverviewRow
               firstIcon={<IoSchoolSharp style={styles.icon} />}
-              text={userInfo.gender}
+              text="Lives in Ho Chi Minh City, Vietnam"
             />
             <OverviewRow
               firstIcon={<IoSchoolSharp style={styles.icon} />}
-              text={userInfo.gender}
+              text="Lives in Ho Chi Minh City, Vietnam"
             />
             <OverviewRow
               firstIcon={<MdLocationOn style={styles.icon} />}
-              text={userInfo.gender}
+              text="Lives in Ho Chi Minh City, Vietnam"
             />
             <OverviewRow
               firstIcon={<MdLocationOn style={styles.icon} />}
