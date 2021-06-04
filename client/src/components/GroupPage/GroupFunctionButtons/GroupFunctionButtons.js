@@ -1,5 +1,5 @@
 import { Button, message, Row, Select, Popover } from "antd";
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useMemo } from "react";
 import styles from "./styles.js";
 import { PlusCircleOutlined } from "@ant-design/icons";
 
@@ -8,6 +8,7 @@ import { GroupContext } from "../../../pages/GroupPage/GroupPage";
 
 import * as apiGroup from "../../../api/group";
 import * as apiFriend from "../../../api/friend";
+import { GiConsoleController } from "react-icons/gi";
 
 const { Option } = Select;
 
@@ -24,7 +25,7 @@ function GroupFunctionButtons() {
   const { group, setGroup } = useContext(GroupContext);
 
   useEffect(() => {
-    apiFriend.fetchListMyFriends(user?.result?._id).then((res) => {
+    apiFriend.fetchListMyFriends(user?._id).then((res) => {
       setListFriends(
         res.data?.map((item, i) => ({ _id: item._id, name: item.name }))
       );
@@ -39,7 +40,9 @@ function GroupFunctionButtons() {
     setVisibleAdd(visibleAdd);
   };
 
-  const handleInvite = () => {};
+  const handleInvite = () => {
+    // chỗ này làm cái noti gửi link group qua cho cái {listYourFriend} giúp t
+  };
 
   const handleDeleteGroup = (id) => {
     apiGroup
@@ -115,6 +118,14 @@ function GroupFunctionButtons() {
     );
   };
 
+  const listYourFriend = useMemo(
+    () =>
+      listFriends?.map((user, i) => {
+        return <Option key={user._id}>{user.name}</Option>;
+      }),
+    [listFriends]
+  );
+
   return (
     <>
       <Row
@@ -157,9 +168,7 @@ function GroupFunctionButtons() {
                     onChange={handleChangeUserToInvite}
                     style={{ width: "100%" }}
                   >
-                    {listFriends?.map((item) => (
-                      <Option key={item._id}>{item.name}</Option>
-                    ))}
+                    {listYourFriend}
                   </Select>
                 </div>
               }
