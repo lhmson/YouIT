@@ -52,8 +52,8 @@ const optionsTopic = [
 function CreateGroupPage() {
   const [groupName, setGroupName] = useState("");
   const [groupDescription, setGroupDescription] = useState("");
-  const [groupPrivacy, setGroupPrivacy] = useState("");
-  const [groupTopic, setGroupTopic] = useState("");
+  const [groupPrivacy, setGroupPrivacy] = useState("Public");
+  const [groupTopic, setGroupTopic] = useState("General");
   const [groupMembers, setGroupMembers] = useState();
 
   const [user] = useLocalStorage("user");

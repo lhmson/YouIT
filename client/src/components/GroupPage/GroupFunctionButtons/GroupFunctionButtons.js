@@ -64,6 +64,16 @@ function GroupFunctionButtons() {
     return isJoined;
   };
 
+  const isFriendJoinedGroup = (id) => {
+    let isJoined = false;
+    group?.listMembers.forEach((member) => {
+      if (member?.userId == id) {
+        isJoined = true;
+      }
+    });
+    return isJoined;
+  };
+
   const isSentJoinRequest = () => {
     let isSent = false;
     group?.listPendingMembers.forEach((pendingMem) => {
@@ -121,7 +131,8 @@ function GroupFunctionButtons() {
   const listYourFriend = useMemo(
     () =>
       listFriends?.map((user, i) => {
-        return <Option key={user._id}>{user.name}</Option>;
+        if (!isFriendJoinedGroup(user._id))
+          return <Option key={user._id}>{user.name}</Option>;
       }),
     [listFriends]
   );
