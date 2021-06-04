@@ -73,7 +73,7 @@ function MemberCard(props) {
     let isAdmin = false;
     group?.listMembers.forEach((member) => {
       if (member?.userId == user?.result?._id) {
-        if (member?.role === "Member" || member?.role === "Owner")
+        if (member?.role === "Owner" || member?.role === "Admin")
           isAdmin = true;
       }
     });
@@ -87,6 +87,7 @@ function MemberCard(props) {
           <Text>Add as admin</Text>
         </Row>
       </Menu.Item>
+
       <Menu.Item
         key="removeMember"
         onClick={() => {
@@ -173,7 +174,7 @@ function MemberCard(props) {
             >
               {txtButton}
             </Button>
-            {isAdmin(user) ? (
+            {isAdmin(user) && role !== "Owner" ? (
               <Dropdown
                 overlay={menuMore}
                 trigger={["click"]}

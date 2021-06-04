@@ -19,11 +19,21 @@ function AdminGroupSidebar(props) {
     let isAdmin = false;
     group?.listMembers.forEach((member) => {
       if (member?.userId == user?.result?._id) {
-        if (member?.role === "Member" || member?.role === "Owner")
+        if (member?.role === "Admin" || member?.role === "Owner")
           isAdmin = true;
       }
     });
     return isAdmin;
+  };
+
+  const isModerator = (user) => {
+    let isModerator = false;
+    group?.listMembers.forEach((member) => {
+      if (member?.userId == user?.result?._id) {
+        if (member?.role !== "Member") isModerator = true;
+      }
+    });
+    return isModerator;
   };
 
   return (
@@ -68,7 +78,7 @@ function AdminGroupSidebar(props) {
         ) : (
           ""
         )}
-        {isAdmin(user) ? (
+        {isModerator(user) ? (
           <Menu.Item
             key="approvePosts"
             style={styles.item}

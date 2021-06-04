@@ -1,12 +1,7 @@
 import React, { useContext, useState, useEffect } from "react";
-import { Layout, Typography } from "antd";
 import { GroupContext } from "../../GroupPage/GroupPage";
 import MemberRequests from "../../../components/MemberRequests/MemberRequests";
-import { useLocalStorage } from "../../../hooks/useLocalStorage";
 import * as api from "../../../api/group";
-
-const { Content } = Layout;
-const { Title, Text } = Typography;
 
 function MemberRequestsResult() {
   const { group } = useContext(GroupContext);

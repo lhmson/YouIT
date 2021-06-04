@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState, useContext, useMemo } from "react";
 import { Button, Typography, message } from "antd";
 import { Avatar, Tag } from "antd";
 import styles from "./styles.js";
@@ -8,6 +8,7 @@ import { IoSchoolSharp, IoHome, MdLocationOn } from "react-icons/all";
 import * as api from "../../api/group";
 import { Link } from "react-router-dom";
 import { GroupContext } from "../../pages/GroupPage/GroupPage";
+import * as apiUserInfo from "../../api/user_info";
 
 const { Text } = Typography;
 
@@ -38,6 +39,13 @@ function MemberRequests(props) {
   };
 
   const [userInfo, setUserInfo] = useState([]);
+
+  useEffect(() => {
+    apiUserInfo.fetchUserInfo(_id).then((res) => {
+      setUserInfo(res.data.userInfo);
+      console.log("thy", res.data.userInfo);
+    });
+  }, []);
 
   return (
     <>
