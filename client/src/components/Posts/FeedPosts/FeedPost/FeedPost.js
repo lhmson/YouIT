@@ -171,12 +171,12 @@ function FeedPost({ post, setCurrentId }) {
           </Menu.Item>
         </>
       )}
-      <Menu.Item key="hide" onClick={() => handleHidePost(post._id)}>
+      {/* <Menu.Item key="hide" onClick={() => handleHidePost(post._id)}>
         <Row align="middle">
           <StopOutlined className="mr-2" />
           <Text>Hide post</Text>
         </Row>
-      </Menu.Item>
+      </Menu.Item> */}
     </Menu>
   );
 
@@ -335,8 +335,7 @@ function FeedPost({ post, setCurrentId }) {
 
             <div className="mr-4">
               <Text className="clickable" underline type="secondary">
-                Last edited {moment(post.updatedAt).fromNow()}
-                {/* {post?.updatedAt.toString().slice(0, 10)} */}
+                Last edited {moment(post?.contentUpdatedAt).fromNow()}
               </Text>
             </div>
             <Dropdown

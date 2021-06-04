@@ -162,7 +162,7 @@ function Navbar({ selectedMenu, setTxtSearch, txtInitSearch }) {
         </Menu.Item>
 
         <Menu.Item key="avatar" className="text-center navitem">
-          <Space>
+          <Tooltip title={user?.result?.name} placement="bottom">
             <Avatar
               size="large"
               alt={user?.result?.name}
@@ -175,16 +175,7 @@ function Navbar({ selectedMenu, setTxtSearch, txtInitSearch }) {
                 {user?.result?.name}
               </Link>
             </Avatar>
-
-            {!isSmallScreen && (
-              <Link
-                to={`/userinfo/${user?.result._id}`}
-                style={{ color: COLOR.white }}
-              >
-                {user?.result?.name}
-              </Link>
-            )}
-          </Space>
+          </Tooltip>
         </Menu.Item>
       </Menu>
     );

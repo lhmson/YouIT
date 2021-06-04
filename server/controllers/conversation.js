@@ -43,6 +43,7 @@ export const createConversation = async (req, res, next) => {
       ...conversation,
       listOwners,
       listMembers,
+      messageUpdatedAt: Date.now(),
     });
 
     await newConversation.save();
@@ -201,7 +202,7 @@ export const getConversationsOfUser = async (req, res, next) => {
 
   try {
     await Conversation.find()
-      .sort({ updatedAt: -1 })
+      .sort({ messageUpdatedAt: -1 })
       .populate({
         path: `listMessages`,
         model: `Message`,

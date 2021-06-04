@@ -35,11 +35,17 @@ const conversationSchema = mongoose.Schema(
       {
         type: mongoose.Types.ObjectId,
         ref: "Message",
-      }
+      },
     ],
+
+    messageUpdatedAt: {
+      type: Date,
+      required: true,
+      default: new Date(),
+    },
   },
   {
-    timestamps: true
+    timestamps: true,
   }
 );
 

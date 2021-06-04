@@ -130,24 +130,25 @@ export const removeInteraction = (post, userId, interactionType) => {
  * @param {boolean=} allowedUnjoinedGroups
  * @returns {boolean}
  */
-export const isPostVisibleByUser = async (
-  post,
-  userId,
-) => {
+export const isPostVisibleByUser = async (post, userId) => {
   if (post.privacy === "Group") {
-    const group = (await Group.findById(post?.groupPostInfo?.groupId));
+    const group = await Group.findById(post?.groupPostInfo?.groupId);
 
-    if (!group)
-      return false;
+    if (!group) return false;
 
     if (post?.groupPostInfo?.status !== "Approved") {
       // the user can still see post from herself/himself even if it's not approved
-      if (post.userId.equals(userId))
-        return true;
+      if (post.userId.equals(userId)) return true;
 
       // only group moderator, admin and owner can see this post
-      const userRoleInGroup = group?.listMembers?.find(member => member?.userId?.equals(userId))?.role;
-      if (userRoleInGroup === "Moderator" || userRoleInGroup === "Admin" || userRoleInGroup === "Owner")
+      const userRoleInGroup = group?.listMembers?.find((member) =>
+        member?.userId?.equals(userId)
+      )?.role;
+      if (
+        userRoleInGroup === "Moderator" ||
+        userRoleInGroup === "Admin" ||
+        userRoleInGroup === "Owner"
+      )
         return true;
 
       return false;
@@ -165,6 +166,23 @@ export const isPostVisibleByUser = async (
       return rela === "Friend" || rela === "Self";
     case "Private":
       return rela === "Self";
+  }
+
+  return false;
+};
+
+export const isPostUpdated = (oldPost, updatedPost) => {
+  if (oldPost.title !== updatedPost.title) {
+    return true;
+  }
+  if (oldPost.content?.text !== updatedPost.content?.text) {
+    return true;
+  }
+  if (oldPost.content.pinnedUrl !== updatedPost.content.pinnedUrl) {
+    return true;
+  }
+  if (oldPost.privacy !== updatedPost.privacy) {
+    return true;
   }
 
   return false;

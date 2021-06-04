@@ -260,7 +260,7 @@ function ChatSidebar({
                     </Badge>
                     <div className="title-text">{item?.title}</div>
                     <div className="update-date">
-                      {moment(item?.updatedAt).fromNow()}
+                      {moment(item?.messageUpdatedAt).fromNow()}
                     </div>
                     <div
                       className="conversation-message"
@@ -268,6 +268,9 @@ function ChatSidebar({
                         fontWeight: listUnseenConversations.includes(item._id)
                           ? "bold"
                           : "normal",
+                        color: listUnseenConversations.includes(item._id)
+                          ? COLOR.darkGreen
+                          : COLOR.gray,
                       }}
                     >
                       {item?.listMessages?.[0]?.text ??
