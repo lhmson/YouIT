@@ -255,7 +255,8 @@ export const getUnseenConversationIds = async (req, res, next) => {
     const conversations = await Conversation.find();
 
     conversations.forEach((c) => {
-      if (!isConversationSeenByUser(userId, c)) result.push(c._id.toString());
+      if (isMemberOfConversation(userId, c) && !isConversationSeenByUser(userId, c))
+        result.push(c._id.toString());
     });
 
     return res.status(httpStatusCodes.ok).send(result);
