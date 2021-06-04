@@ -66,7 +66,13 @@ const SearchAllResult = ({ txtSearch }) => {
     () =>
       listGroup?.map((group, i) => {
         return (
-          <GroupCard key={i} _id={group._id} nameGroup={group.name}></GroupCard>
+          <GroupCard
+            key={i}
+            _id={group._id}
+            nameGroup={group.name}
+            description={group.description}
+            totalMembers={group.listMembers?.length}
+          ></GroupCard>
         );
       }),
     [listGroup]
