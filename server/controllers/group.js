@@ -115,9 +115,7 @@ export const createGroup = async (req, res) => {
  */
 export const addGroupMember = async (req, res) => {
   const { groupId, memberId } = req.params;
-  console.log("thyyyyyyyyyyyyyyyyyy");
-  console.log("groupid", groupId);
-  console.log("userid", memberId);
+
   //const { role } = req.query ?? "Member";
   const role = "Member";
   const addMember = { role, userId: memberId };
@@ -142,6 +140,17 @@ export const addGroupMember = async (req, res) => {
       .status(httpStatusCodes.internalServerError)
       .json({ message: error.message });
   }
+};
+
+/**
+ * @param {express.Request<ParamsDictionary, any, any, QueryString.ParsedQs, Record<string, any>>} req
+ * @param {express.Response<any, Record<string, any>, number>} res
+ * @param {express.NextFunction} next
+ */
+export const inviteFriends = async (req, res) => {
+  const { groupId, userId } = req.params;
+  const listInvitedFriends = req.body;
+  // thyyyyy
 };
 
 export const addGroupPendingMember = async (req, res) => {

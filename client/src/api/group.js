@@ -21,4 +21,7 @@ export const leaveGroup = (groupId, userId) =>
 export const addGroupMember = (groupId, memberId) =>
   API.put(`/group/${groupId}/addGroupMember/${memberId}`);
 
+export const inviteFriends = (groupId, userId) =>
+  API.post(`/group/${groupId}/inviteFriends/${userId}`);
+
 export const deleteGroup = (id) => API.delete(`/group/${id}`);

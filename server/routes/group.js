@@ -12,6 +12,7 @@ import {
   deleteMember,
   leaveGroup,
   getPendingGroups,
+  inviteFriends,
 } from "../controllers/group.js";
 import auth from "../middleware/auth.js";
 import { haveGroupPermission, isOwner } from "../middleware/groupRole.js";
@@ -31,6 +32,7 @@ router.put(
   // haveGroupPermission("Admin"),
   addGroupMember
 );
+
 router.put("/:id/addPendingMember/:memberId", auth, addGroupPendingMember);
 router.put(
   "/:id/removePendingMember/:memberId",
@@ -39,6 +41,8 @@ router.put(
 );
 router.put("/:groupId/deleteMember/:deletedUserId", auth, deleteMember);
 router.put("/:id/leaveGroup/:userId", auth, leaveGroup);
+
+router.post("/:groupId/inviteFriends/:userId", auth, inviteFriends);
 
 router.delete("/:id", auth, isOwner, deleteGroup);
 

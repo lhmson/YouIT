@@ -43,7 +43,6 @@ function MemberRequests(props) {
   useEffect(() => {
     apiUserInfo.fetchUserInfo(_id).then((res) => {
       setUserInfo(res.data.userInfo);
-      console.log("thy", res.data.userInfo);
     });
   }, []);
 

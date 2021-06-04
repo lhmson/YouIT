@@ -9,7 +9,7 @@ function PostRequests(props) {
   const { nameOwner } = props;
   const { content } = props;
   const { _idOwnerPost } = props;
-  console.log("thycute", _idOwnerPost);
+
   return (
     <>
       <div style={styles.card}>

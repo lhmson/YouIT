@@ -13,7 +13,6 @@ function PostRequestsResult() {
       .then((res) => {
         if (res.data instanceof Array) setListPostRequest(res.data);
         else setListPostRequest([]);
-        console.log("thyyyyy", res.data);
       })
       .catch((e) => {
         console.log(e);

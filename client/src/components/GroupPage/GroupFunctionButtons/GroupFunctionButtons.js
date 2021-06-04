@@ -40,8 +40,15 @@ function GroupFunctionButtons() {
     setVisibleAdd(visibleAdd);
   };
 
-  const handleInvite = () => {
-    // chỗ này làm cái noti gửi link group qua cho cái {listYourFriend} giúp t
+  const handleInvite = (listInvitedFriends) => {
+    // chỗ này làm cái noti gửi link group qua cho cái {listInvitedFriends} giúp t
+    //thyyy
+    apiGroup
+      .inviteFriends(listInvitedFriends)
+      .then((res) => {
+        message.success(res.data.message);
+      })
+      .catch((error) => message.success(error.message));
   };
 
   const handleDeleteGroup = (id) => {
@@ -128,7 +135,7 @@ function GroupFunctionButtons() {
     );
   };
 
-  const listYourFriend = useMemo(
+  const listInvitedFriends = useMemo(
     () =>
       listFriends?.map((user, i) => {
         if (!isFriendJoinedGroup(user._id))
@@ -167,7 +174,9 @@ function GroupFunctionButtons() {
             <Popover
               content={
                 <>
-                  <Button onClick={() => handleInvite()}>OK</Button>
+                  <Button onClick={() => handleInvite(listInvitedFriends)}>
+                    OK
+                  </Button>
                 </>
               }
               title={
@@ -179,7 +188,7 @@ function GroupFunctionButtons() {
                     onChange={handleChangeUserToInvite}
                     style={{ width: "100%" }}
                   >
-                    {listYourFriend}
+                    {listInvitedFriends}
                   </Select>
                 </div>
               }
