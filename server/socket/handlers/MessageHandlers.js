@@ -47,8 +47,4 @@ export const setUpOnReceiveMessages = (cuteIO) => {
     )
 
   })
-
-  cuteIO.queueReceiveHandler("Message-seen", params => {
-    // only send when something is updated
-  })
 }

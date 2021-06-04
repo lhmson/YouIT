@@ -27,6 +27,8 @@ import CuteServerIO from "./socket/CuteServerIO.js";
 import friendRouter from "./routes/friend.js";
 import { setUpCuteIO } from "./socket/handlers/allHandlers.js";
 import hashtagRouter from "./routes/hashtag.js";
+import UsersStatusManager from "./businessLogics/userStatus.js";
+import { notifyUserStatusToFriendsFunc } from "./businessLogics/user.js";
 
 dotenv.config();
 
@@ -42,6 +44,9 @@ const io = new Server(server, {
 });
 
 export const cuteIO = new CuteServerIO(io);
+export const usersStatusManager = new UsersStatusManager();
+usersStatusManager.init(cuteIO);
+usersStatusManager.onUserStatusChange(notifyUserStatusToFriendsFunc(cuteIO))
 setUpCuteIO(cuteIO);
 cuteIO.start();
 
