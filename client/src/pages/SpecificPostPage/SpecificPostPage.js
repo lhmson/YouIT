@@ -185,7 +185,7 @@ function SpecificPostPage(props) {
       <Layout>
         <Navbar />
         <div style={styles.mainArea} className="row">
-          <div className="col-sm-8 mb-4">
+          <div className="col-md-8 mb-4">
             <div>
               <Card style={{ padding: 16 }}>
                 {post ? <FullPost post={post} /> : <Loading />}
@@ -246,7 +246,7 @@ function SpecificPostPage(props) {
               </Card>
             </div>
           </div>
-          <div className="col-sm-4">
+          <div className="col-md-4">
             <RelatedCard title="From this user" posts={otherPosts} />
             <RelatedCard title="Related posts" posts={otherPosts} />
           </div>

@@ -139,7 +139,6 @@ function GroupPage(props) {
                         style={{
                           display: "flex",
                           alignItems: "center",
-                          // >>>>>>> 098a8ac7966c917f19624865c1d0397ae2264172
                         }}
                       >
                         <GoSearch

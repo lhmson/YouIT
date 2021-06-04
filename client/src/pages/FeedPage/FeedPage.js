@@ -14,13 +14,7 @@ function FeedPage() {
     <>
       <Layout>
         <Navbar />
-        {/* <Layout> */}
         <Layout style={styles.mainArea}>
-          {/* <div className="feed-container">
-              <FeedSidebar className="sidebar" />
-              <FeedPosts className="content" id="scrollableDiv" />
-            </div> */}
-          {/* <FeedPosts /> */}
           <div className="feed-container">
             <FeedSidebar className="sidebar" />
             <div className="mainContent" id="scrollableDiv">
@@ -28,7 +22,6 @@ function FeedPage() {
             </div>
           </div>
         </Layout>
-        {/* </Layout> */}
       </Layout>
     </>
   );

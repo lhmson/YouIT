@@ -1,18 +1,48 @@
-import { Button, message, Row } from "antd";
-import React, { useContext } from "react";
+import { Button, message, Row, Select, Popover } from "antd";
+import React, { useState, useEffect, useContext } from "react";
 import styles from "./styles.js";
-import * as api from "../../../api/group";
+import { PlusCircleOutlined } from "@ant-design/icons";
+
 import { useHistory } from "react-router";
 import { GroupContext } from "../../../pages/GroupPage/GroupPage";
+
+import * as apiGroup from "../../../api/group";
+import * as apiFriend from "../../../api/friend";
+
+const { Option } = Select;
 
 function GroupFunctionButtons() {
   const user = JSON.parse(localStorage.getItem("user"))?.result;
 
+  const [visibleAdd, setVisibleAdd] = useState(false); // select display
+
+  const [listFriends, setListFriends] = useState([]);
+
+  const [usersToInvite, setUsersToInvite] = useState([]);
+
   const history = useHistory();
   const { group, setGroup } = useContext(GroupContext);
 
+  useEffect(() => {
+    apiFriend.fetchListMyFriends(user?.result?._id).then((res) => {
+      setListFriends(
+        res.data?.map((item, i) => ({ _id: item._id, name: item.name }))
+      );
+    });
+  }, []);
+
+  const handleChangeUserToInvite = (value, options) => {
+    setUsersToInvite(options?.map((item) => item.key));
+  };
+
+  const handleVisibleChange = (visibleAdd) => {
+    setVisibleAdd(visibleAdd);
+  };
+
+  const handleInvite = () => {};
+
   const handleDeleteGroup = (id) => {
-    api
+    apiGroup
       .deleteGroup(id)
       .then((res) => {
         message.success(res.data.message);
@@ -42,19 +72,22 @@ function GroupFunctionButtons() {
   };
 
   const joinGroup = async () => {
-    const { data } = await api.addPendingMemberGroup(group?._id, user?._id);
+    const { data } = await apiGroup.addPendingMemberGroup(
+      group?._id,
+      user?._id
+    );
     setGroup(data);
   };
 
   const cancelJoinRequest = async () => {
-    const { data } = await api.removePendingMember(group?._id, user?._id);
+    const { data } = await apiGroup.removePendingMember(group?._id, user?._id);
     setGroup(data);
   };
 
   const isOwner = (user) => {
     let isOwner = false;
     group?.listMembers.forEach((member) => {
-      if (member?.userId == user?._id) {
+      if (member?.userId === user?._id) {
         if (member?.role !== "Member") isOwner = true;
       }
     });
@@ -105,9 +138,43 @@ function GroupFunctionButtons() {
             <Button type="primary" style={styles.button}>
               Create Post
             </Button>
-            <Button type="primary" style={styles.button}>
+            {/* <Button type="primary" style={styles.button}>
               Invite
-            </Button>
+            </Button> */}
+
+            <Popover
+              content={
+                <>
+                  <Button onClick={() => handleInvite()}>OK</Button>
+                </>
+              }
+              title={
+                <div>
+                  <Select
+                    mode="tags"
+                    placeholder="Invite friend"
+                    value={usersToInvite}
+                    onChange={handleChangeUserToInvite}
+                    style={{ width: "100%" }}
+                  >
+                    {listFriends?.map((item) => (
+                      <Option key={item._id}>{item.name}</Option>
+                    ))}
+                  </Select>
+                </div>
+              }
+              trigger="click"
+              visible={visibleAdd}
+              onVisibleChange={handleVisibleChange}
+            >
+              <Button
+                className="d-flex justify-content-center align-items-center green-button mr-3"
+                icon={<PlusCircleOutlined />}
+              >
+                Invite
+              </Button>
+            </Popover>
+
             {isOwner(user) ? (
               <Button
                 type="primary"
