@@ -48,7 +48,7 @@ function GroupManagementPage() {
       .catch((e) => {
         console.log(e);
       });
-  }, [user, update]);
+  }, [user,update]);
 
   const numberTotalGroup = listGroup.length;
 
@@ -72,8 +72,8 @@ function GroupManagementPage() {
             description={group.description}
             totalMembers={group.listMembers?.length}
             joined={mode === "Groups"}
-            update={update}
-            setUpdate={setUpdate}
+            update = {update}
+            setUpdate = {setUpdate}
           ></GroupJoinedCard>
         );
       }),

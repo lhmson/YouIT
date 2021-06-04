@@ -67,7 +67,7 @@ function SearchSidebar(props) {
           style={styles.item}
           icon={<Avatar style={styles.transparent} />}
         >
-          Post
+          Posts
         </Menu.Item>
         <Menu.Item
           onClick={() => props.setModeSearch("User")}
@@ -75,7 +75,7 @@ function SearchSidebar(props) {
           style={styles.item}
           icon={<Avatar style={styles.transparent} />}
         >
-          User
+          People
         </Menu.Item>
         {/* </SubMenu> */}
 
@@ -85,7 +85,7 @@ function SearchSidebar(props) {
           style={styles.item}
           icon={<Avatar style={styles.transparent} />}
         >
-          Group
+          Groups
         </Menu.Item>
       </Menu>
     </Sider>

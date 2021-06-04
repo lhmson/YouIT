@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from "react";
 import GroupCard from "../../../components/GroupCard/GroupCard";
 import * as api from "../../../api/search";
-import ErrorPage from "../../../pages/ErrorPage/ErrorPage";
+import NoDataSearch from "../../../components/NoDataSearch/NoDataSearch";
 
 const SearchGroupResult = ({ txtSearch }) => {
   const [listGroup, setListGroup] = useState([]);
@@ -38,7 +38,7 @@ const SearchGroupResult = ({ txtSearch }) => {
   return (
     <div className="col-12">
       <div
-        className="row"
+        className="col-12"
         style={{
           paddingTop: 16,
           paddingLeft: 32,
@@ -46,7 +46,7 @@ const SearchGroupResult = ({ txtSearch }) => {
         }}
       >
         {listGroupCard.length === 0 ? (
-          <ErrorPage code={404}></ErrorPage>
+          <NoDataSearch></NoDataSearch>
         ) : (
           listGroupCard
         )}
