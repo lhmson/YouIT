@@ -15,14 +15,15 @@ function AdminGroupSidebar(props) {
   const [user, setUser] = useLocalStorage("user");
   const { group } = useContext(GroupContext);
 
-  const isOwner = (user) => {
-    let isOwner = false;
+  const isAdmin = (user) => {
+    let isAdmin = false;
     group?.listMembers.forEach((member) => {
       if (member?.userId == user?.result?._id) {
-        if (member?.role !== "Member") isOwner = true;
+        if (member?.role === "Member" || member?.role === "Owner")
+          isAdmin = true;
       }
     });
-    return isOwner;
+    return isAdmin;
   };
 
   return (
@@ -55,7 +56,7 @@ function AdminGroupSidebar(props) {
         >
           Your Group
         </Menu.Item>
-        {isOwner(user) ? (
+        {isAdmin(user) ? (
           <Menu.Item
             key="memberRequests"
             style={styles.item}
@@ -67,7 +68,7 @@ function AdminGroupSidebar(props) {
         ) : (
           ""
         )}
-        {isOwner(user) ? (
+        {isAdmin(user) ? (
           <Menu.Item
             key="approvePosts"
             style={styles.item}

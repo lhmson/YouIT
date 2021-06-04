@@ -19,7 +19,7 @@ import COLOR from "../../constants/colors.js";
 import { useHistory } from "react-router";
 import { useDispatch } from "react-redux";
 import { createGroup } from "../../api/group";
-import { CoverPhoto } from "../../components/index.js";
+import CoverPhoto from "../../components/CreateGroup/CoverPhoto/CoverPhoto.js";
 import { BsThreeDots } from "react-icons/bs";
 import { GoSearch } from "react-icons/go";
 import { MailOutlined } from "@ant-design/icons";
@@ -95,9 +95,6 @@ function CreateGroupPage() {
     // });
   };
 
-  const Description =
-    "ZZZ zzzZZZ zzzZZZ zzzZZZ zzzZZZ zzzZZZ zzzZZZ zzzZZZ zzzZZZ zzzZZZ zzzZZZ zzzZZZ zzzZZZ zzzZZZ zzzZZZZZZ zzzZZZ zzzZZZ zzzZZZ zzzZZZ zzzZZZ zzzZZZ zzzZZZ zzzZZZ zzzZZZ zzz zzzZZZ zzzZZZ zzzZZZ zzzZZZ zzzZZZ zzz";
-
   const privacyDescription =
     "Anyone can see who's in the group and what they post.";
 
@@ -169,6 +166,7 @@ function CreateGroupPage() {
                     >
                       <Select
                         placeholder="Privacy"
+                        defaultValue="Public"
                         value={groupPrivacy}
                         onChange={handleSelectPrivacy}
                         style={{ width: "100%" }}
@@ -197,6 +195,7 @@ function CreateGroupPage() {
                         value={groupTopic}
                         onChange={handleSelectTopic}
                         style={{ width: "100%" }}
+                        defaultValue="General"
                       >
                         {optionsTopic.map((option) => (
                           <option key={option} value={option}>
@@ -259,25 +258,6 @@ function CreateGroupPage() {
                       </Layout>
                     </Col>
                   </Row>
-                  <Row>
-                    <Col span={6}>
-                      <Menu mode="horizontal" style={{ marginBottom: 10 }}>
-                        <Menu.Item key="post" icon={<MailOutlined />}>
-                          Post
-                        </Menu.Item>
-
-                        <Menu.Item key="about" icon={<MailOutlined />}>
-                          About
-                        </Menu.Item>
-                      </Menu>
-                    </Col>
-                    <Col span={16}></Col>
-                    <Col span={2} style={{ marginRight: 0 }}>
-                      <GoSearch size={24} style={styles.icon} />
-                      <BsThreeDots size={24} style={styles.icon} />
-                    </Col>
-                  </Row>
-                  {/* <GroupAboutCard /> */}
                   <Layout
                     style={{
                       marginBottom: 32,
@@ -290,11 +270,7 @@ function CreateGroupPage() {
                     </Text>
                     <Layout style={{ paddingLeft: 32, background: "white" }}>
                       <Divider style={{ justifySelf: "start" }}></Divider>
-                      <Text>
-                        {groupDescription != ""
-                          ? groupDescription
-                          : Description}
-                      </Text>
+                      <Text>{groupDescription}</Text>
                       <Row>
                         <OverviewRow
                           firstIcon={

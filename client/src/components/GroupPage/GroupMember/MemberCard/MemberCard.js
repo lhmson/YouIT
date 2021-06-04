@@ -69,14 +69,15 @@ function MemberCard(props) {
       .catch((error) => message.success(error.message));
   };
 
-  const isOwner = (user) => {
-    let isOwner = false;
+  const isAdmin = (user) => {
+    let isAdmin = false;
     group?.listMembers.forEach((member) => {
       if (member?.userId == user?.result?._id) {
-        if (member?.role !== "Member") isOwner = true;
+        if (member?.role === "Member" || member?.role === "Owner")
+          isAdmin = true;
       }
     });
-    return isOwner;
+    return isAdmin;
   };
 
   const menuMore = (
@@ -87,7 +88,7 @@ function MemberCard(props) {
         </Row>
       </Menu.Item>
       <Menu.Item
-        key="logout"
+        key="removeMember"
         onClick={() => {
           handleRemoveMember(group?._id, _id);
         }}
@@ -172,7 +173,7 @@ function MemberCard(props) {
             >
               {txtButton}
             </Button>
-            {isOwner(user) ? (
+            {isAdmin(user) ? (
               <Dropdown
                 overlay={menuMore}
                 trigger={["click"]}

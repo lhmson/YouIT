@@ -1,8 +1,8 @@
-import { Layout, Row, Dropdown, Menu, Typography, message } from "antd";
+import { Layout, Row, Dropdown, Menu, Typography, message, Modal } from "antd";
 import Sider from "antd/lib/layout/Sider";
 import React, { createContext, useEffect, useState } from "react";
 // import { BsThreeDots } from "react-icons/bs";
-import { EllipsisOutlined } from "@ant-design/icons";
+import { EllipsisOutlined, ExclamationCircleOutlined } from "@ant-design/icons";
 import { GoSearch } from "react-icons/go";
 import {
   AdminGroupSidebar,
@@ -16,7 +16,6 @@ import {
   GroupMember,
 } from "../../components/index.js";
 import { useLocation } from "react-router";
-import styles from "./styles.js";
 import * as api from "../../api/group";
 import MemberRequestsResult from "../RequestsInGroupsPage/MemberRequestsResult/MemberRequestsResult.js";
 import PostRequestsResult from "../RequestsInGroupsPage/PostRequestsResult/PostRequestsResult.js";
@@ -24,6 +23,8 @@ import PostRequestsResult from "../RequestsInGroupsPage/PostRequestsResult/PostR
 import COLOR from "../../constants/colors.js";
 import { useLocalStorage } from "../../hooks/useLocalStorage.js";
 import { useHistory } from "react-router";
+import styles from "./styles.js";
+
 const { Content } = Layout;
 const { Text } = Typography;
 export const GroupContext = createContext({
@@ -41,20 +42,10 @@ function GroupPage(props) {
   const [modeSearch, setModeSearch] = useState("group");
   const [user, setUser] = useLocalStorage("user");
   const history = useHistory();
-  const handleRemoveMember = async (groupId, userId) => {
-    // apiGroup
-    //   .deleteMember(groupId, userId)
-    //   .then((res) => {
-    //     message.success(res.data.message);
-    //     // history.push(`/group/${groupId}/members`);
-    //     window.location.reload();
-    //   })
-    //   .catch((error) => message.success(error.message));
-  };
+
+  const { confirm } = Modal;
 
   const handleLeaveGroup = async (id, userId) => {
-    console.log("groupid", id);
-    console.log("userid", userId);
     api
       .leaveGroup(id, userId)
       .then((res) => {
@@ -64,12 +55,53 @@ function GroupPage(props) {
       .catch((error) => message.success(error.message));
   };
 
+  const isOwner = (user) => {
+    let isOwner = false;
+    group?.listMembers.forEach((member) => {
+      if (member?.userId === user?.result?._id) {
+        if (member?.role === "Owner") isOwner = true;
+      }
+    });
+    return isOwner;
+  };
+
+  const handleDeleteGroup = (id) => {
+    api
+      .deleteGroup(id)
+      .then((res) => {
+        message.success(res.data.message);
+        history.push(`/group/create`);
+      })
+      .catch((error) => message.success(error.message));
+  };
+
+  const showDeleteConfirm = (id) => {
+    confirm({
+      title: "Are you sure leave this group?",
+      icon: <ExclamationCircleOutlined />,
+      content: "If you leave this group, this group will be deleted ",
+      okText: "Yes",
+      okType: "danger",
+      cancelText: "No",
+      onOk() {
+        handleDeleteGroup(id);
+      },
+      onCancel() {
+        console.log("Cancel");
+      },
+    });
+  };
+
   const menuMore = (
     <Menu>
       <Menu.Item
-        key="logout"
+        key="leaveGroup"
         onClick={() => {
-          handleLeaveGroup(id, user?.result?._id);
+          {
+            isOwner(user)
+              ? showDeleteConfirm(id)
+              : handleLeaveGroup(id, user?.result?._id);
+          }
         }}
       >
         <Row align="middle">
