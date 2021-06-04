@@ -6,25 +6,38 @@ import {
   addGroupMember,
   getJoinedGroups,
   addGroupPendingMember,
+  removeGroupPendingMember,
   getListMembers,
   getListPendingMembers,
   deleteMember,
   leaveGroup,
+  getPendingGroups,
 } from "../controllers/group.js";
 import auth from "../middleware/auth.js";
-import { isOwner } from "../middleware/groupRole.js";
+import { haveGroupPermission, isOwner } from "../middleware/groupRole.js";
 const router = express.Router();
 
 router.get("/:id", auth, getAGroup);
 router.get("/list/joinedByMe", auth, getJoinedGroups);
 router.get("/:id/members", auth, getListMembers);
 router.get("/:id/pendingMembers", auth, getListPendingMembers);
+router.get("/list/pendingByMe", auth, getPendingGroups);
 
 router.post("/", auth, createGroup);
 
-router.put("/:id/addMember/:memberId", auth, addGroupMember);
+router.put(
+  "/:groupId/addMember/:memberId",
+  auth,
+  haveGroupPermission("Admin"),
+  addGroupMember
+);
 router.put("/:id/addPendingMember/:memberId", auth, addGroupPendingMember);
-router.put("/:id/deleteMember/:deletedUserId", auth, isOwner, deleteMember);
+router.put(
+  "/:id/removePendingMember/:memberId",
+  auth,
+  removeGroupPendingMember
+);
+router.put("/:groupId/deleteMember/:deletedUserId", auth, deleteMember);
 router.put("/:id/leaveGroup/:userId", auth, leaveGroup);
 
 router.delete("/:id", auth, isOwner, deleteGroup);

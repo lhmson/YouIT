@@ -1,10 +1,9 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { Button, Typography, List } from "antd";
-import { Avatar, Tag, Popover, message } from "antd";
-import styles from "./styles.js";
+import { Avatar, Tag, Popover } from "antd";
+import styles from "../UserCard/styles.js";
 import { Link, useHistory, useLocation } from "react-router-dom";
 import * as api from "../../api/friend";
-import { checkUserASendedUserB } from "../../api/friendRequest";
 import { useLocalStorage } from "../../hooks/useLocalStorage";
 import {
   createFriendRequest,
@@ -26,29 +25,19 @@ import { useDispatch, useSelector } from "react-redux";
 
 const { Title, Text } = Typography;
 
-function UserCard(props) {
+function UserRequestCard(props) {
   const dispatch = useDispatch();
   const [user, setUser] = useLocalStorage("user");
   const { name } = props;
   const { _id } = props;
+  const { updateData, setUpdateData } = props;
   const [numberMutual, setNumberMutual] = useState(0);
   const [txtButton, setTxtButton] = useState(
     props.relationship ?? "Add Friend"
   );
   const [listMutual, setListMutual] = useState([]);
+  const [matchingFriendRequest, setMatchingFriendRequest] = useState(null);
 
-  const handleAddingFriend = async (confirmId, senderId) => {
-    // create friend request
-    const friendRequest = {
-      userConfirmId: confirmId,
-      userSendRequestId: senderId,
-    };
-    const { data } = await createFriendRequest(friendRequest);
-
-    dispatch(addFriendRequest(data));
-    await addSendingFriendRequest(data);
-  };
-  // xem lai ham nay, cach khac
   const getMatchFriendRequest = async () => {
     const listFriendRequests = (await fetchAllFriendRequests()).data;
 
@@ -64,27 +53,39 @@ function UserCard(props) {
   const cancelFriendRequest = async (request) => {
     deleteFriendRequest(request?._id);
 
-    if (user?._id === request?.userConfirmId) {
+    if (user?.result._id === request?.userConfirmId) {
       await removeSendingFriendRequest(request);
-    } else if (user?._id === request?.userSendRequestId) {
+    } else if (user?.result._id === request?.userSendRequestId) {
       await removeReceivingFriendRequest(request);
     }
-    dispatch(removeFriendRequest(request, user));
+    dispatch(removeFriendRequest(request, user?.result));
   };
 
-  const changeStateButton = async () => {
-    if (txtButton === "Add Friend") {
-      message.success("You sended request successfully");
-      await handleAddingFriend(_id, user?.result?._id);
-      setTxtButton("Cancel Request");
-    } else if (txtButton === "Cancel Request") {
-      message.success("You cancel request successfully");
-      await cancelFriendRequest(await getMatchFriendRequest());
-      setTxtButton("Add Friend");
-    } else if (txtButton === "Waiting you accept") {
-      message.info("You can go to the user profile to accept or deny");
+  const acceptFriendRequest = async () => {
+    await addFriend(user?.result, { _id: _id });
+
+    if (matchingFriendRequest) {
+      const request = matchingFriendRequest;
+      await cancelFriendRequest(request);
     }
+
+    setUpdateData(!updateData);
   };
+
+  const denyFriendRequest = async () => {
+    if (matchingFriendRequest) {
+      const request = matchingFriendRequest;
+      await cancelFriendRequest(request);
+    }
+    setUpdateData(!updateData);
+  };
+
+  useEffect(() => {
+    async function act() {
+      setMatchingFriendRequest(await getMatchFriendRequest());
+    }
+    act();
+  }, [user]);
 
   useEffect(() => {
     api
@@ -125,24 +126,6 @@ function UserCard(props) {
       });
   }, []);
 
-  useEffect(() => {
-    checkUserASendedUserB(user?.result?._id, _id)
-      .then((res) => {
-        if (res.data) setTxtButton("Cancel Request");
-      })
-      .catch((e) => {
-        console.log(e);
-      });
-
-    checkUserASendedUserB(_id, user?.result?._id)
-      .then((res) => {
-        if (res.data) setTxtButton("Waiting you accept");
-      })
-      .catch((e) => {
-        console.log(e);
-      });
-  }, []);
-
   const popupListMutualFriend = (data) => {
     return (
       <>
@@ -172,7 +155,6 @@ function UserCard(props) {
             style={{
               display: "flex",
               justifyContent: "center",
-              minWidth: 600,
             }}
           >
             <Avatar
@@ -206,7 +188,22 @@ function UserCard(props) {
             }}
           >
             <Button
-              onClick={changeStateButton}
+              onClick={acceptFriendRequest}
+              className="mb-2"
+              type="primary"
+              style={{
+                background: "#27AE60",
+                borderColor: "#27AE60",
+                color: "white",
+                fontWeight: 500,
+                marginRight: 8,
+              }}
+            >
+              Accept
+            </Button>
+
+            <Button
+              onClick={denyFriendRequest}
               className="mb-2"
               type="primary"
               style={{
@@ -216,7 +213,7 @@ function UserCard(props) {
                 fontWeight: 500,
               }}
             >
-              {txtButton}
+              Deny
             </Button>
             <div>
               <Popover
@@ -245,4 +242,4 @@ function UserCard(props) {
   );
 }
 
-export default UserCard;
+export default UserRequestCard;

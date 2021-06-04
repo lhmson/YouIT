@@ -20,12 +20,13 @@ function RelatedCard(props) {
           <Row key={i} className="mb-3" align="middle">
             <Col span={4} justify="center">
               <Tag color={COLOR.greenSmoke} style={styles.votesTag}>
-                {p.upvoters?.length + p.downvoters?.length}
+                {p.interactionInfo.listUpvotes.length -
+                  p.interactionInfo.listDownvotes.length}
               </Tag>
             </Col>
 
             <Col span={20} align="start" justify="center">
-              <Link to={`/posts/${p._id}`} className="clickable dark-green">
+              <Link to={`/post/${p._id}`} className="clickable dark-green">
                 {p.title}
               </Link>
             </Col>

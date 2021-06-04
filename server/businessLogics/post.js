@@ -133,14 +133,27 @@ export const removeInteraction = (post, userId, interactionType) => {
 export const isPostVisibleByUser = async (
   post,
   userId,
-  allowedUnjoinedGroups = true
 ) => {
   if (post.privacy === "Group") {
-    const group = (await Group.findById(post.groupPostInfo.groupId)).toObject();
+    const group = (await Group.findById(post?.groupPostInfo?.groupId));
 
-    if (!group) return false;
+    if (!group)
+      return false;
 
-    if (group.privacy === "Public" && allowedUnjoinedGroups) return true;
+    if (post?.groupPostInfo?.status !== "Approved") {
+      // the user can still see post from herself/himself even if it's not approved
+      if (post.userId.equals(userId))
+        return true;
+
+      // only group moderator, admin and owner can see this post
+      const userRoleInGroup = group?.listMembers?.find(member => member?.userId?.equals(userId))?.role;
+      if (userRoleInGroup === "Moderator" || userRoleInGroup === "Admin" || userRoleInGroup === "Owner")
+        return true;
+
+      return false;
+    }
+
+    if (group.privacy === "Public") return true;
     else return isMemberOfGroup(userId, group);
   }
 

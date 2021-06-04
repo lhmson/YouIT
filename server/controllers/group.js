@@ -1,8 +1,9 @@
 import express from "express";
 import Group from "../models/group.js";
-import User from "../models/user.js";
-import { groupMemberSchema } from "../models/groupMember.js";
-import { isMemberOfGroup } from "../businessLogics/group.js";
+import {
+  isMemberOfGroup,
+  isPendingMemberOfGroup,
+} from "../businessLogics/group.js";
 import { httpStatusCodes } from "../utils/httpStatusCode.js";
 
 /**
@@ -63,6 +64,24 @@ export const getJoinedGroups = async (req, res) => {
   }
 };
 
+export const getPendingGroups = async (req, res) => {
+  const { userId } = req;
+
+  if (!userId)
+    return res.status(httpStatusCodes.unauthorized).json({
+      message: "You must sign in to fetch list of your pending group",
+    });
+
+  try {
+    const groups = await (await Group.find())
+      .map((g) => g.toObject())
+      .filter((g) => isPendingMemberOfGroup(userId, g));
+    return res.status(httpStatusCodes.accepted).json(groups);
+  } catch (error) {
+    return res.status(httpStatusCodes.internalServerError).json({ error });
+  }
+};
+
 export const createGroup = async (req, res) => {
   const group = req.body;
 
@@ -89,17 +108,32 @@ export const createGroup = async (req, res) => {
   }
 };
 
+/**
+ * @param {express.Request<ParamsDictionary, any, any, QueryString.ParsedQs, Record<string, any>>} req
+ * @param {express.Response<any, Record<string, any>, number>} res
+ * @param {express.NextFunction} next
+ */
 export const addGroupMember = async (req, res) => {
-  const { id, memberId } = req.params;
-  const { role } = req.query ?? "Member";
+  const { groupId, memberId } = req.params;
+  //const { role } = req.query ?? "Member";
+  const role = "Member";
   const addMember = { role, userId: memberId };
-
   try {
-    await Group.findById(id).then(async (group) => {
-      group.listMembers.push(addMember);
-      await group.save();
-      return res.status(httpStatusCodes.ok).json(group);
-    });
+    const group = await Group.findById(groupId);
+    if (isMemberOfGroup(deletedUserId, group))
+      return res
+        .status(httpStatusCodes.badContent)
+        .json({ message: "User is a member of the group" });
+
+    group.listMembers.push(addMember);
+
+    // const newPendingMembers = group.listPendingMembers.filter(
+    //   (member) => member?.userId != memberId
+    // );
+    // group.listPendingMembers = newPendingMembers;
+
+    await group.save();
+    return res.status(httpStatusCodes.ok).json(group);
   } catch (error) {
     return res
       .status(httpStatusCodes.internalServerError)
@@ -138,6 +172,37 @@ export const addGroupPendingMember = async (req, res) => {
     group.listPendingMembers.push(pendingMember);
     await group.save();
     return res.status(httpStatusCodes.ok).json(group);
+  } catch (error) {
+    return res
+      .status(httpStatusCodes.internalServerError)
+      .json({ message: error.message });
+  }
+};
+
+/**
+ * @param {express.Request<ParamsDictionary, any, any, QueryString.ParsedQs, Record<string, any>>} req
+ * @param {express.Response<any, Record<string, any>, number>} res
+ * @param {express.NextFunction} next
+ */
+export const removeGroupPendingMember = async (req, res) => {
+  const { id, memberId } = req.params;
+
+  try {
+    const group = await Group.findById(id);
+
+    if (!group) {
+      return res
+        .status(httpStatusCodes.notFound)
+        .json({ message: "Group not exists" });
+    }
+
+    const newPendingMembers = group.listPendingMembers.filter(
+      (member) => member?.userId != memberId
+    );
+    group.listPendingMembers = newPendingMembers;
+
+    await group.save();
+    res.status(httpStatusCodes.ok).json(group);
   } catch (error) {
     return res
       .status(httpStatusCodes.internalServerError)
@@ -222,10 +287,12 @@ export const deleteGroup = async (req, res) => {
 };
 
 export const deleteMember = async (req, res) => {
-  const { id } = req.params;
+  const { groupId, deletedUserId } = req.params;
+  console.log("groupid", groupId);
+  console.log("userid", deletedUserId);
 
   try {
-    const group = await Group.findById(id);
+    const group = await Group.findById(groupId);
     if (!isMemberOfGroup(deletedUserId, group))
       return res
         .status(httpStatusCodes.badContent)
@@ -236,8 +303,10 @@ export const deleteMember = async (req, res) => {
         !member.userId.equals(deletedUserId) || member.role === "Owner"
     );
 
-    const newGroup = await Group.findByIdAndUpdate(id, group, { new: true });
-    // await group.save();
+    // const newGroup = await Group.findByIdAndUpdate(groupId, group, {
+    //   new: true,
+    // });
+    await group.save();
     // res.status(httpStatusCodes.ok).json(newGroup);
     res
       .status(httpStatusCodes.ok)

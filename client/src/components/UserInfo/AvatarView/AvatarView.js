@@ -20,7 +20,7 @@ const AvatarView = () => {
 
   // const backgroundUrl = ""
 
-  const displayName = user?.name ?? "Nguoi dung YouIT";
+  const displayName = user?.name ?? "";
 
   const EditImageButton = () => {
     if (isMyProfile) {

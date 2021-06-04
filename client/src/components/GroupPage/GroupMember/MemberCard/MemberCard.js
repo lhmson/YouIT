@@ -69,6 +69,16 @@ function MemberCard(props) {
       .catch((error) => message.success(error.message));
   };
 
+  const isOwner = (user) => {
+    let isOwner = false;
+    group?.listMembers.forEach((member) => {
+      if (member?.userId == user?.result?._id) {
+        if (member?.role !== "Member") isOwner = true;
+      }
+    });
+    return isOwner;
+  };
+
   const menuMore = (
     <Menu>
       <Menu.Item key="settings">
@@ -162,19 +172,23 @@ function MemberCard(props) {
             >
               {txtButton}
             </Button>
-            <Dropdown
-              overlay={menuMore}
-              trigger={["click"]}
-              placement="bottomCenter"
-            >
-              <EllipsisOutlined
-                style={{
-                  fontSize: 20,
-                  color: COLOR.black,
-                  marginLeft: 20,
-                }}
-              />
-            </Dropdown>
+            {isOwner(user) ? (
+              <Dropdown
+                overlay={menuMore}
+                trigger={["click"]}
+                placement="bottomCenter"
+              >
+                <EllipsisOutlined
+                  style={{
+                    fontSize: 20,
+                    color: COLOR.black,
+                    marginLeft: 20,
+                  }}
+                />
+              </Dropdown>
+            ) : (
+              ""
+            )}
             <div>
               <Popover
                 placement="bottom"

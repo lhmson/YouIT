@@ -3,6 +3,9 @@ import {
   UPDATE_USER,
   ADD_FRIEND_REQUEST,
   REMOVE_FRIEND_REQUEST,
+  UNFRIEND,
+  FOLLOW_USER,
+  UNFOLLOW_USER,
 } from "../actionTypes";
 import * as api from "../../api/user_info";
 
@@ -50,3 +53,30 @@ export const removeFriendRequest =
       console.log(error);
     }
   };
+
+export const unfriend = (userId, friendId) => async (dispatch) => {
+  try {
+    const { data } = await api.unfriend(userId, friendId);
+    dispatch({ type: UNFRIEND, payload: data });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const followUser = (followedId) => async (dispatch) => {
+  try {
+    const { data } = await api.followUser(followedId);
+    dispatch({ type: FOLLOW_USER, payload: data });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const unfollowUser = (followedId) => async (dispatch) => {
+  try {
+    const { data } = await api.unfollowUser(followedId);
+    dispatch({ type: UNFOLLOW_USER, payload: data });
+  } catch (error) {
+    console.log(error);
+  }
+};

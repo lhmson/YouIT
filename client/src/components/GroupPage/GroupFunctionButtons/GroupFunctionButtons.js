@@ -9,7 +9,7 @@ function GroupFunctionButtons() {
   const user = JSON.parse(localStorage.getItem("user"))?.result;
 
   const history = useHistory();
-  const { group } = useContext(GroupContext);
+  const { group, setGroup } = useContext(GroupContext);
 
   const handleDeleteGroup = (id) => {
     api
@@ -22,26 +22,61 @@ function GroupFunctionButtons() {
   };
 
   const isJoinedGroup = () => {
+    let isJoined = false;
     group?.listMembers.forEach((member) => {
-      if (member?.userId === user?._id) {
-        return true;
+      if (member?.userId == user?._id) {
+        isJoined = true;
       }
     });
-    return false;
+    return isJoined;
   };
 
-  const handleJoinGroup = () => {
-    const pendingMember = {
-      groupId: group?._id,
-      userId: user?._id,
-    };
-    // addGroupPendingMember(pendingMember);
-    api.addPendingMemberGroup(group?._id, user?._id);
+  const isSentJoinRequest = () => {
+    let isSent = false;
+    group?.listPendingMembers.forEach((pendingMem) => {
+      if (pendingMem?.userId == user?._id) {
+        isSent = true;
+      }
+    });
+    return isSent;
+  };
+
+  const joinGroup = async () => {
+    const { data } = await api.addPendingMemberGroup(group?._id, user?._id);
+    setGroup(data);
+  };
+
+  const cancelJoinRequest = async () => {
+    const { data } = await api.removePendingMember(group?._id, user?._id);
+    setGroup(data);
+  };
+
+  const isOwner = (user) => {
+    let isOwner = false;
+    group?.listMembers.forEach((member) => {
+      if (member?.userId == user?._id) {
+        if (member?.role !== "Member") isOwner = true;
+      }
+    });
+    return isOwner;
   };
 
   const JoinGroupButton = () => {
+    console.log(isSentJoinRequest());
+    if (isSentJoinRequest()) {
+      return (
+        <Button
+          type="primary"
+          style={styles.button}
+          onClick={cancelJoinRequest}
+        >
+          Cancel Request
+        </Button>
+      );
+    }
+
     return (
-      <Button type="primary" style={styles.button} onClick={handleJoinGroup}>
+      <Button type="primary" style={styles.button} onClick={joinGroup}>
         Join Group
       </Button>
     );
@@ -59,22 +94,33 @@ function GroupFunctionButtons() {
         }}
       >
         {isJoinedGroup() ? (
-          <div>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "flex-end",
+              width: "100%",
+            }}
+          >
             <Button type="primary" style={styles.button}>
               Create Post
             </Button>
             <Button type="primary" style={styles.button}>
               Invite
             </Button>
-            <Button
-              type="primary"
-              style={styles.button}
-              onClick={() => {
-                handleDeleteGroup(group?._id);
-              }}
-            >
-              Delete
-            </Button>
+            {isOwner(user) ? (
+              <Button
+                type="primary"
+                style={styles.button}
+                onClick={() => {
+                  handleDeleteGroup(group?._id);
+                }}
+              >
+                Delete
+              </Button>
+            ) : (
+              ""
+            )}
           </div>
         ) : (
           JoinGroupButton()

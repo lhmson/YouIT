@@ -23,6 +23,7 @@ import {
   MessagePage,
   FriendMangementPage,
   MutualFriendPage,
+  GroupManagementPage,
 } from "./pages/index";
 
 import { CuteClientIOProvider } from "./socket/CuteClientIOProvider.js";
@@ -59,10 +60,18 @@ function App() {
           </Route>
           <PrivateRoute exact path="/feed" component={FeedPage} />
           <PrivateRoute exact path="/post/create" component={CreatePostPage} />
+          <PrivateRoute path="/userinfo/my">
+            <Redirect to={`/userinfo/${loggedIn()?.result?._id}`} />
+          </PrivateRoute>
           <PrivateRoute path="/userinfo/:id" exact component={UserInfoPage} />
           <Route exact path="/post/:id" component={SpecificPostPage} />
           <Route path="/post/:id/:commentId" component={SpecificPostPage} />
           <Route exact path="/search" component={UserResultSearchPage} />
+          <PrivateRoute
+            exact
+            path="/group/:id/requests"
+            component={GroupPage}
+          />
           <Route exact path="/wall" component={WallPage} />
           <Route path="/userinfo/:id/about" component={AboutPage} />
           <PrivateRoute exact path="/friends" component={FriendMangementPage} />
@@ -71,6 +80,7 @@ function App() {
             path="/mutualFriends/:id"
             component={MutualFriendPage}
           />
+          <Route exact path="/groups/" component={GroupManagementPage} />
           <Route path="/demoSocketIO" component={DemoSocket} />
           <PrivateRoute
             exact

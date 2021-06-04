@@ -12,3 +12,6 @@ export const fetchCountMutualFriends = (userId1, userId2) =>
 
 export const fetchListRequestFriends = (userId) =>
   API.get(`/friend/${userId}/listRequestFriends`);
+
+export const checkFriends = (userId1, userId2) =>
+  API.get(`/friend/checkFriends/${userId1}/${userId2}`);

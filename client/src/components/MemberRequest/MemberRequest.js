@@ -1,12 +1,21 @@
 import React from "react";
 import { Button, Row, Col, Divider, Form, Typography, Input, Card } from "antd";
 import { Avatar, Image, Tag } from "antd";
-import styles from "./styles.js";
+
 import COLOR from "../../constants/colors";
+import styles from "./styles.js";
 
 const { Title, Text, Paragraph, Link } = Typography;
 
 function MemberRequest() {
+  const acceptMemberRequest = async () => {
+    // await addFriend(user?.result, { _id: _id });
+    // if (matchingFriendRequest) {
+    //   const request = matchingFriendRequest;
+    //   await cancelFriendRequest(request);
+    // }
+    // setUpdateData(!updateData);
+  };
   return (
     <>
       <div style={styles.card}>
@@ -47,6 +56,7 @@ function MemberRequest() {
             }}
           >
             <Button
+              onClick={acceptMemberRequest}
               type="primary"
               style={{
                 background: "#27AE60",

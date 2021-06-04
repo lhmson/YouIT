@@ -1,43 +1,74 @@
-import React, { useEffect, useState } from "react";
-import { Tooltip, Input } from "antd";
+import React, { useRef } from "react";
+import { Tooltip, Input, message } from "antd";
 import "../styles.css";
 import { SendOutlined, PaperClipOutlined } from "@ant-design/icons";
+import { Loading } from "../..";
 
-import { useMessage } from '../../../hooks/useMessage'
+function ChatForm({
+  currentId,
+  setIsAddMessage,
+  messageHandle,
+  listConversations,
+  updateListConversations,
+  checkSending,
+  addSending,
+}) {
+  // const [text, setText] = useState("");
 
-function ChatForm({ currentId, setIsAddMessage }) {
-  const message = useMessage()
+  const inputRef = useRef();
 
-  const [text, setText] = useState("");
+  // const handleChange = (e) => {
+  //   e.preventDefault();
+  //   setText(e.target.value);
+  // };
 
-  // test notification message
-  useEffect(() => {
-    message.onReceive(msg => {
-      console.log(`user ${msg.req?.userId} said: ${msg.req?.message.text}`);
-    });
-  }, [])
+  // useEffect(() => {
+  //   setCurrentConversation(listConversations.find((item) => item._id === currentId))
 
-  const handleChange = (e) => {
-    e.preventDefault();
-    setText(e.target.value);
-  }
+  //   if (currentConversation?.isSending) {
+  //     setIsAddMessage(true);
+  //   }
+  // }, [listConversations, currentId])
 
   const handleSendMessage = () => {
-    // alert(currentId + " || " + text);
-    message.send(currentId, { text })
-    setText("");
-    setIsAddMessage(true);
-  }
+    if (!currentId) {
+      message.error("No conversation selected");
+      return;
+    }
+    // alert(currentId + " || " + inputRef.current.state.value);
+    const text = inputRef.current.state.value?.trim();
+    if (text) {
+      // sending message
+      messageHandle.send(currentId, { text });
+      addSending(currentId);
+    }
+    inputRef.current.state.value = "";
+  };
 
   return (
     <div className="chat-form">
       <Tooltip title="Attach">
         <PaperClipOutlined className="clickable icon white" />
       </Tooltip>
-      <Input type="text" placeholder="type a message" onChange={(e) => handleChange(e)} />
-      <Tooltip title="Send">
-        <SendOutlined className="clickable icon white" onClick={() => handleSendMessage()} />
-      </Tooltip>
+      <Input
+        type="text"
+        placeholder="type a message"
+        autoFocus
+        ref={inputRef}
+        disabled={currentId ? false : true}
+        onPressEnter={() => handleSendMessage()}
+        // onChange={(e) => handleChange(e)}
+      />
+      {!checkSending(currentId) ? (
+        <Tooltip title="Send">
+          <SendOutlined
+            className="clickable icon white"
+            onClick={() => handleSendMessage()}
+          />
+        </Tooltip>
+      ) : (
+        <Loading />
+      )}
     </div>
   );
 }

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { Row } from "antd";
+import { Row, Typography } from "antd";
 import Loading from "../../Loading/Loading";
 import styles from "./styles";
 
@@ -11,7 +11,15 @@ import * as api from "../../../api/post";
 
 import FeedPost from "./FeedPost/FeedPost";
 
-function FeedPosts({ setCurrentId }) {
+const {Text} = Typography
+
+function FeedPosts({
+  setCurrentId,
+  limitPagination = 2,
+  space,
+  ownerId,
+  groupId,
+}) {
   // const posts = useSelector((state) => state.posts);
   const [posts, setPosts] = useState([]);
 
@@ -31,7 +39,7 @@ function FeedPosts({ setCurrentId }) {
 
   useEffect(() => {
     api
-      .fetchPostsPagination(0, 2)
+      .fetchPostsPagination(0, limitPagination, space, ownerId, groupId) // very good
       .then((res) => {
         handleFetchPosts(res);
       })
@@ -47,7 +55,7 @@ function FeedPosts({ setCurrentId }) {
     // }, 2000);
     if (hasMore) {
       api
-        .fetchPostsPagination(page, 2)
+        .fetchPostsPagination(page, limitPagination, space, ownerId, groupId)
         .then((res) => {
           handleFetchPosts(res);
         })
@@ -62,7 +70,10 @@ function FeedPosts({ setCurrentId }) {
   return (
     <div>
       {!posts.length ? (
-        <Loading />
+        <div className="text-center">
+          <Loading />
+          <Text>No posts to show</Text>
+        </div>
       ) : (
         <div>
           <InfiniteScroll

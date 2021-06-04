@@ -30,7 +30,7 @@ function ErrorPage({ code }) {
     },
   ];
 
-  const error = errors.find((e) => e.code === code);
+  let error = errors.find((e) => e.code === code);
   if (!error)
     error = {
       code: "500",

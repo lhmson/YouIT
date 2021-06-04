@@ -10,17 +10,17 @@ function FixedRightPanel(props) {
   const { children } = props;
   return (
     <>
-      <Sider
+      {/* <Sider
         className="col-{breakpoint}-auto"
         width={350}
         style={{
           backgroundColor: "transparent",
         }}
-      >
-        <div className="site-card-border-less-wrapper mb-4">
-          <div>{children}</div>
-        </div>
-      </Sider>
+      > */}
+      <div className=" mb-4">
+        <div>{children}</div>
+      </div>
+      {/* </Sider> */}
     </>
   );
 }

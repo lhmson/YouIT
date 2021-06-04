@@ -7,6 +7,7 @@ import Navbar from "../../components/Navbar/Navbar";
 import { useDispatch } from "react-redux";
 import { Button } from "antd";
 import FriendCard from "../../components/FriendCard/FriendCard";
+import UserRequestCard from "../../components/FriendCard/UserRequestCard";
 import COLOR from "../../constants/colors";
 import * as api from "../../api/friend";
 import { useLocalStorage } from "../../hooks/useLocalStorage";
@@ -23,6 +24,7 @@ function FriendMangementPage() {
   const [listRequest, setListRequest] = useState([]);
   const [txtSearch, setTxtSearch] = useState("");
   const [mode, setMode] = useState("Friends");
+  const [updateData, setUpdateData] = useState(false);
 
   useEffect(() => {
     console.log("User", user);
@@ -36,7 +38,7 @@ function FriendMangementPage() {
       .catch((e) => {
         console.log(e);
       });
-  }, [user]);
+  }, [user, updateData]);
 
   useEffect(() => {
     api
@@ -49,30 +51,43 @@ function FriendMangementPage() {
       .catch((e) => {
         console.log(e);
       });
-  }, [user]);
+  }, [user, updateData]);
 
   const numberTotalFriend = listFriend.length;
 
   let listFilter = listFriend.filter((user) =>
-    user.name.toLowerCase().includes(txtSearch.toLowerCase()));
+    user.name.toLowerCase().includes(txtSearch.toLowerCase())
+  );
 
-  if (mode === "Invites")
-  {
+  if (mode === "Invites") {
     listFilter = listRequest.filter((user) =>
-    user.name.toLowerCase().includes(txtSearch.toLowerCase()));
+      user.name.toLowerCase().includes(txtSearch.toLowerCase())
+    );
   }
 
   const listUserCardLeft = useMemo(
     () =>
       listFilter?.map((user, i) => {
-        if (i % 2 == 0)
-          return (
-            <FriendCard
-              _id={user._id}
-              name={user.name}
-              relationship="Add Friend"
-            ></FriendCard>
-          );
+        if (i % 2 == 0) {
+          if (mode === "Friends")
+            return (
+              <FriendCard
+                _id={user._id}
+                name={user.name}
+                relationship="Add Friend"
+              ></FriendCard>
+            );
+          else
+            return (
+              <UserRequestCard
+                _id={user._id}
+                name={user.name}
+                relationship="Add Friend"
+                setUpdateData={setUpdateData}
+                updateData={updateData}
+              ></UserRequestCard>
+            );
+        }
       }),
     [listFilter]
   );
@@ -80,14 +95,26 @@ function FriendMangementPage() {
   const listUserCardRight = useMemo(
     () =>
       listFilter?.map((user, i) => {
-        if (i % 2 == 1)
-          return (
-            <FriendCard
-              _id={user._id}
-              name={user.name}
-              relationship="Add Friend"
-            ></FriendCard>
-          );
+        if (i % 2 == 1) {
+          if (mode === "Friends")
+            return (
+              <FriendCard
+                _id={user._id}
+                name={user.name}
+                relationship="Add Friend"
+              ></FriendCard>
+            );
+          else
+            return (
+              <UserRequestCard
+                _id={user._id}
+                name={user.name}
+                relationship="Add Friend"
+                setUpdateData={setUpdateData}
+                updateData={updateData}
+              ></UserRequestCard>
+            );
+        }
       }),
     [listFilter]
   );
@@ -122,7 +149,7 @@ function FriendMangementPage() {
                   </div>
                   <div className="offset-5 col-2">
                     <Button
-                      onClick = {() => setMode("Invites")}
+                      onClick={() => setMode("Invites")}
                       type="primary"
                       style={{
                         background: "#27AE60",
@@ -139,7 +166,7 @@ function FriendMangementPage() {
 
                   <div className="col-2">
                     <Button
-                      onClick = {() => setMode("Friends")}
+                      onClick={() => setMode("Friends")}
                       type="primary"
                       style={{
                         background: "#27AE60",

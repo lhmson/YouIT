@@ -7,7 +7,7 @@ const { Title, Text } = Typography;
 
 const CreateGroupNameAdmin = () => {
   const [user] = useLocalStorage("user");
-  const displayName = user?.result?.name ?? "Nguoi dung YouIT";
+  const displayName = user?.result?.name ?? "";
 
   const avatarUrl =
     user?.avatarUrl ??

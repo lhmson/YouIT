@@ -19,8 +19,10 @@ import {
   ShareAltOutlined,
   CaretRightOutlined,
   EditFilled,
+  StopOutlined,
   DeleteFilled,
   BellOutlined,
+  FlagOutlined,
   ExclamationCircleOutlined,
 } from "@ant-design/icons";
 import { MdPublic } from "react-icons/md";
@@ -36,6 +38,8 @@ import {
   downvotePost,
   getMyInteractions,
   getCommentsNumber,
+  hidePost,
+  followPost,
 } from "../../../../api/post";
 import { deletePost } from "../../../../redux/actions/posts";
 import { HashLink } from "react-router-hash-link";
@@ -109,9 +113,24 @@ function FeedPost({ post, setCurrentId }) {
     });
   };
 
+  // still in construction
+  const handleHidePost = (id) => {
+    hidePost(id).then((res) => message.success("Hide post successfully"));
+  };
+
+  // still in construction
+  const handleFollowPost = (id) => {
+    followPost(id).then((res) => message.success("Follow post successfully"));
+  };
+
+  // still in construction
+  const handleReportPost = (id) => {
+    // followPost(id).then((res) => message.success("Report post successfully"));
+  };
+
   const menuMore = (
     <Menu>
-      {user?.result._id === post?.userId._id ? (
+      {user?.result?._id === post?.userId?._id ? (
         <>
           <Menu.Item
             key="edit"
@@ -137,13 +156,27 @@ function FeedPost({ post, setCurrentId }) {
           </Menu.Item>
         </>
       ) : (
-        <Menu.Item key="follow">
-          <Row align="middle">
-            <BellOutlined className="mr-2" />
-            <Text>Follow post</Text>
-          </Row>
-        </Menu.Item>
+        <>
+          <Menu.Item key="follow" onClick={() => handleFollowPost(post._id)}>
+            <Row align="middle">
+              <BellOutlined className="mr-2" />
+              <Text>Follow post</Text>
+            </Row>
+          </Menu.Item>
+          <Menu.Item key="report" onClick={() => handleReportPost(post._id)}>
+            <Row align="middle">
+              <FlagOutlined className="mr-2" />
+              <Text>Report post</Text>
+            </Row>
+          </Menu.Item>
+        </>
       )}
+      <Menu.Item key="hide" onClick={() => handleHidePost(post._id)}>
+        <Row align="middle">
+          <StopOutlined className="mr-2" />
+          <Text>Hide post</Text>
+        </Row>
+      </Menu.Item>
     </Menu>
   );
 
@@ -353,15 +386,17 @@ function FeedPost({ post, setCurrentId }) {
                 </Text>
                 <Tooltip title="Upvote">
                   <ArrowUpOutlined
-                    className={`clickable icon ${myInteractions?.upvote ? "green" : "black"
-                      }`}
+                    className={`clickable icon ${
+                      myInteractions?.upvote ? "green" : "black"
+                    }`}
                     onClick={() => handleUpvoteClick(post._id)}
                   />
                 </Tooltip>
                 <Tooltip title="Downvote">
                   <ArrowDownOutlined
-                    className={`clickable icon ${myInteractions?.downvote ? "green" : "black"
-                      }`}
+                    className={`clickable icon ${
+                      myInteractions?.downvote ? "green" : "black"
+                    }`}
                     onClick={() => handleDownvoteClick(post._id)}
                   />
                 </Tooltip>

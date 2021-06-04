@@ -13,7 +13,7 @@ import {
   Space,
 } from "antd";
 import styles from "./styles";
-import logo from "../../assets/lightlogo.png";
+import logo from "../../assets/darklogo.png";
 import {
   SearchOutlined,
   BellFilled,
@@ -22,6 +22,7 @@ import {
   LogoutOutlined,
   EllipsisOutlined,
   SettingOutlined,
+  PicLeftOutlined,
 } from "@ant-design/icons";
 import { useMobile } from "../../utils/responsiveQuery";
 import { useMediaQuery } from "react-responsive";
@@ -40,7 +41,9 @@ import {
   getUserUnseenNotifications,
   setSeenNotification,
 } from "../../redux/actions/notifications";
+import * as apiConversation from "../../api/conversation";
 import NotificationList from "./NotificationList/NotificationList";
+import { useMessage } from "../../hooks/useMessage";
 
 const { Header } = Layout;
 const { Text } = Typography;
@@ -56,7 +59,7 @@ function Navbar({ selectedMenu, setTxtSearch, txtInitSearch }) {
   const history = useHistory();
 
   // const isMobile = useMobile();
-  const isSmallScreen = useMediaQuery({ query: "(max-width: 990px)" }); // return true if right size
+  const isSmallScreen = useMediaQuery({ query: "(max-width: 1042px)" }); // return true if right size
 
   const cuteIO = useCuteClientIO();
 
@@ -151,9 +154,11 @@ function Navbar({ selectedMenu, setTxtSearch, txtInitSearch }) {
           className="text-center navitem pickitem"
           onClick={handleMessage}
         >
-          <Tooltip title="Message" placement="bottom">
-            <MessageFilled style={{ fontSize: 24, color: COLOR.white }} />
-          </Tooltip>
+          <Badge count={numberUnseenMessages}>
+            <Tooltip title="Message" placement="bottom">
+              <MessageFilled style={{ fontSize: 24, color: COLOR.white }} />
+            </Tooltip>
+          </Badge>
         </Menu.Item>
 
         <Menu.Item key="avatar" className="text-center navitem">
@@ -201,6 +206,10 @@ function Navbar({ selectedMenu, setTxtSearch, txtInitSearch }) {
     history.push("/settings");
   };
 
+  const handleCreateGroup = async () => {
+    history.push("/group/create");
+  };
+
   const menuMore = (
     <Menu>
       {isSmallScreen && <MainMenuItems />}
@@ -208,6 +217,12 @@ function Navbar({ selectedMenu, setTxtSearch, txtInitSearch }) {
         <Row align="middle">
           <SettingOutlined className="mr-lg-2" />
           <Text>Settings</Text>
+        </Row>
+      </Menu.Item>
+      <Menu.Item key="createGroup" onClick={() => handleCreateGroup()}>
+        <Row align="middle">
+          <PicLeftOutlined className="mr-lg-2" />
+          <Text>Create group</Text>
         </Row>
       </Menu.Item>
       <Menu.Item key="logout" onClick={() => handleLogOut()}>
@@ -235,6 +250,32 @@ function Navbar({ selectedMenu, setTxtSearch, txtInitSearch }) {
   );
 
   //#endregion
+
+  //#region message notifications
+
+  const [numberUnseenMessages, setNumberUnseenMessages] = useState(0);
+
+  const messageHandle = useMessage();
+
+  const handleFetchListUnseenConversations = () => {
+    apiConversation
+      .fetchUnseenConversationId()
+      .then((res) => setNumberUnseenMessages(res.data.length));
+  };
+
+  useEffect(() => {
+    messageHandle.onReceive((msg) => {
+      handleFetchListUnseenConversations();
+    });
+
+    messageHandle.onSeen((msg) => {
+      handleFetchListUnseenConversations();
+    });
+
+    handleFetchListUnseenConversations();
+
+    return messageHandle.cleanUpAll;
+  }, []);
 
   // useEffect(() => {
   //   const token = user?.token;

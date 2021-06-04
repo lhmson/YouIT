@@ -1,5 +1,6 @@
 import CuteServerIO from "../CuteServerIO.js"
-import { addMessageToConversation } from "../../businessLogics/conversation.js"
+import { addMessageToConversation, setMemberSeenInConversation } from "../../businessLogics/conversation.js"
+import { httpStatusCodes } from "../../utils/httpStatusCode.js";
 
 /**
  * @param {CuteServerIO} cuteIO 
@@ -9,15 +10,14 @@ export const setUpOnReceiveMessages = (cuteIO) => {
     const { conversationId, message } = params.msg;
     addMessageToConversation(params.userId, conversationId, message).then(
       result => {
-        // console.log("messgage test", result);
-        if (result.newConversation) {
-          const conversation = result.newConversation;
+        if (result.status.code === httpStatusCodes.ok) {
           cuteIO.sendToSocket(params.socket, "Message-ok", result);
 
-          /** @type {{listMembers: [*]?}} */
-          const { listMembers } = conversation;
-          if (listMembers) {
-            listMembers.forEach(m => cuteIO.sendToUser(m, "Message-receive", result, params.socket))
+          /** @type {{receiverIds: [*]?}} */
+          const { receiverIds } = result.res;
+          if (receiverIds) {
+            delete result.res.receiverIds;
+            receiverIds.forEach(m => cuteIO.sendToUser(m, "Message-receive", result, params.socket))
           }
         } else {
           cuteIO.sendToSocket(params.socket, "Message-error", result);
@@ -25,4 +25,30 @@ export const setUpOnReceiveMessages = (cuteIO) => {
       }
     )
   });
+
+
+  cuteIO.queueReceiveHandler("Message-setSeen", params => {
+    const { conversationId, newSeenValue } = params.msg;
+    setMemberSeenInConversation(params.userId, conversationId, newSeenValue).then(
+      result => {
+        if (result.status.code === httpStatusCodes.ok) {
+          if (result.res.isUpdated) {
+            /** @type {{receiverIds: [*]?}} */
+            const { receiverIds } = result.res;
+            if (receiverIds) {
+              delete result.res.receiverIds;
+              delete result.res.isUpdated;
+
+              receiverIds.forEach(m => cuteIO.sendToUser(m, "Message-seen", result))
+            }
+          }
+        }
+      }
+    )
+
+  })
+
+  cuteIO.queueReceiveHandler("Message-seen", params => {
+    // only send when something is updated
+  })
 }

@@ -5,6 +5,7 @@ import {
   getListMutualFriends,
   getNumberMutualFriends,
   getListRequestFriends,
+  checkFriends,
 } from "../controllers/friend.js";
 import auth from "../middleware/auth.js";
 
@@ -19,5 +20,6 @@ router.get(
   getNumberMutualFriends
 );
 router.get("/:userId/listRequestFriends", auth, getListRequestFriends);
+router.get("/checkFriends/:userId1/:userId2", auth, checkFriends);
 
 export default router;
