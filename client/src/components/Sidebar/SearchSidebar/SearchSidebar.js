@@ -76,7 +76,7 @@ function SearchSidebar(props) {
           style={styles.item}
           icon={<TeamOutlined style={{ fontSize: "1.4rem" }} />}
         >
-          People
+          Users
         </Menu.Item>
         {/* </SubMenu> */}
 

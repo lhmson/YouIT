@@ -2,9 +2,12 @@ import React, { useState, useEffect, useMemo } from "react";
 import GroupCard from "../../../components/GroupCard/GroupCard";
 import * as api from "../../../api/search";
 import NoDataSearch from "../../../components/NoDataSearch/NoDataSearch";
+import { useMobile } from "../../../utils/responsiveQuery";
 
 const SearchGroupResult = ({ txtSearch }) => {
   const [listGroup, setListGroup] = useState([]);
+
+  const isMobile = useMobile();
 
   useEffect(() => {
     api
@@ -46,11 +49,13 @@ const SearchGroupResult = ({ txtSearch }) => {
         paddingRight: 32,
       }}
     >
-      {listGroupCard.length === 0 ? (
-        <NoDataSearch></NoDataSearch>
-      ) : (
-        listGroupCard
-      )}
+      <div className={`${!isMobile && "col-12"}`}>
+        {listGroupCard.length === 0 ? (
+          <NoDataSearch></NoDataSearch>
+        ) : (
+          listGroupCard
+        )}
+      </div>
     </div>
     // </div>
   );

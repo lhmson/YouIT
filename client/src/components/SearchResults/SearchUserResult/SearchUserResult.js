@@ -2,9 +2,12 @@ import React, { useState, useEffect, useMemo } from "react";
 import UserCard from "../../../components/UserCard/UserCard";
 import * as api from "../../../api/search";
 import NoDataSearch from "../../../components/NoDataSearch/NoDataSearch";
+import { useMobile } from "../../../utils/responsiveQuery";
 
 function SearchUserResult({ userNameSearch }) {
   const [listUser, setListUser] = useState([]);
+
+  const isMobile = useMobile();
 
   useEffect(() => {
     api
@@ -44,7 +47,7 @@ function SearchUserResult({ userNameSearch }) {
         paddingRight: 32,
       }}
     >
-      <div>
+      <div className={`${!isMobile && "col-12"}`}>
         {listUserCard.length === 0 ? (
           <NoDataSearch></NoDataSearch>
         ) : (

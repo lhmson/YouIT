@@ -6,11 +6,14 @@ import * as api1 from "../../../api/friend";
 import GroupCard from "../../../components/GroupCard/GroupCard";
 import UserCard from "../../../components/UserCard/UserCard";
 import NoDataSearch from "../../../components/NoDataSearch/NoDataSearch";
+import { useMobile } from "../../../utils/responsiveQuery";
 
 const SearchAllResult = ({ txtSearch }) => {
   const [listPost, setListPost] = useState([]);
   const [listUser, setListUser] = useState([]);
   const [listGroup, setListGroup] = useState([]);
+
+  const isMobile = useMobile();
 
   useEffect(() => {
     api1
@@ -108,7 +111,10 @@ const SearchAllResult = ({ txtSearch }) => {
         paddingRight: 32,
       }}
     >
-      <div style={{ marginRight: checkNoData ? 32 : 0 }}>
+      <div
+        className={`${!isMobile && "col-12"}`}
+        style={{ marginRight: checkNoData ? 32 : 0 }}
+      >
         {listPostCard} {listGroupCard} {listUserCard}
         {checkNoData ? <NoDataSearch></NoDataSearch> : null}
       </div>
