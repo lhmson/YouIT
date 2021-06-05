@@ -9,10 +9,9 @@ import COLOR from "../../../../constants/colors.js";
 import * as api from "../../../../api/friend";
 import * as apiGroup from "../../../../api/group";
 import { GroupContext } from "../../../../pages/GroupPage/GroupPage.js";
-import { useHistory } from "react-router-dom";
 
 const { Text } = Typography;
-
+const { Item } = Menu;
 function MemberCard(props) {
   const [user, setUser] = useLocalStorage("user");
   const [listMutual, setListMutual] = useState([]);
@@ -22,7 +21,7 @@ function MemberCard(props) {
   const { _id } = props;
   const { role } = props;
   const { group } = useContext(GroupContext);
-  const history = useHistory();
+  const [roleUser, setRoleUser] = useState("");
 
   useEffect(() => {
     api
@@ -58,37 +57,65 @@ function MemberCard(props) {
       });
   }, []);
 
+  useEffect(() => {
+    group?.listMembers.forEach((member) => {
+      if (member?.userId == user?.result?._id) setRoleUser(member?.role);
+    });
+  }, []);
+
   const handleRemoveMember = async (groupId, userId) => {
     apiGroup
       .deleteMember(groupId, userId)
       .then((res) => {
         message.success(res.data.message);
-        // history.push(`/group/${groupId}/members`);
         window.location.reload();
       })
       .catch((error) => message.success(error.message));
   };
 
-  const isAdmin = (user) => {
-    let isAdmin = false;
-    group?.listMembers.forEach((member) => {
-      if (member?.userId == user?.result?._id) {
-        if (member?.role === "Owner" || member?.role === "Admin")
-          isAdmin = true;
-      }
-    });
-    return isAdmin;
+  const removeAdminMenuItem = () => {
+    return (
+      <Item key="removeAdmin">
+        <Row align="middle">
+          <Text>Remove as admin</Text>
+        </Row>
+      </Item>
+    );
   };
 
-  const menuMore = (
-    <Menu>
-      <Menu.Item key="settings">
+  const removeModeratorMenuItem = () => {
+    return (
+      <Item key="removeModerator">
+        <Row align="middle">
+          <Text>Remove as moderator</Text>
+        </Row>
+      </Item>
+    );
+  };
+
+  const addAdminMenuItem = () => {
+    return (
+      <Item key="addAdmin">
         <Row align="middle">
           <Text>Add as admin</Text>
         </Row>
-      </Menu.Item>
+      </Item>
+    );
+  };
 
-      <Menu.Item
+  const addModeratorMenuItem = () => {
+    return (
+      <Item key="AddModerator">
+        <Row align="middle">
+          <Text>Add as moderator</Text>
+        </Row>
+      </Item>
+    );
+  };
+
+  const removeMember = () => {
+    return (
+      <Item
         key="removeMember"
         onClick={() => {
           handleRemoveMember(group?._id, _id);
@@ -97,7 +124,39 @@ function MemberCard(props) {
         <Row align="middle">
           <Text>Remove member</Text>
         </Row>
-      </Menu.Item>
+      </Item>
+    );
+  };
+
+  const isAdmin = () => {
+    if (roleUser === "Owner" || (roleUser === "Admin" && role !== "Owner"))
+      return true;
+    return false;
+  };
+
+  const menuMore = (
+    <Menu>
+      {roleUser === "Owner"
+        ? role === "Admin"
+          ? removeAdminMenuItem()
+          : addAdminMenuItem()
+        : ""}
+
+      {roleUser === "Owner"
+        ? role === "Member"
+          ? addModeratorMenuItem()
+          : role === "Moderator"
+          ? removeModeratorMenuItem()
+          : ""
+        : ""}
+
+      {roleUser === "Admin"
+        ? role !== "Moderator"
+          ? addModeratorMenuItem()
+          : removeModeratorMenuItem()
+        : ""}
+
+      {removeMember()}
     </Menu>
   );
 
@@ -174,7 +233,7 @@ function MemberCard(props) {
             >
               {txtButton}
             </Button>
-            {isAdmin(user) && role !== "Owner" ? (
+            {isAdmin() ? (
               <Dropdown
                 overlay={menuMore}
                 trigger={["click"]}

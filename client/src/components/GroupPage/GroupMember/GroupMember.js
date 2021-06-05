@@ -12,6 +12,7 @@ import styles from "./styles.js";
 const { Text } = Typography;
 
 function GroupMember() {
+  const user = JSON.parse(localStorage.getItem("user"))?.result;
   const { group } = useContext(GroupContext);
 
   const [listMembers, setListMembers] = useState([]);
@@ -40,6 +41,24 @@ function GroupMember() {
       ></MemberCard>
     ));
 
+  const isJoinedGroup = () => {
+    let isJoined = false;
+    group?.listMembers.forEach((member) => {
+      if (member?.userId == user?._id) {
+        isJoined = true;
+      }
+    });
+
+    return isJoined;
+  };
+
+  const isPublicGroup = () => {
+    let isPublicGroup = false;
+    if (group?.privacy === "Public") isPublicGroup = true;
+
+    return isPublicGroup;
+  };
+
   return (
     <div>
       <div
@@ -49,7 +68,11 @@ function GroupMember() {
           marginTop: 30,
         }}
       >
-        <Row>{listMembersCard()}</Row>
+        {isJoinedGroup() || isPublicGroup() ? (
+          <Row>{listMembersCard()}</Row>
+        ) : (
+          ""
+        )}
       </div>
     </div>
   );
