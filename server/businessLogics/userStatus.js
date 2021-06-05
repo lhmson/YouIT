@@ -85,9 +85,7 @@ export default class UsersStatusManager {
    * @param {StatusTypes} newStatus
    */
   setLockedStatus = (userId, newStatus) => {
-    console.log("status", newStatus);
     if (!["busy", "online", "offline"].includes(newStatus)) return;
-    console.log("first");
 
     if (userId) {
       const oldStatus = this.getUserStatus(userId);
@@ -96,10 +94,9 @@ export default class UsersStatusManager {
 
       this.#statusInfoOfUsers[userId].lockedStatus = newStatus;
 
-      console.log("second");
-      User.findByIdAndUpdate(userId, { onlineStatus: newStatus }).then(() =>
-        console.log(`Set status of ${userId} to ${newStatus}`)
-      );
+      User.findByIdAndUpdate(userId, { onlineStatus: newStatus }).then(() => {
+        // console.log(`Set status of ${userId} to ${newStatus}`);
+      });
 
       if (oldStatus !== newStatus)
         this.#userStatusChangeEventEmitter.emit("", userId, newStatus);

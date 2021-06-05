@@ -3,6 +3,8 @@ import mongoose from "mongoose";
 import User from "../models/user.js";
 import Post from "../models/post.js";
 import Group from "../models/group.js";
+import { isPostVisibleByUser } from "../businessLogics/post.js";
+import { asyncFilter } from "../utils/asyncFilter.js";
 
 // GET search/user
 export const getSearchUsers = async (req, res) => {
@@ -31,10 +33,18 @@ export const getSearchPosts = async (req, res) => {
   }
   if (!q) return res.status(200).json([]);
   try {
-    const posts = await (
-      await Post.find({})
-    ).filter((post) => post?.title?.toLowerCase().includes(q.toLowerCase()));
-    res.status(200).json(posts);
+    const posts = await Post.find({}).populate("userId", "name").populate({
+      path: "groupPostInfo.groupId",
+      select: "name",
+      model: "Group",
+    });
+    asyncFilter(posts, async (post) => {
+      // console.log(post.title, await isPostVisibleByUser(post, req.userId));
+      return (
+        (await isPostVisibleByUser(post, req.userId)) &&
+        post?.title?.toLowerCase().includes(q.toLowerCase())
+      );
+    }).then((data) => res.status(200).json(data));
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

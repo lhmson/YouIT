@@ -286,19 +286,16 @@ const handleUpdateInteraction = (actions) => async (req, res) => {
 
           // Test socket.io
           if (a.interactionType === "upvote") {
-            // cuteIO.sendToUser(
-            //   newPost.userId.toString(),
-            //   "UpvotePost_PostOwner",
-            //   { upvoter: userId, post: newPost }
-            // );
-            sendNotificationUser({
-              userId: newPost.userId.toString(),
-              kind: "UpvotePost_PostOwner",
-              content: {
-                description: `${user?.name} has upvoted your post named ${newPost?.title}`,
-              },
-              link: `/post/${newPost._id}`,
-            });
+            if (!newPost.userId.equals(userId)) {
+              sendNotificationUser({
+                userId: newPost.userId.toString(),
+                kind: "UpvotePost_PostOwner",
+                content: {
+                  description: `${user?.name} has upvoted your post named ${newPost?.title}`,
+                },
+                link: `/post/${newPost._id}`,
+              });
+            }
           }
 
           break;
