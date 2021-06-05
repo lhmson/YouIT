@@ -2,7 +2,7 @@ import express from "express";
 import FriendRequest from "../models/friendrequest.js";
 import User from "../models/user.js";
 import { httpStatusCodes } from "../utils/httpStatusCode.js";
-import { sendRequestUser } from "../businessLogics/notification.js";
+import { sendNotificationUser } from "../businessLogics/notification.js";
 import { isUserA_sendedRequestFriend_UserB } from "../businessLogics/user.js";
 /**
  * @param {express.Request<ParamsDictionary, any, any, QueryString.ParsedQs, Record<string, any>>} req
@@ -26,17 +26,19 @@ export const createFriendRequest = async (req, res) => {
     const requestReceiver = await User.findById(friendRequest.userConfirmId);
 
     // Send notification to partner
-    sendRequestUser({
+    sendNotificationUser({
       userId: friendRequest.userConfirmId,
+      kind: "FriendRequest_RequestReceiver",
       content: {
         requestReceiver,
         description: `${requestSender?.name} has sent you a friend request`,
       },
-      kind: "FriendRequest_RequestReceiver",
+      link: `/userinfo/${requestSender._id}`,
     });
 
     res.status(httpStatusCodes.created).json(newFriendRequest);
   } catch (error) {
+    console.log(error);
     res
       .status(httpStatusCodes.internalServerError)
       .json({ message: error.message });

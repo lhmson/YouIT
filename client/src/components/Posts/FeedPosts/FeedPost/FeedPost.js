@@ -44,6 +44,7 @@ import {
 import { deletePost } from "../../../../redux/actions/posts";
 import { HashLink } from "react-router-hash-link";
 import { useLocalStorage } from "../../../../hooks/useLocalStorage";
+import { limitNameLength } from "../../../../utils/limitNameLength";
 
 const { Title, Text, Paragraph } = Typography;
 
@@ -171,12 +172,12 @@ function FeedPost({ post, setCurrentId }) {
           </Menu.Item>
         </>
       )}
-      <Menu.Item key="hide" onClick={() => handleHidePost(post._id)}>
+      {/* <Menu.Item key="hide" onClick={() => handleHidePost(post._id)}>
         <Row align="middle">
           <StopOutlined className="mr-2" />
           <Text>Hide post</Text>
         </Row>
-      </Menu.Item>
+      </Menu.Item> */}
     </Menu>
   );
 
@@ -291,7 +292,7 @@ function FeedPost({ post, setCurrentId }) {
               size={45}
               src="https://scontent-xsp1-1.xx.fbcdn.net/v/t1.6435-9/150532368_2890525287933380_4029393584172411335_n.jpg?_nc_cat=108&ccb=1-3&_nc_sid=09cbfe&_nc_ohc=vNeUmNaYi4gAX92GO8S&_nc_ht=scontent-xsp1-1.xx&oh=121b4b571f04f2b3741faa799e988b9d&oe=60A2B225"
             />
-            <div className="d-inline-flex flex-column ml-3">
+            <div className="d-inline-flex flex-column ml-3 break-word">
               <Row className="align-items-center">
                 <Space size={4}>
                   <Link to={`/userinfo/${post?.userId._id}`} target="_blank">
@@ -335,8 +336,7 @@ function FeedPost({ post, setCurrentId }) {
 
             <div className="mr-4">
               <Text className="clickable" underline type="secondary">
-                Last edited {moment(post.updatedAt).fromNow()}
-                {/* {post?.updatedAt.toString().slice(0, 10)} */}
+                Last edited {moment(post?.contentUpdatedAt).fromNow()}
               </Text>
             </div>
             <Dropdown
@@ -353,16 +353,16 @@ function FeedPost({ post, setCurrentId }) {
           </Row>
         </Row>
         <Row className="mb-1">
-          {tagList.map((item, i) => (
+          {tagList?.map((item, i) => (
             <Tag key={i} className="mb-2 tag">
               {item}
             </Tag>
           ))}
         </Row>
-        <div>
+        <div className="break-word">
           <Title level={2}>{post?.title}</Title>
           <div className="pb-2">
-            <Paragraph>
+            {/* <Paragraph>
               Some word Lorem ipsum dolor sit amet, consectetur adipiscing elit,
               sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
               Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris
@@ -370,8 +370,8 @@ function FeedPost({ post, setCurrentId }) {
               reprehenderit in voluptate velit esse cillum dolore eu fugiat
               nulla pariatur. Excepteur sint occaecat cupidatat non proident,
               sunt in culpa qui officia deserunt mollit anim id est laborum.
-            </Paragraph>
-            <Paragraph>{post?.content?.text}</Paragraph>
+            </Paragraph> */}
+            <Paragraph>{limitNameLength(post?.content?.text, 500)}</Paragraph>
             <Link to={`/post/${post._id}`} target="_blank">
               <Text className="clickable bold">Click here to read more</Text>
             </Link>

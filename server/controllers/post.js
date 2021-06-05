@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 import {
   addInteraction,
   getInteractionOfAUser,
+  isPostUpdated,
   isPostVisibleByUser,
   removeInteraction,
 } from "../businessLogics/post.js";
@@ -112,6 +113,7 @@ export const createPost = async (req, res) => {
   const newPost = new Post({
     ...post,
     userId: req.userId,
+    contentUpdatedAt: Date.now(),
   });
 
   try {
@@ -154,17 +156,24 @@ export const updatePost = async (req, res) => {
       _id: id,
     };
 
+    if (isPostUpdated(post, updatedPost)) {
+      updatedPost.contentUpdatedAt = Date.now();
+    }
+
     await Post.findByIdAndUpdate(id, updatedPost, { new: true }).then((res) => {
       res?.interactionInfo?.listUsersFollowing?.forEach((item, i) => {
-        if (!item.equals(userId)) {
-          sendNotificationUser({
-            userId: item,
-            kind: "UpdatePost_PostFollowers",
-            content: {
-              description: `Post '${res?.title}' that you are following has been edited`,
-            },
-            link: `/post/${res?._id}`,
-          });
+        if (isPostVisibleByUser(updatedPost, userId)) {
+          // edit privacy to friend handle
+          if (!item.equals(userId)) {
+            sendNotificationUser({
+              userId: item,
+              kind: "UpdatePost_PostFollowers",
+              content: {
+                description: `Post '${res?.title}' that you are following has been edited`,
+              },
+              link: `/post/${res?._id}`,
+            });
+          }
         }
       });
     });
@@ -277,19 +286,16 @@ const handleUpdateInteraction = (actions) => async (req, res) => {
 
           // Test socket.io
           if (a.interactionType === "upvote") {
-            // cuteIO.sendToUser(
-            //   newPost.userId.toString(),
-            //   "UpvotePost_PostOwner",
-            //   { upvoter: userId, post: newPost }
-            // );
-            sendNotificationUser({
-              userId: newPost.userId.toString(),
-              kind: "UpvotePost_PostOwner",
-              content: {
-                description: `${user?.name} has upvoted your post named ${newPost?.title}`,
-              },
-              link: `/post/${newPost._id}`,
-            });
+            if (!newPost.userId.equals(userId)) {
+              sendNotificationUser({
+                userId: newPost.userId.toString(),
+                kind: "UpvotePost_PostOwner",
+                content: {
+                  description: `${user?.name} has upvoted your post named ${newPost?.title}`,
+                },
+                link: `/post/${newPost._id}`,
+              });
+            }
           }
 
           break;

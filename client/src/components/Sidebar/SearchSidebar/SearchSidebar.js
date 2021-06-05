@@ -1,24 +1,26 @@
 import React, { useState, useEffect } from "react";
-import { Layout, Menu, Avatar, Typography } from "antd";
+import { Layout, Menu, Avatar } from "antd";
 import {
-  UserOutlined,
+  TeamOutlined,
   LaptopOutlined,
-  NotificationOutlined,
+  FileTextOutlined,
+  KeyOutlined,
 } from "@ant-design/icons";
 import styles from "./styles.js";
 
-const { SubMenu } = Menu;
 const { Sider } = Layout;
-const { Title, Text } = Typography;
 
 function SearchSidebar(props) {
-  const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")));
+  const [user] = useState(JSON.parse(localStorage.getItem("user")));
 
   useEffect(() => {}, []);
 
   return (
     <Sider
-      width={300}
+      breakpoint="lg"
+      // width={200}
+      collapsedWidth="0"
+      // trigger={null}
       style={{
         ...styles.paleBackground,
         ...styles.fixedSider,
@@ -27,7 +29,6 @@ function SearchSidebar(props) {
       <Menu
         mode="inline"
         defaultSelectedKeys={["all"]}
-        // defaultOpenKeys={["1"]}
         style={{
           height: "100%",
           borderRight: 0,
@@ -57,7 +58,7 @@ function SearchSidebar(props) {
           key="all"
           onClick={() => props.setModeSearch("All")}
           style={styles.item}
-          icon={<Avatar style={styles.transparent} />}
+          icon={<KeyOutlined style={{ fontSize: "1.4rem" }} />}
         >
           All
         </Menu.Item>
@@ -65,17 +66,17 @@ function SearchSidebar(props) {
           key="post"
           onClick={() => props.setModeSearch("Post")}
           style={styles.item}
-          icon={<Avatar style={styles.transparent} />}
+          icon={<FileTextOutlined style={{ fontSize: "1.4rem" }} />}
         >
-          Post
+          Posts
         </Menu.Item>
         <Menu.Item
           onClick={() => props.setModeSearch("User")}
           key="user"
           style={styles.item}
-          icon={<Avatar style={styles.transparent} />}
+          icon={<TeamOutlined style={{ fontSize: "1.4rem" }} />}
         >
-          User
+          Users
         </Menu.Item>
         {/* </SubMenu> */}
 
@@ -83,9 +84,9 @@ function SearchSidebar(props) {
           onClick={() => props.setModeSearch("Group")}
           key="group"
           style={styles.item}
-          icon={<Avatar style={styles.transparent} />}
+          icon={<LaptopOutlined style={{ fontSize: "1.4rem" }} />}
         >
-          Group
+          Groups
         </Menu.Item>
       </Menu>
     </Sider>

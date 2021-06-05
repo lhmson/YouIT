@@ -1,54 +1,79 @@
 import React from "react";
 import { Button, Row, Col, Divider, Form, Typography, Input, Card } from "antd";
-import { Avatar, Image, Tag } from "antd";
+import { Avatar, Image, Tag, message } from "antd";
 import styles from "./styles.js";
 import { Link, useHistory, useLocation } from "react-router-dom";
+import { useMobile } from "../../utils/responsiveQuery.js";
+import * as apiGroup from "../../api/group";
+import { useLocalStorage } from "../../hooks/useLocalStorage";
 
 const { Title, Text } = Typography;
 
-function GroupCard({ nameGroup, _id }) {
+function GroupCard({ nameGroup, _id, description, totalMembers }) {
   const [txtButton, setTxtButton] = React.useState("Join");
+  const [user, setUser] = useLocalStorage("user");
 
-  const changeStateButton = () => {
-    if (txtButton === "Join") setTxtButton("Cancel Request");
-    else setTxtButton("Join");
+  const isMobile = useMobile();
+
+  const joinGroup = async () => {
+    const { data } = await apiGroup.addPendingMemberGroup(
+      _id,
+      user?.result?._id
+    );
+  };
+
+  const cancelJoinGroup = async () => {
+    const { data } = await apiGroup.removePendingMember(_id, user?.result?._id);
+  };
+
+  const changeStateButton = async () => {
+    if (txtButton === "Join") {
+      await joinGroup();
+      message.success(`You submited join request to ${nameGroup} group`);
+      setTxtButton("Cancel Request");
+    } else {
+      await cancelJoinGroup();
+      message.success(`You cancel join request to ${nameGroup} group`);
+      setTxtButton("Join");
+    }
   };
 
   return (
     <>
       <div style={styles.card}>
-        <div className="row ml-2" style={{ justifyContent: "space-between" }}>
+        <div
+          className={`${!isMobile && "row"} m-2`}
+          style={{ justifyContent: "space-between" }}
+        >
           <div
             style={{
               display: "flex",
-              justifyContent: "center",
-              minWidth: 600,
+              flexDirection: "row",
+              // minWidth: 600,
             }}
           >
-            <Avatar
-              size={72}
-              src="https://vtv1.mediacdn.vn/thumb_w/650/2020/10/20/blackpink-lisa-mac-160316252527410005928.jpg"
-            />
-
-            <div className="col-8" style={{ alignSelf: "center" }}>
-              <Link to={`/group/${_id}`}>
-                <Text style={styles.textUser}>{nameGroup ?? "Name Group"}</Text>
-              </Link>
-              <div style={{ marginTop: 0 }}></div>
-              <Text>"Blackpink in your area"</Text>
+            <div>
+              <Avatar
+                size={72}
+                src="https://vtv1.mediacdn.vn/thumb_w/650/2020/10/20/blackpink-lisa-mac-160316252527410005928.jpg"
+              />
             </div>
-            <div
-              style={{
-                marginLeft: 0,
-                justifyContent: "center",
-                flex: 1,
-                display: "flex",
-              }}
-            ></div>
+
+            <div className="ml-3 break-word">
+              <div className="break-word">
+                <Link to={`/group/${_id}`}>
+                  <Title style={styles.textUser}>
+                    {nameGroup ?? "Name Group"}
+                  </Title>
+                </Link>
+              </div>
+              <div>
+                <Text>{description ?? "Blackpink in your area"}</Text>
+              </div>
+            </div>
           </div>
 
           <div
-            className="mr-3"
             style={{
               justifyContent: "flex-end",
               alignItems: "flex-end",
@@ -68,7 +93,12 @@ function GroupCard({ nameGroup, _id }) {
               {txtButton}
             </Button>
             <div>
-              <Text style={styles.text}>12,8K Members</Text>
+              <Text style={styles.text}>
+                {" "}
+                {(totalMembers ?? 0) +
+                  " Member" +
+                  (totalMembers > 2 ? "s" : "")}
+              </Text>
             </div>
           </div>
         </div>

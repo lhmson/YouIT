@@ -36,9 +36,9 @@ function NotificationList({ handleClickNotificationItem, notifications }) {
           </div>
         ) : (
           <>
-            {noti.map((item, i) => (
+            {noti?.map((item, i) => (
               <div
-                key={`${i}-all`}
+                key={`${item._id}-all`}
                 className="whitegreen-button clickable"
                 onClick={() =>
                   handleClickNotificationItem(item?.link, item?._id)
@@ -98,9 +98,9 @@ function NotificationList({ handleClickNotificationItem, notifications }) {
         </Menu.Item>
       ) : (
         <>
-          {notifications.slice(0, 5).map((item, i) => (
+          {notifications?.slice(0, 5).map((item, i) => (
             <Menu.Item
-              key={i}
+              key={item._id}
               className="whitegreen-button"
               onClick={() => handleClickNotificationItem(item?.link, item?._id)}
             >

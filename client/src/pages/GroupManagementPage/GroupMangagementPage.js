@@ -23,7 +23,7 @@ function GroupManagementPage() {
   const [listPending, setlistPending] = useState([]);
   const [txtSearch, setTxtSearch] = useState("");
   const [mode, setMode] = useState("Groups");
-
+  const [update, setUpdate] = useState(false);
   useEffect(() => {
     api
       .fetchUserJoinedGroups()
@@ -48,7 +48,7 @@ function GroupManagementPage() {
       .catch((e) => {
         console.log(e);
       });
-  }, [user]);
+  }, [user,update]);
 
   const numberTotalGroup = listGroup.length;
 
@@ -72,6 +72,8 @@ function GroupManagementPage() {
             description={group.description}
             totalMembers={group.listMembers?.length}
             joined={mode === "Groups"}
+            update = {update}
+            setUpdate = {setUpdate}
           ></GroupJoinedCard>
         );
       }),
@@ -168,7 +170,7 @@ function GroupManagementPage() {
                   />
                 </div>
 
-                <div className="row" style={{ padding: 16 }}>
+                <div className="row" style={{ padding: 32 }}>
                   {listUserCard}
                 </div>
               </div>

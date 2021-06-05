@@ -23,6 +23,8 @@ import { useMobile } from "../../../utils/responsiveQuery.js";
 import * as apiFriend from "../../../api/friend";
 import * as apiConversation from "../../../api/conversation";
 import { useMessage } from "../../../hooks/useMessage.js";
+import { useFriendsStatus } from "../../../context/FriendsStatusContext.js";
+import { renderStatus } from "../../../utils/userStatus.js";
 
 const { Title } = Typography;
 
@@ -56,6 +58,8 @@ function ChatSidebar({
   const [listUnseenConversations, setListUnseenConversations] = useState([]);
 
   const messageHandle = useMessage();
+
+  const friendsStatusManager = useFriendsStatus();
 
   // const [listConversations, setListConversations] = useState([]);
 
@@ -139,19 +143,6 @@ function ChatSidebar({
     setVisibleAdd(visibleAdd);
   };
 
-  const renderStatus = (status) => {
-    switch (status) {
-      case "online":
-        return COLOR.green;
-      case "busy":
-        return COLOR.red;
-      case "offline":
-        return COLOR.gray;
-      default:
-        return COLOR.white;
-    }
-  };
-
   const renderAvatar = (item) => {
     if (item.listMembers.length <= 2) {
       return (
@@ -161,6 +152,21 @@ function ChatSidebar({
     } else {
       return "https://cdn.iconscout.com/icon/free/png-256/group-1543545-1306001.png";
     }
+  };
+
+  const getConversationStatus = (conversation) => {
+    let result = "offline";
+    conversation?.listMembers?.forEach((item) => {
+      if (item._id !== user?.result?._id) {
+        const status = friendsStatusManager.getStatus(item._id);
+        if (status === "online") {
+          result = "online";
+        } else if (status === "busy" && result !== "online") {
+          result = "busy";
+        }
+      }
+    });
+    return result;
   };
 
   const Header = () => {
@@ -255,12 +261,15 @@ function ChatSidebar({
                       item?._id === currentId && "active"
                     }`}
                   >
-                    <Badge dot color={renderStatus(item.status)}>
+                    <Badge
+                      dot
+                      color={renderStatus(getConversationStatus(item))}
+                    >
                       <img src={renderAvatar(item)} alt={item?._id} />
                     </Badge>
                     <div className="title-text">{item?.title}</div>
                     <div className="update-date">
-                      {moment(item?.updatedAt).fromNow()}
+                      {moment(item?.messageUpdatedAt).fromNow()}
                     </div>
                     <div
                       className="conversation-message"
@@ -268,6 +277,9 @@ function ChatSidebar({
                         fontWeight: listUnseenConversations.includes(item._id)
                           ? "bold"
                           : "normal",
+                        color: listUnseenConversations.includes(item._id)
+                          ? COLOR.darkGreen
+                          : COLOR.gray,
                       }}
                     >
                       {item?.listMessages?.[0]?.text ??

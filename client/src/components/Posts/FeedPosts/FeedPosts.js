@@ -11,7 +11,7 @@ import * as api from "../../../api/post";
 
 import FeedPost from "./FeedPost/FeedPost";
 
-const {Text} = Typography
+const { Text } = Typography;
 
 function FeedPosts({
   setCurrentId,
@@ -72,7 +72,6 @@ function FeedPosts({
       {!posts.length ? (
         <div className="text-center">
           <Loading />
-          <Text>No posts to show</Text>
         </div>
       ) : (
         <div>
@@ -89,7 +88,7 @@ function FeedPosts({
             }
           >
             <Row style={styles.postsBox}>
-              {posts.map((post) => (
+              {posts?.map((post) => (
                 <FeedPost
                   key={post._id}
                   post={post}

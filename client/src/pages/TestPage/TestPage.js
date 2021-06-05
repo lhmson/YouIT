@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Layout, Breadcrumb } from "antd";
 import styles from "./styles.js";
 
-import Posts from "../../components/Posts/Posts";
+import Posts from "../../components/Posts/Posts_deprecated";
 import InputForm from "../../components/InputForm/InputForm";
 import Navbar from "../../components/Navbar/Navbar";
 

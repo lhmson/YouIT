@@ -1,5 +1,5 @@
 import AboutPage from "./AboutPage/AboutPage";
-import AuthPage from "./AuthPage/AuthPage";
+import AuthPage from "./AuthPage_deprecated/AuthPage";
 import CreatePostPage from "./CreatePostPage/CreatePostPage";
 import FeedPage from "./FeedPage/FeedPage";
 import TestPage from "./TestPage/TestPage";
@@ -18,6 +18,7 @@ import FriendMangementPage from "./FriendMangementPage/FriendMangementPage";
 import MutualFriendPage from "./FriendMangementPage/MutualFriendPage";
 import GroupManagementPage from "./GroupManagementPage/GroupMangagementPage";
 import RequestsInGroupPage from "./RequestsInGroupsPage/RequestsInGroupPage";
+import AuthAdminPage from "./SystemAdmin/AuthAdminPage/AuthAdminPage";
 export {
   HomePage,
   AboutPage,
@@ -39,4 +40,5 @@ export {
   MutualFriendPage,
   GroupManagementPage,
   RequestsInGroupPage,
+  AuthAdminPage,
 };

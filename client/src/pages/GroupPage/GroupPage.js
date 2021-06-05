@@ -111,15 +111,14 @@ function GroupPage(props) {
     </Menu>
   );
 
-  useEffect(async () => {
-    await fetchGroupInfo();
+  useEffect(() => {
+    async function fetchGroupInfo() {
+      const { data } = await api.fetchAGroup(id);
+      setGroup(data);
+    }
+    fetchGroupInfo();
     //console.log(group);
   }, []);
-
-  const fetchGroupInfo = async () => {
-    const { data } = await api.fetchAGroup(id);
-    setGroup(data);
-  };
 
   return (
     <GroupContext.Provider value={valueContext}>

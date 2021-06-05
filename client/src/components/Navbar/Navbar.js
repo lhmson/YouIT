@@ -10,7 +10,6 @@ import {
   Avatar,
   Badge,
   Tooltip,
-  Space,
 } from "antd";
 import styles from "./styles";
 import logo from "../../assets/darklogo.png";
@@ -23,9 +22,11 @@ import {
   EllipsisOutlined,
   SettingOutlined,
   PicLeftOutlined,
+  ToolOutlined,
 } from "@ant-design/icons";
 import { useMobile } from "../../utils/responsiveQuery";
 import { useMediaQuery } from "react-responsive";
+import { GrStatusGoodSmall } from "react-icons/gr";
 
 import decode from "jwt-decode";
 import { useDispatch, useSelector } from "react-redux";
@@ -44,6 +45,9 @@ import {
 import * as apiConversation from "../../api/conversation";
 import NotificationList from "./NotificationList/NotificationList";
 import { useMessage } from "../../hooks/useMessage";
+import { renderStatus, statusList } from "../../utils/userStatus";
+import { setMyStatus } from "../../api/userStatus";
+import { useFriendsStatus } from "../../context/FriendsStatusContext";
 
 const { Header } = Layout;
 const { Text } = Typography;
@@ -162,7 +166,30 @@ function Navbar({ selectedMenu, setTxtSearch, txtInitSearch }) {
         </Menu.Item>
 
         <Menu.Item key="avatar" className="text-center navitem">
-          <Space>
+          <Tooltip
+            title={
+              <div className="text-center">
+                <div>{user?.result?._id}</div>
+                <Dropdown
+                  overlay={menuStatus}
+                  trigger={["click"]}
+                  placement="bottomRight"
+                >
+                  <Tooltip title="Status" placement="right">
+                    <GrStatusGoodSmall
+                      className="icon"
+                      style={{
+                        color: renderStatus(
+                          friendsStatusManager.getStatus(user?.result?._id)
+                        ),
+                      }}
+                    />
+                  </Tooltip>
+                </Dropdown>
+              </div>
+            }
+            placement="bottom"
+          >
             <Avatar
               size="large"
               alt={user?.result?.name}
@@ -175,16 +202,7 @@ function Navbar({ selectedMenu, setTxtSearch, txtInitSearch }) {
                 {user?.result?.name}
               </Link>
             </Avatar>
-
-            {!isSmallScreen && (
-              <Link
-                to={`/userinfo/${user?.result._id}`}
-                style={{ color: COLOR.white }}
-              >
-                {user?.result?.name}
-              </Link>
-            )}
-          </Space>
+          </Tooltip>
         </Menu.Item>
       </Menu>
     );
@@ -210,6 +228,25 @@ function Navbar({ selectedMenu, setTxtSearch, txtInitSearch }) {
     history.push("/group/create");
   };
 
+  const friendsStatusManager = useFriendsStatus();
+
+  const handleChangeStatus = (status) => {
+    setMyStatus(status);
+  };
+
+  const menuStatus = (
+    <Menu>
+      {statusList.map((item, i) => (
+        <Menu.Item key={i} onClick={() => handleChangeStatus(item.status)}>
+          <Row align="middle" style={{ color: item.color }}>
+            <GrStatusGoodSmall className="mr-2" />
+            <Text>{item.status}</Text>
+          </Row>
+        </Menu.Item>
+      ))}
+    </Menu>
+  );
+
   const menuMore = (
     <Menu>
       {isSmallScreen && <MainMenuItems />}
@@ -225,6 +262,16 @@ function Navbar({ selectedMenu, setTxtSearch, txtInitSearch }) {
           <Text>Create group</Text>
         </Row>
       </Menu.Item>
+      {/* <Dropdown
+        overlay={menuStatus}
+        trigger={["click"]}
+        placement="bottomRight"
+      >
+        <Tooltip title="Status" placement="right">
+          <GrStatusGoodSmall className="clickable icon" />
+        </Tooltip>
+      </Dropdown> */}
+
       <Menu.Item key="logout" onClick={() => handleLogOut()}>
         <Row align="middle">
           <LogoutOutlined className=" red mr-2" />
