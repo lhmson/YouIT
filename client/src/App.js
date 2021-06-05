@@ -23,6 +23,7 @@ import {
   MessagePage,
   FriendMangementPage,
   MutualFriendPage,
+  StatisticsPage,
 } from "./pages/index";
 
 import { CuteClientIOProvider } from "./socket/CuteClientIOProvider.js";
@@ -36,6 +37,7 @@ import ActivationPage from "./pages/ActivationPage/ActivationPage.js";
 
 const loggedIn = () => {
   const user = JSON.parse(localStorage.getItem("user"));
+  console.log("user local storage", user);
   return user;
 };
 
@@ -91,6 +93,7 @@ function App() {
           <PrivateRoute exact path="/message" component={MessagePage} />
           <Route path="/group/:id/about" component={GroupPage} />
           <Route path="/group/:id/members" component={GroupPage} />
+          <Route exact path="/statistics" component={StatisticsPage} />
           <Route>
             <ErrorPage code="404" />
           </Route>
