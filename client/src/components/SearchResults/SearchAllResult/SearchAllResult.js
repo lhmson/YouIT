@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { Layout, Typography, Breadcrumb, Row, Col } from "antd";
+import { Row } from "antd";
 import FeedPost from "../../Posts/FeedPosts/FeedPost/FeedPost";
 import * as api from "../../../api/search";
 import * as api1 from "../../../api/friend";
@@ -99,21 +99,21 @@ const SearchAllResult = ({ txtSearch }) => {
     listUserCard.length === 0;
 
   return (
-    <div className="col-12">
-      <div
-        className="row"
-        style={{
-          paddingTop: 16,
-          paddingLeft: 32,
-          paddingRight: 32,
-        }}
-      >
-        <div className="col-12" style={{ marginRight: checkNoData ? 32 : 0 }}>
-          {listPostCard} {listGroupCard} {listUserCard}
-          {checkNoData ? <NoDataSearch></NoDataSearch> : null}
-        </div>
+    // <div className="col-12">
+    <div
+      className="row justify-content-center"
+      style={{
+        paddingTop: 16,
+        paddingLeft: 32,
+        paddingRight: 32,
+      }}
+    >
+      <div style={{ marginRight: checkNoData ? 32 : 0 }}>
+        {listPostCard} {listGroupCard} {listUserCard}
+        {checkNoData ? <NoDataSearch></NoDataSearch> : null}
       </div>
     </div>
+    // </div>
   );
 };
 

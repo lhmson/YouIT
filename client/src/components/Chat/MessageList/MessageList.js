@@ -63,11 +63,6 @@ function ConversationList({
     };
   }, [currentId]);
 
-  // test
-  useEffect(() => {
-    console.log(listSeenMembers);
-  }, [listSeenMembers]);
-
   const handleLoadNewMessage = () => {
     apiConversation.fetchAConversation(currentId, 0, 0).then((res) => {
       const fetchedMsgs = res.data?.listMessages;

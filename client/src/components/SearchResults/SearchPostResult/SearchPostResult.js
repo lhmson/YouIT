@@ -33,24 +33,24 @@ const SearchPostResult = ({ txtSearch }) => {
   );
 
   return (
-    <div className="col-12">
-      <div
-        className="row"
-        style={{
-          paddingTop: 16,
-          paddingLeft: 32,
-          paddingRight: 32,
-        }}
-      >
-        <div className="col-12">
-          {listPostCard.length === 0 ? (
-            <NoDataSearch></NoDataSearch>
-          ) : (
-            listPostCard
-          )}
-        </div>
+    // <div className="col-12">
+    <div
+      className="row justify-content-center"
+      style={{
+        paddingTop: 16,
+        paddingLeft: 32,
+        paddingRight: 32,
+      }}
+    >
+      <div>
+        {listPostCard.length === 0 ? (
+          <NoDataSearch></NoDataSearch>
+        ) : (
+          listPostCard
+        )}
       </div>
     </div>
+    // </div>
   );
 };
 

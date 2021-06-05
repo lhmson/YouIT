@@ -69,6 +69,12 @@ const userSchema = mongoose.Schema(
         ref: "ActivityLogItem",
       },
     ],
+
+    onlineStatus: {
+      type: String,
+      enum: ["online", "busy", "offline"],
+      default: "online",
+    },
   },
   { timestamps: true }
 );

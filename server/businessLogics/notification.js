@@ -25,11 +25,3 @@ export const sendRequestUser = (request) => {
     throw error;
   }
 };
-
-export const sendMessageUser = (message) => {
-  try {
-    cuteIO.sendToUser(userId, "Message", message);
-  } catch (error) {
-    throw error;
-  }
-};

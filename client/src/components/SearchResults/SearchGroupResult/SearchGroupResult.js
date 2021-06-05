@@ -37,22 +37,22 @@ const SearchGroupResult = ({ txtSearch }) => {
   );
 
   return (
-    <div className="col-12">
-      <div
-        className="col-12"
-        style={{
-          paddingTop: 16,
-          paddingLeft: 32,
-          paddingRight: 32,
-        }}
-      >
-        {listGroupCard.length === 0 ? (
-          <NoDataSearch></NoDataSearch>
-        ) : (
-          listGroupCard
-        )}
-      </div>
+    // <div className="col-12">
+    <div
+      className="row justify-content-center"
+      style={{
+        paddingTop: 16,
+        paddingLeft: 32,
+        paddingRight: 32,
+      }}
+    >
+      {listGroupCard.length === 0 ? (
+        <NoDataSearch></NoDataSearch>
+      ) : (
+        listGroupCard
+      )}
     </div>
+    // </div>
   );
 };
 

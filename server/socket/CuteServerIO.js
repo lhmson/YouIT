@@ -1,5 +1,6 @@
 import { Server, Socket } from "socket.io";
 import { verifyJwt } from "../utils/verfifyAuth.js";
+import event from 'events'
 
 /**
  * A simplified interface to use socket.io by CuteTN, for YouIT only. :)
@@ -60,6 +61,26 @@ export default class CuteServerIO {
   */
   verifyUser
 
+
+  /**
+   * @param {Socket} socket
+   * @param {any} msg custom object
+   * @returns {OnReceiveParams}
+   */
+  #createCuteParameter = (socket, msg) => {
+    if (typeof socket === "string") socket = this.#getSocket(socket);
+    const { userId, token, browserId } = this.#extractInfoSocket(socket);
+
+    return {
+      userId,
+      token,
+      socket,
+      browserId,
+      msg,
+      cuteServerIo: this,
+    }
+  }
+
   /**
    * Add handlers when receiving a message from specific client (by its socket Id). Subscribe immediately
    * @param {Socket | string} socket
@@ -67,18 +88,8 @@ export default class CuteServerIO {
    * @param {OnReceiveDelegate} handleFunction
    */
   onReceive = (socket, eventName, handleFunction) => {
-    if (typeof socket === "string") socket = this.#getSocket(socket);
-    const { userId, token, browserId } = this.#extractInfoSocket(socket);
-
     socket.on(eventName, (msg) => {
-      handleFunction({
-        userId,
-        token,
-        socket,
-        browserId,
-        msg,
-        cuteServerIo: this,
-      });
+      handleFunction(this.#createCuteParameter(socket, msg));
     });
   };
 
@@ -156,11 +167,15 @@ export default class CuteServerIO {
           console.info(
             `[IO] Disconnected from ${socket.id}. Reason: ${reason}`
           );
+
+          this.#connectionEventEmitter.emit("disconnection", this.#createCuteParameter(socket, {}));
         });
 
         if (userId)
           console.info(`[IO] Connected to ${socket.id}: User ${userId}.`);
         else console.info(`[IO] Connected to ${socket.id}: Anonymous`);
+
+        this.#connectionEventEmitter.emit("connection", this.#createCuteParameter(socket, {}));
       } catch (error) {
         // CuteTN TODO: send something back to client maybe
         console.error(
@@ -255,6 +270,25 @@ export default class CuteServerIO {
 
     return 0;
   };
+
+  /** @type {event} */
+  #connectionEventEmitter = new event.EventEmitter();
+
+  /**
+   * An event that emits each time a new socket is connected
+   * @param {(params: OnReceiveParams) => void} listener 
+   */
+  onConnection = (listener) => {
+    this.#connectionEventEmitter.addListener("connection", listener)
+  }
+
+  /**
+   * An event that emits each time a socket is disconnected
+   * @param {(params: OnReceiveParams) => void} listener 
+   */
+  onDisconnection = (listener) => {
+    this.#connectionEventEmitter.addListener("disconnection", listener)
+  }
 }
 
 // test

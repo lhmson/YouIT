@@ -7,6 +7,9 @@ import {
   signup,
   verifyToken,
   signout,
+  getFriendsStatus,
+  setUserStatus,
+  getUserStatus,
 } from "../controllers/user.js";
 import auth from "../middleware/auth.js";
 
@@ -19,5 +22,10 @@ router.get("/password/check/:password", auth, checkPassword);
 router.put("/verify/:token", verifyToken);
 router.post("/resend", resendVerificationMail);
 router.post("/signout", signout);
+
+// user status APIs
+router.get("/list/friendsStatus", auth, getFriendsStatus);
+router.get("/getStatus", auth, getUserStatus);
+router.put("/setStatus/:newStatus", auth, setUserStatus);
 
 export default router;
