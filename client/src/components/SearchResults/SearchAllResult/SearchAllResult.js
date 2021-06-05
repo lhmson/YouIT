@@ -57,7 +57,7 @@ const SearchAllResult = ({ txtSearch }) => {
   const listPostCard = useMemo(
     () =>
       listPost?.map((post, i) => {
-        return <FeedPost key={i} post={post}></FeedPost>;
+        return <FeedPost key={post._id} post={post}></FeedPost>;
       }),
     [listPost]
   );
@@ -77,7 +77,7 @@ const SearchAllResult = ({ txtSearch }) => {
       listUser?.map((user, i) => {
         return (
           <UserCard
-            key={i}
+            key={user._id}
             _id={user._id}
             name={user.name}
             relationship="Add Friend"

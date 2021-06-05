@@ -11,7 +11,7 @@ import { BrowserRouter } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./index.css";
 import { TokenProvider } from "./context/TokenContext";
-import ScrollToTop from "./utils/ScrollTop";
+import ScrollToTop from "./utils/ScrollTopAuto";
 
 const store = createStore(reducers, compose(applyMiddleware(thunk)));
 

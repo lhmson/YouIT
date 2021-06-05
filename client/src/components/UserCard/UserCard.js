@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect } from "react";
 import { Button, Typography, List } from "antd";
 import { Avatar, Tag, Popover, message } from "antd";
 import styles from "./styles.js";
-import { Link, useHistory, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 import * as api from "../../api/friend";
 import { checkUserASendedUserB } from "../../api/friendRequest";
 import { useLocalStorage } from "../../hooks/useLocalStorage";
@@ -22,7 +22,8 @@ import {
   removeSendingFriendRequest,
 } from "../../api/user_info.js";
 
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import { useMobile } from "../../utils/responsiveQuery.js";
 
 const { Title, Text } = Typography;
 
@@ -36,6 +37,8 @@ function UserCard(props) {
     props.relationship ?? "Add Friend"
   );
   const [listMutual, setListMutual] = useState([]);
+
+  const isMobile = useMobile();
 
   const handleAddingFriend = async (confirmId, senderId) => {
     // create friend request
@@ -167,38 +170,34 @@ function UserCard(props) {
   return (
     <>
       <div style={styles.card}>
-        <div className="row ml-2" style={{ justifyContent: "space-between" }}>
+        <div
+          className={`${!isMobile && "row"} m-2`}
+          style={{ justifyContent: "space-between" }}
+        >
           <div
             style={{
               display: "flex",
-              justifyContent: "center",
-              minWidth: 600,
+              flexDirection: "row",
+              // minWidth: 600,
             }}
           >
-            <Avatar
-              size={72}
-              src="https://vtv1.mediacdn.vn/thumb_w/650/2020/10/20/blackpink-lisa-mac-160316252527410005928.jpg"
-            />
+            <div>
+              <Avatar
+                size={72}
+                src="https://vtv1.mediacdn.vn/thumb_w/650/2020/10/20/blackpink-lisa-mac-160316252527410005928.jpg"
+              />
+            </div>
 
-            <div className="col-8" style={{ alignSelf: "center" }}>
+            <div className="ml-3 break-word">
               <Link to={`/userinfo/${_id}`}>
-                <Text style={styles.textUser}>{name ?? "Lalisa Manobal"}</Text>
+                <Title style={styles.textUser}>{name ?? "Anonymous"}</Title>
               </Link>
-              <div style={{ marginTop: 0 }}></div>
+
               <Text>React Native Developer</Text>
             </div>
-            <div
-              style={{
-                marginLeft: 0,
-                justifyContent: "center",
-                flex: 1,
-                display: "flex",
-              }}
-            ></div>
           </div>
 
           <div
-            className="mr-3"
             style={{
               justifyContent: "flex-end",
               alignItems: "flex-end",

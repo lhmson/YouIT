@@ -3,11 +3,14 @@ import { Button, Row, Col, Divider, Form, Typography, Input, Card } from "antd";
 import { Avatar, Image, Tag } from "antd";
 import styles from "./styles.js";
 import { Link, useHistory, useLocation } from "react-router-dom";
+import { useMobile } from "../../utils/responsiveQuery.js";
 
 const { Title, Text } = Typography;
 
 function GroupCard({ nameGroup, _id }) {
   const [txtButton, setTxtButton] = React.useState("Join");
+
+  const isMobile = useMobile();
 
   const changeStateButton = () => {
     if (txtButton === "Join") setTxtButton("Cancel Request");
@@ -17,38 +20,39 @@ function GroupCard({ nameGroup, _id }) {
   return (
     <>
       <div style={styles.card}>
-        <div className="row ml-2" style={{ justifyContent: "space-between" }}>
+        <div
+          className={`${!isMobile && "row"} m-2`}
+          style={{ justifyContent: "space-between" }}
+        >
           <div
             style={{
               display: "flex",
-              justifyContent: "center",
-              minWidth: 600,
+              flexDirection: "row",
+              // minWidth: 600,
             }}
           >
-            <Avatar
-              size={72}
-              src="https://vtv1.mediacdn.vn/thumb_w/650/2020/10/20/blackpink-lisa-mac-160316252527410005928.jpg"
-            />
-
-            <div className="col-8" style={{ alignSelf: "center" }}>
-              <Link to={`/group/${_id}`}>
-                <Text style={styles.textUser}>{nameGroup ?? "Name Group"}</Text>
-              </Link>
-              <div style={{ marginTop: 0 }}></div>
-              <Text>"Blackpink in your area"</Text>
+            <div>
+              <Avatar
+                size={72}
+                src="https://vtv1.mediacdn.vn/thumb_w/650/2020/10/20/blackpink-lisa-mac-160316252527410005928.jpg"
+              />
             </div>
-            <div
-              style={{
-                marginLeft: 0,
-                justifyContent: "center",
-                flex: 1,
-                display: "flex",
-              }}
-            ></div>
+
+            <div className="ml-3 break-word">
+              <div className="break-word">
+                <Link to={`/group/${_id}`}>
+                  <Title style={styles.textUser}>
+                    {nameGroup ?? "Name Group"}
+                  </Title>
+                </Link>
+              </div>
+              <div>
+                <Text>"Blackpink in your area"</Text>
+              </div>
+            </div>
           </div>
 
           <div
-            className="mr-3"
             style={{
               justifyContent: "flex-end",
               alignItems: "flex-end",

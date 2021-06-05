@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
 import styles from "./styles.js";
-import { Typography, Row, Col, Card, Tag, Space } from "antd";
+import { Typography, Row, Col, Card, Tag, Tooltip } from "antd";
 import { Link } from "react-router-dom";
 
 import COLOR from "../../constants/colors.js";
+import { limitNameLength } from "../../utils/limitNameLength.js";
 
 const { Title, Text } = Typography;
 
@@ -26,9 +27,11 @@ function RelatedCard(props) {
             </Col>
 
             <Col span={20} align="start" justify="center">
-              <Link to={`/post/${p._id}`} className="clickable dark-green">
-                {p.title}
-              </Link>
+              <Tooltip title={limitNameLength(p.title, 96)} placement="left">
+                <Link to={`/post/${p._id}`} className="clickable dark-green">
+                  {limitNameLength(p.title, 42)}
+                </Link>
+              </Tooltip>
             </Col>
           </Row>
         ))}

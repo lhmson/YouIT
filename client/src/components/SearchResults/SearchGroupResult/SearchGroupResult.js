@@ -23,7 +23,9 @@ const SearchGroupResult = ({ txtSearch }) => {
   const listGroupCard = useMemo(
     () =>
       listGroup?.map((group, i) => {
-        return <GroupCard _id={group._id} nameGroup={group.name}></GroupCard>;
+        return (
+          <GroupCard key={i} _id={group._id} nameGroup={group.name}></GroupCard>
+        );
       }),
     [listGroup]
   );

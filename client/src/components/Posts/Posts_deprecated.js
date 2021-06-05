@@ -5,7 +5,7 @@ import styles from "./styles";
 
 import { useSelector } from "react-redux";
 
-import Post from "./Post/Post";
+import Post from "./Post_deprecated/Post";
 
 function Posts({ setCurrentId }) {
   const posts = useSelector((state) => state.posts);
@@ -17,7 +17,7 @@ function Posts({ setCurrentId }) {
       ) : (
         <>
           <Row style={styles.gutterBox} gutter={[16, 24]}>
-            {posts.map((post) => (
+            {posts?.map((post) => (
               <Col
                 style={styles.post}
                 key={post._id}

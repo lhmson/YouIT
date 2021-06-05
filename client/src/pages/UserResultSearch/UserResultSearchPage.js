@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Layout, Typography, Breadcrumb, Row, Col } from "antd";
 import styles from "./styles.js";
+import "./styles.css";
 
 import Navbar from "../../components/Navbar/Navbar";
 
@@ -50,6 +51,31 @@ function UserResultSearchPage() {
           </Layout>
         </Layout>
       </Layout>
+
+      {/* <Layout>
+        <Navbar
+          selectedMenu="userinfo"
+          setTxtSearch={setTxtSearch}
+          setModeSearch={setModeSearch}
+          txtInitSearch={txtInitSearch}
+        />
+        <Layout style={styles.mainArea}>
+          <div className="feed-container">
+            <SearchSidebar setModeSearch={setModeSearch} className="sidebar" />
+            <div className="mainContent">
+              {modeSearch === "User" ? (
+                <SearchUserResult userNameSearch={txtSearch}></SearchUserResult>
+              ) : modeSearch === "Post" ? (
+                <SearchPostResult txtSearch={txtSearch}></SearchPostResult>
+              ) : modeSearch === "Group" ? (
+                <SearchGroupResult txtSearch={txtSearch}></SearchGroupResult>
+              ) : (
+                <SearchAllResult txtSearch={txtSearch}></SearchAllResult>
+              )}
+            </div>
+          </div>
+        </Layout>
+      </Layout> */}
     </>
   );
 }

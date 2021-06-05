@@ -1,0 +1,22 @@
+.feed-container {
+  display: grid;
+  grid:
+    "sidebar mainContent"
+    / 1fr;
+  /* min-width: 800px;
+    max-width: 1000px; */
+  /* max-height: 800px; */
+  /* flex: 1 0 0; */
+  height: 90vh;
+  background: #fff;
+}
+
+.sidebar {
+  grid-area: sidebar;
+  overflow-y: scroll;
+}
+
+.mainContent {
+  grid-area: mainContent;
+  overflow-y: scroll;
+}

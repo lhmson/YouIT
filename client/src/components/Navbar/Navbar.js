@@ -10,7 +10,6 @@ import {
   Avatar,
   Badge,
   Tooltip,
-  Space,
 } from "antd";
 import styles from "./styles";
 import logo from "../../assets/darklogo.png";

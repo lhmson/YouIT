@@ -27,7 +27,7 @@ const SearchPostResult = ({ txtSearch }) => {
   const listPostCard = useMemo(
     () =>
       listPost?.map((post, i) => {
-        return <FeedPost key={i} post={post}></FeedPost>;
+        return <FeedPost key={post._id} post={post}></FeedPost>;
       }),
     [listPost]
   );

@@ -24,6 +24,7 @@ import {
   FriendMangementPage,
   MutualFriendPage,
   GroupManagementPage,
+  AuthAdminPage,
 } from "./pages/index";
 
 import { CuteClientIOProvider } from "./socket/CuteClientIOProvider.js";
@@ -34,10 +35,15 @@ import PrivateRoute from "./utils/PrivateRoute.js";
 import { handleNewIOConnection } from "./notifications/index.js";
 import SettingsPage from "./pages/SettingsPage/SettingsPage.js";
 import ActivationPage from "./pages/ActivationPage/ActivationPage.js";
+import AdminDashboardPage from "./pages/SystemAdmin/AdminDashboardPage/AdminDashboardPage.js";
 
 const loggedIn = () => {
   const user = JSON.parse(localStorage.getItem("user"));
   return user;
+};
+
+const isAdmin = () => {
+  return true; //TODO: handle set login admin
 };
 
 function App() {
@@ -46,7 +52,7 @@ function App() {
   return (
     <div className={styles.App}>
       <CuteClientIOProvider
-        serverUri={"http://localhost:5000"}
+        serverUri={"http://localhost:5000"} //TODO: change all localhost to deploy link
         token={token}
         onNewConnection={handleNewIOConnection}
       >
@@ -93,6 +99,12 @@ function App() {
           <PrivateRoute exact path="/message" component={MessagePage} />
           <Route path="/group/:id/about" component={GroupPage} />
           <Route path="/group/:id/members" component={GroupPage} />
+          <PrivateRoute exact path="/admin">
+            {isAdmin() ? <Redirect to="/admin/dashboard" /> : <AuthAdminPage />}
+          </PrivateRoute>
+          <PrivateRoute exact path="/admin/dashboard">
+            {isAdmin() ? <AdminDashboardPage /> : <Redirect to="/admin" />}
+          </PrivateRoute>
           <Route>
             <ErrorPage code="404" />
           </Route>
