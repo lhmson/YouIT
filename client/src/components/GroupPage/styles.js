@@ -4,8 +4,8 @@ const styles = {
   card: {
     background: "white",
     padding: 16,
-    marginBottom: 16,
     flex: 1,
+    marginBottom: 16,
   },
   tag: {
     color: "#219653",
@@ -20,7 +20,7 @@ const styles = {
   },
   textUser: {
     fontweight: 700,
-    fontSize: 20,
+    fontSize: 18,
   },
 
   paleBackground: {

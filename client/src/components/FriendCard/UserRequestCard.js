@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { Button, Typography, List } from "antd";
+import { Button, Typography, List, message } from "antd";
 import { Avatar, Tag, Popover } from "antd";
 import styles from "../UserCard/styles.js";
 import { Link, useHistory, useLocation } from "react-router-dom";
@@ -68,7 +68,7 @@ function UserRequestCard(props) {
       const request = matchingFriendRequest;
       await cancelFriendRequest(request);
     }
-
+    message.success("Now, we are good friends");
     setUpdateData(!updateData);
   };
 
@@ -77,6 +77,7 @@ function UserRequestCard(props) {
       const request = matchingFriendRequest;
       await cancelFriendRequest(request);
     }
+    message.success("You deny this request successfully");
     setUpdateData(!updateData);
   };
 
@@ -155,6 +156,7 @@ function UserRequestCard(props) {
             style={{
               display: "flex",
               justifyContent: "center",
+              minWidth : 600,
             }}
           >
             <Avatar

@@ -65,56 +65,27 @@ function FriendMangementPage() {
     );
   }
 
-  const listUserCardLeft = useMemo(
+  const listUserCard = useMemo(
     () =>
       listFilter?.map((user, i) => {
-        if (i % 2 == 0) {
-          if (mode === "Friends")
-            return (
-              <FriendCard
-                _id={user._id}
-                name={user.name}
-                relationship="Add Friend"
-              ></FriendCard>
-            );
-          else
-            return (
-              <UserRequestCard
-                _id={user._id}
-                name={user.name}
-                relationship="Add Friend"
-                setUpdateData={setUpdateData}
-                updateData={updateData}
-              ></UserRequestCard>
-            );
-        }
-      }),
-    [listFilter]
-  );
-
-  const listUserCardRight = useMemo(
-    () =>
-      listFilter?.map((user, i) => {
-        if (i % 2 == 1) {
-          if (mode === "Friends")
-            return (
-              <FriendCard
-                _id={user._id}
-                name={user.name}
-                relationship="Add Friend"
-              ></FriendCard>
-            );
-          else
-            return (
-              <UserRequestCard
-                _id={user._id}
-                name={user.name}
-                relationship="Add Friend"
-                setUpdateData={setUpdateData}
-                updateData={updateData}
-              ></UserRequestCard>
-            );
-        }
+        if (mode === "Friends")
+          return (
+            <FriendCard
+              _id={user._id}
+              name={user.name}
+              relationship="Add Friend"
+            ></FriendCard>
+          );
+        else
+          return (
+            <UserRequestCard
+              _id={user._id}
+              name={user.name}
+              relationship="Add Friend"
+              setUpdateData={setUpdateData}
+              updateData={updateData}
+            ></UserRequestCard>
+          );
       }),
     [listFilter]
   );
@@ -209,9 +180,8 @@ function FriendMangementPage() {
                   />
                 </div>
 
-                <div className="row">
-                  <div className="col-6">{listUserCardLeft}</div>
-                  <div className="col-6">{listUserCardRight}</div>
+                <div className="row" style={{ padding: 32 }}>
+                  {listUserCard}
                 </div>
               </div>
             </Content>

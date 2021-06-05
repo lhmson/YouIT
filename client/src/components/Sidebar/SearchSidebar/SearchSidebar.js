@@ -68,7 +68,7 @@ function SearchSidebar(props) {
           style={styles.item}
           icon={<FileTextOutlined style={{ fontSize: "1.4rem" }} />}
         >
-          Post
+          Posts
         </Menu.Item>
         <Menu.Item
           onClick={() => props.setModeSearch("User")}
@@ -76,7 +76,7 @@ function SearchSidebar(props) {
           style={styles.item}
           icon={<TeamOutlined style={{ fontSize: "1.4rem" }} />}
         >
-          User
+          People
         </Menu.Item>
         {/* </SubMenu> */}
 
@@ -86,7 +86,7 @@ function SearchSidebar(props) {
           style={styles.item}
           icon={<LaptopOutlined style={{ fontSize: "1.4rem" }} />}
         >
-          Group
+          Groups
         </Menu.Item>
       </Menu>
     </Sider>
