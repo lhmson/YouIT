@@ -6,7 +6,6 @@ import { Loading } from "../..";
 
 function ChatForm({
   currentId,
-  setIsAddMessage,
   messageHandle,
   listConversations,
   updateListConversations,
@@ -57,7 +56,7 @@ function ChatForm({
         ref={inputRef}
         disabled={currentId ? false : true}
         onPressEnter={() => handleSendMessage()}
-        // onChange={(e) => handleChange(e)}
+      // onChange={(e) => handleChange(e)}
       />
       {!checkSending(currentId) ? (
         <Tooltip title="Send">

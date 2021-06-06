@@ -36,8 +36,6 @@ function ChatSpace() {
 
   // const [isAddConversation, setIsAdd] = useState(false); // to render conversation when add
 
-  const [isAddMessage, setIsAddMessage] = useState(false);
-
   useEffect(() => {
     apiConversation.fetchConversationsOfUser().then((res) => {
       if (res.data.length > 0) {
@@ -48,13 +46,8 @@ function ChatSpace() {
 
   // test notification message
   useEffect(() => {
-    messageHandle.onReceive((msg) => {
-      setIsAddMessage(true);
-    });
-
     messageHandle.onSent((msg) => {
       removeSending(msg?.res?.conversationId);
-      setIsAddMessage(true);
     });
 
     messageHandle.onFailed((msg) => {
@@ -82,9 +75,9 @@ function ChatSpace() {
           updateCurrentId={updateCurrentId}
           addConversation={addConversation}
           updateListConversations={updateListConversations}
-          // setCurrentId={setCurrentId}
-          // isAddConversation={isAddConversation}
-          // setIsAdd={setIsAdd}
+        // setCurrentId={setCurrentId}
+        // isAddConversation={isAddConversation}
+        // setIsAdd={setIsAdd}
         />
         <MessageHeader
           setOpenSidebar={setIsSidebarOpen}
@@ -93,14 +86,11 @@ function ChatSpace() {
         />
         <MessageList
           currentId={currentId}
-          isAddMessage={isAddMessage}
-          setIsAddMessage={setIsAddMessage}
           listSeenMembers={listSeenMembers}
           setListSeenMembers={setListSeenMembers}
         />
         <MessageForm
           currentId={currentId}
-          setIsAddMessage={setIsAddMessage}
           messageHandle={messageHandle}
           listConversations={listConversations}
           updateListConversations={updateListConversations}
