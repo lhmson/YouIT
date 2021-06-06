@@ -1,5 +1,13 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Tooltip, Popover, Button, Typography, Input, Select, message } from "antd";
+import {
+  Tooltip,
+  Popover,
+  Button,
+  Typography,
+  Input,
+  Select,
+  message,
+} from "antd";
 
 import {
   SearchOutlined,
@@ -23,6 +31,7 @@ import { useFriendsStatus } from "../../../context/FriendsStatusContext";
 import { GrStatusGoodSmall } from "react-icons/gr";
 import { renderStatus, statusList } from "../../../utils/userStatus";
 import { useMessage } from "../../../hooks/useMessage";
+import { limitNameLength } from "../../../utils/limitNameLength";
 
 const { Text } = Typography;
 
@@ -32,7 +41,6 @@ function MessageHeader({ setOpenSidebar, currentId, listSeenMembers }) {
   const isMobile = useMobile();
 
   const [user] = useLocalStorage("user");
-
 
   const [visibleEdit, setVisibleEdit] = useState(false); // select display
   const currentTitle = useRef();
@@ -51,14 +59,14 @@ function MessageHeader({ setOpenSidebar, currentId, listSeenMembers }) {
   const messageHandle = useMessage();
 
   useEffect(() => {
-    messageHandle.onConversationUpdated(msg => {
+    messageHandle.onConversationUpdated((msg) => {
       if (msg.res.conversationId === currentId) {
         handleLoadConversationData();
       }
-    })
+    });
 
     return messageHandle.cleanUpAll;
-  }, [currentId])
+  }, [currentId]);
 
   useEffect(() => {
     apiFriend.fetchListMyFriends(user?.result?._id).then((res) => {
@@ -89,7 +97,9 @@ function MessageHeader({ setOpenSidebar, currentId, listSeenMembers }) {
           status: friendsStatusManager.getStatus(member._id),
         }));
 
-        const listOthersId = listMembers.map(user => user._id).filter(userId => userId !== user?.result?._id)
+        const listOthersId = listMembers
+          .map((user) => user._id)
+          .filter((userId) => userId !== user?.result?._id);
 
         currentTitle.current = title;
         currentListMembers.current = listOthersId;
@@ -97,7 +107,9 @@ function MessageHeader({ setOpenSidebar, currentId, listSeenMembers }) {
         setTitle(title);
         setListMembers(listOthersId);
         setListMembersStatus(newList);
-        setCanEdit(res.data.listOwners.some(ownerId => ownerId === user?.result?._id))
+        setCanEdit(
+          res.data.listOwners.some((ownerId) => ownerId === user?.result?._id)
+        );
       }
     });
   };
@@ -129,20 +141,25 @@ function MessageHeader({ setOpenSidebar, currentId, listSeenMembers }) {
   };
 
   const handleEditConversation = () => {
-    apiConversation.updateConversation(currentId, {
-      title,
-      listMembers,
-    }).then(res => {
-      if (res.status === 200) {
-        message.success("Conversation updated!");
+    apiConversation
+      .updateConversation(currentId, {
+        title,
+        listMembers,
+      })
+      .then((res) => {
+        if (res.status === 200) {
+          message.success("Conversation updated!");
 
-        // prevent reset
-        currentTitle.current = title;
-        currentListMembers.current = listMembers;
-      }
-    }).catch(res => {
-      message.error("Cannot update conversation! Make sure there're at least 2 members and the title is not empty.")
-    })
+          // prevent reset
+          currentTitle.current = title;
+          currentListMembers.current = listMembers;
+        }
+      })
+      .catch((res) => {
+        message.error(
+          "Cannot update conversation! Make sure there're at least 2 members and the title is not empty."
+        );
+      });
   };
 
   const handleChangeUserToAdd = (value, options) => {
@@ -161,7 +178,7 @@ function MessageHeader({ setOpenSidebar, currentId, listSeenMembers }) {
   const handleTitleEditTextChange = (e) => {
     const newTitle = e?.target?.value;
     setTitle(newTitle);
-  }
+  };
 
   const getConversationStatus = () => {
     let result = "offline";
@@ -180,12 +197,15 @@ function MessageHeader({ setOpenSidebar, currentId, listSeenMembers }) {
 
   const handleDeleteConversation = () => {
     // Need a yes/no prompt
-    apiConversation.deleteConversation(currentId).then(res => {
-      message.success("Conversation deleted!");
-    }).catch(() => {
-      message.error("Something went wrong!");
-    })
-  }
+    apiConversation
+      .deleteConversation(currentId)
+      .then((res) => {
+        message.success("Conversation deleted!");
+      })
+      .catch(() => {
+        message.error("Something went wrong!");
+      });
+  };
 
   return (
     <div className="chat-title">
@@ -213,8 +233,9 @@ function MessageHeader({ setOpenSidebar, currentId, listSeenMembers }) {
                 style={{ margin: "5px 0" }}
               />
               <Select
-                mode="tags"
+                mode="multiple"
                 placeholder="Add friend"
+                allowClear
                 value={listMembers}
                 onChange={handleChangeUserToAdd}
                 style={{ width: "100%" }}
@@ -229,23 +250,35 @@ function MessageHeader({ setOpenSidebar, currentId, listSeenMembers }) {
           visible={visibleEdit}
           onVisibleChange={handleVisibleChange}
         >
-          {canEdit && <Button
-            className="d-flex justify-content-center align-items-center green-button ml-3"
-            icon={<EditOutlined />}
-          >
-            Edit
-          </Button>}
+          {canEdit && (
+            <Tooltip title="Edit conversation">
+              <EditOutlined />
+            </Tooltip>
+          )}
         </Popover>
+
+        {canEdit && (
+          <Tooltip title="Delete conversation">
+            <DeleteOutlined
+              className="clickable icon ml-3"
+              onClick={handleDeleteConversation}
+            />
+          </Tooltip>
+        )}
       </div>
 
-      <span className="text-center">
-        {currentId && (isMobile ? title.substring(0, 12) + "..." : title)}
-      </span>
+      <div className="text-center">
+        <Tooltip title={title} placement="bottom">
+          {currentId &&
+            limitNameLength(title, Math.round((window.innerWidth * 10) / 500))}
+        </Tooltip>
+      </div>
       <div className="d-flex">
         {listSeenMembers && (
           <Tooltip
             title={
               <div>
+                Seen
                 {listSeenMembers.map((item) => (
                   <div>{item.name}</div>
                 ))}
@@ -266,6 +299,7 @@ function MessageHeader({ setOpenSidebar, currentId, listSeenMembers }) {
                 ))}
               </div>
             }
+            placement="bottom"
           >
             <GrStatusGoodSmall
               className="clickable icon mr-2"
@@ -273,10 +307,6 @@ function MessageHeader({ setOpenSidebar, currentId, listSeenMembers }) {
             />
           </Tooltip>
         )}
-
-        {canEdit && <Tooltip title="Delete conversation">
-          <DeleteOutlined className="clickable icon" onClick={handleDeleteConversation} />
-        </Tooltip>}
       </div>
     </div>
   );

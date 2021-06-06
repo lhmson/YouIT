@@ -171,7 +171,7 @@ function Navbar({ selectedMenu, setTxtSearch, txtInitSearch }) {
           <Tooltip
             title={
               <div className="text-center">
-                <div>{user?.result?._id}</div>
+                <div>{user?.result?.name}</div>
                 <Dropdown
                   overlay={menuStatus}
                   trigger={["click"]}

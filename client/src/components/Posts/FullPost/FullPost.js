@@ -338,9 +338,13 @@ function FullPost({ post }) {
               </div>
             </Tooltip>
             <div className="mr-4">
-              <Text className="clickable" underline type="secondary">
-                Last edited {post?.contentUpdatedAt?.toString().slice(0, 10)}
-              </Text>
+              <Tooltip
+                title={`Created ${post?.createdAt?.toString().slice(0, 10)}`}
+              >
+                <Text className="clickable" underline type="secondary">
+                  Last edited {post?.contentUpdatedAt?.toString().slice(0, 10)}
+                </Text>
+              </Tooltip>
             </div>
             <Dropdown
               overlay={menuMore}

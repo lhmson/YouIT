@@ -335,9 +335,11 @@ function FeedPost({ post, setCurrentId }) {
             </Tooltip>
 
             <div className="mr-4">
-              <Text className="clickable" underline type="secondary">
-                Last edited {moment(post?.contentUpdatedAt).fromNow()}
-              </Text>
+              <Tooltip title={`Created ${moment(post?.createdAt).fromNow()}`}>
+                <Text className="clickable" underline type="secondary">
+                  Last edited {moment(post?.contentUpdatedAt).fromNow()}
+                </Text>
+              </Tooltip>
             </div>
             <Dropdown
               overlay={menuMore}

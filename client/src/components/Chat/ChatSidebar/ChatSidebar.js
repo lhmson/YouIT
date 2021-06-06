@@ -5,8 +5,6 @@ import {
   Drawer,
   Typography,
   Badge,
-  Modal,
-  Tooltip,
   Select,
   Popover,
   message,
@@ -89,8 +87,13 @@ function ChatSidebar({
       updateListConversations(res.data);
 
       // if there's no longer a conversation with current id, refresh!
-      if (currentId && !res.data?.some(conversation => conversation._id === currentId))
-        message.warn("You're no longer in this conversation!", 1, () => window.location.reload());
+      if (
+        currentId &&
+        !res.data?.some((conversation) => conversation._id === currentId)
+      )
+        message.warn("You're no longer in this conversation!", 1, () =>
+          window.location.reload()
+        );
       if (!currentId && res.data?.length > 0)
         updateCurrentId(res?.data?.[0]?._id);
     });
@@ -98,7 +101,7 @@ function ChatSidebar({
 
   useEffect(() => {
     handleFetchListUnseenConversations();
-  }, [])
+  }, []);
 
   useEffect(() => {
     // needs optimization later :)
@@ -133,7 +136,7 @@ function ChatSidebar({
   // }, []);
   // need real time update there
 
-  const handleSearch = () => { };
+  const handleSearch = () => {};
 
   const handleChangeUserToAdd = (value, options) => {
     // console.log("opt", options);
@@ -211,7 +214,8 @@ function ChatSidebar({
                   style={{ margin: "5px 0" }}
                 />
                 <Select
-                  mode="tags"
+                  mode="multiple"
+                  allowClear
                   placeholder="Add friend"
                   value={usersToAdd}
                   onChange={handleChangeUserToAdd}
@@ -272,13 +276,14 @@ function ChatSidebar({
         <>
           <div className="conversation-list">
             {currentId &&
-              listConversations &&
-              listConversations.length !== 0 ? (
+            listConversations &&
+            listConversations.length !== 0 ? (
               listConversations.map((item, i) => (
                 <div key={item?._id} onClick={() => updateCurrentId(item?._id)}>
                   <div
-                    className={`conversation ${item?._id === currentId && "active"
-                      }`}
+                    className={`conversation ${
+                      item?._id === currentId && "active"
+                    }`}
                   >
                     <Badge
                       dot

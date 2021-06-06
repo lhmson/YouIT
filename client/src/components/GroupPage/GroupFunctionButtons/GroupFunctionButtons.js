@@ -151,7 +151,7 @@ function GroupFunctionButtons() {
               title={
                 <div>
                   <Select
-                    mode="tags"
+                    mode="multiple"
                     placeholder="Invite friend"
                     value={usersToInvite}
                     onChange={handleChangeUserToInvite}
