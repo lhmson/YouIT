@@ -178,6 +178,15 @@ function MessageHeader({ setOpenSidebar, currentId, listSeenMembers }) {
     return result;
   };
 
+  const handleDeleteConversation = () => {
+    // Need a yes/no prompt
+    apiConversation.deleteConversation(currentId).then(res => {
+      message.success("Conversation deleted!");
+    }).catch(() => {
+      message.error("Something went wrong!");
+    })
+  }
+
   return (
     <div className="chat-title">
       <div className="d-flex align-items-center">
@@ -265,9 +274,9 @@ function MessageHeader({ setOpenSidebar, currentId, listSeenMembers }) {
           </Tooltip>
         )}
 
-        <Tooltip title="Delete conversation">
-          <DeleteOutlined className="clickable icon" />
-        </Tooltip>
+        {canEdit && <Tooltip title="Delete conversation">
+          <DeleteOutlined className="clickable icon" onClick={handleDeleteConversation} />
+        </Tooltip>}
       </div>
     </div>
   );

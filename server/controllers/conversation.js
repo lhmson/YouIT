@@ -351,3 +351,48 @@ export const updateConversation = async (req, res, next) => {
       .json({ message: error });
   }
 }
+
+
+/**
+ * @param {express.Request<ParamsDictionary, any, any, QueryString.ParsedQs, Record<string, any>>} req
+ * @param {express.Response<any, Record<string, any>, number>} res
+ * @param {express.NextFunction} next
+ */
+export const deleteConversation = async (req, res, next) => {
+  const { userId } = req;
+  const { conversationId } = req.params;
+
+  if (!userId) {
+    return res
+      .status(httpStatusCodes.unauthorized)
+      .send("You must sign in to get your conversations");
+  }
+
+  try {
+    const conversation = await Conversation.findById(conversationId);
+
+    if (!conversation)
+      return res
+        .status(httpStatusCodes.notFound)
+        .send(`No conversation with id ${conversationId}`);
+
+    if (!isOwnerOfConversation(userId, conversation))
+      return res
+        .status(httpStatusCodes.forbidden)
+        .send("You are not a conversation owner");
+
+    conversation.listMembers?.forEach(memberId => cuteIO.sendToUser(memberId.toString(), "Message-conversationDeleted", {
+      res: {
+        conversationId,
+        senderId: userId,
+      }
+    }));
+
+    await Conversation.findByIdAndDelete(conversationId);
+    return res.status(httpStatusCodes.ok).send(`Conversation deleted successfully`);
+  } catch (error) {
+    return res
+      .status(httpStatusCodes.internalServerError)
+      .json({ message: error });
+  }
+}
