@@ -94,8 +94,8 @@ function ChatSidebar({
         message.warn("You're no longer in this conversation!", 1, () =>
           window.location.reload()
         );
-      if (!currentId && res.data?.length > 0)
-        updateCurrentId(res?.data?.[0]?._id);
+      // if (!currentId && res.data?.length > 0) // buggy, don't use
+      // updateCurrentId(res?.data?.[0]?._id);
     });
   };
 
