@@ -1,13 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import {
-  Tooltip,
-  Popover,
-  Button,
-  Typography,
-  Input,
-  Select,
-  message,
-} from "antd";
+import { Tooltip, Popover, Button, Input, Select, message } from "antd";
 
 import {
   SearchOutlined,
@@ -18,10 +10,8 @@ import {
 
 import "../styles.css";
 
-import { Link } from "react-router-dom";
 import "../styles.css";
 import { useLocalStorage } from "../../../hooks/useLocalStorage.js";
-import COLOR from "../../../constants/colors.js";
 
 import { useMobile } from "../../../utils/responsiveQuery";
 
@@ -29,17 +19,13 @@ import * as apiFriend from "../../../api/friend";
 import * as apiConversation from "../../../api/conversation";
 import { useFriendsStatus } from "../../../context/FriendsStatusContext";
 import { GrStatusGoodSmall } from "react-icons/gr";
-import { renderStatus, statusList } from "../../../utils/userStatus";
+import { renderStatus } from "../../../utils/userStatus";
 import { useMessage } from "../../../hooks/useMessage";
 import { limitNameLength } from "../../../utils/limitNameLength";
-
-const { Text } = Typography;
 
 const { Option } = Select;
 
 function MessageHeader({ setOpenSidebar, currentId, listSeenMembers }) {
-  const isMobile = useMobile();
-
   const [user] = useLocalStorage("user");
 
   const [visibleEdit, setVisibleEdit] = useState(false); // select display

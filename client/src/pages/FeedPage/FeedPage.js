@@ -13,7 +13,7 @@ function FeedPage() {
   return (
     <>
       <Layout>
-        <Navbar />
+        <Navbar selectedMenu="feed" />
         <Layout style={styles.mainArea}>
           <div className="feed-container">
             <FeedSidebar className="sidebar" />

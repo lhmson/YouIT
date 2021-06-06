@@ -1,7 +1,6 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, message, Tooltip, Typography } from "antd";
 import "../styles.css";
-import { Link } from "react-router-dom";
 import { useLocalStorage } from "../../../hooks/useLocalStorage";
 import { useMessage } from "../../../hooks/useMessage";
 import moment from "moment";
@@ -12,11 +11,7 @@ import * as apiConversation from "../../../api/conversation";
 
 const { Text } = Typography;
 
-function ConversationList({
-  currentId,
-  listSeenMembers,
-  setListSeenMembers,
-}) {
+function ConversationList({ currentId, listSeenMembers, setListSeenMembers }) {
   const MESSAGE_PER_LOAD = 5;
 
   const [listMessages, setListMessages] = useState([]);
@@ -108,10 +103,11 @@ function ConversationList({
           {listMessages?.map((item, i) => (
             <div
               key={item.toString()}
-              className={`message-row ${item.senderId._id === user?.result?._id
+              className={`message-row ${
+                item.senderId._id === user?.result?._id
                   ? "you-message"
                   : "other-message"
-                }`}
+              }`}
             >
               <div className="message-content">
                 <Tooltip title={item.senderId.name} placement="bottom">

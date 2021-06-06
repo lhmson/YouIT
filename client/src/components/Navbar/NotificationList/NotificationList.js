@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { Modal, Typography, Menu, Tabs, Avatar } from "antd";
+import { Modal, Typography, Menu, Tooltip, Tabs, Avatar } from "antd";
 import moment from "moment";
 import styles from "./styles";
 import COLOR from "../../../constants/colors";
 import * as api from "../../../api/notification";
+import { limitNameLength } from "../../../utils/limitNameLength";
 
 const { Text } = Typography;
 const { TabPane } = Tabs;
@@ -52,7 +53,15 @@ function NotificationList({ handleClickNotificationItem, notifications }) {
                 >
                   <Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
                   <div className="d-flex ml-1 flex-column">
-                    <Text>{item.content?.description}</Text>
+                    <Tooltip
+                      title={item.content?.description}
+                      placement="bottom"
+                    >
+                      <Text>
+                        {limitNameLength(item.content?.description, 54)}
+                      </Text>
+                    </Tooltip>
+
                     <Text type="secondary">
                       {moment(item?.createdAt).fromNow()}
                     </Text>
@@ -110,7 +119,12 @@ function NotificationList({ handleClickNotificationItem, notifications }) {
               >
                 <Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
                 <div className="d-flex ml-1 flex-column">
-                  <Text>{item.content?.description}</Text>
+                  <Tooltip title={item.content?.description} placement="bottom">
+                    <Text>
+                      {limitNameLength(item.content?.description, 54)}
+                    </Text>
+                  </Tooltip>
+
                   <Text type="secondary">
                     {moment(item?.createdAt).fromNow()}
                   </Text>
