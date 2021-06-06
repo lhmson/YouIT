@@ -59,6 +59,37 @@ export const useMessage = () => {
     cleanUpCallbacks.current.push(cleanUp);
   }
 
+
+  /**
+   * add handler to handle when a conversation is created 
+   * @param {(msg: MessageEventParams) => any} handler
+   */
+  const onConversationCreated = (handler) => {
+    const cleanUp = cuteIO.onReceive("Message-conversationCreated", handler);
+    cleanUpCallbacks.current.push(cleanUp);
+  }
+
+
+  /**
+   * add handler to handle when a conversation is updated 
+   * @param {(msg: MessageEventParams) => any} handler
+   */
+  const onConversationUpdated = (handler) => {
+    const cleanUp = cuteIO.onReceive("Message-conversationUpdated", handler);
+    cleanUpCallbacks.current.push(cleanUp);
+  }
+
+
+  /**
+   * add handler to handle when a conversation is deleted 
+   * @param {(msg: MessageEventParams) => any} handler
+   */
+  const onConversationDeleted = (handler) => {
+    const cleanUp = cuteIO.onReceive("Message-conversationDeleted", handler);
+    cleanUpCallbacks.current.push(cleanUp);
+  }
+
+
   const cleanUpAll = () => {
     cleanUpCallbacks.current.forEach(clean => clean());
     cleanUpCallbacks.current.length = 0;
@@ -72,6 +103,10 @@ export const useMessage = () => {
 
     setSeen,
     onSeen,
+
+    onConversationCreated,
+    onConversationUpdated,
+    onConversationDeleted,
 
     cleanUpAll,
   }

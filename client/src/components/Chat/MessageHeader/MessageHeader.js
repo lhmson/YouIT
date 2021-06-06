@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Tooltip, Popover, Button, Typography, Input, Select } from "antd";
+import { Tooltip, Popover, Button, Typography, Input, Select, message } from "antd";
 
 import {
   SearchOutlined,
@@ -19,10 +19,10 @@ import { useMobile } from "../../../utils/responsiveQuery";
 
 import * as apiFriend from "../../../api/friend";
 import * as apiConversation from "../../../api/conversation";
-import { useForceUpdate } from "../../../hooks/useForceUpdate";
 import { useFriendsStatus } from "../../../context/FriendsStatusContext";
 import { GrStatusGoodSmall } from "react-icons/gr";
 import { renderStatus, statusList } from "../../../utils/userStatus";
+import { useMessage } from "../../../hooks/useMessage";
 
 const { Text } = Typography;
 
@@ -33,27 +33,32 @@ function MessageHeader({ setOpenSidebar, currentId, listSeenMembers }) {
 
   const [user] = useLocalStorage("user");
 
-  const [title, setTitle] = useState("");
-
-  const titleRef = useRef();
 
   const [visibleEdit, setVisibleEdit] = useState(false); // select display
+  const currentTitle = useRef();
+  const [title, setTitle] = useState("");
+
+  const currentListMembers = useRef([]);
+  const [listMembers, setListMembers] = useState([]);
 
   const [listFriends, setListFriends] = useState([]);
-
-  const [listMembers, setListMembers] = useState([]);
 
   const friendsStatusManager = useFriendsStatus();
   const [listMembersStatus, setListMembersStatus] = useState([]); // same as list members, but add new status property
 
+  const [canEdit, setCanEdit] = useState(false);
+
+  const messageHandle = useMessage();
+
   useEffect(() => {
-    // alert("current" + currentId);
-    if (currentId) {
-      apiConversation.fetchAConversation(currentId, 0, 0).then((res) => {
-        setTitle(res.data.title);
-      });
-    }
-  }, [currentId]);
+    messageHandle.onConversationUpdated(msg => {
+      if (msg.res.conversationId === currentId) {
+        handleLoadConversationData();
+      }
+    })
+
+    return messageHandle.cleanUpAll;
+  }, [currentId])
 
   useEffect(() => {
     apiFriend.fetchListMyFriends(user?.result?._id).then((res) => {
@@ -65,25 +70,34 @@ function MessageHeader({ setOpenSidebar, currentId, listSeenMembers }) {
 
   useEffect(() => {
     if (currentId) {
-      handleInitMembersStatus();
+      handleLoadConversationData();
       friendsStatusManager.onFriendStatusChange(handleUpdateMembersStatus);
 
       return friendsStatusManager.cleanUpAll;
     }
   }, [currentId]);
 
-  const handleInitMembersStatus = () => {
+  const handleLoadConversationData = () => {
     if (!currentId) return;
 
     apiConversation.fetchAConversation(currentId, 0, 0).then((res) => {
-      const { listMembers } = res.data;
+      const { listMembers, title } = res.data;
 
       if (listMembers) {
         const newList = listMembers?.map((member) => ({
           ...member,
           status: friendsStatusManager.getStatus(member._id),
         }));
+
+        const listOthersId = listMembers.map(user => user._id).filter(userId => userId !== user?.result?._id)
+
+        currentTitle.current = title;
+        currentListMembers.current = listOthersId;
+
+        setTitle(title);
+        setListMembers(listOthersId);
         setListMembersStatus(newList);
+        setCanEdit(res.data.listOwners.some(ownerId => ownerId === user?.result?._id))
       }
     });
   };
@@ -114,11 +128,21 @@ function MessageHeader({ setOpenSidebar, currentId, listSeenMembers }) {
     setOpenSidebar((prev) => !prev);
   };
 
-  const handleEditConversation = () => {};
+  const handleEditConversation = () => {
+    apiConversation.updateConversation(currentId, {
+      title,
+      listMembers,
+    }).then(res => {
+      if (res.status === 200) {
+        message.success("Conversation updated!");
 
-  const handleCancelEdit = () => {
-    setTitle("");
-    setListMembers("");
+        // prevent reset
+        currentTitle.current = title;
+        currentListMembers.current = listMembers;
+      }
+    }).catch(res => {
+      message.error("Cannot update conversation! Make sure there're at least 2 members and the title is not empty.")
+    })
   };
 
   const handleChangeUserToAdd = (value, options) => {
@@ -126,8 +150,18 @@ function MessageHeader({ setOpenSidebar, currentId, listSeenMembers }) {
   };
 
   const handleVisibleChange = (visibleAdd) => {
+    if (!visibleAdd) {
+      setTitle(currentTitle.current);
+      setListMembers(currentListMembers.current);
+    }
+
     setVisibleEdit(visibleAdd);
   };
+
+  const handleTitleEditTextChange = (e) => {
+    const newTitle = e?.target?.value;
+    setTitle(newTitle);
+  }
 
   const getConversationStatus = () => {
     let result = "offline";
@@ -157,8 +191,7 @@ function MessageHeader({ setOpenSidebar, currentId, listSeenMembers }) {
         <Popover
           content={
             <>
-              <Button onClick={() => handleEditConversation()}>Confirm</Button>
-              <Button onClick={() => handleCancelEdit()}>Cance;</Button>
+              <Button onClick={handleEditConversation}>Confirm</Button>
             </>
           }
           title={
@@ -166,8 +199,8 @@ function MessageHeader({ setOpenSidebar, currentId, listSeenMembers }) {
               <Input
                 type="text"
                 placeholder="Title"
-                ref={titleRef}
-                // onChange={(e) => handleChangeTitle(e)}
+                value={title}
+                onChange={handleTitleEditTextChange}
                 style={{ margin: "5px 0" }}
               />
               <Select
@@ -187,12 +220,12 @@ function MessageHeader({ setOpenSidebar, currentId, listSeenMembers }) {
           visible={visibleEdit}
           onVisibleChange={handleVisibleChange}
         >
-          <Button
+          {canEdit && <Button
             className="d-flex justify-content-center align-items-center green-button ml-3"
             icon={<EditOutlined />}
           >
             Edit
-          </Button>
+          </Button>}
         </Popover>
       </div>
 

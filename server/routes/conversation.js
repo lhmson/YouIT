@@ -14,5 +14,6 @@ router.post("/", auth, controllers.createConversation);
 
 // put
 router.put("/:conversationId/addMessage", auth, controllers.addMessage);
+router.put("/:conversationId", auth, controllers.updateConversation);
 
 export default router;

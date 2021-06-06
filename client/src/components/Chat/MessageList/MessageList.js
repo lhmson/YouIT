@@ -14,8 +14,6 @@ const { Text } = Typography;
 
 function ConversationList({
   currentId,
-  isAddMessage,
-  setIsAddMessage,
   listSeenMembers,
   setListSeenMembers,
 }) {
@@ -110,11 +108,10 @@ function ConversationList({
           {listMessages?.map((item, i) => (
             <div
               key={item.toString()}
-              className={`message-row ${
-                item.senderId._id === user?.result?._id
+              className={`message-row ${item.senderId._id === user?.result?._id
                   ? "you-message"
                   : "other-message"
-              }`}
+                }`}
             >
               <div className="message-content">
                 <Tooltip title={item.senderId.name} placement="bottom">

@@ -2,10 +2,13 @@ import express from "express";
 import {
   isConversationSeenByUser,
   isMemberOfConversation,
+  isOwnerOfConversation,
 } from "../businessLogics/conversation.js";
+import { isValidUser } from "../businessLogics/user.js";
 import Conversation from "../models/conversation.js";
-import { customPagination } from "../utils/customPagination.js";
 import { httpStatusCodes } from "../utils/httpStatusCode.js";
+import { asyncFilter } from '../utils/asyncFilter.js'
+import { cuteIO } from '../index.js'
 
 /**
  * @param {express.Request<ParamsDictionary, any, any, QueryString.ParsedQs, Record<string, any>>} req
@@ -47,6 +50,14 @@ export const createConversation = async (req, res, next) => {
     });
 
     await newConversation.save();
+
+    listMembers.forEach(memberId => cuteIO.sendToUser(memberId, "Message-conversationCreated", {
+      res: {
+        conversationId: newConversation._id,
+        senderId: userId,
+      }
+    }));
+
     return res.status(httpStatusCodes.created).json(newConversation);
   } catch (error) {
     return res
@@ -267,3 +278,76 @@ export const getUnseenConversationIds = async (req, res, next) => {
       .json({ message: error });
   }
 };
+
+
+/**
+ * @param {express.Request<ParamsDictionary, any, any, QueryString.ParsedQs, Record<string, any>>} req
+ * @param {express.Response<any, Record<string, any>, number>} res
+ * @param {express.NextFunction} next
+ */
+export const updateConversation = async (req, res, next) => {
+  const { userId } = req;
+  const { conversationId } = req.params;
+  const newConversationData = req.body;
+
+  if (!userId) {
+    return res
+      .status(httpStatusCodes.unauthorized)
+      .send("You must sign in to get your conversations");
+  }
+
+  try {
+    const conversation = await Conversation.findById(conversationId);
+
+    if (!conversation)
+      return res
+        .status(httpStatusCodes.notFound)
+        .send(`No conversation with id ${conversationId}`);
+
+    if (!isOwnerOfConversation(userId, conversation))
+      return res
+        .status(httpStatusCodes.forbidden)
+        .send("You are not a conversation owner");
+
+    const newConversation = conversation.toObject();
+
+    if (newConversationData.listMembers) {
+      // check if each user is cool
+      newConversationData.listMembers = await asyncFilter(newConversationData.listMembers, isValidUser);
+      newConversation.listMembers = [...new Set([
+        ...newConversationData.listMembers,
+        ...newConversation.listOwners?.map(userId => userId?.toString())
+      ])];
+
+      if (newConversation.listMembers.length < 2) {
+        return res.status(httpStatusCodes.badContent).send("A conversation must have at least 2 members. Consider remove conversation instead");
+      }
+    }
+
+    if (newConversationData.title) {
+      if (newConversationData.title === "")
+        return res.status(httpStatusCodes.badContent).send("The title must not be empty");
+      newConversation.title = newConversationData.title;
+    }
+
+    const receivers = [...new Set([
+      ...newConversation.listMembers,
+      ...conversation.listMembers?.map(userId => userId?.toString())
+    ])];
+
+    const updatedConversation = await Conversation.findByIdAndUpdate(conversationId, newConversation, { new: true });
+
+    receivers.forEach(memberId => cuteIO.sendToUser(memberId, "Message-conversationUpdated", {
+      res: {
+        conversationId,
+        senderId: userId,
+      }
+    }));
+
+    return res.status(httpStatusCodes.ok).send(updatedConversation);
+  } catch (error) {
+    return res
+      .status(httpStatusCodes.internalServerError)
+      .json({ message: error });
+  }
+}
