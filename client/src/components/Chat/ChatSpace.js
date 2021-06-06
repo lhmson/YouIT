@@ -46,9 +46,6 @@ function ChatSpace() {
 
   // test notification message
   useEffect(() => {
-    messageHandle.onReceive((msg) => {
-    });
-
     messageHandle.onSent((msg) => {
       removeSending(msg?.res?.conversationId);
     });

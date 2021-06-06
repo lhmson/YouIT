@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { messageSchema } from "./message.js";
+import Message from "./message.js";
 
 const conversationSchema = mongoose.Schema(
   {
@@ -48,6 +48,12 @@ const conversationSchema = mongoose.Schema(
     timestamps: true,
   }
 );
+
+conversationSchema.post('findOneAndDelete', async (doc) => {
+  await doc?.listMessages?.forEach(async msg => {
+    await Message.findByIdAndDelete(msg)
+  });
+});
 
 const Conversation = mongoose.model("Conversation", conversationSchema);
 
