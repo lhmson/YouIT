@@ -10,6 +10,8 @@ import {
   Avatar,
   Badge,
   Tooltip,
+  Button,
+  notification,
 } from "antd";
 import styles from "./styles";
 import logo from "../../assets/darklogo.png";
@@ -303,6 +305,25 @@ function Navbar({ selectedMenu, setTxtSearch, txtInitSearch }) {
   const [numberUnseenMessages, setNumberUnseenMessages] = useState(0);
 
   const messageHandle = useMessage();
+
+  const openNotification = (msg) => {
+    alert("abc");
+    const key = `open${Date.now()}`;
+    const btn = (
+      <Button className="green-button" onClick={() => console.log(msg)}>
+        Check out
+      </Button>
+    );
+    notification.open({
+      message: "Hey this is something for you",
+      description: msg,
+      onClick: () => {
+        console.log("Notification Clicked!");
+      },
+      key,
+      btn,
+    });
+  };
 
   const handleFetchListUnseenConversations = () => {
     apiConversation
