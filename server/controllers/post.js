@@ -459,7 +459,6 @@ export const countPosts = async (req, res) => {
       createdAt: { $gt: start, $lte: end },
       privacy: "Group",
     }).count();
-    console.log("group post count", count);
     groupPosts.push(count);
   };
   const countWall = async (start, end) => {
@@ -467,9 +466,7 @@ export const countPosts = async (req, res) => {
       createdAt: { $gt: start, $lte: end },
       privacy: { $ne: "Group" },
     }).count();
-    console.log("wall post count", count);
     wallPosts.push(count);
-    console.log("wall post length", wallPosts.length);
   };
   const addData = async (time, unit) => {
     const start = time.clone().startOf(unit);
@@ -501,7 +498,6 @@ export const countPosts = async (req, res) => {
         }
         break;
     }
-    console.log("final", wallPosts);
     res.status(200).json({ labels, wallPosts, groupPosts });
   } catch (error) {
     res.status(500).json({ message: error.message });

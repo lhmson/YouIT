@@ -4,6 +4,7 @@ import User from "../models/user.js";
 import { groupMemberSchema } from "../models/groupMember.js";
 import { isMemberOfGroup } from "../businessLogics/group.js";
 import { httpStatusCodes } from "../utils/httpStatusCode.js";
+import moment from "moment";
 
 /**
  * @param {express.Request<ParamsDictionary, any, any, QueryString.ParsedQs, Record<string, any>>} req
@@ -327,5 +328,61 @@ export const leaveGroup = async (req, res) => {
     res
       .status(httpStatusCodes.internalServerError)
       .json({ message: error.message });
+  }
+};
+
+export const countGroups = async (req, res) => {
+  const { range, timeString } = req.params;
+  let time = moment(timeString);
+  let labels = [];
+  let publicGroups = [];
+  let privateGroups = [];
+  const countPrivate = async (start, end) => {
+    const count = await Group.find({
+      createdAt: { $gt: start, $lte: end },
+      privacy: "Private",
+    }).count();
+    privateGroups.push(count);
+  };
+  const countPublic = async (start, end) => {
+    const count = await Group.find({
+      createdAt: { $gt: start, $lte: end },
+      privacy: "Public",
+    }).count();
+    publicGroups.push(count);
+  };
+  const addData = async (time, unit) => {
+    const start = time.clone().startOf(unit);
+    const end = time.clone().endOf(unit);
+    await countPrivate(start, end);
+    await countPublic(start, end);
+  };
+  try {
+    switch (range) {
+      case "week":
+        labels = moment.weekdaysShort();
+        for (let i = 0; i < labels.length; i++) {
+          let temp = time.clone().set("day", i);
+          await addData(temp, "day");
+        }
+        break;
+      case "month":
+        for (let i = 0; i < time.daysInMonth(); i++) {
+          labels.push(i + 1);
+          let temp = time.clone().set("date", i);
+          await addData(temp, "day");
+        }
+        break;
+      case "year":
+        labels = moment.monthsShort();
+        for (let i = 0; i < labels.length; i++) {
+          let temp = time.clone().set("month", i);
+          await addData(temp, "month");
+        }
+        break;
+    }
+    res.status(200).json({ labels, publicGroups, privateGroups });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
 };

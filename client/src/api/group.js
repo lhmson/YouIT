@@ -4,6 +4,8 @@ export const createGroup = (newGroup) => API.post("/group", newGroup);
 
 export const fetchAGroup = (id) => API.get(`/group/${id}`);
 export const fetchUserJoinedGroups = () => API.get(`/group/list/joinedByMe`);
+export const fetchCountGroups = (range, timeString) =>
+  API.get(`group/count/${range}/${timeString}`);
 
 export const getListMembers = (id) => API.get(`/group/${id}/members`);
 export const getListPendingMembers = (id) =>
@@ -15,8 +17,7 @@ export const removePendingMember = (groupId, userId) =>
   API.put(`/group/${groupId}/removePendingMember/${userId}`);
 export const addGroupMember = (groupId, userId) =>
   API.put(`/group/${groupId}/addMember/${userId}`);
-  export const deleteMember = (groupId, userId) =>
+export const deleteMember = (groupId, userId) =>
   API.put(`/group/${groupId}/deleteMember/${userId}`);
-
 
 export const deleteGroup = (id) => API.delete(`/group/${id}`);

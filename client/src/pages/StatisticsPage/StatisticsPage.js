@@ -5,10 +5,15 @@ import { Link } from "react-router-dom";
 import { Navbar } from "../../components";
 import UsersStatistics from "../../components/Chart/UserStatistics";
 import PostStatistics from "../../components/Chart/PostStatistics";
+import GroupStatistics from "../../components/Chart/GroupStatistics";
 const { Title } = Typography;
 
 export const StatisticsPage = ({}) => {
-  const chartArray = [<UsersStatistics />, <PostStatistics />];
+  const chartArray = [
+    <UsersStatistics />,
+    <PostStatistics />,
+    <GroupStatistics />,
+  ];
   return (
     <div className="p-5">
       <div className="row">

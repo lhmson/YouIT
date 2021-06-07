@@ -9,7 +9,13 @@ const { TabPane } = Tabs;
 const { Option } = Select;
 
 // colorIndex : see chartColors
-export const Chart = ({ title, data, onFetchData, colorIndex }) => {
+export const Chart = ({
+  title,
+  data,
+  onFetchData,
+  colorIndex,
+  defaultView,
+}) => {
   const chartColors = [
     {
       backgroundColor: "rgba(75, 192, 192, 0.2)",
@@ -32,7 +38,7 @@ export const Chart = ({ title, data, onFetchData, colorIndex }) => {
       borderColor: "rgba(255, 206, 86, 1)",
     },
   ];
-  const [range, setRange] = useState("week");
+  const [range, setRange] = useState(defaultView || "week");
   const [time, setTime] = useState(moment());
   const [chartTitle, setChartTitle] = useState(null);
   const dataLength = data?.datasets?.length;

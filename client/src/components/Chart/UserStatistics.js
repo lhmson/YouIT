@@ -23,8 +23,9 @@ export const UsersStatistics = () => {
     <Chart
       data={data}
       onFetchData={handleFetchData}
-      title="New Users"
+      title="Users"
       colorIndex={0}
+      defaultView="month"
     />
   );
 };
