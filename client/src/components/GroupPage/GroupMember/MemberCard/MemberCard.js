@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useMemo, useContext } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Button, Row, Typography, Menu, Dropdown, message } from "antd";
-import { Avatar, Image, Tag, Popover, List } from "antd";
+import { Avatar, Tag, Popover, List } from "antd";
 import styles from "./styles.js";
 import { Link } from "react-router-dom";
 import { EllipsisOutlined } from "@ant-design/icons";
@@ -10,9 +10,8 @@ import * as api from "../../../../api/friend";
 import * as apiGroup from "../../../../api/group";
 import { GroupContext } from "../../../../pages/GroupPage/GroupPage.js";
 import { useHistory } from "react-router-dom";
-import { GiConsoleController } from "react-icons/gi";
 
-const { Title, Text } = Typography;
+const { Text } = Typography;
 
 function MemberCard(props) {
   const [user, setUser] = useLocalStorage("user");
@@ -68,6 +67,16 @@ function MemberCard(props) {
         window.location.reload();
       })
       .catch((error) => message.success(error.message));
+  };
+
+  const isOwner = (user) => {
+    let isOwner = false;
+    group?.listMembers.forEach((member) => {
+      if (member?.userId == user?.result?._id) {
+        if (member?.role !== "Member") isOwner = true;
+      }
+    });
+    return isOwner;
   };
 
   const menuMore = (
@@ -163,19 +172,23 @@ function MemberCard(props) {
             >
               {txtButton}
             </Button>
-            <Dropdown
-              overlay={menuMore}
-              trigger={["click"]}
-              placement="bottomCenter"
-            >
-              <EllipsisOutlined
-                style={{
-                  fontSize: 20,
-                  color: COLOR.black,
-                  marginLeft: 20,
-                }}
-              />
-            </Dropdown>
+            {isOwner(user) ? (
+              <Dropdown
+                overlay={menuMore}
+                trigger={["click"]}
+                placement="bottomCenter"
+              >
+                <EllipsisOutlined
+                  style={{
+                    fontSize: 20,
+                    color: COLOR.black,
+                    marginLeft: 20,
+                  }}
+                />
+              </Dropdown>
+            ) : (
+              ""
+            )}
             <div>
               <Popover
                 placement="bottom"

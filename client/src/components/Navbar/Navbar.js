@@ -10,7 +10,8 @@ import {
   Avatar,
   Badge,
   Tooltip,
-  Space,
+  Button,
+  notification,
 } from "antd";
 import styles from "./styles";
 import logo from "../../assets/darklogo.png";
@@ -23,9 +24,11 @@ import {
   EllipsisOutlined,
   SettingOutlined,
   PicLeftOutlined,
+  StarFilled,
 } from "@ant-design/icons";
 import { useMobile } from "../../utils/responsiveQuery";
 import { useMediaQuery } from "react-responsive";
+import { GrStatusGoodSmall } from "react-icons/gr";
 
 import decode from "jwt-decode";
 import { useDispatch, useSelector } from "react-redux";
@@ -41,7 +44,12 @@ import {
   getUserUnseenNotifications,
   setSeenNotification,
 } from "../../redux/actions/notifications";
+import * as apiConversation from "../../api/conversation";
 import NotificationList from "./NotificationList/NotificationList";
+import { useMessage } from "../../hooks/useMessage";
+import { renderStatus, statusList } from "../../utils/userStatus";
+import { setMyStatus } from "../../api/userStatus";
+import { useFriendsStatus } from "../../context/FriendsStatusContext";
 
 const { Header } = Layout;
 const { Text } = Typography;
@@ -104,6 +112,10 @@ function Navbar({ selectedMenu, setTxtSearch, txtInitSearch }) {
     history.push("/post/create");
   };
 
+  const handleFeed = () => {
+    history.push("/feed");
+  };
+
   const handleMessage = () => {
     history.push("/message");
   };
@@ -116,6 +128,16 @@ function Navbar({ selectedMenu, setTxtSearch, txtInitSearch }) {
         mode={!isSmallScreen ? "horizontal" : "vertical"}
         defaultSelectedKeys={[selectedMenu]}
       >
+        <Menu.Item
+          key="feed"
+          className="navitem pickitem text-center"
+          onClick={handleFeed}
+        >
+          <Tooltip title="Feed" placement="bottom">
+            <StarFilled spin style={{ fontSize: 24, color: COLOR.white }} />
+          </Tooltip>
+        </Menu.Item>
+
         <Menu.Item key="noti" className="navitem notpickitem text-center">
           <Dropdown
             overlay={NotificationList({
@@ -152,35 +174,50 @@ function Navbar({ selectedMenu, setTxtSearch, txtInitSearch }) {
           className="text-center navitem pickitem"
           onClick={handleMessage}
         >
-          <Tooltip title="Message" placement="bottom">
-            <MessageFilled style={{ fontSize: 24, color: COLOR.white }} />
-          </Tooltip>
+          <Badge count={numberUnseenMessages}>
+            <Tooltip title="Message" placement="bottom">
+              <MessageFilled style={{ fontSize: 24, color: COLOR.white }} />
+            </Tooltip>
+          </Badge>
         </Menu.Item>
 
-        <Menu.Item key="avatar" className="text-center navitem">
-          <Space>
+        <Menu.Item
+          key="avatar"
+          className="text-center navitem notpickitem"
+          onClick={() => history.push(`/userinfo/${user?.result._id}`)}
+        >
+          <Tooltip
+            title={
+              <div className="text-center">
+                <div>{user?.result?.name}</div>
+                <Dropdown
+                  overlay={menuStatus}
+                  trigger={["click"]}
+                  placement="bottomRight"
+                >
+                  <Tooltip title="Status" placement="right">
+                    <GrStatusGoodSmall
+                      className="icon"
+                      style={{
+                        color: renderStatus(
+                          friendsStatusManager.getStatus(user?.result?._id)
+                        ),
+                      }}
+                    />
+                  </Tooltip>
+                </Dropdown>
+              </div>
+            }
+            placement="bottom"
+          >
             <Avatar
               size="large"
               alt={user?.result?.name}
               src={user?.result?.imageUrl}
             >
-              <Link
-                to={`/userinfo/${user?.result._id}`}
-                style={{ color: COLOR.white }}
-              >
-                {user?.result?.name}
-              </Link>
+              {user?.result?.name}
             </Avatar>
-
-            {!isSmallScreen && (
-              <Link
-                to={`/userinfo/${user?.result._id}`}
-                style={{ color: COLOR.white }}
-              >
-                {user?.result?.name}
-              </Link>
-            )}
-          </Space>
+          </Tooltip>
         </Menu.Item>
       </Menu>
     );
@@ -206,6 +243,25 @@ function Navbar({ selectedMenu, setTxtSearch, txtInitSearch }) {
     history.push("/group/create");
   };
 
+  const friendsStatusManager = useFriendsStatus();
+
+  const handleChangeStatus = (status) => {
+    setMyStatus(status);
+  };
+
+  const menuStatus = (
+    <Menu>
+      {statusList.map((item, i) => (
+        <Menu.Item key={i} onClick={() => handleChangeStatus(item.status)}>
+          <Row align="middle" style={{ color: item.color }}>
+            <GrStatusGoodSmall className="mr-2" />
+            <Text>{item.status}</Text>
+          </Row>
+        </Menu.Item>
+      ))}
+    </Menu>
+  );
+
   const menuMore = (
     <Menu>
       {isSmallScreen && <MainMenuItems />}
@@ -221,6 +277,16 @@ function Navbar({ selectedMenu, setTxtSearch, txtInitSearch }) {
           <Text>Create group</Text>
         </Row>
       </Menu.Item>
+      {/* <Dropdown
+        overlay={menuStatus}
+        trigger={["click"]}
+        placement="bottomRight"
+      >
+        <Tooltip title="Status" placement="right">
+          <GrStatusGoodSmall className="clickable icon" />
+        </Tooltip>
+      </Dropdown> */}
+
       <Menu.Item key="logout" onClick={() => handleLogOut()}>
         <Row align="middle">
           <LogoutOutlined className=" red mr-2" />
@@ -246,6 +312,51 @@ function Navbar({ selectedMenu, setTxtSearch, txtInitSearch }) {
   );
 
   //#endregion
+
+  //#region message notifications
+
+  const [numberUnseenMessages, setNumberUnseenMessages] = useState(0);
+
+  const messageHandle = useMessage();
+
+  const openNotification = (msg) => {
+    alert("abc");
+    const key = `open${Date.now()}`;
+    const btn = (
+      <Button className="green-button" onClick={() => console.log(msg)}>
+        Check out
+      </Button>
+    );
+    notification.open({
+      message: "Hey this is something for you",
+      description: msg,
+      onClick: () => {
+        console.log("Notification Clicked!");
+      },
+      key,
+      btn,
+    });
+  };
+
+  const handleFetchListUnseenConversations = () => {
+    apiConversation
+      .fetchUnseenConversationId()
+      .then((res) => setNumberUnseenMessages(res.data.length));
+  };
+
+  useEffect(() => {
+    messageHandle.onReceive((msg) => {
+      handleFetchListUnseenConversations();
+    });
+
+    messageHandle.onSeen((msg) => {
+      handleFetchListUnseenConversations();
+    });
+
+    handleFetchListUnseenConversations();
+
+    return messageHandle.cleanUpAll;
+  }, []);
 
   // useEffect(() => {
   //   const token = user?.token;

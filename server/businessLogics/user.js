@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import User from "../models/user.js";
 import FriendRequest from "../models/friendrequest.js";
+import CuteServerIO from "../socket/CuteServerIO.js";
 
 /**
  * @param {string | mongoose.Types.ObjectId } userId1
@@ -57,3 +58,34 @@ export const isUserA_sendedRequestFriend_UserB = async (userId1, userId2) => {
     return "Unknown";
   }
 };
+
+/** @param {string} userId */
+export const isValidUser = async (userId) => {
+  if (!userId) return false;
+
+  const user = await User.findById(userId);
+
+  if (!user) return false;
+
+  return true;
+};
+
+/**
+ * @param {CuteServerIO} cuteIO 
+ * @returns {(userId: string, newStatus: string) => any}
+ */
+export const notifyUserStatusToFriendsFunc = (cuteIO) => (userId, newStatus) => {
+  User.findById(userId).then(user => {
+    if (!user)
+      return;
+
+    const { listFriends } = user;
+    if (listFriends)
+      listFriends.forEach(friendId => {
+        cuteIO.sendToUser(friendId, "System-updateStatusUser", { userId, newStatus });
+      })
+
+    // send to self
+    cuteIO.sendToUser(userId, "System-updateStatusUser", { userId, newStatus })
+  })
+}

@@ -256,7 +256,7 @@ function Comment({
             size={45}
             src="https://scontent.fsgn5-6.fna.fbcdn.net/v/t1.6435-1/p240x240/167274298_2791941774405213_2973980969027075470_n.jpg?_nc_cat=109&ccb=1-3&_nc_sid=7206a8&_nc_ohc=QpKEyCIKuj0AX8HRcN6&_nc_ht=scontent.fsgn5-6.fna&tp=6&oh=96abb4f8e352f1223ecf465f760a78e8&oe=60A5BF59"
           />
-          <div className="d-inline-flex flex-column ml-3">
+          <div className="d-inline-flex flex-column ml-3 break-word">
             <Row style={{ alignItems: "center" }}>
               <Space size={4}>
                 <Text
@@ -327,7 +327,7 @@ function Comment({
             </div>
           ) : null}
           <div className="mb-2">
-            <div className={ellipsis !== "full" && "ellipsis"}>
+            <div className={`ellipsis !== "full" && "ellipsis" break-word`}>
               <Paragraph className="">{comment?.content}</Paragraph>
             </div>
             {ellipsis !== "full" && <div className="bottom-fade"></div>}

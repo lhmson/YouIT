@@ -13,22 +13,19 @@ function FeedPage() {
   return (
     <>
       <Layout>
-        <Navbar />
-        {/* <Layout> */}
+        <Navbar selectedMenu="feed" />
         <Layout style={styles.mainArea}>
-          {/* <div className="feed-container">
-              <FeedSidebar className="sidebar" />
-              <FeedPosts className="content" id="scrollableDiv" />
-            </div> */}
-          {/* <FeedPosts /> */}
           <div className="feed-container">
             <FeedSidebar className="sidebar" />
-            <div className="mainContent" id="scrollableDiv">
+            <div
+              className="mainContent"
+              id="scrollableDiv"
+              style={{ minWidth: "84vw" }}
+            >
               <FeedPosts space="news_feed" />
             </div>
           </div>
         </Layout>
-        {/* </Layout> */}
       </Layout>
     </>
   );

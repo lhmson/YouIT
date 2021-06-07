@@ -50,7 +50,7 @@
 
 .title-text {
   font-weight: bold;
-  color: var(--dark-green);
+  color: var(--black);
   padding-left: 5px;
   white-space: nowrap;
   overflow-x: hidden;

@@ -75,6 +75,7 @@ function FriendCard(props) {
             style={{
               display: "flex",
               justifyContent: "center",
+              minWidth: 600,
             }}
           >
             <Avatar

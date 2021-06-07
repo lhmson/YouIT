@@ -1,53 +1,197 @@
-import React, { useEffect } from "react";
-import { Tooltip, Dropdown, Menu, Row, Typography } from "antd";
+import React, { useEffect, useRef, useState } from "react";
+import { Tooltip, Popover, Button, Input, Select, message } from "antd";
 
 import {
   SearchOutlined,
   DeleteOutlined,
-  EllipsisOutlined,
-  ToolOutlined,
-  EnvironmentOutlined,
+  EyeOutlined,
+  EditOutlined,
 } from "@ant-design/icons";
 
 import "../styles.css";
 
-import { Link } from "react-router-dom";
 import "../styles.css";
-import COLOR from "../../../constants/colors.js";
+import { useLocalStorage } from "../../../hooks/useLocalStorage.js";
 
 import { useMobile } from "../../../utils/responsiveQuery";
 
-const { Text } = Typography;
+import * as apiFriend from "../../../api/friend";
+import * as apiConversation from "../../../api/conversation";
+import { useFriendsStatus } from "../../../context/FriendsStatusContext";
+import { GrStatusGoodSmall } from "react-icons/gr";
+import { renderStatus } from "../../../utils/userStatus";
+import { useMessage } from "../../../hooks/useMessage";
+import { limitNameLength } from "../../../utils/limitNameLength";
 
-const statusList = [
-  { title: "online", color: COLOR.green },
-  { title: "busy", color: COLOR.red },
-  { title: "offline", color: COLOR.gray },
-];
+const { Option } = Select;
 
-function MessageHeader({ setOpenSidebar, currentId }) {
-  const isMobile = useMobile();
+function MessageHeader({ setOpenSidebar, currentId, listSeenMembers }) {
+  const [user] = useLocalStorage("user");
 
-  useEffect(() => {}, []);
+  const [visibleEdit, setVisibleEdit] = useState(false); // select display
+  const currentTitle = useRef();
+  const [title, setTitle] = useState("");
+
+  const currentListMembers = useRef([]);
+  const [listMembers, setListMembers] = useState([]);
+
+  const [listFriends, setListFriends] = useState([]);
+
+  const friendsStatusManager = useFriendsStatus();
+  const [listMembersStatus, setListMembersStatus] = useState([]); // same as list members, but add new status property
+
+  const [canEdit, setCanEdit] = useState(false);
+
+  const messageHandle = useMessage();
+
+  useEffect(() => {
+    messageHandle.onConversationUpdated((msg) => {
+      if (msg.res.conversationId === currentId) {
+        handleLoadConversationData();
+      }
+    });
+
+    return messageHandle.cleanUpAll;
+  }, [currentId]);
+
+  useEffect(() => {
+    apiFriend.fetchListMyFriends(user?.result?._id).then((res) => {
+      setListFriends(
+        res.data?.map((item, i) => ({ _id: item._id, name: item.name }))
+      );
+    });
+  }, []);
+
+  useEffect(() => {
+    if (currentId) {
+      handleLoadConversationData();
+      friendsStatusManager.onFriendStatusChange(handleUpdateMembersStatus);
+
+      return friendsStatusManager.cleanUpAll;
+    }
+  }, [currentId]);
+
+  const handleLoadConversationData = () => {
+    if (!currentId) return;
+
+    apiConversation.fetchAConversation(currentId, 0, 0).then((res) => {
+      const { listMembers, title } = res.data;
+
+      if (listMembers) {
+        const newList = listMembers?.map((member) => ({
+          ...member,
+          status: friendsStatusManager.getStatus(member._id),
+        }));
+
+        const listOthersId = listMembers
+          .map((user) => user._id)
+          .filter((userId) => userId !== user?.result?._id);
+
+        currentTitle.current = title;
+        currentListMembers.current = listOthersId;
+
+        setTitle(title);
+        setListMembers(listOthersId);
+        setListMembersStatus(newList);
+        setCanEdit(
+          res.data.listOwners.some((ownerId) => ownerId === user?.result?._id)
+        );
+      }
+    });
+  };
+
+  const handleUpdateMembersStatus = (userId, newStatus) => {
+    if (!listMembersStatus) return;
+
+    setListMembersStatus((oldList) => {
+      const newList = oldList?.map((member) => {
+        if (member?._id === userId) return { ...member, status: newStatus };
+        else return member;
+      });
+
+      return newList;
+    });
+
+    // doesn't work, don't know why :D
+    // const newList = listMembersStatus?.map(member => {
+    //   if (member?._id === userId)
+    //     return { ...member, status: newStatus }
+    //   else
+    //     return member;
+    // })
+    // setListMembersStatus(newList)
+  };
 
   const handleOpenSidebar = () => {
     setOpenSidebar((prev) => !prev);
   };
 
-  const handleChangeStatus = () => {};
+  const handleEditConversation = () => {
+    apiConversation
+      .updateConversation(currentId, {
+        title,
+        listMembers,
+      })
+      .then((res) => {
+        if (res.status === 200) {
+          message.success("Conversation updated!");
 
-  const menuStatus = (
-    <Menu>
-      {statusList.map((item, i) => (
-        <Menu.Item key={i} onClick={() => handleChangeStatus(item.title)}>
-          <Row align="middle" style={{ color: item.color }}>
-            <EnvironmentOutlined className="mr-2" />
-            <Text>{item.title}</Text>
-          </Row>
-        </Menu.Item>
-      ))}
-    </Menu>
-  );
+          // prevent reset
+          currentTitle.current = title;
+          currentListMembers.current = listMembers;
+        }
+      })
+      .catch((res) => {
+        message.error(
+          "Cannot update conversation! Make sure there're at least 2 members and the title is not empty."
+        );
+      });
+  };
+
+  const handleChangeUserToAdd = (value, options) => {
+    setListMembers(options?.map((item) => item.key));
+  };
+
+  const handleVisibleChange = (visibleAdd) => {
+    if (!visibleAdd) {
+      setTitle(currentTitle.current);
+      setListMembers(currentListMembers.current);
+    }
+
+    setVisibleEdit(visibleAdd);
+  };
+
+  const handleTitleEditTextChange = (e) => {
+    const newTitle = e?.target?.value;
+    setTitle(newTitle);
+  };
+
+  const getConversationStatus = () => {
+    let result = "offline";
+    listMembersStatus?.forEach((item) => {
+      if (item._id !== user?.result?._id) {
+        const status = item.status;
+        if (status === "online") {
+          result = "online";
+        } else if (status === "busy" && result !== "online") {
+          result = "busy";
+        }
+      }
+    });
+    return result;
+  };
+
+  const handleDeleteConversation = () => {
+    // Need a yes/no prompt
+    apiConversation
+      .deleteConversation(currentId)
+      .then((res) => {
+        message.success("Conversation deleted!");
+      })
+      .catch(() => {
+        message.error("Something went wrong!");
+      });
+  };
 
   return (
     <div className="chat-title">
@@ -58,24 +202,98 @@ function MessageHeader({ setOpenSidebar, currentId }) {
             onClick={() => handleOpenSidebar()}
           />
         </Tooltip>
-        <Dropdown
-          overlay={menuStatus}
-          trigger={["click", "hover"]}
-          placement="bottomRight"
+
+        <Popover
+          content={
+            <>
+              <Button onClick={handleEditConversation}>Confirm</Button>
+            </>
+          }
+          title={
+            <div>
+              <Input
+                type="text"
+                placeholder="Title"
+                value={title}
+                onChange={handleTitleEditTextChange}
+                style={{ margin: "5px 0" }}
+              />
+              <Select
+                mode="multiple"
+                placeholder="Add friend"
+                allowClear
+                value={listMembers}
+                onChange={handleChangeUserToAdd}
+                style={{ width: "100%" }}
+              >
+                {listFriends?.map((item) => (
+                  <Option key={item._id}>{item.name}</Option>
+                ))}
+              </Select>
+            </div>
+          }
+          trigger="click"
+          visible={visibleEdit}
+          onVisibleChange={handleVisibleChange}
         >
-          <Tooltip title="Status" placement="right">
-            <ToolOutlined className="clickable icon" />
+          {canEdit && (
+            <Tooltip title="Edit conversation">
+              <EditOutlined />
+            </Tooltip>
+          )}
+        </Popover>
+
+        {canEdit && (
+          <Tooltip title="Delete conversation">
+            <DeleteOutlined
+              className="clickable icon ml-3"
+              onClick={handleDeleteConversation}
+            />
           </Tooltip>
-        </Dropdown>
+        )}
       </div>
 
-      <span className="text-center">
-        {currentId &&
-          (isMobile ? currentId.substring(0, 12) + "..." : currentId)}
-      </span>
-      <Tooltip title="Delete conversation">
-        <DeleteOutlined className="clickable icon" />
-      </Tooltip>
+      <div className="text-center">
+        <Tooltip title={title} placement="bottom">
+          {currentId &&
+            limitNameLength(title, Math.round((window.innerWidth * 10) / 500))}
+        </Tooltip>
+      </div>
+      <div className="d-flex">
+        {listSeenMembers && (
+          <Tooltip
+            title={
+              <div>
+                Seen
+                {listSeenMembers.map((item) => (
+                  <div>{item.name}</div>
+                ))}
+              </div>
+            }
+            placement="bottom"
+          >
+            <EyeOutlined className="clickable icon mr-2" />
+          </Tooltip>
+        )}
+
+        {listMembersStatus && (
+          <Tooltip
+            title={
+              <div>
+                {listMembersStatus.map((item) => (
+                  <div>{`${item.name}: ${item.status}`}</div>
+                ))}
+              </div>
+            }
+            placement="bottom"
+          >
+            <GrStatusGoodSmall
+              className="clickable icon mr-2"
+              style={{ color: renderStatus(getConversationStatus()) }}
+            />
+          </Tooltip>
+        )}
+      </div>
     </div>
   );
 }

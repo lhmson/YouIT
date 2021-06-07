@@ -32,9 +32,9 @@ function ChatSpace() {
     checkSending,
   } = conversations;
 
-  // const [isAddConversation, setIsAdd] = useState(false); // to render conversation when add
+  const [listSeenMembers, setListSeenMembers] = useState([]);
 
-  const [isAddMessage, setIsAddMessage] = useState(false);
+  // const [isAddConversation, setIsAdd] = useState(false); // to render conversation when add
 
   useEffect(() => {
     apiConversation.fetchConversationsOfUser().then((res) => {
@@ -42,18 +42,12 @@ function ChatSpace() {
         conversations.updateCurrentId(res.data[0]?._id);
       }
     });
-  }, [conversations.state.listConversations]);
+  }, []);
 
   // test notification message
   useEffect(() => {
-    messageHandle.onReceive((msg) => {
-      console.log(`user ${msg.res?.userId} said: ${msg.res?.message.text}`);
-      setIsAddMessage(true);
-    });
-
     messageHandle.onSent((msg) => {
       removeSending(msg?.res?.conversationId);
-      setIsAddMessage(true);
     });
 
     messageHandle.onFailed((msg) => {
@@ -81,23 +75,22 @@ function ChatSpace() {
           updateCurrentId={updateCurrentId}
           addConversation={addConversation}
           updateListConversations={updateListConversations}
-          // setCurrentId={setCurrentId}
-          // isAddConversation={isAddConversation}
-          // setIsAdd={setIsAdd}
+        // setCurrentId={setCurrentId}
+        // isAddConversation={isAddConversation}
+        // setIsAdd={setIsAdd}
         />
         <MessageHeader
           setOpenSidebar={setIsSidebarOpen}
           currentId={currentId}
+          listSeenMembers={listSeenMembers}
         />
         <MessageList
           currentId={currentId}
-          isAddMessage={isAddMessage}
-          setIsAddMessage={setIsAddMessage}
-          messageHandle={messageHandle}
+          listSeenMembers={listSeenMembers}
+          setListSeenMembers={setListSeenMembers}
         />
         <MessageForm
           currentId={currentId}
-          setIsAddMessage={setIsAddMessage}
           messageHandle={messageHandle}
           listConversations={listConversations}
           updateListConversations={updateListConversations}

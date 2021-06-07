@@ -5,8 +5,6 @@ import {
   Drawer,
   Typography,
   Badge,
-  Modal,
-  Tooltip,
   Select,
   Popover,
   message,
@@ -22,58 +20,13 @@ import { useMobile } from "../../../utils/responsiveQuery.js";
 
 import * as apiFriend from "../../../api/friend";
 import * as apiConversation from "../../../api/conversation";
+import { useMessage } from "../../../hooks/useMessage.js";
+import { useFriendsStatus } from "../../../context/FriendsStatusContext.js";
+import { renderStatus } from "../../../utils/userStatus.js";
 
 const { Title } = Typography;
 
 const { Option } = Select;
-
-// const testData = [
-//   {
-//     title: "Batman",
-//     avatar:
-//       "https://st4.depositphotos.com/4329009/19956/v/380/depositphotos_199564354-stock-illustration-creative-vector-illustration-default-avatar.jpg",
-//     newestTime: "Apr 16",
-//     newestContent: "This is a message",
-//     current: true,
-//     status: "online",
-//   },
-//   {
-//     title: "Kim Neil",
-//     avatar:
-//       "https://st4.depositphotos.com/4329009/19956/v/380/depositphotos_199564354-stock-illustration-creative-vector-illustration-default-avatar.jpg",
-//     newestTime: "6 days ago",
-//     newestContent: "Yes I love how Python does that",
-//     current: false,
-//     status: "offline",
-//   },
-//   {
-//     title: "Kim Neil",
-//     avatar:
-//       "https://st4.depositphotos.com/4329009/19956/v/380/depositphotos_199564354-stock-illustration-creative-vector-illustration-default-avatar.jpg",
-//     newestTime: "6 days ago",
-//     newestContent: "Yes I love how Python does that",
-//     current: false,
-//     status: "online",
-//   },
-//   {
-//     title: "Kim Neil",
-//     avatar:
-//       "https://st4.depositphotos.com/4329009/19956/v/380/depositphotos_199564354-stock-illustration-creative-vector-illustration-default-avatar.jpg",
-//     newestTime: "6 days ago",
-//     newestContent: "Yes I love how Python does that",
-//     current: false,
-//     status: "busy",
-//   },
-//   {
-//     title: "Kim Neil",
-//     avatar:
-//       "https://st4.depositphotos.com/4329009/19956/v/380/depositphotos_199564354-stock-illustration-creative-vector-illustration-default-avatar.jpg",
-//     newestTime: "6 days ago",
-//     newestContent: "Yes I love how Python does that",
-//     current: false,
-//     status: "offline",
-//   },
-// ];
 
 function ChatSidebar({
   isOpen,
@@ -92,11 +45,19 @@ function ChatSidebar({
 
   const searchInputRef = useRef();
 
+  const titleRef = useRef();
+
   const [visibleAdd, setVisibleAdd] = useState(false); // select display
 
   const [listFriends, setListFriends] = useState([]);
 
   const [usersToAdd, setUsersToAdd] = useState([]);
+
+  const [listUnseenConversations, setListUnseenConversations] = useState([]);
+
+  const messageHandle = useMessage();
+
+  const friendsStatusManager = useFriendsStatus();
 
   // const [listConversations, setListConversations] = useState([]);
 
@@ -110,12 +71,62 @@ function ChatSidebar({
     });
   }, []);
 
-  useEffect(() => {
+  // useEffect(() => {
+  //   apiConversation.fetchConversationsOfUser().then((res) => {
+  //     updateListConversations(res.data);
+  //     // console.log("update list", res.data);
+  //   });
+  // }, []);
+
+  const handleFetchListUnseenConversations = () => {
+    apiConversation
+      .fetchUnseenConversationId()
+      .then((res) => setListUnseenConversations(res.data));
+
     apiConversation.fetchConversationsOfUser().then((res) => {
       updateListConversations(res.data);
-      // console.log("update list", res.data);
+
+      // if there's no longer a conversation with current id, refresh!
+      if (
+        currentId &&
+        !res.data?.some((conversation) => conversation._id === currentId)
+      )
+        message.warn("You're no longer in this conversation!", 1, () =>
+          window.location.reload()
+        );
+      if (!currentId && res.data?.length > 0)
+        updateCurrentId(res?.data?.[0]?._id);
     });
+  };
+
+  useEffect(() => {
+    handleFetchListUnseenConversations();
   }, []);
+
+  useEffect(() => {
+    // needs optimization later :)
+    messageHandle.onReceive((msg) => {
+      handleFetchListUnseenConversations();
+    });
+
+    messageHandle.onSeen((msg) => {
+      handleFetchListUnseenConversations();
+    });
+
+    messageHandle.onConversationCreated((msg) => {
+      handleFetchListUnseenConversations();
+    });
+
+    messageHandle.onConversationUpdated((msg) => {
+      handleFetchListUnseenConversations();
+    });
+
+    messageHandle.onConversationDeleted((msg) => {
+      handleFetchListUnseenConversations();
+    });
+
+    return messageHandle.cleanUpAll;
+  }, [currentId]);
 
   // useEffect(() => {
   //   apiConversation.fetchConversationsOfUser().then((res) => {
@@ -130,18 +141,19 @@ function ChatSidebar({
   const handleChangeUserToAdd = (value, options) => {
     // console.log("opt", options);
     // console.log(`selected ${value}`);
-    setUsersToAdd(options.map((item) => item.key));
+    setUsersToAdd(options?.map((item) => item.key));
   };
 
   const handleAddConversation = () => {
-    // alert(JSON.stringify(usersToAdd));
     if (usersToAdd.length > 0) {
       apiConversation
         .createConversation({
           listMembers: usersToAdd,
+          title: titleRef.current.state.value,
         })
         .then((res) => {
           addConversation(res.data);
+          updateCurrentId(res.data._id);
         });
       // setIsAdd(true);
     } else {
@@ -152,19 +164,6 @@ function ChatSidebar({
 
   const handleVisibleChange = (visibleAdd) => {
     setVisibleAdd(visibleAdd);
-  };
-
-  const renderStatus = (status) => {
-    switch (status) {
-      case "online":
-        return COLOR.green;
-      case "busy":
-        return COLOR.red;
-      case "offline":
-        return COLOR.gray;
-      default:
-        return COLOR.white;
-    }
   };
 
   const renderAvatar = (item) => {
@@ -178,19 +177,45 @@ function ChatSidebar({
     }
   };
 
+  const getConversationStatus = (conversation) => {
+    let result = "offline";
+    conversation?.listMembers?.forEach((item) => {
+      if (item._id !== user?.result?._id) {
+        const status = friendsStatusManager.getStatus(item._id);
+        if (status === "online") {
+          result = "online";
+        } else if (status === "busy" && result !== "online") {
+          result = "busy";
+        }
+      }
+    });
+    return result;
+  };
+
   const Header = () => {
     return (
       <div>
         <div className="d-flex justify-content-between align-items-center">
           <Title>Messages</Title>
-          <Tooltip title="Create new conversation">
-            <Popover
-              content={
+
+          <Popover
+            content={
+              <>
                 <Button onClick={() => handleAddConversation()}>Create</Button>
-              }
-              title={
+              </>
+            }
+            title={
+              <div>
+                <Input
+                  type="text"
+                  placeholder="Title"
+                  ref={titleRef}
+                  // onChange={(e) => handleChangeTitle(e)}
+                  style={{ margin: "5px 0" }}
+                />
                 <Select
-                  mode="tags"
+                  mode="multiple"
+                  allowClear
                   placeholder="Add friend"
                   value={usersToAdd}
                   onChange={handleChangeUserToAdd}
@@ -200,19 +225,19 @@ function ChatSidebar({
                     <Option key={item._id}>{item.name}</Option>
                   ))}
                 </Select>
-              }
-              trigger="click"
-              visible={visibleAdd}
-              onVisibleChange={handleVisibleChange}
+              </div>
+            }
+            trigger="click"
+            visible={visibleAdd}
+            onVisibleChange={handleVisibleChange}
+          >
+            <Button
+              className="d-flex justify-content-center align-items-center green-button mr-3"
+              icon={<PlusCircleOutlined />}
             >
-              <Button
-                className="d-flex justify-content-center align-items-center green-button mr-3"
-                icon={<PlusCircleOutlined />}
-              >
-                Add
-              </Button>
-            </Popover>
-          </Tooltip>
+              Add
+            </Button>
+          </Popover>
         </div>
 
         <div className="search-container">
@@ -238,7 +263,7 @@ function ChatSidebar({
 
   return (
     <Drawer
-      title={<Header />}
+      title={Header()}
       placement="left"
       width={isMobile ? "80%" : "50%"}
       // closable={false}
@@ -254,21 +279,35 @@ function ChatSidebar({
             listConversations &&
             listConversations.length !== 0 ? (
               listConversations.map((item, i) => (
-                <div key={item._id} onClick={() => updateCurrentId(item._id)}>
+                <div key={item?._id} onClick={() => updateCurrentId(item?._id)}>
                   <div
                     className={`conversation ${
-                      item._id === currentId && "active"
+                      item?._id === currentId && "active"
                     }`}
                   >
-                    <Badge dot color={renderStatus(item.status)}>
-                      <img src={renderAvatar(item)} alt={item._id} />
+                    <Badge
+                      dot
+                      color={renderStatus(getConversationStatus(item))}
+                    >
+                      <img src={renderAvatar(item)} alt={item?._id} />
                     </Badge>
-                    <div className="title-text">{item._id}</div>
+                    <div className="title-text">{item?.title}</div>
                     <div className="update-date">
-                      {moment(item.updatedAt).fromNow()}
+                      {moment(item?.messageUpdatedAt).fromNow()}
                     </div>
-                    <div className="conversation-message">
-                      {item.newestContent ?? "You can have a chat now"}
+                    <div
+                      className="conversation-message"
+                      style={{
+                        fontWeight: listUnseenConversations.includes(item._id)
+                          ? "bold"
+                          : "normal",
+                        color: listUnseenConversations.includes(item._id)
+                          ? COLOR.darkGreen
+                          : COLOR.gray,
+                      }}
+                    >
+                      {item?.listMessages?.[0]?.text ??
+                        "You can have a chat now"}
                     </div>
                   </div>
                 </div>

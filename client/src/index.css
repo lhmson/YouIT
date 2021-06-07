@@ -254,6 +254,16 @@ input:-webkit-autofill:active {
 /* -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.5); */
 /* } */
 
+.break-word {
+  word-break: break-word;
+}
+
+.long-text-ellipsis {
+  overflow-x: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .ant-menu.ant-menu-dark .ant-menu-item:hover.navitem {
   background-color: var(--dark-green); /*Overriden property*/
 }

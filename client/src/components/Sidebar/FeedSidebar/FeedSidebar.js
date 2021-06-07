@@ -34,16 +34,6 @@ function FeedSidebar() {
       >
         <FeedMenu user={user} groups={groups} />
       </Sider>
-      {/* <Drawer
-        title="Topics"
-        placement="left"
-        onClick={() => setVisible(false)}
-        onClose={() => setVisible(false)}
-        visible={visible}
-        style={{ zIndex: 100 }}
-      >
-        <FeedMenu user={user} groups={groups} />
-      </Drawer> */}
     </div>
   );
 }

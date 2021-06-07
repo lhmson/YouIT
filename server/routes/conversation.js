@@ -7,11 +7,15 @@ const router = express.Router();
 // get
 router.get("/list/my", auth, controllers.getConversationsOfUser);
 router.get("/:conversationId", auth, controllers.getAConversation);
+router.get("/list/unseenIds", auth, controllers.getUnseenConversationIds);
 
 // post
 router.post("/", auth, controllers.createConversation);
 
 // put
 router.put("/:conversationId/addMessage", auth, controllers.addMessage);
+router.put("/:conversationId", auth, controllers.updateConversation);
+
+router.delete("/:conversationId", auth, controllers.deleteConversation);
 
 export default router;

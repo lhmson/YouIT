@@ -38,9 +38,9 @@ function CreateGroupMembers({ onChange }) {
   return (
     <>
       <Select
-        mode="tags"
+        mode="multiple"
         // size={size}
-        placeholder="Invite your friends"
+        placeholder="Add Members"
         onChange={onChange}
         style={{ width: "100%" }}
       >

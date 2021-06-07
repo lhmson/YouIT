@@ -1,8 +1,21 @@
 import React from "react";
-import { Button, Row, Col, Divider, Form, Typography, Input, Card } from "antd";
+import {
+  Button,
+  Row,
+  Col,
+  Divider,
+  Form,
+  Typography,
+  Input,
+  Card,
+  message,
+} from "antd";
 import { Avatar, Image, Tag } from "antd";
 import styles from "./styles.js";
-import { Link, useHistory, useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
+import { useHistory } from "react-router";
+import * as apiGroup from "../../api/group";
+import { useLocalStorage } from "../../hooks/useLocalStorage";
 
 const { Title, Text } = Typography;
 
@@ -12,9 +25,24 @@ function GroupJoinedCard({
   description,
   totalMembers,
   joined,
+  update,
+  setUpdate,
 }) {
-  console.log("aa", totalMembers);
+  const [user, setUser] = useLocalStorage("user");
+  const history = useHistory();
   const txtButton = joined ? "Post" : "Cancel request";
+  const onPressButton = async () => {
+    if (txtButton === "Post") {
+      history.push("./post/create");
+    } else {
+      await cancelJoinGroup();
+    }
+  };
+  const cancelJoinGroup = async () => {
+    const { data } = await apiGroup.removePendingMember(_id, user?.result?._id);
+    message.success(`You cancel join request to ${nameGroup} successfully`);
+    setUpdate(!update);
+  };
   return (
     <>
       <div style={styles.card}>
@@ -56,7 +84,7 @@ function GroupJoinedCard({
             }}
           >
             <Button
-              onClick={() => {}}
+              onClick={onPressButton}
               className="mb-2"
               type="primary"
               style={{

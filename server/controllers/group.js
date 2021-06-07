@@ -114,17 +114,29 @@ export const createGroup = async (req, res) => {
  * @param {express.NextFunction} next
  */
 export const addGroupMember = async (req, res) => {
-  const { id, memberId } = req.params;
+  const { groupId, memberId } = req.params;
+  console.log("thyyyyyyyyyyyyyyyyyy");
+  console.log("groupid", groupId);
+  console.log("userid", memberId);
   //const { role } = req.query ?? "Member";
   const role = "Member";
   const addMember = { role, userId: memberId };
   try {
-    // chua check group ton tai, user da la member trong group,...
-    await Group.findById(id).then(async (group) => {
-      group.listMembers.push(addMember);
-      await group.save();
-      return res.status(httpStatusCodes.ok).json(group);
-    });
+    const group = await Group.findById(groupId);
+    if (isMemberOfGroup(memberId, group))
+      return res
+        .status(httpStatusCodes.badContent)
+        .json({ message: "User is a member of the group" });
+
+    group.listMembers.push(addMember);
+
+    // const newPendingMembers = group.listPendingMembers.filter(
+    //   (member) => member?.userId != memberId
+    // );
+    // group.listPendingMembers = newPendingMembers;
+
+    await group.save();
+    return res.status(httpStatusCodes.ok).json(group);
   } catch (error) {
     return res
       .status(httpStatusCodes.internalServerError)
@@ -227,9 +239,9 @@ export const getListMembers = async (req, res) => {
 };
 
 export const getListPendingMembers = async (req, res) => {
-  const { id } = req.params;
+  const { groupId } = req.params;
   try {
-    const group = await Group.findById(id).populate({
+    const group = await Group.findById(groupId).populate({
       path: "listPendingMembers",
       populate: {
         path: "userId",
@@ -278,10 +290,12 @@ export const deleteGroup = async (req, res) => {
 };
 
 export const deleteMember = async (req, res) => {
-  const { id, deletedUserId } = req.params;
+  const { groupId, deletedUserId } = req.params;
+  console.log("groupid", groupId);
+  console.log("userid", deletedUserId);
 
   try {
-    const group = await Group.findById(id);
+    const group = await Group.findById(groupId);
     if (!isMemberOfGroup(deletedUserId, group))
       return res
         .status(httpStatusCodes.badContent)
@@ -292,8 +306,10 @@ export const deleteMember = async (req, res) => {
         !member.userId.equals(deletedUserId) || member.role === "Owner"
     );
 
-    const newGroup = await Group.findByIdAndUpdate(id, group, { new: true });
-    // await group.save();
+    // const newGroup = await Group.findByIdAndUpdate(groupId, group, {
+    //   new: true,
+    // });
+    await group.save();
     // res.status(httpStatusCodes.ok).json(newGroup);
     res
       .status(httpStatusCodes.ok)
@@ -306,9 +322,8 @@ export const deleteMember = async (req, res) => {
 };
 
 export const leaveGroup = async (req, res) => {
-  const { id } = req.params;
-  const { userId } = req;
-  //console.log("thyyyyyyyyyyy", userId)
+  const { id, userId } = req.params;
+
   try {
     const group = await Group.findById(id);
     if (!isMemberOfGroup(userId, group))
@@ -329,10 +344,12 @@ export const leaveGroup = async (req, res) => {
       group.listMembers.find((member) => member.userId.equals(userId)).role ===
       "Owner"
     ) {
-      await Group.findByIdAndRemove(id);
-      return res
-        .status(httpStatusCodes.badContent)
-        .json("Group deleted successfully.");
+      return (
+        await Group.findByIdAndRemove(id),
+        res
+          .status(httpStatusCodes.ok)
+          .json({ message: "Group deleted successfully." })
+      );
     }
 
     group.listMembers = group.listMembers.filter(

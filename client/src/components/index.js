@@ -11,11 +11,11 @@ import InputForm from "./InputForm/InputForm";
 import Loading from "./Loading/Loading";
 import Navbar from "./Navbar/Navbar";
 
-import Posts from "./Posts/Posts";
+import Posts from "./Posts/Posts_deprecated";
 import FeedPosts from "./Posts/FeedPosts/FeedPosts";
 import FeedPost from "./Posts/FeedPosts/FeedPost/FeedPost";
 import FullPost from "./Posts/FullPost/FullPost";
-import Post from "./Posts/Post/Post";
+import Post from "./Posts/Post_deprecated/Post";
 
 import RelatedCard from "./RelatedCard/RelatedCard";
 import SearchGroupResult from "./SearchResults/SearchGroupResult/SearchGroupResult";

@@ -1,8 +1,13 @@
 import mongoose from "mongoose";
-import { messageSchema } from "./message.js";
+import Message from "./message.js";
 
 const conversationSchema = mongoose.Schema(
   {
+    title: {
+      type: String,
+      require: false,
+    },
+
     listOwners: [
       {
         type: mongoose.Schema.Types.ObjectId,
@@ -30,13 +35,25 @@ const conversationSchema = mongoose.Schema(
       {
         type: mongoose.Types.ObjectId,
         ref: "Message",
-      }
+      },
     ],
+
+    messageUpdatedAt: {
+      type: Date,
+      required: true,
+      default: new Date(),
+    },
   },
   {
-    timestamps: true
+    timestamps: true,
   }
 );
+
+conversationSchema.post('findOneAndDelete', async (doc) => {
+  await doc?.listMessages?.forEach(async msg => {
+    await Message.findByIdAndDelete(msg)
+  });
+});
 
 const Conversation = mongoose.model("Conversation", conversationSchema);
 

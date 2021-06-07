@@ -24,6 +24,12 @@ const postSchema = mongoose.Schema(
       required: true,
     },
 
+    contentUpdatedAt: {
+      type: Date,
+      required: true,
+      default: new Date(),
+    },
+
     privacy: {
       type: String,
       enum: ["Group", "Public", "Private", "Friend"],
