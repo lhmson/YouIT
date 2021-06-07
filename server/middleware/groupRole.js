@@ -27,7 +27,7 @@ export const isOwner = async (req, res, next) => {
 
 export const haveGroupPermission = (minimalRole) => async (req, res, next) => {
   // minimalRole la role thap nhat co quyen han thuc hien 1 api
-  const groupId = req.params.id;
+  const { groupId } = req.params;
   const { userId } = req;
 
   try {
@@ -49,7 +49,7 @@ export const haveGroupPermission = (minimalRole) => async (req, res, next) => {
     if (!isMemberOfGroup(userId, group)) {
       return res
         .status(httpStatusCodes.forbidden)
-        .json({ message: "You're not a member of group" });
+        .json({ message: `${userId} is not a member of group` });
     }
 
     const groupMember = group?.listMembers.find((member) =>
@@ -57,6 +57,7 @@ export const haveGroupPermission = (minimalRole) => async (req, res, next) => {
     );
 
     if (roles.includes(groupMember?.role)) {
+      req.userGroupRole = groupMember?.role;
       return next?.();
     }
     return res

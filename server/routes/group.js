@@ -12,14 +12,17 @@ import {
   deleteMember,
   leaveGroup,
   getPendingGroups,
+  setGroupMemberRole,
 } from "../controllers/group.js";
 import auth from "../middleware/auth.js";
 import { haveGroupPermission, isOwner } from "../middleware/groupRole.js";
 const router = express.Router();
 
-router.get("/:id", auth, getAGroup);
+// co group id thi route phai /:groupId moi xai dc middleware phan quyen nha, /:id khong xai dc
+
+router.get("/:groupId", auth, getAGroup);
 router.get("/list/joinedByMe", auth, getJoinedGroups);
-router.get("/:id/members", auth, getListMembers);
+router.get("/:groupId/members", auth, getListMembers);
 router.get("/:groupId/pendingMembers", auth, getListPendingMembers);
 router.get("/list/pendingByMe", auth, getPendingGroups);
 
@@ -28,18 +31,24 @@ router.post("/", auth, createGroup);
 router.put(
   "/:groupId/addGroupMember/:memberId",
   auth,
-  // haveGroupPermission("Admin"),
+  haveGroupPermission("Admin"),
   addGroupMember
 );
-router.put("/:id/addPendingMember/:memberId", auth, addGroupPendingMember);
+router.put("/:groupId/addPendingMember/:memberId", auth, addGroupPendingMember);
 router.put(
-  "/:id/removePendingMember/:memberId",
+  "/:groupId/removePendingMember/:memberId",
   auth,
   removeGroupPendingMember
 );
 router.put("/:groupId/deleteMember/:deletedUserId", auth, deleteMember);
-router.put("/:id/leaveGroup/:userId", auth, leaveGroup);
+router.put("/:groupId/leaveGroup/:userId", auth, leaveGroup);
+router.put(
+  "/:groupId/setMemberRole/:memberId",
+  auth,
+  haveGroupPermission("Admin"),
+  setGroupMemberRole
+);
 
-router.delete("/:id", auth, isOwner, deleteGroup);
+router.delete("/:groupId", auth, isOwner, deleteGroup);
 
 export default router;
