@@ -15,6 +15,7 @@ import Group from "../models/group.js";
 import { asyncFilter } from "../utils/asyncFilter.js";
 import { customPagination } from "../utils/customPagination.js";
 import { isMemberOfGroup } from "../businessLogics/group.js";
+import moment from "moment";
 
 //#region CRUD
 // GET post/list/all
@@ -212,7 +213,7 @@ export const getMyPostInteractions = async (req, res) => {
     let filterJson = undefined;
     try {
       filterJson = JSON.parse(filter);
-    } catch { }
+    } catch {}
 
     const interactions = await getInteractionOfAUser(id, userId, filterJson);
     return res.status(httpStatusCodes.ok).json(interactions);
@@ -445,4 +446,64 @@ export const likePost = async (req, res) => {
   });
 
   res.json(updatedPost);
+};
+
+export const countPosts = async (req, res) => {
+  const { range, timeString } = req.params;
+  let time = moment(timeString);
+  let labels = [];
+  let wallPosts = [];
+  let groupPosts = [];
+  const countGroup = async (start, end) => {
+    const count = await Post.find({
+      createdAt: { $gt: start, $lte: end },
+      privacy: "Group",
+    }).count();
+    console.log("group post count", count);
+    groupPosts.push(count);
+  };
+  const countWall = async (start, end) => {
+    const count = await Post.find({
+      createdAt: { $gt: start, $lte: end },
+      privacy: { $ne: "Group" },
+    }).count();
+    console.log("wall post count", count);
+    wallPosts.push(count);
+    console.log("wall post length", wallPosts.length);
+  };
+  const addData = async (time, unit) => {
+    const start = time.clone().startOf(unit);
+    const end = time.clone().endOf(unit);
+    await countGroup(start, end);
+    await countWall(start, end);
+  };
+  try {
+    switch (range) {
+      case "week":
+        labels = moment.weekdaysShort();
+        for (let i = 0; i < labels.length; i++) {
+          let temp = time.clone().set("day", i);
+          await addData(temp, "day");
+        }
+        break;
+      case "month":
+        for (let i = 0; i < time.daysInMonth(); i++) {
+          labels.push(i + 1);
+          let temp = time.clone().set("date", i);
+          await addData(temp, "day");
+        }
+        break;
+      case "year":
+        labels = moment.monthsShort();
+        for (let i = 0; i < labels.length; i++) {
+          let temp = time.clone().set("month", i);
+          await addData(temp, "month");
+        }
+        break;
+    }
+    console.log("final", wallPosts);
+    res.status(200).json({ labels, wallPosts, groupPosts });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
 };

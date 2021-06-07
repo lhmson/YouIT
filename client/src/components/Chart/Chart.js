@@ -1,42 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { Bar, Line } from "react-chartjs-2";
+import { Bar, Doughnut, Line, Pie } from "react-chartjs-2";
 import { Tabs, Typography, Select, DatePicker, message } from "antd";
 import moment from "moment";
 import * as userAPI from "../../api/user";
+import { useRef } from "react";
 const { Title } = Typography;
 const { TabPane } = Tabs;
 const { Option } = Select;
 
-export const UsersStatistics = () => {
-  const [data, setData] = useState(null);
-
-  const handleFetchData = async (range, timeString) => {
-    const result = await userAPI.fetchNewUsers(range, timeString);
-    const newData = {
-      labels: result.data.labels,
-      datasets: [
-        {
-          label: "New users",
-          data: result.data.data,
-        },
-      ],
-    };
-    setData(newData);
-  };
-
-  return (
-    <Chart
-      data={data}
-      onFetchData={handleFetchData}
-      type="area"
-      title="New users"
-      colorIndex={0}
-    />
-  );
-};
-
 // colorIndex : see chartColors
-export const Chart = ({ title, data, onFetchData, type, colorIndex }) => {
+export const Chart = ({ title, data, onFetchData, colorIndex }) => {
   const chartColors = [
     {
       backgroundColor: "rgba(75, 192, 192, 0.2)",
@@ -61,8 +34,27 @@ export const Chart = ({ title, data, onFetchData, type, colorIndex }) => {
   ];
   const [range, setRange] = useState("week");
   const [time, setTime] = useState(moment());
+  const [chartTitle, setChartTitle] = useState(null);
   const dataLength = data?.datasets?.length;
+  const chartType = useRef();
   let styledData = data;
+
+  const countDataItems = () => {
+    let temp = 0;
+    data?.datasets?.map((d) => {
+      d.data.map((item) => {
+        temp += item;
+      });
+    });
+    return temp;
+  };
+
+  useEffect(() => {
+    setChartTitle({
+      display: true,
+      text: `${title} ${chartType.current} - Total: ${countDataItems()}`,
+    });
+  }, [title, data, range, time]);
 
   useEffect(() => {
     onFetchData(range, time.format());
@@ -82,17 +74,60 @@ export const Chart = ({ title, data, onFetchData, type, colorIndex }) => {
       styledData.datasets[i] = {
         ...styledData.datasets[i],
         ...chartColors[(i + colorIndex || 0) % chartColors.length],
-        fill: type === "area" ? "start" : false,
+        fill: "start",
         borderWidth: 2,
       };
     }
-    switch (type) {
-      case "line":
-        return <Line data={styledData} />;
-      case "bar":
-        return <Bar data={styledData} />;
-      case "area":
-        return <Line data={styledData} />;
+    switch (range) {
+      case "week":
+        chartType.current = "Bar Chart";
+        return (
+          <Bar
+            data={styledData}
+            options={{
+              plugins: {
+                title: chartTitle,
+              },
+              responsive: true,
+            }}
+          />
+        );
+      case "month":
+        chartType.current = "Area Chart";
+
+        return (
+          <Line
+            data={styledData}
+            options={{
+              plugins: {
+                title: chartTitle,
+              },
+              responsive: true,
+            }}
+          />
+        );
+      case "year":
+        chartType.current = "Stacked Bar Chart";
+
+        return (
+          <Bar
+            data={styledData}
+            options={{
+              plugins: {
+                title: chartTitle,
+              },
+              responsive: true,
+              scales: {
+                x: {
+                  stacked: true,
+                },
+                y: {
+                  stacked: true,
+                },
+              },
+            }}
+          />
+        );
     }
   };
 

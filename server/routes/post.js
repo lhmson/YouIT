@@ -17,6 +17,7 @@ import {
   unhidePost,
   followPost,
   unfollowPost,
+  countPosts,
 } from "../controllers/post.js";
 
 import {
@@ -38,6 +39,7 @@ router.get("/:id/comment", getComments);
 router.get("/:id/commentsNumber", getCommentsNumber);
 router.get("/list/all", getPosts);
 router.get("/:id/myInteractions/", auth, getMyPostInteractions);
+router.get("/count/:range/:timeString", countPosts);
 
 router.post("/", auth, createPost);
 router.post("/:postId/comment", auth, createComment);
