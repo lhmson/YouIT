@@ -38,12 +38,15 @@ export const Chart = ({
       borderColor: "rgba(255, 206, 86, 1)",
     },
   ];
-  const [range, setRange] = useState(defaultView || "week");
-  const [time, setTime] = useState(moment());
-  const [chartTitle, setChartTitle] = useState(null);
+  const range = useRef(defaultView || "week");
+  const time = useRef(moment());
   const dataLength = data?.datasets?.length;
   const chartType = useRef();
   let styledData = data;
+
+  useEffect(() => {
+    onFetchData(range.current, time.current.format());
+  }, []);
 
   const countDataItems = () => {
     let temp = 0;
@@ -55,24 +58,22 @@ export const Chart = ({
     return temp;
   };
 
-  useEffect(() => {
-    setChartTitle({
+  const getChartTitle = () => {
+    return {
       display: true,
       text: `${title} ${chartType.current} - Total: ${countDataItems()}`,
-    });
-  }, [title, data, range, time]);
-
-  useEffect(() => {
-    onFetchData(range, time.format());
-  }, [range, time]);
+    };
+  };
 
   const handleChangeRange = (value) => {
-    setRange(value);
-    setTime(moment());
+    range.current = value;
+    time.current = moment();
+    onFetchData(range.current, time.current.format());
   };
 
   const handleChangeTime = (value) => {
-    setTime(value);
+    time.current = value;
+    onFetchData(range.current, time.current.format());
   };
 
   const chart = () => {
@@ -84,7 +85,7 @@ export const Chart = ({
         borderWidth: 2,
       };
     }
-    switch (range) {
+    switch (range.current) {
       case "week":
         chartType.current = "Bar Chart";
         return (
@@ -92,7 +93,7 @@ export const Chart = ({
             data={styledData}
             options={{
               plugins: {
-                title: chartTitle,
+                title: getChartTitle(),
               },
               responsive: true,
             }}
@@ -106,7 +107,7 @@ export const Chart = ({
             data={styledData}
             options={{
               plugins: {
-                title: chartTitle,
+                title: getChartTitle(),
               },
               responsive: true,
             }}
@@ -120,7 +121,7 @@ export const Chart = ({
             data={styledData}
             options={{
               plugins: {
-                title: chartTitle,
+                title: getChartTitle(),
               },
               responsive: true,
               scales: {
@@ -149,7 +150,7 @@ export const Chart = ({
         <Tabs
           onChange={handleChangeRange}
           style={{ width: 200 }}
-          activeKey={range}
+          activeKey={range.current}
         >
           <TabPane tab="Week" key="week" />
           <TabPane tab="Month" key="month" />
@@ -157,9 +158,9 @@ export const Chart = ({
         </Tabs>
         <DatePicker
           onChange={handleChangeTime}
-          picker={range}
+          picker={range.current}
           disabledDate={disabledDate}
-          value={time}
+          value={time.current}
         />
       </div>
       {chart()}

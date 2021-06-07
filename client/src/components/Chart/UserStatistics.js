@@ -11,7 +11,7 @@ export const UsersStatistics = () => {
       labels: result.data.labels,
       datasets: [
         {
-          label: "New users",
+          label: "New user",
           data: result.data.data,
         },
       ],

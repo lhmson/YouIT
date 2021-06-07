@@ -9,17 +9,18 @@ import GroupStatistics from "../../components/Chart/GroupStatistics";
 const { Title } = Typography;
 
 export const StatisticsPage = ({}) => {
-  const chartArray = [
-    <UsersStatistics />,
-    <PostStatistics />,
-    <GroupStatistics />,
-  ];
   return (
     <div className="p-5">
       <div className="row">
-        {chartArray.map((c) => {
-          return <div className="col-lg-6">{c}</div>;
-        })}
+        <div className="col-lg-6">
+          <UsersStatistics />
+        </div>
+        <div className="col-lg-6">
+          <PostStatistics />
+        </div>
+        <div className="col-lg-6">
+          <GroupStatistics />
+        </div>
       </div>
     </div>
   );
