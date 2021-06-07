@@ -348,3 +348,10 @@ export const leaveGroup = async (req, res) => {
       .json({ message: error.message });
   }
 };
+
+/**
+ * @param {express.Request<ParamsDictionary, any, any, QueryString.ParsedQs, Record<string, any>>} req
+ * @param {express.Response<any, Record<string, any>, number>} res
+ * @param {express.NextFunction} next
+ */
+export const setGroupMemberRole = async (req, res) => {};
