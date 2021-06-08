@@ -73,14 +73,42 @@ function MemberCard(props) {
       .catch((error) => message.success(error.message));
   };
 
-  const handleRemoveAdmin = async (groupId, userId) => {};
+  const handleSetMember = async (groupId, memberId, role) => {
+    apiGroup
+      .setGroupMemberRole(groupId, memberId, role)
+      .then((res) => {
+        message.success(res.data.message);
+        window.location.reload();
+      })
+      .catch((error) => message.success(error.message));
+  };
+
+  const handleSetModerator = async (groupId, memberId, role) => {
+    apiGroup
+      .setGroupMemberRole(groupId, memberId, role)
+      .then((res) => {
+        message.success(res.data.message);
+        window.location.reload();
+      })
+      .catch((error) => message.success(error.message));
+  };
+
+  const handleSetAdmin = async (groupId, memberId, role) => {
+    apiGroup
+      .setGroupMemberRole(groupId, memberId, role)
+      .then((res) => {
+        message.success(res.data.message);
+        window.location.reload();
+      })
+      .catch((error) => message.success(error.message));
+  };
 
   const removeAdminMenuItem = () => {
     return (
       <Item
         key="removeAdmin"
         onClick={() => {
-          handleRemoveAdmin(group?._id, _id);
+          handleSetMember(group?._id, _id, "Member");
         }}
       >
         <Row align="middle">
@@ -92,7 +120,12 @@ function MemberCard(props) {
 
   const removeModeratorMenuItem = () => {
     return (
-      <Item key="removeModerator">
+      <Item
+        key="removeModerator"
+        onClick={() => {
+          handleSetMember(group?._id, _id, "Member");
+        }}
+      >
         <Row align="middle">
           <Text>Remove as moderator</Text>
         </Row>
@@ -102,7 +135,12 @@ function MemberCard(props) {
 
   const addAdminMenuItem = () => {
     return (
-      <Item key="addAdmin">
+      <Item
+        key="addAdmin"
+        onClick={() => {
+          handleSetAdmin(group?._id, _id, "Admin");
+        }}
+      >
         <Row align="middle">
           <Text>Add as admin</Text>
         </Row>
@@ -112,7 +150,12 @@ function MemberCard(props) {
 
   const addModeratorMenuItem = () => {
     return (
-      <Item key="AddModerator">
+      <Item
+        key="AddModerator"
+        onClick={() => {
+          handleSetModerator(group?._id, _id, "Moderator");
+        }}
+      >
         <Row align="middle">
           <Text>Add as moderator</Text>
         </Row>
