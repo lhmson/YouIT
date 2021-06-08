@@ -2,7 +2,9 @@ import express from "express";
 import mongoose from "mongoose";
 import { sendNotificationUser } from "../businessLogics/notification.js";
 import User from "../models/user.js";
+import FriendRequest from "../models/friendrequest.js";
 import { httpStatusCodes } from "../utils/httpStatusCode.js";
+import { getRelationship } from "../businessLogics/user.js";
 
 // GET userinfo/:id
 export const getUserInfo = async (req, res) => {
@@ -129,46 +131,62 @@ export const removeSendingFriendRequest = async (req, res) => {
  * @param {express.NextFunction} next
  */
 export const addFriend = async (req, res) => {
-  const friend = req.body;
+  const friendRequest = req.body;
   const { userId } = req;
-
+  console.log(friendRequest);
+  // dang bi loi 500 ko biet o dau
   if (!userId)
     return res
       .status(httpStatusCodes.unauthorized)
       .json({ message: "Unauthorized" });
 
+  if (!(await FriendRequest.findById(friendRequest?._id)))
+    return res
+      .status(httpStatusCodes.notFound)
+      .json({ message: "Request not found" });
+
   try {
+    console.log("rela");
+    const relationship = getRelationship(
+      friendRequest?.userConfirmId,
+      friendRequest?.userSendRequestId
+    );
+    if (relationship.equals("Friend"))
+      return res
+        .status(httpStatusCodes.badContent)
+        .json({ message: "Have already been friend" });
+
     // add friendId to user's list friends
     const acceptingUser = await User.findById(userId);
-
-    if (!acceptingUser)
-      return res.status(httpStatusCodes.notFound).send("Accepting user not found");
-
-    acceptingUser.listFriends.push(friend?._id);
+    acceptingUser.listFriends.push(friendRequest?.userSendRequestId);
     await acceptingUser.save();
 
     // add userId to friend's list friends
-    await User.findById(friend?._id).then(async (user) => {
-      user.listFriends.push(userId);
-      await user.save();
-      // res.status(httpStatusCodes.ok).json(user);
-    });
+    const acceptedUser = await User.findById(friendRequest?.userSendRequestId);
+
+    if (!acceptedUser)
+      return res
+        .status(httpStatusCodes.notFound)
+        .send("User sending friend request is not found");
+
+    acceptedUser.listFriends.push(userId);
+    await acceptedUser.save();
 
     // notification
     sendNotificationUser({
-      userId: friend?._id,
+      userId: friendRequest?.userSendRequestId,
       content: {
         acceptingUserId: userId,
-        acceptedUserId: friend._id,
+        acceptedUserId: friendRequest?.userSendRequestId,
         description: `${acceptingUser.name} accepted your friend request!`,
       },
       link: `/userinfo/${acceptingUser._id}`,
       kind: "AcceptFriend_AcceptedFriend",
     });
 
-    return res.status(httpStatusCodes.ok).json(acceptingUser);
+    return res.status(httpStatusCodes.ok).json(acceptedUser);
   } catch (error) {
-    //console.log(error.message);
+    console.log(error);
     res
       .status(httpStatusCodes.internalServerError)
       .json({ message: error.message });
@@ -226,6 +244,11 @@ export const followUser = async (req, res) => {
   try {
     await User.findById(followedId)
       .then(async (user) => {
+        if (user.listFriendFollows.includes(userId))
+          return res
+            .status(httpStatusCodes.badContent)
+            .json({ message: "Followed this user" });
+
         user.listFriendFollows.push(userId);
         await user.save();
         res.status(httpStatusCodes.ok).json(user);

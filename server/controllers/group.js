@@ -12,7 +12,7 @@ import { httpStatusCodes } from "../utils/httpStatusCode.js";
  * @param {express.NextFunction} next
  */
 export const getAGroup = async (req, res, next) => {
-  const { id } = req.params;
+  const { groupId } = req.params;
 
   try {
     const { userId } = req;
@@ -21,7 +21,7 @@ export const getAGroup = async (req, res, next) => {
         .status(httpStatusCodes.unauthorized)
         .json(".... // cho nay k login k vao dc");
 
-    Group.findById(id)
+    Group.findById(groupId)
       .then((group) => {
         if (group) return res.status(httpStatusCodes.ok).json(group);
         else
@@ -145,11 +145,11 @@ export const addGroupMember = async (req, res) => {
 };
 
 export const addGroupPendingMember = async (req, res) => {
-  const { id, memberId } = req.params;
+  const { groupId, memberId } = req.params;
   const pendingMember = { userId: memberId };
 
   try {
-    const group = await Group.findById(id);
+    const group = await Group.findById(groupId);
     if (!group) {
       return res
         .status(httpStatusCodes.notFound)
@@ -188,10 +188,10 @@ export const addGroupPendingMember = async (req, res) => {
  * @param {express.NextFunction} next
  */
 export const removeGroupPendingMember = async (req, res) => {
-  const { id, memberId } = req.params;
+  const { groupId, memberId } = req.params;
 
   try {
-    const group = await Group.findById(id);
+    const group = await Group.findById(groupId);
 
     if (!group) {
       return res
@@ -214,9 +214,9 @@ export const removeGroupPendingMember = async (req, res) => {
 };
 
 export const getListMembers = async (req, res) => {
-  const { id } = req.params;
+  const { groupId } = req.params;
   try {
-    const group = await Group.findById(id).populate({
+    const group = await Group.findById(groupId).populate({
       path: "listMembers",
       populate: {
         path: "userId",
@@ -264,7 +264,7 @@ export const getListPendingMembers = async (req, res) => {
 };
 
 export const deleteGroup = async (req, res) => {
-  const { id } = req.params;
+  const { groupId } = req.params;
 
   try {
     // auth
@@ -272,7 +272,7 @@ export const deleteGroup = async (req, res) => {
       return res.json({ message: "Unauthenticated" });
     }
 
-    if (!(await Group.findById(id))) {
+    if (!(await Group.findById(groupId))) {
       return res
         .status(httpStatusCodes.notFound)
         .send(`No group with id: ${id}`);
@@ -322,10 +322,10 @@ export const deleteMember = async (req, res) => {
 };
 
 export const leaveGroup = async (req, res) => {
-  const { id, userId } = req.params;
+  const { groupId, userId } = req.params;
 
   try {
-    const group = await Group.findById(id);
+    const group = await Group.findById(groupId);
     if (!isMemberOfGroup(userId, group))
       return res
         .status(httpStatusCodes.badContent)
@@ -359,6 +359,53 @@ export const leaveGroup = async (req, res) => {
     const newGroup = await Group.findByIdAndUpdate(id, group, { new: true });
     // await group.save();
     res.status(httpStatusCodes.ok).json(newGroup);
+  } catch (error) {
+    res
+      .status(httpStatusCodes.internalServerError)
+      .json({ message: error.message });
+  }
+};
+
+/**
+ * @param {express.Request<ParamsDictionary, any, any, QueryString.ParsedQs, Record<string, any>>} req
+ * @param {express.Response<any, Record<string, any>, number>} res
+ * @param {express.NextFunction} next
+ */
+export const setGroupMemberRole = async (req, res) => {
+  const { groupId, memberId } = req.params;
+  const { newRole } = req.body;
+  console.log(newRole);
+  const { userGroupRole } = req;
+
+  const group = await Group.findById(groupId);
+
+  if (!group)
+    return res
+      .status(httpStatusCodes.notFound)
+      .json({ message: "Group not found" });
+
+  try {
+    if (!isMemberOfGroup(memberId, group))
+      return res
+        .status(httpStatusCodes.notFound)
+        .json({ message: "This user is not a member of group" });
+
+    const rolesCanSet = ["Member", "Moderator", "Admin", "Owner"];
+    const userRoleIndex = rolesCanSet.indexOf(userGroupRole);
+    rolesCanSet.length = userRoleIndex;
+
+    if (!rolesCanSet.includes(newRole))
+      return res
+        .status(httpStatusCodes.forbidden)
+        .json({ message: `${userGroupRole} can't set member to ${newRole}` });
+
+    group.listMembers.forEach(async (member) => {
+      if (member.userId.equals(memberId)) {
+        member.role = newRole;
+        await group.save();
+        return res.status(httpStatusCodes.ok).json(group);
+      }
+    });
   } catch (error) {
     res
       .status(httpStatusCodes.internalServerError)

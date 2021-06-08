@@ -20,5 +20,7 @@ export const leaveGroup = (groupId, userId) =>
   API.put(`/group/${groupId}/leaveGroup/${userId}`);
 export const addGroupMember = (groupId, memberId) =>
   API.put(`/group/${groupId}/addGroupMember/${memberId}`);
+export const setGroupMemberRole = (groupId, memberId, role) =>
+  API.put(`/group/${groupId}/setMemberRole/${memberId}`, { newRole: role });
 
 export const deleteGroup = (id) => API.delete(`/group/${id}`);

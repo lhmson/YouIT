@@ -99,7 +99,7 @@ function GroupFunctionButtons() {
     if (isSentJoinRequest()) {
       return (
         <Button
-          type="primary"
+          className="green-button"
           style={styles.button}
           onClick={cancelJoinRequest}
         >
@@ -109,7 +109,11 @@ function GroupFunctionButtons() {
     }
 
     return (
-      <Button type="primary" style={styles.button} onClick={joinGroup}>
+      <Button
+        className="green-button"
+        style={styles.button}
+        onClick={joinGroup}
+      >
         Join Group
       </Button>
     );
@@ -135,7 +139,7 @@ function GroupFunctionButtons() {
               width: "100%",
             }}
           >
-            <Button type="primary" style={styles.button}>
+            <Button className="green-button" style={styles.button}>
               Create Post
             </Button>
             {/* <Button type="primary" style={styles.button}>
