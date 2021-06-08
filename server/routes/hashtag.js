@@ -1,6 +1,7 @@
 import express from "express";
 import {
   createHashtag,
+  deleteHashtag,
   getAHashtag,
   getAllHashtags,
 } from "../controllers/hashtag.js";
@@ -13,6 +14,6 @@ router.get("/:id", auth, getAHashtag);
 
 router.post("/", auth, createHashtag);
 
-// router.delete("/:id", auth, deleteFriendRequest);
+router.delete("/:hashtagId", auth, deleteHashtag);
 
 export default router;

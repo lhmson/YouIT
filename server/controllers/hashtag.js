@@ -17,8 +17,18 @@ export const createHashtag = async (req, res) => {
   }
 
   try {
+    const hashtags = await Hashtag.find();
+
+    const existedHashtag = hashtags.find((tag) => tag?.name === hashtag?.name);
+    if (existedHashtag) {
+      existedHashtag.count++;
+      await existedHashtag.save();
+      return res.status(httpStatusCodes.ok).json(existedHashtag);
+    }
+
     const newHashtag = new Hashtag({
       ...hashtag,
+      count: 1,
     });
     await newHashtag.save();
     return res.status(httpStatusCodes.created).json(newHashtag);
@@ -62,6 +72,39 @@ export const getAHashtag = async (req, res) => {
       .json({ message: "Hashtag not found" });
   } catch (error) {
     res
+      .status(httpStatusCodes.internalServerError)
+      .json({ message: error.message });
+  }
+};
+
+/**
+ * @param {express.Request<ParamsDictionary, any, any, QueryString.ParsedQs, Record<string, any>>} req
+ * @param {express.Response<any, Record<string, any>, number>} res
+ * @param {express.NextFunction} next
+ */
+export const deleteHashtag = async (req, res) => {
+  const { hashtagId } = req.params;
+
+  try {
+    const hashtag = await Hashtag.findById(hashtagId);
+
+    if (!hashtag)
+      return res
+        .status(httpStatusCodes.notFound)
+        .json({ message: "Hashtag not found" });
+
+    if (hashtag.count > 1) {
+      hashtag.count--;
+      await hashtag.save();
+      return res.status(httpStatusCodes.ok).json(hashtag);
+    }
+
+    await hashtag.remove();
+    return res
+      .status(httpStatusCodes.ok)
+      .json({ message: "Delete hashtag successfully" });
+  } catch (error) {
+    return res
       .status(httpStatusCodes.internalServerError)
       .json({ message: error.message });
   }
