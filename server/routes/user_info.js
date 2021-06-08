@@ -26,7 +26,7 @@ router.put(
   removeReceivingFriendRequest
 );
 router.put("/:id/sendFriendRequest/remove", auth, removeSendingFriendRequest);
-router.put("/:id/addfriend", auth, addFriend);
+router.put("/addfriend", auth, addFriend);
 router.put("/:id/unfriend/:friendId", auth, unfriend);
 router.put("/:followedId/follow", auth, followUser);
 router.put("/:followedId/unfollow", auth, unfollowUser);

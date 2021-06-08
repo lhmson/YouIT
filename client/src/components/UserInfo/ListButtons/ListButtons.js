@@ -94,11 +94,12 @@ const ListButtons = () => {
   };
 
   const acceptFriendRequest = async () => {
-    await addFriend(loginUser, user);
-    dispatch(followUser(user?._id));
-
     if (matchingFriendRequest) {
       const request = matchingFriendRequest[0];
+
+      await addFriend(request);
+      dispatch(followUser(user?._id));
+
       await cancelFriendRequest(request);
     }
   };

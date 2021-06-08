@@ -38,7 +38,7 @@ function CreateGroupMembers({ onChange }) {
   return (
     <>
       <Select
-        mode="tags"
+        mode="multiple"
         // size={size}
         placeholder="Add Members"
         onChange={onChange}

@@ -5,8 +5,6 @@ import {
   Drawer,
   Typography,
   Badge,
-  Modal,
-  Tooltip,
   Select,
   Popover,
   message,
@@ -87,11 +85,26 @@ function ChatSidebar({
 
     apiConversation.fetchConversationsOfUser().then((res) => {
       updateListConversations(res.data);
-      // console.log("update list", res.data);
+
+      // if there's no longer a conversation with current id, refresh!
+      if (
+        currentId &&
+        !res.data?.some((conversation) => conversation._id === currentId)
+      )
+        message.warn("You're no longer in this conversation!", 1, () =>
+          window.location.reload()
+        );
+      if (!currentId && res.data?.length > 0)
+        updateCurrentId(res?.data?.[0]?._id);
     });
   };
 
   useEffect(() => {
+    handleFetchListUnseenConversations();
+  }, []);
+
+  useEffect(() => {
+    // needs optimization later :)
     messageHandle.onReceive((msg) => {
       handleFetchListUnseenConversations();
     });
@@ -100,10 +113,20 @@ function ChatSidebar({
       handleFetchListUnseenConversations();
     });
 
-    handleFetchListUnseenConversations();
+    messageHandle.onConversationCreated((msg) => {
+      handleFetchListUnseenConversations();
+    });
+
+    messageHandle.onConversationUpdated((msg) => {
+      handleFetchListUnseenConversations();
+    });
+
+    messageHandle.onConversationDeleted((msg) => {
+      handleFetchListUnseenConversations();
+    });
 
     return messageHandle.cleanUpAll;
-  }, []);
+  }, [currentId]);
 
   // useEffect(() => {
   //   apiConversation.fetchConversationsOfUser().then((res) => {
@@ -191,7 +214,8 @@ function ChatSidebar({
                   style={{ margin: "5px 0" }}
                 />
                 <Select
-                  mode="tags"
+                  mode="multiple"
+                  allowClear
                   placeholder="Add friend"
                   value={usersToAdd}
                   onChange={handleChangeUserToAdd}

@@ -22,7 +22,7 @@ function CoverPhoto() {
             display: "block",
           }}
         ></Image>
-        <Button type="primary" style={styles.editImageBtn}>
+        <Button className="green-button" style={styles.editImageBtn}>
           Edit cover photo
         </Button>
       </Layout>

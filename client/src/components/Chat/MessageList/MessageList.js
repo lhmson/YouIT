@@ -1,7 +1,6 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, message, Tooltip, Typography } from "antd";
 import "../styles.css";
-import { Link } from "react-router-dom";
 import { useLocalStorage } from "../../../hooks/useLocalStorage";
 import { useMessage } from "../../../hooks/useMessage";
 import moment from "moment";
@@ -12,13 +11,7 @@ import * as apiConversation from "../../../api/conversation";
 
 const { Text } = Typography;
 
-function ConversationList({
-  currentId,
-  isAddMessage,
-  setIsAddMessage,
-  listSeenMembers,
-  setListSeenMembers,
-}) {
+function ConversationList({ currentId, listSeenMembers, setListSeenMembers }) {
   const MESSAGE_PER_LOAD = 5;
 
   const [listMessages, setListMessages] = useState([]);

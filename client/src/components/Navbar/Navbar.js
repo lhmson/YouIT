@@ -10,6 +10,8 @@ import {
   Avatar,
   Badge,
   Tooltip,
+  Button,
+  notification,
 } from "antd";
 import styles from "./styles";
 import logo from "../../assets/darklogo.png";
@@ -22,7 +24,7 @@ import {
   EllipsisOutlined,
   SettingOutlined,
   PicLeftOutlined,
-  ToolOutlined,
+  StarFilled,
 } from "@ant-design/icons";
 import { useMobile } from "../../utils/responsiveQuery";
 import { useMediaQuery } from "react-responsive";
@@ -110,6 +112,10 @@ function Navbar({ selectedMenu, setTxtSearch, txtInitSearch }) {
     history.push("/post/create");
   };
 
+  const handleFeed = () => {
+    history.push("/feed");
+  };
+
   const handleMessage = () => {
     history.push("/message");
   };
@@ -122,6 +128,16 @@ function Navbar({ selectedMenu, setTxtSearch, txtInitSearch }) {
         mode={!isSmallScreen ? "horizontal" : "vertical"}
         defaultSelectedKeys={[selectedMenu]}
       >
+        <Menu.Item
+          key="feed"
+          className="navitem pickitem text-center"
+          onClick={handleFeed}
+        >
+          <Tooltip title="Feed" placement="bottom">
+            <StarFilled spin style={{ fontSize: 24, color: COLOR.white }} />
+          </Tooltip>
+        </Menu.Item>
+
         <Menu.Item key="noti" className="navitem notpickitem text-center">
           <Dropdown
             overlay={NotificationList({
@@ -165,11 +181,15 @@ function Navbar({ selectedMenu, setTxtSearch, txtInitSearch }) {
           </Badge>
         </Menu.Item>
 
-        <Menu.Item key="avatar" className="text-center navitem">
+        <Menu.Item
+          key="avatar"
+          className="text-center navitem notpickitem"
+          onClick={() => history.push(`/userinfo/${user?.result._id}`)}
+        >
           <Tooltip
             title={
               <div className="text-center">
-                <div>{user?.result?._id}</div>
+                <div>{user?.result?.name}</div>
                 <Dropdown
                   overlay={menuStatus}
                   trigger={["click"]}
@@ -195,12 +215,7 @@ function Navbar({ selectedMenu, setTxtSearch, txtInitSearch }) {
               alt={user?.result?.name}
               src={user?.result?.imageUrl}
             >
-              <Link
-                to={`/userinfo/${user?.result._id}`}
-                style={{ color: COLOR.white }}
-              >
-                {user?.result?.name}
-              </Link>
+              {user?.result?.name}
             </Avatar>
           </Tooltip>
         </Menu.Item>
@@ -303,6 +318,25 @@ function Navbar({ selectedMenu, setTxtSearch, txtInitSearch }) {
   const [numberUnseenMessages, setNumberUnseenMessages] = useState(0);
 
   const messageHandle = useMessage();
+
+  const openNotification = (msg) => {
+    alert("abc");
+    const key = `open${Date.now()}`;
+    const btn = (
+      <Button className="green-button" onClick={() => console.log(msg)}>
+        Check out
+      </Button>
+    );
+    notification.open({
+      message: "Hey this is something for you",
+      description: msg,
+      onClick: () => {
+        console.log("Notification Clicked!");
+      },
+      key,
+      btn,
+    });
+  };
 
   const handleFetchListUnseenConversations = () => {
     apiConversation
