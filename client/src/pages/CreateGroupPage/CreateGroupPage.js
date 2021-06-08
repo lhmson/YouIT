@@ -1,8 +1,6 @@
 import React, { useState } from "react";
 import {
   Card,
-  Input,
-  Avatar,
   Row,
   Typography,
   Button,
@@ -10,19 +8,13 @@ import {
   Form,
   Layout,
   Select,
-  Menu,
   Divider,
   message,
 } from "antd";
-import { Link } from "react-router-dom";
 import COLOR from "../../constants/colors.js";
 import { useHistory } from "react-router";
-import { useDispatch } from "react-redux";
 import { createGroup } from "../../api/group";
 import CoverPhoto from "../../components/CreateGroup/CoverPhoto/CoverPhoto.js";
-import { BsThreeDots } from "react-icons/bs";
-import { GoSearch } from "react-icons/go";
-import { MailOutlined } from "@ant-design/icons";
 import Navbar from "../../components/Navbar/Navbar";
 import CreateGroupName from "../../components/CreateGroup/CreateGroupName/CreateGroupName";
 import CreateGroupDescription from "../../components/CreateGroup/CreateGroupDescription/CreateGroupDescription";

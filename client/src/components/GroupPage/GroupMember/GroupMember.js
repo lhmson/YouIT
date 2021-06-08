@@ -16,7 +16,7 @@ function GroupMember() {
   const { group } = useContext(GroupContext);
 
   const [listMembers, setListMembers] = useState([]);
-  const [txtSearch, setTxtSearch] = useState("");
+  const [listName, setListName] = useState([]);
   // const [mode, setMode] = useState("Friends");
 
   useEffect(() => {
@@ -30,6 +30,14 @@ function GroupMember() {
         console.log(e);
       });
   }, [group]);
+
+  useEffect(() => {}, []);
+
+  //   listMembers.sort(function(a, b){
+  //     if(a.firstname < b.firstname) { return -1; }
+  //     if(a.firstname > b.firstname) { return 1; }
+  //     return 0;
+  // })
 
   const listMembersCard = () =>
     listMembers?.map((user, i) => (
