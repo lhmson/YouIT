@@ -19,7 +19,7 @@ const router = express.Router();
 
 router.get("/:id", getUserInfo);
 
-router.put("/:id", auth, updateUserInfo);
+router.put("/", auth, updateUserInfo);
 router.put("/:id/receiveFriendRequest/add", auth, addReceivingFriendRequest);
 router.put("/:id/sendFriendRequest/add", auth, addSendingFriendRequest);
 router.put(

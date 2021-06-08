@@ -134,25 +134,25 @@ export const removeSendingFriendRequest = async (req, res) => {
 export const addFriend = async (req, res) => {
   const friendRequest = req.body;
   const { userId } = req;
-  console.log(friendRequest);
-  // dang bi loi 500 ko biet o dau
+
   if (!userId)
     return res
       .status(httpStatusCodes.unauthorized)
       .json({ message: "Unauthorized" });
 
-  if (!(await FriendRequest.findById(friendRequest?._id)))
-    return res
-      .status(httpStatusCodes.notFound)
-      .json({ message: "Request not found" });
+  // if (!(await FriendRequest.findById(friendRequest?._id)))
+  //   return res
+  //     .status(httpStatusCodes.notFound)
+  //     .json({ message: "Request not found" });
 
   try {
-    console.log("rela");
-    const relationship = getRelationship(
+    // await has an effect =.=
+    const relationship = await getRelationship(
       friendRequest?.userConfirmId,
       friendRequest?.userSendRequestId
     );
-    if (relationship.equals("Friend"))
+    console.log(relationship);
+    if (relationship == "Friend")
       return res
         .status(httpStatusCodes.badContent)
         .json({ message: "Have already been friend" });
