@@ -1,10 +1,12 @@
 import express from "express";
 import {
   addFriend,
+  addProgrammingHashtag,
   addReceivingFriendRequest,
   addSendingFriendRequest,
   followUser,
   getUserInfo,
+  removeProgrammingHashtag,
   removeReceivingFriendRequest,
   removeSendingFriendRequest,
   unfollowUser,
@@ -30,5 +32,11 @@ router.put("/addfriend", auth, addFriend);
 router.put("/:id/unfriend/:friendId", auth, unfriend);
 router.put("/:followedId/follow", auth, followUser);
 router.put("/:followedId/unfollow", auth, unfollowUser);
+router.put("/addProgrammingHashtag/:hashtagId", auth, addProgrammingHashtag);
+router.put(
+  "/removeProgrammingHashtag/:hashtagId",
+  auth,
+  removeProgrammingHashtag
+);
 
 export default router;

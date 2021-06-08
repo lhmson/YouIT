@@ -5,6 +5,7 @@ import User from "../models/user.js";
 import FriendRequest from "../models/friendrequest.js";
 import { httpStatusCodes } from "../utils/httpStatusCode.js";
 import { getRelationship } from "../businessLogics/user.js";
+import Hashtag from "../models/hashtag.js";
 
 // GET userinfo/:id
 export const getUserInfo = async (req, res) => {
@@ -299,6 +300,87 @@ export const unfollowUser = async (req, res) => {
   } catch (error) {
     console.log(error);
     res
+      .status(httpStatusCodes.internalServerError)
+      .json({ message: error.message });
+  }
+};
+
+/**
+ * @param {express.Request<ParamsDictionary, any, any, QueryString.ParsedQs, Record<string, any>>} req
+ * @param {express.Response<any, Record<string, any>, number>} res
+ * @param {express.NextFunction} next
+ */
+export const addProgrammingHashtag = async (req, res) => {
+  const { hashtagId } = req.params;
+  const { userId } = req;
+
+  if (!userId)
+    return res
+      .status(httpStatusCodes.unauthorized)
+      .json({ message: "Unauthorized" });
+
+  try {
+    const hashtag = await Hashtag.findById(hashtagId);
+
+    if (!hashtag)
+      return res
+        .status(httpStatusCodes.notFound)
+        .json({ message: "Hashtag not found" });
+
+    await User.findById(userId).then(async (user) => {
+      if (user.userInfo.programmingHashtags.includes(hashtagId))
+        return res
+          .status(httpStatusCodes.badContent)
+          .json({ message: "This hashtag has already been added" });
+
+      user.userInfo.programmingHashtags.push(hashtagId);
+      await user.save();
+      return res.status(httpStatusCodes.ok).json(user);
+    });
+  } catch (error) {
+    return res
+      .status(httpStatusCodes.internalServerError)
+      .json({ message: error.message });
+  }
+};
+
+/**
+ * @param {express.Request<ParamsDictionary, any, any, QueryString.ParsedQs, Record<string, any>>} req
+ * @param {express.Response<any, Record<string, any>, number>} res
+ * @param {express.NextFunction} next
+ */
+export const removeProgrammingHashtag = async (req, res) => {
+  const { hashtagId } = req.params;
+  const { userId } = req;
+
+  if (!userId)
+    return res
+      .status(httpStatusCodes.unauthorized)
+      .json({ message: "Unauthorized" });
+
+  try {
+    const hashtag = await Hashtag.findById(hashtagId);
+
+    if (!hashtag)
+      return res
+        .status(httpStatusCodes.notFound)
+        .json({ message: "Hashtag not found" });
+
+    await User.findById(userId).then(async (user) => {
+      if (!user.userInfo.programmingHashtags.includes(hashtagId))
+        return res
+          .status(httpStatusCodes.badContent)
+          .json({ message: "This hashtag has not been added" });
+
+      user.userInfo.programmingHashtags =
+        user.userInfo.programmingHashtags.filter(
+          (hashtag) => hashtag?._id != hashtagId
+        );
+      await user.save();
+      return res.status(httpStatusCodes.ok).json(user);
+    });
+  } catch (error) {
+    return res
       .status(httpStatusCodes.internalServerError)
       .json({ message: error.message });
   }

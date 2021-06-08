@@ -32,3 +32,7 @@ export const followUser = (followedId) =>
   API.put(`/userInfo/${followedId}/follow`);
 export const unfollowUser = (followedId) =>
   API.put(`/userInfo/${followedId}/unfollow`);
+export const addProgrammingHashtag = (hashtagId) =>
+  API.put(`/userInfo/addProgrammingHashtag/${hashtagId}`);
+export const removeProgrammingHashtag = (hashtagId) =>
+  API.put(`/userInfo/removeProgrammingHashtag/${hashtagId}`);

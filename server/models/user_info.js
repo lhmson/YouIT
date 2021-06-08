@@ -32,7 +32,7 @@ export const userInfoSchema = mongoose.Schema(
     phone: { type: String },
     workLocation: { type: String },
     address: { type: String },
-    languageProgrammingHashtags: [
+    programmingHashtags: [
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Hashtag",

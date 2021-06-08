@@ -1,5 +1,7 @@
 import express from "express";
+import mongoose from "mongoose";
 import Hashtag from "../models/hashtag.js";
+import User from "../models/user.js";
 import { httpStatusCodes } from "../utils/httpStatusCode.js";
 
 /**
@@ -103,6 +105,38 @@ export const deleteHashtag = async (req, res) => {
     return res
       .status(httpStatusCodes.ok)
       .json({ message: "Delete hashtag successfully" });
+  } catch (error) {
+    return res
+      .status(httpStatusCodes.internalServerError)
+      .json({ message: error.message });
+  }
+};
+
+/**
+ * @param {express.Request<ParamsDictionary, any, any, QueryString.ParsedQs, Record<string, any>>} req
+ * @param {express.Response<any, Record<string, any>, number>} res
+ * @param {express.NextFunction} next
+ */
+export const getUserProgrammingHashtags = async (req, res) => {
+  const { userId } = req.params;
+
+  try {
+    const user = (await User.findById(userId)).toObject();
+
+    if (!user)
+      return res
+        .status(httpStatusCodes.notFound)
+        .json({ message: "User not found" });
+
+    let programmingHashtags = [];
+    const listHashtagId = user?.userInfo?.programmingHashtags;
+
+    for (var id of listHashtagId) {
+      const hashtag = await Hashtag.findById(id);
+      programmingHashtags.push(hashtag);
+    }
+
+    return res.status(httpStatusCodes.ok).json(programmingHashtags);
   } catch (error) {
     return res
       .status(httpStatusCodes.internalServerError)
