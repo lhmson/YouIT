@@ -22,10 +22,6 @@ function Post({ post, setCurrentId }) {
     setCurrentId(post._id);
   };
 
-  const handleLike = () => {
-    // dispatch(likePost(post._id));
-  };
-
   const handleDelete = () => {
     dispatch(deletePost(post._id));
   };
@@ -56,14 +52,14 @@ function Post({ post, setCurrentId }) {
           <>
             {(user?.result?.googleId === post?.creatorId ||
               user?.result?._id === post?.creatorId) && (
-              <EditOutlined key="edit" onClick={handleEdit} />
-            )}
+                <EditOutlined key="edit" onClick={handleEdit} />
+              )}
           </>,
           <>
             {(user?.result?.googleId === post?.creatorId ||
               user?.result?._id === post?.creatorId) && (
-              <DeleteOutlined key="del" onClick={handleDelete} />
-            )}
+                <DeleteOutlined key="del" onClick={handleDelete} />
+              )}
           </>,
         ]}
         style={{ background: "transparent" }}

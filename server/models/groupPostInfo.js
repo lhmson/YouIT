@@ -10,7 +10,7 @@ export const groupPostInfoSchema = mongoose.Schema(
 
     status: {
       type: String,
-      enum: ["Pending", "Approved", "Reject"],
+      enum: ["Pending", "Approved", "Declined"],
       require: true,
       default: "Pending",
     }

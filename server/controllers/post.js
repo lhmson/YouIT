@@ -15,7 +15,7 @@ import User from "../models/user.js";
 import Group from "../models/group.js";
 import { asyncFilter } from "../utils/asyncFilter.js";
 import { customPagination } from "../utils/customPagination.js";
-import { isMemberOfGroup } from "../businessLogics/group.js";
+import { isMemberOfGroup, getMemberRoleInGroup, checkRoleHasPermissionOfRole } from "../businessLogics/group.js";
 
 //#region CRUD
 // GET post/list/all
@@ -238,7 +238,7 @@ export const getMyPostInteractions = async (req, res) => {
     let filterJson = undefined;
     try {
       filterJson = JSON.parse(filter);
-    } catch {}
+    } catch { }
 
     const interactions = await getInteractionOfAUser(id, userId, filterJson);
     return res.status(httpStatusCodes.ok).json(interactions);
@@ -369,14 +369,14 @@ export const getPostsPagination = async (req, res) => {
       .status(httpStatusCodes.ok)
       .send(
         `space query:\n` +
-          ` - (empty): All visible posts\n` +
-          ` - news_feed: All posts from other users and posts in joined group\n` +
-          ` - user_profile: All posts of a user which are not in group (ownerId query is required)\n` +
-          ` - pending_in_group: All posts that's currently pending in a group (groupId query is required)\n` +
-          ` - group: All approved posts in the same group (groupId query is required)\n` +
-          `\n` +
-          `ownerId query: Filter out all posts of just 1 user\n` +
-          `groupId query: Filter out all posts of just 1 group\n`
+        ` - (empty): All visible posts\n` +
+        ` - news_feed: All posts from other users and posts in joined group\n` +
+        ` - user_profile: All posts of a user which are not in group (ownerId query is required)\n` +
+        ` - pending_in_group: All posts that's currently pending in a group (groupId query is required)\n` +
+        ` - group: All approved posts in the same group (groupId query is required)\n` +
+        `\n` +
+        `ownerId query: Filter out all posts of just 1 user\n` +
+        `groupId query: Filter out all posts of just 1 group\n`
       );
   }
 
@@ -510,33 +510,132 @@ export const getOtherPosts = async (req, res) => {
   }
 };
 
+
 /**
- * @deprecated
+ * @param {express.Request<ParamsDictionary, any, any, QueryString.ParsedQs, Record<string, any>>} req
+ * @param {express.Response<any, Record<string, any>, number>} res
+ * @param {express.NextFunction} next
  */
-export const likePost = async (req, res) => {
-  const { id } = req.params;
+export const canReviewGroupPost = async (req, res, next) => {
+  const { userId } = req;
+  const { postId } = req.params;
 
-  // auth
-  if (!req.userId) {
-    return res.json({ message: "Unauthenticated" });
+  if (!userId)
+    return res.status(httpStatusCodes.unauthorized).send("You have to sign in to review a post");
+
+  try {
+    const post = await Post.findById(postId);
+
+    if (!post)
+      return res
+        .status(httpStatusCodes.notFound)
+        .send(`Cannot find a post with id: ${postId}`);
+
+    const { groupId } = post.groupPostInfo ?? {};
+
+    if (post.privacy !== "Group" || !groupId)
+      return res
+        .status(httpStatusCodes.badContent)
+        .send(`Not a group post`);
+
+    const group = await Group.findById(groupId);
+
+    if (!group)
+      return res
+        .status(httpStatusCodes.notFound)
+        .send("The group of this post does not exist");
+
+    const userRole = getMemberRoleInGroup(userId, group);
+    if (!checkRoleHasPermissionOfRole(userRole, "Moderator"))
+      return res
+        .status(httpStatusCodes.forbidden)
+        .send("You don't have permission to review this post due to your role or you're not in this group");
+
+    req.groupPost = {
+      post,
+      group,
+    }
+
+    return next?.();
+  } catch (error) {
+    return res
+      .status(httpStatusCodes.internalServerError)
+      .json({ message: error.message });
   }
+}
 
-  if (!mongoose.Types.ObjectId.isValid(id))
-    return res.status(404).send(`No post with id: ${id}`);
+/**
+ * @param {express.Request<ParamsDictionary, any, any, QueryString.ParsedQs, Record<string, any>>} req
+ * @param {express.Response<any, Record<string, any>, number>} res
+ * @param {express.NextFunction} next
+ */
+export const approveGroupPost = async (req, res, next) => {
+  try {
+    const { post, group } = req.groupPost;
+    const { postId } = req.params;
 
-  const post = await Post.findById(id);
+    if (post.groupPostInfo.status === "Approved")
+      return res
+        .status(httpStatusCodes.badContent)
+        .send("This post has already been approved")
 
-  const index = post.likes.findIndex((id) => id === String(req.userId));
+    post.groupPostInfo.status = "Approved";
+    const newPost = await Post.findByIdAndUpdate(postId, post, { new: true });
 
-  if (index === -1) {
-    post.likes.push(req.userId);
-  } else {
-    post.likes = post.likes.filter((id) => id !== String(req.userId));
+    sendNotificationUser({
+      userId: post?.userId?.toString(),
+      kind: "ApprovedPost_PostOwner",
+      content: {
+        description: `Your post "${post?.title}" in group "${group?.name}" has been approved.`,
+      },
+      link: `/post/${post?._id}`,
+    });
+
+    return res
+      .status(httpStatusCodes.ok)
+      .send(newPost);
+
+  } catch (error) {
+    return res
+      .status(httpStatusCodes.internalServerError)
+      .json({ message: error.message });
   }
+}
 
-  const updatedPost = await Post.findByIdAndUpdate(id, post, {
-    new: true,
-  });
+/**
+ * @param {express.Request<ParamsDictionary, any, any, QueryString.ParsedQs, Record<string, any>>} req
+ * @param {express.Response<any, Record<string, any>, number>} res
+ * @param {express.NextFunction} next
+ */
+export const declineGroupPost = async (req, res, next) => {
+  try {
+    const { post, group } = req.groupPost;
+    const { postId } = req.params;
 
-  res.json(updatedPost);
-};
+    const backUpContent = post?.toObject?.()?.content;
+    delete backUpContent.createdAt;
+    delete backUpContent.updatedAt;
+    delete backUpContent._id;
+
+    await Post.findByIdAndDelete(postId);
+
+    sendNotificationUser({
+      userId: post?.userId?.toString(),
+      kind: "DeclinedPost_PostOwner",
+      content: {
+        description: `Your post "${post?.title}" in group "${group?.name}" has been declined.`,
+        postBackUp: backUpContent,
+      },
+      link: `/?postBackUp=${JSON.stringify(backUpContent)}`,
+    });
+
+    return res
+      .status(httpStatusCodes.ok)
+      .send("Post declined and deleted");
+
+  } catch (error) {
+    return res
+      .status(httpStatusCodes.internalServerError)
+      .json({ message: error.message });
+  }
+}
