@@ -73,9 +73,16 @@ function MemberCard(props) {
       .catch((error) => message.success(error.message));
   };
 
+  const handleRemoveAdmin = async (groupId, userId) => {};
+
   const removeAdminMenuItem = () => {
     return (
-      <Item key="removeAdmin">
+      <Item
+        key="removeAdmin"
+        onClick={() => {
+          handleRemoveAdmin(group?._id, _id);
+        }}
+      >
         <Row align="middle">
           <Text>Remove as admin</Text>
         </Row>

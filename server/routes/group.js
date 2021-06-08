@@ -50,6 +50,6 @@ router.put(
   setGroupMemberRole
 );
 
-router.delete("/:groupId", auth, isOwner, deleteGroup);
+router.delete("/:id", auth, isOwner, deleteGroup); // chỗ này để id vì isOwner của Sanh để id
 
 export default router;

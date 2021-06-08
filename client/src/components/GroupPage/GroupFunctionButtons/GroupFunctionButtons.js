@@ -51,9 +51,9 @@ function GroupFunctionButtons() {
       .catch((error) => message.success(error.message));
   };
 
-  const handleDeleteGroup = (id) => {
+  const handleDeleteGroup = (groupId) => {
     apiGroup
-      .deleteGroup(id)
+      .deleteGroup(groupId)
       .then((res) => {
         message.success(res.data.message);
         history.push(`/group/create`);

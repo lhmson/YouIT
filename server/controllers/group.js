@@ -273,7 +273,7 @@ export const getListPendingMembers = async (req, res) => {
 };
 
 export const deleteGroup = async (req, res) => {
-  const { groupId } = req.params;
+  const { id } = req.params;
 
   try {
     // auth
@@ -281,7 +281,7 @@ export const deleteGroup = async (req, res) => {
       return res.json({ message: "Unauthenticated" });
     }
 
-    if (!(await Group.findById(groupId))) {
+    if (!(await Group.findById(id))) {
       return res
         .status(httpStatusCodes.notFound)
         .send(`No group with id: ${id}`);
