@@ -21,7 +21,7 @@ function MemberRequests(props) {
     api
       .addGroupMember(groupId, memberId)
       .then((res) => {
-        message.success(res.data.message);
+        message.success("The account has been added as a member");
         api.removePendingMember(groupId, memberId);
         window.location.reload();
       })
@@ -32,7 +32,7 @@ function MemberRequests(props) {
     api
       .removePendingMember(groupId, memberId)
       .then((res) => {
-        message.success(res.data.message);
+        message.success("The account denied to become a member ");
         window.location.reload();
       })
       .catch((error) => message.success(error.message));

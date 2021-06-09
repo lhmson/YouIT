@@ -4,7 +4,6 @@ import styles from "./styles.js";
 import { IoPersonAdd } from "react-icons/io5";
 import { FiCheckSquare } from "react-icons/fi";
 import { BiConversation } from "react-icons/bi";
-import { IoIosArrowDropdownCircle } from "react-icons/io";
 import { useLocalStorage } from "../../../hooks/useLocalStorage.js";
 import { GroupContext } from "../../../pages/GroupPage/GroupPage";
 

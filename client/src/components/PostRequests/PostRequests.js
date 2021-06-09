@@ -1,7 +1,8 @@
 import React from "react";
-import { Button, Typography, Avatar, Tag } from "antd";
+import { Button, Typography, Avatar, Tag, message } from "antd";
 import { Link } from "react-router-dom";
 import styles from "./styles.js";
+import * as api from "../../api/post";
 
 const { Title, Text, Paragraph } = Typography;
 
@@ -9,6 +10,27 @@ function PostRequests(props) {
   const { nameOwner } = props;
   const { content } = props;
   const { _idOwnerPost } = props;
+  const { _id } = props;
+
+  const acceptPostRequest = async (id) => {
+    api
+      .approveGroupPost(id)
+      .then((res) => {
+        message.success("This post has been accepted.");
+        window.location.reload();
+      })
+      .catch((error) => message.success(error.message));
+  };
+
+  const removePostRequest = async (id) => {
+    api
+      .declineGroupPost(id)
+      .then((res) => {
+        message.success("This post is not accepted ");
+        window.location.reload();
+      })
+      .catch((error) => message.success(error.message));
+  };
 
   return (
     <>
@@ -62,6 +84,7 @@ function PostRequests(props) {
                 fontWeight: 500,
                 width: 120,
               }}
+              onClick={() => acceptPostRequest(_id)}
             >
               Accept
             </Button>
@@ -84,6 +107,7 @@ function PostRequests(props) {
                 fontWeight: 500,
                 width: 120,
               }}
+              onClick={() => removePostRequest(_id)}
             >
               Decline
             </Button>

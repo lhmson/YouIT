@@ -50,7 +50,7 @@ function GroupPage(props) {
     api
       .leaveGroup(id, userId)
       .then((res) => {
-        message.success(res.data.message);
+        message.success("You have left the group.");
         history.push(`/feed`);
       })
       .catch((error) => message.success(error.message));

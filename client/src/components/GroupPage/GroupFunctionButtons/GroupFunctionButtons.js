@@ -46,7 +46,7 @@ function GroupFunctionButtons() {
     apiGroup
       .inviteFriends(listInvitedFriends)
       .then((res) => {
-        message.success(res.data.message);
+        message.success("thy");
       })
       .catch((error) => message.success(error.message));
   };
@@ -55,7 +55,7 @@ function GroupFunctionButtons() {
     apiGroup
       .deleteGroup(groupId)
       .then((res) => {
-        message.success(res.data.message);
+        message.success("Group deleted successfully.");
         history.push(`/group/create`);
       })
       .catch((error) => message.success(error.message));
