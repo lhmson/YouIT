@@ -1,4 +1,4 @@
-import { Col, Layout, Typography } from "antd";
+import { Col, Layout, Row, Tag, Typography } from "antd";
 import React, { useContext } from "react";
 import { GroupContext } from "../../../pages/GroupPage/GroupPage.js";
 import styles from "./styles.js";
@@ -19,7 +19,12 @@ function GroupBasicInfo() {
         }}
       >
         <Text style={{ fontSize: 40, fontWeight: "bold" }}>{group?.name}</Text>
-        <Text style={{ fontSize: 16 }}>{`${group?.privacy} Group`}</Text>
+        <Text
+          style={{ fontSize: 16, marginBottom: 16 }}
+        >{`${group?.privacy} Group`}</Text>
+        <Text
+          style={{ fontSize: 20, fontWeight: "bold" }}
+        >{`#${group?.topic}`}</Text>
       </Col>
     </>
   );

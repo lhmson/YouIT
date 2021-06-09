@@ -29,6 +29,7 @@ router.get("/list/pendingByMe", auth, getPendingGroups);
 
 router.post("/", auth, createGroup);
 
+// chua phan quyen, cho xai thu cai cua Nghia
 router.put("/", auth, updateGroup);
 router.put(
   "/:groupId/addGroupMember/:memberId",

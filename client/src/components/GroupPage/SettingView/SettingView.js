@@ -4,7 +4,12 @@ import EditableText from "../../UserInfo/AboutCard/OverviewPane/EditableText/Edi
 import styles from "./styles.js";
 import * as apiGroup from "../../../api/group";
 import EditableCombobox from "../../UserInfo/AboutCard/OverviewPane/EditableCombobox/EditableCombobox.js";
-import { GrGroup, MdDescription, MdPublic } from "react-icons/all";
+import {
+  GiNothingToSay,
+  GrGroup,
+  MdDescription,
+  MdPublic,
+} from "react-icons/all";
 
 const SettingView = () => {
   const { group, setGroup } = useContext(GroupContext);
@@ -12,16 +17,20 @@ const SettingView = () => {
   const [groupName, setGroupName] = useState(group?.name);
   const [description, setDescription] = useState(group?.description);
   const [privacy, setPrivacy] = useState(group?.privacy);
+  const [topic, setTopic] = useState(group?.topic);
 
-  const privacyOptions = [
-    {
-      value: "Public",
-      label: "Public",
-    },
-    {
-      value: "Private",
-      label: "Private",
-    },
+  const privacyOptions = ["Public", "Private"];
+
+  const topicOptions = [
+    "General",
+    "Game",
+    "Language",
+    "Mobile",
+    "Web Dev",
+    "System",
+    "Jobs",
+    "Data",
+    "School",
   ];
 
   const saveGroupName = async () => {
@@ -57,14 +66,20 @@ const SettingView = () => {
     setGroup(data);
   };
 
+  const saveTopic = async () => {
+    const updatedGroup = {
+      ...group,
+      topic: topic,
+    };
+
+    const { data } = await apiGroup.updateGroup(updatedGroup);
+    console.log(data);
+    setGroup(data);
+  };
+
+  // thieu edit topic, nho render len ben about luon
   return (
-    <div
-      style={{
-        background: "white",
-        margin: 64,
-        padding: 16,
-      }}
-    >
+    <div style={styles.settingView}>
       <EditableText
         firstIcon={<GrGroup style={styles.icon} />}
         text={group?.name}
@@ -93,7 +108,20 @@ const SettingView = () => {
         options={privacyOptions}
         onSave={savePrivacy}
         onChange={(value) => {
-          setPrivacy(value[0]);
+          setPrivacy(value);
+        }}
+        setPreviousState={() => {}}
+        editable={true}
+      />
+      <EditableCombobox
+        firstIcon={<GiNothingToSay style={styles.icon} />}
+        text={group?.topic}
+        subText="Group topic"
+        placeholder="Group topic"
+        options={topicOptions}
+        onSave={saveTopic}
+        onChange={(value) => {
+          setTopic(value);
         }}
         setPreviousState={() => {}}
         editable={true}

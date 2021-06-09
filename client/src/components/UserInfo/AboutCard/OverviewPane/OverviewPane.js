@@ -37,20 +37,7 @@ const OverviewPane = () => {
     setDateOfBirth(moment(user?.userInfo?.dateOfBirth).format("DD/MM/YYYY"));
   }, [user]);
 
-  const genderOptions = [
-    {
-      value: "Male",
-      label: "Male",
-    },
-    {
-      value: "Female",
-      label: "Female",
-    },
-    {
-      value: "Others",
-      label: "Others",
-    },
-  ];
+  const genderOptions = ["Male", "Female", "Others"];
 
   //const saveSchool = () => {};
 
@@ -128,7 +115,7 @@ const OverviewPane = () => {
         options={genderOptions}
         onSave={saveGender}
         onChange={(value) => {
-          setGender(value[0]);
+          setGender(value);
         }}
         setPreviousState={() => {
           setGender(user?.userInfo?.gender);
