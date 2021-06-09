@@ -25,3 +25,7 @@ export const updateConversation = (conversationId, newConversationData) =>
 
 export const deleteConversation = (conversationId) =>
   API.delete(`/conversation/${conversationId}`)
+
+
+export const deleteMessage = (conversationId, messageId) =>
+  API.delete(`/conversation/${conversationId}/message/${messageId}`)

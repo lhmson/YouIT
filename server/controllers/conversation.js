@@ -9,6 +9,7 @@ import Conversation from "../models/conversation.js";
 import { httpStatusCodes } from "../utils/httpStatusCode.js";
 import { asyncFilter } from '../utils/asyncFilter.js'
 import { cuteIO } from '../index.js'
+import Message from "../models/message.js";
 
 /**
  * @param {express.Request<ParamsDictionary, any, any, QueryString.ParsedQs, Record<string, any>>} req
@@ -230,11 +231,13 @@ export const getConversationsOfUser = async (req, res, next) => {
       })
       .exec()
       .then((conversations) => {
-        const conversationObjs = conversations
-          .map((c) => c.toObject())
-          .filter((c) => isMemberOfConversation(userId, c));
+        const filteredConversation = conversations.filter((c) => isMemberOfConversation(userId, c))
+        filteredConversation.forEach(c => {
+          if (c.listMessages?.length > 0)
+            c.listMessages.length = 1;
+        }) // only fetch the first message for optimization
 
-        res.status(httpStatusCodes.ok).send(conversationObjs);
+        res.status(httpStatusCodes.ok).send(filteredConversation);
       })
       .catch((error) => {
         return res
@@ -293,7 +296,7 @@ export const updateConversation = async (req, res, next) => {
   if (!userId) {
     return res
       .status(httpStatusCodes.unauthorized)
-      .send("You must sign in to get your conversations");
+      .send("You must sign in to update your conversations");
   }
 
   try {
@@ -365,7 +368,7 @@ export const deleteConversation = async (req, res, next) => {
   if (!userId) {
     return res
       .status(httpStatusCodes.unauthorized)
-      .send("You must sign in to get your conversations");
+      .send("You must sign in to delete your conversations");
   }
 
   try {
@@ -390,6 +393,72 @@ export const deleteConversation = async (req, res, next) => {
 
     await Conversation.findByIdAndDelete(conversationId);
     return res.status(httpStatusCodes.ok).send(`Conversation deleted successfully`);
+  } catch (error) {
+    return res
+      .status(httpStatusCodes.internalServerError)
+      .json({ message: error });
+  }
+}
+
+
+/**
+ * @param {express.Request<ParamsDictionary, any, any, QueryString.ParsedQs, Record<string, any>>} req
+ * @param {express.Response<any, Record<string, any>, number>} res
+ * @param {express.NextFunction} next
+ */
+export const deleteMessage = async (req, res, next) => {
+  const { userId } = req;
+  const { conversationId, messageId } = req.params;
+
+  if (!userId) {
+    return res
+      .status(httpStatusCodes.unauthorized)
+      .send("You must sign in to delete your conversations");
+  }
+
+  try {
+    const conversation = await Conversation.findById(conversationId);
+
+    if (!conversation)
+      return res
+        .status(httpStatusCodes.notFound)
+        .send(`No conversation with id ${conversationId}`);
+
+    const oldListLength = conversation?.listMessages?.length;
+    conversation.listMessages = conversation?.listMessages?.filter(msgId => !msgId.equals(messageId));
+
+    if (oldListLength <= conversation?.listMessages?.length)
+      return res
+        .status(httpStatusCodes.notFound)
+        .send(`No message with id ${messageId} in a conversation with id ${conversationId}`);
+
+
+    const message = await Message.findById(messageId);
+
+    if (!message)
+      return res
+        .status(httpStatusCodes.notFound)
+        .send(`No message with id ${messageId}`);
+
+    if (!message?.senderId?.equals(userId))
+      return res
+        .status(httpStatusCodes.forbidden)
+        .send(`Cannot delete others' messages`);
+
+    await Conversation.findByIdAndUpdate(conversationId, conversation);
+    await Message.findByIdAndDelete(messageId);
+
+    conversation?.listMembers?.forEach(memberId => cuteIO.sendToUser(memberId.toString(), "Message-remove", {
+      res: {
+        conversationId,
+        messageId,
+        senderId: userId,
+      }
+    }));
+
+    return res
+      .status(httpStatusCodes.ok)
+      .send(`Deleted successfully`);
   } catch (error) {
     return res
       .status(httpStatusCodes.internalServerError)

@@ -40,6 +40,11 @@ function ChatSpace() {
     apiConversation.fetchConversationsOfUser().then((res) => {
       if (res.data.length > 0) {
         conversations.updateCurrentId(res.data[0]?._id);
+      } else {
+        // hotfix minor bug: cannot update when there's not yet a conversation
+        messageHandle.onConversationCreated((msg) => {
+          window.location.reload();
+        })
       }
     });
   }, []);
@@ -54,6 +59,8 @@ function ChatSpace() {
       message.error("Fail to send message, try again");
       removeSending(msg?.res?.conversationId);
     });
+
+
 
     return messageHandle.cleanUpAll;
   }, []);

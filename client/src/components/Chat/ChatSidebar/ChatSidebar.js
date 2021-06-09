@@ -94,8 +94,8 @@ function ChatSidebar({
         message.warn("You're no longer in this conversation!", 1, () =>
           window.location.reload()
         );
-      if (!currentId && res.data?.length > 0)
-        updateCurrentId(res?.data?.[0]?._id);
+      // if (!currentId && res.data?.length > 0) // buggy, don't use
+      // updateCurrentId(res?.data?.[0]?._id);
     });
   };
 
@@ -112,6 +112,10 @@ function ChatSidebar({
     messageHandle.onSeen((msg) => {
       handleFetchListUnseenConversations();
     });
+
+    messageHandle.onRemove((msg) => {
+      handleFetchListUnseenConversations();
+    })
 
     messageHandle.onConversationCreated((msg) => {
       handleFetchListUnseenConversations();
@@ -136,7 +140,7 @@ function ChatSidebar({
   // }, []);
   // need real time update there
 
-  const handleSearch = () => {};
+  const handleSearch = () => { };
 
   const handleChangeUserToAdd = (value, options) => {
     // console.log("opt", options);
@@ -276,14 +280,13 @@ function ChatSidebar({
         <>
           <div className="conversation-list">
             {currentId &&
-            listConversations &&
-            listConversations.length !== 0 ? (
+              listConversations &&
+              listConversations.length !== 0 ? (
               listConversations.map((item, i) => (
                 <div key={item?._id} onClick={() => updateCurrentId(item?._id)}>
                   <div
-                    className={`conversation ${
-                      item?._id === currentId && "active"
-                    }`}
+                    className={`conversation ${item?._id === currentId && "active"
+                      }`}
                   >
                     <Badge
                       dot
