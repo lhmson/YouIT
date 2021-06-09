@@ -1,6 +1,7 @@
 import API from "./index";
 
 export const fetchUserInfo = (id) => API.get(`/userInfo/${id}`);
+
 export const updateUserInfo = (updatedInfo) =>
   API.put(`/userInfo`, updatedInfo);
 export const addReceivingFriendRequest = (friendRequest) =>
@@ -36,3 +37,4 @@ export const addProgrammingHashtag = (hashtagId) =>
   API.put(`/userInfo/addProgrammingHashtag/${hashtagId}`);
 export const removeProgrammingHashtag = (hashtagId) =>
   API.put(`/userInfo/removeProgrammingHashtag/${hashtagId}`);
+export const editImage = (image) => API.put("/userInfo/editImage", image);

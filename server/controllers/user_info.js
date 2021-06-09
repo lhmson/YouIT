@@ -385,3 +385,32 @@ export const removeProgrammingHashtag = async (req, res) => {
       .json({ message: error.message });
   }
 };
+
+/**
+ * @param {express.Request<ParamsDictionary, any, any, QueryString.ParsedQs, Record<string, any>>} req
+ * @param {express.Response<any, Record<string, any>, number>} res
+ * @param {express.NextFunction} next
+ */
+export const editImage = async (req, res) => {
+  const image = req.body;
+  const { userId } = req;
+
+  if (!userId) return res.json({ message: "Unauthorized" });
+
+  try {
+    const user = await User.findById(userId);
+
+    if (!user)
+      return res
+        .status(httpStatusCodes.notFound)
+        .json({ message: "User not found" });
+
+    user[image?.type] = image?.base64;
+    await user.save();
+    return res.status(httpStatusCodes.ok).json(user[image?.type]);
+  } catch (error) {
+    return res
+      .status(httpStatusCodes.internalServerError)
+      .json({ message: error.message });
+  }
+};

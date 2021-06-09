@@ -4,6 +4,7 @@ import {
   addProgrammingHashtag,
   addReceivingFriendRequest,
   addSendingFriendRequest,
+  editImage,
   followUser,
   getUserInfo,
   removeProgrammingHashtag,
@@ -38,5 +39,6 @@ router.put(
   auth,
   removeProgrammingHashtag
 );
+router.put("/editImage", auth, editImage);
 
 export default router;
