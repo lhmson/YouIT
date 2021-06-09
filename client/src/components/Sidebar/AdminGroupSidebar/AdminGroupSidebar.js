@@ -54,7 +54,7 @@ function AdminGroupSidebar(props) {
           height: "100%",
           borderRight: 0,
           fontWeight: 500,
-          fontSize: "1rem",
+          fontSize: "0.7rem",
         }}
       >
         <Text className="container" style={styles.item}>

@@ -67,7 +67,7 @@ function MemberCard(props) {
     apiGroup
       .deleteMember(groupId, userId)
       .then((res) => {
-        message.success(res.data.message);
+        message.success("This user has been removed from the group.");
         window.location.reload();
       })
       .catch((error) => message.success(error.message));
@@ -77,7 +77,9 @@ function MemberCard(props) {
     apiGroup
       .setGroupMemberRole(groupId, memberId, role)
       .then((res) => {
-        message.success(res.data.message);
+        message.success(
+          "This user no longer has the right to admin or moderate the group."
+        );
         window.location.reload();
       })
       .catch((error) => message.success(error.message));
@@ -87,7 +89,7 @@ function MemberCard(props) {
     apiGroup
       .setGroupMemberRole(groupId, memberId, role)
       .then((res) => {
-        message.success(res.data.message);
+        message.success("The user is set as the moderator of this group.");
         window.location.reload();
       })
       .catch((error) => message.success(error.message));
@@ -97,7 +99,7 @@ function MemberCard(props) {
     apiGroup
       .setGroupMemberRole(groupId, memberId, role)
       .then((res) => {
-        message.success(res.data.message);
+        message.success("The user is set as the administrator of this group.");
         window.location.reload();
       })
       .catch((error) => message.success(error.message));

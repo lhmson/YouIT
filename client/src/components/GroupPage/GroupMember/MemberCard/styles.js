@@ -4,10 +4,8 @@ const styles = {
   card: {
     background: "white",
     padding: 16,
-    marginBottom: 20,
-    marginRight: 50,
-    marginLeft: 60,
-    width: 450,
+    marginBottom: 16,
+    flex: 1,
   },
   tag: {
     color: "#219653",

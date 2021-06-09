@@ -7,6 +7,7 @@ import { OverviewRow } from "../../UserInfo/AboutCard/index.js";
 import MemberCard from "./MemberCard/MemberCard.js";
 import * as api from "../../../api/group";
 import { useLocalStorage } from "../../../hooks/useLocalStorage";
+import { useMobile } from "../../../utils/responsiveQuery.js";
 import styles from "./styles.js";
 
 const { Text } = Typography;
@@ -17,7 +18,7 @@ function GroupMember() {
 
   const [listMembers, setListMembers] = useState([]);
   const [listName, setListName] = useState([]);
-  // const [mode, setMode] = useState("Friends");
+  const isMobile = useMobile();
 
   useEffect(() => {
     api
@@ -77,7 +78,7 @@ function GroupMember() {
         }}
       >
         {isJoinedGroup() || isPublicGroup() ? (
-          <Row>{listMembersCard()}</Row>
+          <div className={`${!isMobile && "col-12"}`}>{listMembersCard()}</div>
         ) : (
           ""
         )}
