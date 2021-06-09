@@ -4,7 +4,7 @@ import styles from "./styles.js";
 
 function CoverPhoto() {
   return (
-    <>
+    <div style={{ position: "relative" }}>
       <Layout
         style={{
           position: "relative",
@@ -26,7 +26,7 @@ function CoverPhoto() {
           Edit cover photo
         </Button>
       </Layout>
-    </>
+    </div>
   );
 }
 

@@ -23,9 +23,6 @@ const styles = {
   avatarView: {
     minHeight: "50vh",
     background: "white",
-
-    // marginLeft: 128,
-    // marginRight: 128,
   },
   mainArea: {
     minHeight: "900vh",

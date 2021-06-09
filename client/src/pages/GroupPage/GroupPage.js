@@ -24,6 +24,7 @@ import COLOR from "../../constants/colors.js";
 import { useLocalStorage } from "../../hooks/useLocalStorage.js";
 import { useHistory } from "react-router";
 import styles from "./styles.js";
+import "./styles.css";
 
 const { Content } = Layout;
 const { Text } = Typography;
@@ -123,100 +124,89 @@ function GroupPage(props) {
   return (
     <GroupContext.Provider value={valueContext}>
       <Layout>
-        <Navbar />
-        <Sider>
-          <AdminGroupSidebar setModeSearch={setModeSearch} />
-        </Sider>
-        {/* <Layout style={styles.mainArea}> */}
-        <Layout style={{ marginTop: 60 }}>
-          <Content>
-            {modeSearch === "memberRequests" ? (
-              <MemberRequestsResult />
-            ) : modeSearch === "group" ? (
-              <Layout>
-                <Layout style={styles.avatarView}>
-                  <Content
-                    className="container"
-                    style={{
-                      padding: 8,
-                    }}
-                  >
-                    <CoverPhoto />
-                    <Row
+        <Navbar selectedMenu="feed" />
+        <Layout style={styles.mainArea}>
+          <div className="feed-container">
+            <AdminGroupSidebar
+              className="sidebar"
+              setModeSearch={setModeSearch}
+            />
+            <div
+              className="mainContent"
+              id="scrollableDiv"
+              style={{ minWidth: "87vw" }}
+            >
+              {modeSearch === "memberRequests" ? (
+                <MemberRequestsResult />
+              ) : modeSearch === "group" ? (
+                <div>
+                  <Layout style={styles.avatarView}>
+                    <Content
+                      className="container"
                       style={{
-                        display: "flex",
-                        flexDirection: "row",
-                        justifyContent: "space-between",
+                        padding: 8,
                       }}
                     >
-                      {/* <Button type="primary" style={styles.button}>
-                  Create Post
-                </Button>
-                <Button type="primary" style={styles.button}>
-                  Invite
-                </Button>
-                <Button
-                  type="primary"
-                  style={styles.button}
-                  onClick={() => {
-                    // handleDeleteGroup(id); */}
-
-                      <GroupBasicInfo />
-                      <GroupFunctionButtons />
-                    </Row>
-                    <Row style={{ justifyContent: "space-between" }}>
-                      <GroupMenu />
+                      <CoverPhoto />
                       <Row
                         style={{
                           display: "flex",
-                          alignItems: "center",
+                          flexDirection: "row",
+                          justifyContent: "space-between",
                         }}
                       >
-                        <GoSearch
-                          size={24}
-                          style={styles.icon}
-                          onClick={() => {}}
-                        />
-                        <Dropdown
-                          overlay={menuMore}
-                          trigger={["click"]}
-                          placement="bottomCenter"
-                        >
-                          <EllipsisOutlined
-                            style={{
-                              fontSize: 20,
-                              color: COLOR.black,
-                              marginLeft: 20,
-                            }}
-                          />
-                        </Dropdown>
-                        {/* <BsThreeDots size={24} style={styles.icon} /> */}
+                        <GroupBasicInfo />
+                        <GroupFunctionButtons />
                       </Row>
-                    </Row>
-                  </Content>
-                </Layout>
-                <Layout>
-                  <Content>
-                    <Layout className="container">
-                      {location.pathname === `/group/${group?._id}` ? (
-                        <FeedPosts
-                          limitPagination={5}
-                          space="group"
-                          groupId={group?._id}
-                        />
-                      ) : location.pathname === `/group/${group?._id}/about` ? (
-                        <GroupAboutCard />
-                      ) : (
-                        <GroupMember />
-                      )}
-                    </Layout>
-                  </Content>
-                </Layout>
-              </Layout>
-            ) : (
-              <PostRequestsResult />
-            )}
-          </Content>
+                      <Row style={{ justifyContent: "space-between" }}>
+                        <GroupMenu />
+                        <Row
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                          }}
+                        >
+                          <Dropdown
+                            overlay={menuMore}
+                            trigger={["click"]}
+                            placement="bottomCenter"
+                          >
+                            <EllipsisOutlined
+                              style={{
+                                fontSize: 20,
+                                color: COLOR.black,
+                                marginLeft: 20,
+                              }}
+                            />
+                          </Dropdown>
+                        </Row>
+                      </Row>
+                    </Content>
+                  </Layout>
+                  <Layout>
+                    <Content>
+                      <Layout className="container">
+                        {location.pathname === `/group/${group?._id}` ? (
+                          <FeedPosts
+                            limitPagination={5}
+                            space="group"
+                            groupId={group?._id}
+                          />
+                        ) : location.pathname ===
+                          `/group/${group?._id}/about` ? (
+                          <GroupAboutCard />
+                        ) : (
+                          <GroupMember />
+                        )}
+                      </Layout>
+                    </Content>
+                  </Layout>
+                </div>
+              ) : (
+                <PostRequestsResult />
+              )}
+            </div>
+          </div>
         </Layout>
       </Layout>
     </GroupContext.Provider>

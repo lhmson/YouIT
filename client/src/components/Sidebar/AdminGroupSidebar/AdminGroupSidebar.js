@@ -38,7 +38,10 @@ function AdminGroupSidebar(props) {
 
   return (
     <Sider
-      width={200}
+      breakpoint="lg"
+      // width={200}
+      collapsedWidth="0"
+      // trigger={null}
       style={{
         ...styles.paleBackground,
         ...styles.fixedSider,
