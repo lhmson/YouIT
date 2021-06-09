@@ -13,6 +13,7 @@ import {
   leaveGroup,
   getPendingGroups,
   setGroupMemberRole,
+  updateGroup,
 } from "../controllers/group.js";
 import auth from "../middleware/auth.js";
 import { haveGroupPermission, isOwner } from "../middleware/groupRole.js";
@@ -28,6 +29,7 @@ router.get("/list/pendingByMe", auth, getPendingGroups);
 
 router.post("/", auth, createGroup);
 
+router.put("/", auth, updateGroup);
 router.put(
   "/:groupId/addGroupMember/:memberId",
   auth,

@@ -124,6 +124,7 @@ const OverviewPane = () => {
         firstIcon={<FaMale style={styles.icon} />}
         text={gender}
         subText="Gender"
+        placeholder="Gender"
         options={genderOptions}
         onSave={saveGender}
         onChange={(value) => {

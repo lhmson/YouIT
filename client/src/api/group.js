@@ -10,6 +10,7 @@ export const getListPendingMembers = (groupId) =>
   API.get(`/group/${groupId}/pendingMembers`);
 export const fetchUserPendingGroups = () => API.get(`/group/list/pendingByMe`);
 
+export const updateGroup = (group) => API.put("/group", group);
 export const addPendingMemberGroup = (groupId, userId) =>
   API.put(`/group/${groupId}/addPendingMember/${userId}`);
 export const removePendingMember = (groupId, userId) =>

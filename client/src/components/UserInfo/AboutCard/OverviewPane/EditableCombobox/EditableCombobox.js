@@ -18,6 +18,7 @@ function EditableCombobox({
   onChange,
   setPreviousState,
   editable,
+  placeholder,
 }) {
   const [isEditing, setIsEditing] = useState(false);
 
@@ -43,6 +44,7 @@ function EditableCombobox({
   if (isEditing) {
     return (
       <Layout style={styles.whiteBackground}>
+        <Text style={styles.text}>{placeholder}</Text>
         <Cascader
           style={styles.cascader}
           options={options}

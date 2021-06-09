@@ -407,7 +407,29 @@ export const setGroupMemberRole = async (req, res) => {
       }
     });
   } catch (error) {
-    res
+    return res
+      .status(httpStatusCodes.internalServerError)
+      .json({ message: error.message });
+  }
+};
+
+/**
+ * @param {express.Request<ParamsDictionary, any, any, QueryString.ParsedQs, Record<string, any>>} req
+ * @param {express.Response<any, Record<string, any>, number>} res
+ * @param {express.NextFunction} next
+ */
+export const updateGroup = async (req, res) => {
+  const updatedGroup = req.body;
+  const { userId } = req;
+
+  if (!userId) return res.json({ message: "Unauthenticated" });
+
+  try {
+    await Group.findByIdAndUpdate(updatedGroup?._id, updatedGroup, {
+      new: true,
+    }).then((result) => res.status(httpStatusCodes.ok).json(result));
+  } catch (error) {
+    return res
       .status(httpStatusCodes.internalServerError)
       .json({ message: error.message });
   }

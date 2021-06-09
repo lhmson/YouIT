@@ -24,6 +24,7 @@ import PostRequestsResult from "../RequestsInGroupsPage/PostRequestsResult/PostR
 import COLOR from "../../constants/colors.js";
 import { useLocalStorage } from "../../hooks/useLocalStorage.js";
 import { useHistory } from "react-router";
+import SettingView from "../../components/GroupPage/SettingView/SettingView.js";
 const { Content } = Layout;
 const { Text } = Typography;
 export const GroupContext = createContext({
@@ -181,8 +182,10 @@ function GroupPage(props) {
                   </Content>
                 </Layout>
               </Layout>
-            ) : (
+            ) : modeSearch == "approvePosts" ? (
               <PostRequestsResult />
+            ) : (
+              <SettingView />
             )}
           </Content>
         </Layout>

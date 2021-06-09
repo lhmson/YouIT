@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import { Layout, Menu, Avatar, Typography } from "antd";
 import styles from "./styles.js";
-import { IoPersonAdd } from "react-icons/io5";
+import { IoPersonAdd, IoSettingsSharp } from "react-icons/io5";
 import { FiCheckSquare } from "react-icons/fi";
 import { BiConversation } from "react-icons/bi";
 import { IoIosArrowDropdownCircle } from "react-icons/io";
@@ -75,6 +75,18 @@ function AdminGroupSidebar(props) {
             onClick={() => props.setModeSearch("approvePosts")}
           >
             Approve Posts
+          </Menu.Item>
+        ) : (
+          ""
+        )}
+        {isOwner(user) ? (
+          <Menu.Item
+            key="setting"
+            style={styles.item}
+            icon={<IoSettingsSharp style={styles.transparent} />}
+            onClick={() => props.setModeSearch("setting")}
+          >
+            Setting
           </Menu.Item>
         ) : (
           ""
