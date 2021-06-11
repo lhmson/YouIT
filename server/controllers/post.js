@@ -47,19 +47,23 @@ export const getAPost = async (req, res) => {
       .then((post) => {
         const postObj = post.toObject();
 
-        if (
-          isPostVisibleByUser(
-            { ...postObj, userId: postObj.userId._id },
-            userId
-          )
-        )
-          return res.status(200).json(post);
-        else
+        isPostVisibleByUser(
+          { ...postObj, userId: postObj.userId._id },
+          userId
+        ).then(visible => {
+          if (visible)
+            return res.status(200).json(post);
+          else
+            return res
+              .status(httpStatusCodes.forbidden)
+              .json(
+                "You don't have permission to access this post due to its privacy"
+              );
+        }).catch(err => {
           return res
-            .status(httpStatusCodes.forbidden)
-            .json(
-              "You don't have permission to access this post due to its privacy"
-            );
+            .status(404)
+            .json({ message: `Cannot find a post with id: ${id}`, error: err });
+        })
       })
       .catch((err) => {
         return res
@@ -162,21 +166,23 @@ export const updatePost = async (req, res) => {
 
     await Post.findByIdAndUpdate(id, updatedPost, { new: true }).then((res) => {
       res?.interactionInfo?.listUsersFollowing?.forEach((item, i) => {
-        if (isPostVisibleByUser(updatedPost, userId)) {
-          // edit privacy to friend handle
-          if (!item.equals(userId)) {
-            sendNotificationUser({
-              userId: item,
-              kind: "UpdatePost_PostFollowers",
-              content: {
-                description: `Post '${res?.title}' that you are following has been edited`,
-              },
-              link: `/post/${res?._id}`,
-            });
+        isPostVisibleByUser(updatedPost, userId).then(visible => {
+          if (visible) {
+            // edit privacy to friend handle
+            if (!item.equals(userId)) {
+              sendNotificationUser({
+                userId: item,
+                kind: "UpdatePost_PostFollowers",
+                content: {
+                  description: `Post '${res?.title}' that you are following has been edited`,
+                },
+                link: `/post/${res?._id}`,
+              });
+            }
           }
-        }
+        });
       });
-    });
+    })
     return res.status(httpStatusCodes.ok).json(updatedPost);
   } catch (error) {
     return res

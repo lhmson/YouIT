@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchUserJoinedGroups } from "../../../redux/actions/group.js";
 import styles from "./styles.js";
 
-function CreatePostSpaceAutoComplete({ postSpace, setPostSpace, onSelectedGroupChange }) {
+function CreatePostSpaceAutoComplete({ postSpace, setPostSpace, onSelectedGroupChange, initialGroupId, disabled = false }) {
   const groups = useSelector(state => state.groups);
   const [selectedGroup, setSelectedGroup] = useState(null);
   const dispatch = useDispatch();
@@ -31,13 +31,21 @@ function CreatePostSpaceAutoComplete({ postSpace, setPostSpace, onSelectedGroupC
   }, [groups])
 
   useEffect(() => {
-    onSelectedGroupChange(selectedGroup);
-  }, [selectedGroup, onSelectedGroupChange])
+    if ((!selectedGroup) && initialGroupId) {
+      const toBeSelectedGroup = groups.find(g => g._id === initialGroupId);
+      setSelectedGroup(toBeSelectedGroup);
+      setPostSpace(toBeSelectedGroup?.name);
+    }
+  }, [groups, initialGroupId])
 
   const handlePostSpaceChange = (value) => {
     setSelectedGroup(null);
     setPostSpace(value);
   };
+
+  useEffect(() => {
+    onSelectedGroupChange(selectedGroup);
+  }, [selectedGroup, onSelectedGroupChange])
 
   const handlePostSpaceSelect = (value, { data }) => {
     setSelectedGroup(data);
@@ -53,8 +61,10 @@ function CreatePostSpaceAutoComplete({ postSpace, setPostSpace, onSelectedGroupC
         style={{ width: "100%" }}
         placeholder="My wall"
         filterOption={filterGroupsPredicate}
+        value={postSpace}
         onChange={handlePostSpaceChange}
         onSelect={handlePostSpaceSelect}
+        disabled={disabled}
       />
     </div>
   );

@@ -152,7 +152,7 @@ function FullPost({ post }) {
 
   const [user] = useLocalStorage("user");
 
-  const handleMore = () => {};
+  const handleMore = () => { };
 
   const tagList = ["Tag 1", "Tag 2", "Tag 3", "Tag 4", "Tag 5"];
 
@@ -182,7 +182,7 @@ function FullPost({ post }) {
   const handleEditPost = (postId, postTitle, postPrivacy, postContent) => {
     history.push({
       pathname: "/post/create",
-      state: { postId, postTitle, postContent, postPrivacy },
+      state: { postId },
     });
   };
 
@@ -261,13 +261,20 @@ function FullPost({ post }) {
 
   const copyLink = (id) => {
     navigator.clipboard
-      .writeText(`localhost:3000/post/${id}`) // change to deployment link later
+      .writeText(`${window.location.origin}/post/${id}`) // change to deployment link later
       .then(() => message.success("Link copied to clipboard"))
       .catch((error) => {
         message.error("Something goes wrong copying link");
         console.log(id);
       });
   };
+
+  const handleSharePost = (id) => {
+    history.push({
+      pathname: "/post/create",
+      state: { pinnedUrl: `${window.location.origin}/post/${id}` },
+    });
+  }
 
   const groupId = post?.groupPostInfo?.groupId;
 
@@ -379,17 +386,15 @@ function FullPost({ post }) {
                 </Text>
                 <Tooltip title="Upvote">
                   <ArrowUpOutlined
-                    className={`clickable icon ${
-                      myInteractions?.upvote ? "green" : "black"
-                    }`}
+                    className={`clickable icon ${myInteractions?.upvote ? "green" : "black"
+                      }`}
                     onClick={() => handleUpvoteClick(post._id)}
                   />
                 </Tooltip>
                 <Tooltip title="Downvote">
                   <ArrowDownOutlined
-                    className={`clickable icon ${
-                      myInteractions?.downvote ? "green" : "black"
-                    }`}
+                    className={`clickable icon ${myInteractions?.downvote ? "green" : "black"
+                      }`}
                     onClick={() => handleDownvoteClick(post._id)}
                   />
                 </Tooltip>
@@ -405,7 +410,10 @@ function FullPost({ post }) {
                 className="clickable icon"
                 onClick={() => copyLink(post._id)}
               />
-              <ShareAltOutlined className="clickable icon" />
+              <ShareAltOutlined
+                className="clickable icon"
+                onClick={() => handleSharePost(post._id)}
+              />
             </Space>
           </Row>
         </Row>

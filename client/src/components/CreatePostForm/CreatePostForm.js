@@ -9,16 +9,61 @@ import * as api from "../../api/post.js";
 import { useHistory } from "react-router";
 import PostEditor from "./PostEditor/PostEditor.js";
 import CreatePostContentPinnedUrlInput from "./CreatePostContentPinnedUrlInput/CreatePostContentPinnedUrlInput.js";
+import { useLocalStorage } from '../../hooks/useLocalStorage.js'
 
-function CreatePostForm({ postId, title, content, privacy }) {
-  const [postTitle, setPostTitle] = useState(title ?? "");
-  const [postContentText, setPostContentText] = useState(content?.text ?? "");
-  const [postContentPinnedUrl, setPostContentPinnedUrl] = useState(content?.pinnedUrl ?? "");
+function CreatePostForm({ postId = null, initialGroupId = null, pinnedUrl = "" }) {
+  const [user,] = useLocalStorage("user");
+  const [postTitle, setPostTitle] = useState("");
+  const [postContentText, setPostContentText] = useState("");
+  const [postContentPinnedUrl, setPostContentPinnedUrl] = useState(pinnedUrl);
   const [postSpace, setPostSpace] = useState(""); // just text
   const [selectedGroup, setSelectedGroup] = useState(null); // actual group
-  const [postPrivacy, setPostPrivacy] = useState(privacy ?? "");
+  const [postPrivacy, setPostPrivacy] = useState("");
+  const [editingPost, setEditingPost] = useState(null);
 
   const history = useHistory();
+
+  useEffect(() => {
+    if (!user?.result?._id) {
+      message.error("Please sign in to create a post.", 1, () => {
+        history.push(`/login`);
+      });
+    }
+
+    if (postId)
+      api.fetchAPost(postId)
+        .then(res => {
+          if (res.data?.userId._id !== user?.result?._id) {
+            message.error("You cannot edit others' posts.", 1, () => {
+              history.goBack();
+            });
+          }
+
+          setEditingPost(res.data);
+        })
+        .catch(reason => {
+          message.error("Something went wrong.", 1, () => {
+            history.goBack();
+          });
+        })
+  }, [])
+
+  useEffect(() => {
+    if (editingPost)
+      setEditingPostToFields(editingPost);
+  }, [editingPost])
+
+  const setEditingPostToFields = (post) => {
+    setPostTitle(post?.title ?? "");
+    setPostContentText(post?.content?.text ?? "");
+    setPostContentPinnedUrl(post?.content?.pinnedUrl ?? "");
+    setPostPrivacy(post?.privacy ?? "")
+
+    if (post?.groupPostInfo) {
+      // setPostSpace(post?.groupPostInfo?.groupId?.name);
+      // setSelectedGroup(post?.groupPostInfo?.groupId);
+    }
+  }
 
   const wrapPostData = () => {
     const result = {
@@ -73,6 +118,8 @@ function CreatePostForm({ postId, title, content, privacy }) {
             postSpace={postSpace}
             setPostSpace={setPostSpace}
             onSelectedGroupChange={handleSelectedGroupChange}
+            initialGroupId={postId ? editingPost?.groupPostInfo?.groupId?._id : initialGroupId}
+            disabled={Boolean(postId)}
           />
         </div>
       </div>
