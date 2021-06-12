@@ -45,7 +45,7 @@ const groupSchema = mongoose.Schema(
     ],
 
     name: { type: String, required: true },
-    backgroundURL: { type: String },
+    backgroundUrl: { type: String },
     description: { type: String, required: true },
   },
   {
