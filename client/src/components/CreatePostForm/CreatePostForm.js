@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Button, message } from "antd";
 import CreatePostPrivacySelect from "./CreatePostPrivacySelect/CreatePostPrivacySelect.js";
 import CreatePostSpaceAutoComplete from "./CreatePostSpaceAutoComplete/CreatePostSpaceAutoComplete.js";
@@ -10,6 +10,7 @@ import { useHistory } from "react-router";
 import PostEditor from "./PostEditor/PostEditor.js";
 import CreatePostContentPinnedUrlInput from "./CreatePostContentPinnedUrlInput/CreatePostContentPinnedUrlInput.js";
 import { useLocalStorage } from '../../hooks/useLocalStorage.js'
+import { Prompt } from 'react-router-dom';
 
 function CreatePostForm({ postId = null, initialGroupId = null, pinnedUrl = "" }) {
   const [user,] = useLocalStorage("user");
@@ -21,11 +22,14 @@ function CreatePostForm({ postId = null, initialGroupId = null, pinnedUrl = "" }
   const [postPrivacy, setPostPrivacy] = useState("");
   const [editingPost, setEditingPost] = useState(null);
 
+  const [safeToLeave, setSafeToLeave] = useState(false);
+
   const history = useHistory();
 
   useEffect(() => {
     if (!user?.result?._id) {
       message.error("Please sign in to create a post.", 1, () => {
+        setSafeToLeave(true);
         history.push(`/login`);
       });
     }
@@ -35,6 +39,7 @@ function CreatePostForm({ postId = null, initialGroupId = null, pinnedUrl = "" }
         .then(res => {
           if (res.data?.userId._id !== user?.result?._id) {
             message.error("You cannot edit others' posts.", 1, () => {
+              setSafeToLeave(true);
               history.goBack();
             });
           }
@@ -43,6 +48,7 @@ function CreatePostForm({ postId = null, initialGroupId = null, pinnedUrl = "" }
         })
         .catch(reason => {
           message.error("Something went wrong.", 1, () => {
+            setSafeToLeave(true);
             history.goBack();
           });
         })
@@ -82,22 +88,55 @@ function CreatePostForm({ postId = null, initialGroupId = null, pinnedUrl = "" }
     return result;
   };
 
+  /**
+   * @returns {{isValid: boolean, message: string}}
+   */
+  const checkPostData = (post) => {
+    const errorResult = (message) => ({
+      isValid: false,
+      message,
+    })
+
+    if (!post) return errorResult("Something when wrong.");
+    if (!post.title) return errorResult("A post must have a title.");
+    if ((!post.content?.text) && (!post.content?.pinnedUrl)) return errorResult("A post must have some content.");
+    if ((post.privacy === "Group") && (!post.groupId)) return errorResult("The selected group to post is not valid");
+
+    return {
+      isValid: true,
+      message: null,
+    }
+  }
+
   const handleSavePostButtonClick = () => {
     const newPost = wrapPostData();
+
+    const validation = checkPostData(newPost);
+    if (!validation.isValid) {
+      message.error(validation.message, 1);
+      return;
+    }
+
     if (!postId) {
       api
         .createPost(newPost)
-        .then((res) => history.push(`/post/${res.data._id}`)) // go to specific post
+        .then((res) => {
+          setSafeToLeave(true);
+          history.push(`/post/${res.data._id}`)
+        }) // go to specific post
         .catch((error) => {
-          message.error("Something goes wrong. Check all fields");
+          message.error("Something goes wrong. Check all fields", 2);
           console.log(error);
         });
     } else {
       api
         .updatePost(postId, newPost)
-        .then((res) => history.push(`/post/${res.data._id}`))
+        .then((res) => {
+          setSafeToLeave(true);
+          history.push(`/post/${res.data._id}`)
+        })
         .catch((error) => {
-          message.error("Something goes wrong. Check all fields");
+          message.error("Something goes wrong. Check all fields", 2);
           console.log(error);
         });
     }
@@ -109,6 +148,11 @@ function CreatePostForm({ postId = null, initialGroupId = null, pinnedUrl = "" }
 
   return (
     <div className="container-fluid">
+      <Prompt
+        message="Your post may not be saved. Are you sure you want to leave?"
+        when={!safeToLeave}
+      />
+
       <div className="d-flex justify-content-start py-2">
         <div className="col-8">
           <CreatePostTitleInput title={postTitle} setTitle={setPostTitle} />

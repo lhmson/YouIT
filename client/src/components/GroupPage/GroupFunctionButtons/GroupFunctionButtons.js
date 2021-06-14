@@ -35,6 +35,13 @@ function GroupFunctionButtons() {
     setVisibleAdd(visibleAdd);
   };
 
+  const handleCreatePost = () => {
+    history.push({
+      pathname: "/post/create",
+      state: { initialGroupId: group?._id },
+    });
+  }
+
   const handleInvite = (listInvitedFriends) => {
     apiGroup
       .inviteFriends(group?._id, listInvitedFriends)
@@ -161,7 +168,7 @@ function GroupFunctionButtons() {
               width: "100%",
             }}
           >
-            <Button className="green-button" style={styles.button}>
+            <Button className="green-button" style={styles.button} onClick={handleCreatePost}>
               Create Post
             </Button>
             {/* <Button type="primary" style={styles.button}>

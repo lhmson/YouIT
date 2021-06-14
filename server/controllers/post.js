@@ -82,11 +82,15 @@ export const getAPost = async (req, res) => {
  */
 export const createPost = async (req, res) => {
   const post = req.body;
+  const { userId } = req;
 
   // new post shouldn't have an _id in it
   if (post._id) {
     return res.status(400).json("New post mustn't have _id field");
   }
+
+  let group = null;
+  let roleInGroup = null;
 
   // handle post in group
   if (post.privacy === "Group") {
@@ -97,7 +101,7 @@ export const createPost = async (req, res) => {
         .status(httpStatusCodes.badContent)
         .json({ message: `Field groupId is required when privacy is "Group"` });
 
-    const group = await Group.findById(groupId);
+    group = await Group.findById(groupId);
     if (!group)
       return res
         .status(httpStatusCodes.notFound)
@@ -108,8 +112,12 @@ export const createPost = async (req, res) => {
         .status(httpStatusCodes.forbidden)
         .send({ message: `You are not in this group` });
 
+    roleInGroup = getMemberRoleInGroup(userId, group)
+
     post.groupPostInfo = {
       groupId,
+      status: checkRoleHasPermissionOfRole(roleInGroup, "Moderator")
+        ? "Approved" : "Pending",
     };
   }
   delete post.groupId;
@@ -122,6 +130,24 @@ export const createPost = async (req, res) => {
 
   try {
     await newPost.save();
+
+    // send review notification to mod of Group posts
+    if (post.privacy === "Group") {
+      if (!checkRoleHasPermissionOfRole(roleInGroup, "Moderator")) {
+        group?.listMembers?.forEach(member => {
+          if (checkRoleHasPermissionOfRole(member?.role, "Moderator"))
+            sendNotificationUser({
+              userId: member?.userId,
+              kind: "NewGroupPost_GroupModerator",
+              content: {
+                description: `A new post "${newPost?.title}" has been uploaded to your group "${group.name}". Click here to review it.`,
+              },
+              link: `/post/${newPost?._id}`,
+            });
+        })
+      }
+    }
+
     return res.status(httpStatusCodes.created).json(newPost);
   } catch (error) {
     return res
@@ -143,7 +169,7 @@ export const updatePost = async (req, res) => {
         .status(httpStatusCodes.badContent)
         .send(`New post information is required`);
 
-    const post = await (await Post.findById(id)).toObject();
+    const post = (await Post.findById(id)).toObject();
     if (!post)
       return res
         .status(httpStatusCodes.notFound)
@@ -156,15 +182,48 @@ export const updatePost = async (req, res) => {
     }
 
     const updatedPost = {
+      ...post,
       ...newPost,
-      _id: id,
     };
+
+    // resetting group post status
+    let group = null;
+    let roleInGroup = null;
+
+    if (post.privacy === "Group") {
+      group = await Group.findById(post.groupPostInfo.groupId);
+      roleInGroup = getMemberRoleInGroup(userId, group)
+
+      post.groupPostInfo.status =
+        checkRoleHasPermissionOfRole(roleInGroup, "Moderator")
+          ? "Approved" : "Pending";
+    }
 
     if (isPostUpdated(post, updatedPost)) {
       updatedPost.contentUpdatedAt = Date.now();
     }
 
     await Post.findByIdAndUpdate(id, updatedPost, { new: true }).then((res) => {
+      // send review notification to mod of Group posts
+      if (res?.privacy === "Group") {
+        if (!checkRoleHasPermissionOfRole(roleInGroup, "Moderator")) {
+          group?.listMembers?.forEach(member => {
+            if (checkRoleHasPermissionOfRole(member?.role, "Moderator"))
+              sendNotificationUser({
+                userId: member?.userId,
+                kind: "UpdatedGroupPost_GroupModerator",
+                content: {
+                  description: `The post "${res?.title}" in your group "${group.name}" has been updated. Click here to review it.`,
+                },
+                link: `/post/${res?._id}`,
+              });
+          })
+        }
+      }
+
+      const groupPostNote = (res?.privacy === "Group" && res?.groupPostInfo?.status === "Pending") ?
+        " It may be under review for a while." : "";
+
       res?.interactionInfo?.listUsersFollowing?.forEach((item, i) => {
         isPostVisibleByUser(updatedPost, userId).then(visible => {
           if (visible) {
@@ -174,7 +233,7 @@ export const updatePost = async (req, res) => {
                 userId: item,
                 kind: "UpdatePost_PostFollowers",
                 content: {
-                  description: `Post '${res?.title}' that you are following has been edited`,
+                  description: `Post '${res?.title}' that you are following has been edited.` + groupPostNote,
                 },
                 link: `/post/${res?._id}`,
               });
