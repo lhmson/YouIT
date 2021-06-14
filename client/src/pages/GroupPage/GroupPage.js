@@ -1,9 +1,6 @@
 import { Layout, Row, Dropdown, Menu, Typography, message, Modal } from "antd";
-import Sider from "antd/lib/layout/Sider";
 import React, { createContext, useEffect, useState } from "react";
-// import { BsThreeDots } from "react-icons/bs";
 import { EllipsisOutlined, ExclamationCircleOutlined } from "@ant-design/icons";
-import { GoSearch } from "react-icons/go";
 import {
   AdminGroupSidebar,
   CoverPhoto,
@@ -46,8 +43,28 @@ function GroupPage(props) {
 
   const { confirm } = Modal;
 
+  const isJoinedGroup = () => {
+    let isJoined = false;
+    group?.listMembers.forEach((member) => {
+      if (member?.userId === user?.result?._id) {
+        isJoined = true;
+      }
+    });
+
+    return isJoined;
+  };
+
+  useEffect(() => {
+    async function fetchGroupInfo() {
+      const { data } = await api.fetchAGroup(id);
+      setGroup(data);
+    }
+    fetchGroupInfo();
+    isJoinedGroup();
+    //console.log(group);
+  }, []);
+
   const handleLeaveGroup = async (groupId, userId) => {
-    console.log("Thy");
     api
       .leaveGroup(groupId, userId)
       .then((res) => {
@@ -64,8 +81,6 @@ function GroupPage(props) {
         if (member?.role === "Owner") isOwner = true;
       }
     });
-    if (isOwner) console.log("la chu");
-    else console.log("ko la chu");
     return isOwner;
   };
 
@@ -116,15 +131,6 @@ function GroupPage(props) {
     </Menu>
   );
 
-  useEffect(() => {
-    async function fetchGroupInfo() {
-      const { data } = await api.fetchAGroup(id);
-      setGroup(data);
-    }
-    fetchGroupInfo();
-    //console.log(group);
-  }, []);
-
   return (
     <GroupContext.Provider value={valueContext}>
       <Layout>
@@ -164,26 +170,30 @@ function GroupPage(props) {
                       </Row>
                       <Row style={{ justifyContent: "space-between" }}>
                         <GroupMenu />
-                        <Row
-                          style={{
-                            display: "flex",
-                            alignItems: "center",
-                          }}
-                        >
-                          <Dropdown
-                            overlay={menuMore}
-                            trigger={["click"]}
-                            placement="bottomCenter"
+                        {isJoinedGroup() ? (
+                          <Row
+                            style={{
+                              display: "flex",
+                              alignItems: "center",
+                            }}
                           >
-                            <EllipsisOutlined
-                              style={{
-                                fontSize: 20,
-                                color: COLOR.black,
-                                marginLeft: 20,
-                              }}
-                            />
-                          </Dropdown>
-                        </Row>
+                            <Dropdown
+                              overlay={menuMore}
+                              trigger={["click"]}
+                              placement="bottomCenter"
+                            >
+                              <EllipsisOutlined
+                                style={{
+                                  fontSize: 20,
+                                  color: COLOR.black,
+                                  marginLeft: 20,
+                                }}
+                              />
+                            </Dropdown>
+                          </Row>
+                        ) : (
+                          <></>
+                        )}
                       </Row>
                     </Content>
                   </Layout>

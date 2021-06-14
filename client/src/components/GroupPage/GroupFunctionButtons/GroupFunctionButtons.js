@@ -8,19 +8,14 @@ import { GroupContext } from "../../../pages/GroupPage/GroupPage";
 
 import * as apiGroup from "../../../api/group";
 import * as apiFriend from "../../../api/friend";
-import { GiConsoleController } from "react-icons/gi";
 
 const { Option } = Select;
 
 function GroupFunctionButtons() {
   const user = JSON.parse(localStorage.getItem("user"))?.result;
-
   const [visibleAdd, setVisibleAdd] = useState(false); // select display
-
   const [listFriends, setListFriends] = useState([]);
-
   const [usersToInvite, setUsersToInvite] = useState([]);
-
   const history = useHistory();
   const { group, setGroup } = useContext(GroupContext);
 
@@ -64,7 +59,7 @@ function GroupFunctionButtons() {
   const isJoinedGroup = () => {
     let isJoined = false;
     group?.listMembers.forEach((member) => {
-      if (member?.userId == user?._id) {
+      if (member?.userId === user?._id) {
         isJoined = true;
       }
     });
@@ -74,7 +69,7 @@ function GroupFunctionButtons() {
   const isFriendJoinedGroup = (id) => {
     let isJoined = false;
     group?.listMembers.forEach((member) => {
-      if (member?.userId == id) {
+      if (member?.userId === id) {
         isJoined = true;
       }
     });
@@ -84,7 +79,7 @@ function GroupFunctionButtons() {
   const isSentJoinRequest = () => {
     let isSent = false;
     group?.listPendingMembers.forEach((pendingMem) => {
-      if (pendingMem?.userId == user?._id) {
+      if (pendingMem?.userId === user?._id) {
         isSent = true;
       }
     });

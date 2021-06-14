@@ -3,7 +3,7 @@ import { GroupContext } from "../../GroupPage/GroupPage";
 import MemberRequests from "../../../components/MemberRequests/MemberRequests";
 import * as api from "../../../api/group";
 
-function MemberRequestsResult() {
+function MemberRequestsResult(props) {
   const { group } = useContext(GroupContext);
   const [listMembersRequest, setListMembersRequest] = useState([]);
   // const [user] = useLocalStorage("user");

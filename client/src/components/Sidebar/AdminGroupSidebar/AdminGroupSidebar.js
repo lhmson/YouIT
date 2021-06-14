@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { Layout, Menu, Avatar, Typography } from "antd";
+import { Layout, Menu, Typography } from "antd";
 import styles from "./styles.js";
 import { IoPersonAdd } from "react-icons/io5";
 import { FiCheckSquare } from "react-icons/fi";
@@ -17,7 +17,7 @@ function AdminGroupSidebar(props) {
   const isAdmin = (user) => {
     let isAdmin = false;
     group?.listMembers.forEach((member) => {
-      if (member?.userId == user?.result?._id) {
+      if (member?.userId === user?.result?._id) {
         if (member?.role === "Admin" || member?.role === "Owner")
           isAdmin = true;
       }
@@ -28,7 +28,7 @@ function AdminGroupSidebar(props) {
   const isModerator = (user) => {
     let isModerator = false;
     group?.listMembers.forEach((member) => {
-      if (member?.userId == user?.result?._id) {
+      if (member?.userId === user?.result?._id) {
         if (member?.role !== "Member") isModerator = true;
       }
     });

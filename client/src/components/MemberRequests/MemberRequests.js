@@ -1,14 +1,14 @@
-import React, { useEffect, useState, useContext, useMemo } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { Button, Typography, message } from "antd";
 import { Avatar, Tag } from "antd";
 import styles from "./styles.js";
-import COLOR from "../../constants/colors";
 import OverviewRow from "../IntroCard/OverviewRow/OverviewRow.js";
-import { IoSchoolSharp, IoHome, MdLocationOn } from "react-icons/all";
+import { IoSchoolSharp, MdLocationOn } from "react-icons/all";
 import * as api from "../../api/group";
 import { Link } from "react-router-dom";
 import { GroupContext } from "../../pages/GroupPage/GroupPage";
 import * as apiUserInfo from "../../api/user_info";
+import { useHistory } from "react-router-dom";
 
 const { Text } = Typography;
 
@@ -16,6 +16,7 @@ function MemberRequests(props) {
   const { name } = props;
   const { _id } = props;
   const { group } = useContext(GroupContext);
+  const history = useHistory();
 
   const acceptMemberRequest = async (groupId, memberId) => {
     api
