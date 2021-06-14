@@ -31,7 +31,7 @@ const CreateGroupNameAdmin = () => {
         >
           {displayName}
         </Text>
-        <Text style={{ marginLeft: 15, fontSize: 16 }}>Admin</Text>
+        <Text style={{ marginLeft: 15, fontSize: 16 }}>Owner</Text>
       </Layout>
     </Row>
   );

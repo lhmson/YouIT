@@ -1,12 +1,37 @@
 import React from "react";
-import { Button, Row, Col, Divider, Form, Typography, Input, Card } from "antd";
-import { Avatar, Image, Tag } from "antd";
+import { Button, Typography, Avatar, Tag, message } from "antd";
+import { Link } from "react-router-dom";
 import styles from "./styles.js";
-import COLOR from "../../constants/colors";
+import * as api from "../../api/post";
 
-const { Title, Text, Paragraph, Link } = Typography;
+const { Title, Text, Paragraph } = Typography;
 
-function PostRequests() {
+function PostRequests(props) {
+  const { nameOwner } = props;
+  const { content } = props;
+  const { _idOwnerPost } = props;
+  const { _id } = props;
+
+  const acceptPostRequest = async (id) => {
+    api
+      .approveGroupPost(id)
+      .then((res) => {
+        message.success("This post has been accepted.");
+        window.location.reload();
+      })
+      .catch((error) => message.success(error.message));
+  };
+
+  const removePostRequest = async (id) => {
+    api
+      .declineGroupPost(id)
+      .then((res) => {
+        message.success("This post is not accepted ");
+        window.location.reload();
+      })
+      .catch((error) => message.success(error.message));
+  };
+
   return (
     <>
       <div style={styles.card}>
@@ -24,7 +49,11 @@ function PostRequests() {
             />
 
             <div className="col-9" style={{ alignSelf: "center" }}>
-              <Text style={styles.textUser}>Lalisa Manobal</Text>
+              <Link to={`/userinfo/${_idOwnerPost}`}>
+                <Text style={styles.textUser}>
+                  {nameOwner ?? "Lalisa Manobal"}
+                </Text>
+              </Link>
               <div style={{ marginTop: 0 }}></div>
               <Text>React Native Developer</Text>
             </div>
@@ -55,6 +84,7 @@ function PostRequests() {
                 fontWeight: 500,
                 width: 120,
               }}
+              onClick={() => acceptPostRequest(_id)}
             >
               Accept
             </Button>
@@ -77,6 +107,7 @@ function PostRequests() {
                 fontWeight: 500,
                 width: 120,
               }}
+              onClick={() => removePostRequest(_id)}
             >
               Decline
             </Button>
@@ -93,13 +124,7 @@ function PostRequests() {
 
         <div className="row" style={{ padding: 16 }}>
           <Paragraph>
-            Some word Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-            sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-            Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris
-            nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in
-            reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-            pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-            culpa qui officia deserunt mollit anim id est laborum.
+            {content ?? " ................................................."}
           </Paragraph>
           {/* <Link href="#" target="_blank" strong style={{ color: COLOR.green }}>
             Xem toàn bộ bài viết

@@ -4,8 +4,6 @@ import { Switch, Route, Redirect } from "react-router-dom";
 
 import Navbar from "./components/Navbar/Navbar";
 
-import WallPage from "./pages/WallPage/WallPage";
-
 import {
   CreatePostPage,
   FeedPage,
@@ -85,7 +83,6 @@ function App() {
               path="/group/:id/requests"
               component={GroupPage}
             />
-            <Route exact path="/wall" component={WallPage} />
             <Route path="/userinfo/:id/about" component={AboutPage} />
             <PrivateRoute
               exact

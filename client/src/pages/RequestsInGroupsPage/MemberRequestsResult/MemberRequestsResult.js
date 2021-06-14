@@ -1,14 +1,9 @@
 import React, { useContext, useState, useEffect } from "react";
-import { Layout, Typography } from "antd";
 import { GroupContext } from "../../GroupPage/GroupPage";
 import MemberRequests from "../../../components/MemberRequests/MemberRequests";
-import { useLocalStorage } from "../../../hooks/useLocalStorage";
 import * as api from "../../../api/group";
 
-const { Content } = Layout;
-const { Title, Text } = Typography;
-
-function MemberRequestsResult() {
+function MemberRequestsResult(props) {
   const { group } = useContext(GroupContext);
   const [listMembersRequest, setListMembersRequest] = useState([]);
   // const [user] = useLocalStorage("user");

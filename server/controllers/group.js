@@ -115,9 +115,7 @@ export const createGroup = async (req, res) => {
  */
 export const addGroupMember = async (req, res) => {
   const { groupId, memberId } = req.params;
-  console.log("thyyyyyyyyyyyyyyyyyy");
-  console.log("groupid", groupId);
-  console.log("userid", memberId);
+
   //const { role } = req.query ?? "Member";
   const role = "Member";
   const addMember = { role, userId: memberId };
@@ -142,6 +140,17 @@ export const addGroupMember = async (req, res) => {
       .status(httpStatusCodes.internalServerError)
       .json({ message: error.message });
   }
+};
+
+/**
+ * @param {express.Request<ParamsDictionary, any, any, QueryString.ParsedQs, Record<string, any>>} req
+ * @param {express.Response<any, Record<string, any>, number>} res
+ * @param {express.NextFunction} next
+ */
+export const inviteFriends = async (req, res) => {
+  const { groupId, userId } = req.params;
+  const listInvitedFriends = req.body;
+  // thyyyyy
 };
 
 export const addGroupPendingMember = async (req, res) => {
@@ -264,7 +273,7 @@ export const getListPendingMembers = async (req, res) => {
 };
 
 export const deleteGroup = async (req, res) => {
-  const { groupId } = req.params;
+  const { id } = req.params;
 
   try {
     // auth
@@ -272,7 +281,7 @@ export const deleteGroup = async (req, res) => {
       return res.json({ message: "Unauthenticated" });
     }
 
-    if (!(await Group.findById(groupId))) {
+    if (!(await Group.findById(id))) {
       return res
         .status(httpStatusCodes.notFound)
         .send(`No group with id: ${id}`);
@@ -345,7 +354,7 @@ export const leaveGroup = async (req, res) => {
       "Owner"
     ) {
       return (
-        await Group.findByIdAndRemove(id),
+        await Group.findByIdAndRemove(groupId),
         res
           .status(httpStatusCodes.ok)
           .json({ message: "Group deleted successfully." })
@@ -356,7 +365,9 @@ export const leaveGroup = async (req, res) => {
       (member) => !member.userId.equals(userId) || member.role === "Owner"
     );
 
-    const newGroup = await Group.findByIdAndUpdate(id, group, { new: true });
+    const newGroup = await Group.findByIdAndUpdate(groupId, group, {
+      new: true,
+    });
     // await group.save();
     res.status(httpStatusCodes.ok).json(newGroup);
   } catch (error) {
