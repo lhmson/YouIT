@@ -47,7 +47,16 @@ function LoginPage() {
 
   const handleFinish = async (values) => {
     const browserId = JSON.parse(localStorage.getItem("browser"))?.id;
-    dispatch(signin({ ...form, browserId }, history, setUser, token, setToken, setResend));
+    dispatch(
+      signin(
+        { ...form, browserId },
+        history,
+        setUser,
+        token,
+        setToken,
+        setResend
+      )
+    );
   };
 
   const handleResend = async () => {
@@ -72,16 +81,18 @@ function LoginPage() {
           paddingBottom: 0,
         }}
       >
-        <Row style={{ justifyContent: "center" }}> </Row>
         <Card className="shadow-lg rounded" bordered={false}>
           <Row>
-            <Col span={12} style={{ paddingRight: 24, marginBottom: 24 }}>
-              <Row>
+            <div
+              className="col-md-6"
+              style={{ paddingRight: 24, marginBottom: 24 }}
+            >
+              <div className="row">
                 <Link to="/">
                   <img src={logo} alt="Logo" height="58" className="mr-2" />
                 </Link>
                 <Title style={{ marginBottom: 8 }}>Login</Title>
-              </Row>
+              </div>
               <div style={{ marginBottom: 16 }}>
                 <Text>
                   No account?{" "}
@@ -184,12 +195,12 @@ function LoginPage() {
                   </Col>
                 </Row>
               </Form>
-            </Col>
-            <Col span={12}>
+            </div>
+            <div className="col-md-5">
               <div>
                 <ReactLogo />
               </div>
-            </Col>
+            </div>
           </Row>
         </Card>
       </div>

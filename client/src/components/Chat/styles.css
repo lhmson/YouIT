@@ -1,11 +1,11 @@
 .chat-container {
-  display: grid;
-  grid:
+  /* display: flexbox; */
+  /* grid:
     "chat-title"
-    "chat-message-list"
-    "chat-form";
-  height: 90vh;
-  background: #fff;
+    "chat-message-list";
+  "chat-form"; */
+  height: 70vh;
+  /* background: pink; */
 }
 
 .search-container {
@@ -82,11 +82,14 @@
 }
 
 .chat-message-list {
+  /* display: flex; */
   display: flex;
+  flex-flow: column;
+  height: 100%;
   flex-direction: column-reverse;
   padding: 0 20px;
   margin: 10px;
-  grid-area: chat-message-list;
+  /* grid-area: chat-message-list; */
   overflow-y: scroll;
 }
 
@@ -147,9 +150,10 @@
 
 .chat-form {
   display: flex;
+  height: 80px;
   align-items: center;
   grid-area: chat-form;
-  background: var(--black);
+  background: var(--white-smoke);
   padding: 16px;
 }
 

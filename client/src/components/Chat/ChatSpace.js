@@ -71,40 +71,35 @@ function ChatSpace() {
   // }, [isAddConversation]);
 
   return (
-    <div>
-      <div className="chat-container">
-        <ChatSidebar
-          isOpen={isSidebarOpen}
-          setIsOpen={setIsSidebarOpen}
-          currentId={currentId}
-          listConversations={listConversations}
-          updateCurrentId={updateCurrentId}
-          addConversation={addConversation}
-          updateListConversations={updateListConversations}
-          // setCurrentId={setCurrentId}
-          // isAddConversation={isAddConversation}
-          // setIsAdd={setIsAdd}
-        />
-        <MessageHeader
-          setOpenSidebar={setIsSidebarOpen}
-          currentId={currentId}
-        />
-        <MessageList
-          currentId={currentId}
-          isAddMessage={isAddMessage}
-          setIsAddMessage={setIsAddMessage}
-          messageHandle={messageHandle}
-        />
-        <MessageForm
-          currentId={currentId}
-          setIsAddMessage={setIsAddMessage}
-          messageHandle={messageHandle}
-          listConversations={listConversations}
-          updateListConversations={updateListConversations}
-          addSending={addSending}
-          checkSending={checkSending}
-        />
-      </div>
+    <div className="chat-container">
+      <ChatSidebar
+        isOpen={isSidebarOpen}
+        setIsOpen={setIsSidebarOpen}
+        currentId={currentId}
+        listConversations={listConversations}
+        updateCurrentId={updateCurrentId}
+        addConversation={addConversation}
+        updateListConversations={updateListConversations}
+        // setCurrentId={setCurrentId}
+        // isAddConversation={isAddConversation}
+        // setIsAdd={setIsAdd}
+      />
+      <MessageHeader setOpenSidebar={setIsSidebarOpen} currentId={currentId} />
+      <MessageList
+        currentId={currentId}
+        isAddMessage={isAddMessage}
+        setIsAddMessage={setIsAddMessage}
+        messageHandle={messageHandle}
+      />
+      <MessageForm
+        currentId={currentId}
+        setIsAddMessage={setIsAddMessage}
+        messageHandle={messageHandle}
+        listConversations={listConversations}
+        updateListConversations={updateListConversations}
+        addSending={addSending}
+        checkSending={checkSending}
+      />
     </div>
   );
 }
