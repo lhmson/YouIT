@@ -36,14 +36,12 @@ function GroupFunctionButtons() {
   };
 
   const handleInvite = (listInvitedFriends) => {
-    // chỗ này làm cái noti gửi link group qua cho cái {listInvitedFriends} giúp t
-    //thyyy
     apiGroup
-      .inviteFriends(listInvitedFriends)
+      .inviteFriends(group?._id, listInvitedFriends)
       .then((res) => {
-        message.success("thy");
+        message.success("Invitation sent!");
       })
-      .catch((error) => message.success(error.message));
+      .catch((error) => message.success("pow" + error.message));
   };
 
   const handleDeleteGroup = (groupId) => {
@@ -173,7 +171,7 @@ function GroupFunctionButtons() {
             <Popover
               content={
                 <>
-                  <Button onClick={() => handleInvite(listInvitedFriends)}>
+                  <Button onClick={() => handleInvite(usersToInvite)}>
                     OK
                   </Button>
                 </>

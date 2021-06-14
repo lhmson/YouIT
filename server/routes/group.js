@@ -28,6 +28,7 @@ router.get("/:groupId/pendingMembers", auth, getListPendingMembers);
 router.get("/list/pendingByMe", auth, getPendingGroups);
 
 router.post("/", auth, createGroup);
+router.post("/:groupId/inviteToGroup", auth, inviteFriends);
 
 router.put(
   "/:groupId/addGroupMember/:memberId",

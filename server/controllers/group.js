@@ -1,10 +1,12 @@
 import express from "express";
 import Group from "../models/group.js";
+import User from "../models/user.js";
 import {
   isMemberOfGroup,
   isPendingMemberOfGroup,
 } from "../businessLogics/group.js";
 import { httpStatusCodes } from "../utils/httpStatusCode.js";
+import { sendNotificationUser } from "../businessLogics/notification.js"
 
 /**
  * @param {express.Request<ParamsDictionary, any, any, QueryString.ParsedQs, Record<string, any>>} req
@@ -148,9 +150,37 @@ export const addGroupMember = async (req, res) => {
  * @param {express.NextFunction} next
  */
 export const inviteFriends = async (req, res) => {
-  const { groupId, userId } = req.params;
-  const listInvitedFriends = req.body;
-  // thyyyyy
+  const { groupId } = req.params;
+  const { userId } = req;
+
+  /** @type {[]} */
+  const { listUsersToInvite } = req.body;
+
+  try {
+    const user = await User.findById(userId);
+    const group = await Group.findById(groupId);
+
+    // error 404...
+
+    if (listUsersToInvite) {
+      listUsersToInvite.forEach(invitedId => {
+        sendNotificationUser({
+          userId: invitedId,
+          kind: "InviteToGroup_InvitedUser",
+          content: {
+            description: `${user?.name} invited you to their group "${group?.name}".`,
+          },
+          link: `/group/${groupId}`,
+        });
+      })
+    }
+
+    return res.status(httpStatusCodes.ok).send("Invitation was sent.")
+  } catch (error) {
+    return res
+      .status(httpStatusCodes.internalServerError)
+      .json({ message: error.message });
+  }
 };
 
 export const addGroupPendingMember = async (req, res) => {
@@ -343,7 +373,7 @@ export const leaveGroup = async (req, res) => {
     if (
       group.listMembers.length > 1 &&
       group.listMembers.find((member) => member.userId.equals(userId)).role ===
-        "Owner"
+      "Owner"
     )
       return res
         .status(httpStatusCodes.badContent)
