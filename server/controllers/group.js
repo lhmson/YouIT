@@ -354,7 +354,7 @@ export const leaveGroup = async (req, res) => {
       "Owner"
     ) {
       return (
-        await Group.findByIdAndRemove(id),
+        await Group.findByIdAndRemove(groupId),
         res
           .status(httpStatusCodes.ok)
           .json({ message: "Group deleted successfully." })
@@ -365,7 +365,9 @@ export const leaveGroup = async (req, res) => {
       (member) => !member.userId.equals(userId) || member.role === "Owner"
     );
 
-    const newGroup = await Group.findByIdAndUpdate(id, group, { new: true });
+    const newGroup = await Group.findByIdAndUpdate(groupId, group, {
+      new: true,
+    });
     // await group.save();
     res.status(httpStatusCodes.ok).json(newGroup);
   } catch (error) {

@@ -46,9 +46,10 @@ function GroupPage(props) {
 
   const { confirm } = Modal;
 
-  const handleLeaveGroup = async (id, userId) => {
+  const handleLeaveGroup = async (groupId, userId) => {
+    console.log("Thy");
     api
-      .leaveGroup(id, userId)
+      .leaveGroup(groupId, userId)
       .then((res) => {
         message.success("You have left the group.");
         history.push(`/feed`);
@@ -63,6 +64,8 @@ function GroupPage(props) {
         if (member?.role === "Owner") isOwner = true;
       }
     });
+    if (isOwner) console.log("la chu");
+    else console.log("ko la chu");
     return isOwner;
   };
 
@@ -98,6 +101,7 @@ function GroupPage(props) {
       <Menu.Item
         key="leaveGroup"
         onClick={() => {
+          // eslint-disable-next-line no-lone-blocks
           {
             isOwner(user)
               ? showDeleteConfirm(id)
