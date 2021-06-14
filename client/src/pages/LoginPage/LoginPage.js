@@ -82,7 +82,7 @@ function LoginPage() {
         }}
       >
         <Card className="shadow-lg rounded" bordered={false}>
-          <Row>
+          <Row style={{ alignItems: "center" }}>
             <div
               className="col-md-6"
               style={{ paddingRight: 24, marginBottom: 24 }}
@@ -196,7 +196,10 @@ function LoginPage() {
                 </Row>
               </Form>
             </div>
-            <div className="col-md-5">
+            <div
+              className="col-md-5 d-md-block d-sm-none d-none"
+              style={{ justifyItems: "center" }}
+            >
               <div>
                 <ReactLogo />
               </div>

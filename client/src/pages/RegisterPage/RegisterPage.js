@@ -101,8 +101,11 @@ function RegisterPage() {
       >
         <Row style={{ justifyContent: "center" }}> </Row>
         <Card className="shadow-lg rounded" bordered={false}>
-          <Row>
-            <Col span={12} style={{ paddingRight: 24, marginBottom: 0 }}>
+          <Row style={{ alignItems: "center" }}>
+            <div
+              className="col-md-6"
+              style={{ paddingRight: 24, marginBottom: 0 }}
+            >
               <Row>
                 <Link to="/">
                   <img src={logo} alt="Logo" height="58" className="mr-2" />
@@ -310,12 +313,15 @@ function RegisterPage() {
                   </Button>
                 </Form.Item>
               </Form>
-            </Col>
-            <Col span={12} style={{ marginTop: 0 }}>
+            </div>
+            <div
+              className="col-md-5 d-md-block d-sm-none d-none"
+              style={{ marginTop: 0 }}
+            >
               <div>
                 <ReactLogo />
               </div>
-            </Col>
+            </div>
           </Row>
         </Card>
       </div>
