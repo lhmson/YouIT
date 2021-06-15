@@ -289,7 +289,7 @@ function MemberCard(props) {
               <Dropdown
                 overlay={menuMore}
                 trigger={["click"]}
-                placement="bottomCenter"
+                placement="bottomRight"
               >
                 <EllipsisOutlined
                   style={{
