@@ -75,7 +75,7 @@ function CreateGroupPage() {
   const handleCreateGroupButtonClick = () => {
     const newGroup = Data();
     createGroup(newGroup)
-      .then((res) => history.push(`/group/${res.data._id}`))
+      .then((res) => history.push(`/group/${res.data._id}/main`))
       .catch((error) => {
         console.log(error);
       });

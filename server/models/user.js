@@ -76,6 +76,11 @@ const userSchema = mongoose.Schema(
       enum: ["online", "busy", "offline"],
       default: "online",
     },
+
+    isReported: {
+      type: Boolean,
+      default: false,
+    },
   },
   { timestamps: true }
 );

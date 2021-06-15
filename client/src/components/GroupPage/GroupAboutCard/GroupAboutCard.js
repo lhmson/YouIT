@@ -3,6 +3,7 @@ import moment from "moment";
 import React, { useContext } from "react";
 import { AiOutlineFieldTime, IoMdLock } from "react-icons/all";
 import { GroupContext } from "../../../pages/GroupPage/GroupPage.js";
+import { limitNameLength } from "../../../utils/limitNameLength.js";
 import { OverviewRow } from "../../UserInfo/AboutCard/index.js";
 import styles from "./styles.js";
 
@@ -38,10 +39,13 @@ function GroupAboutCard() {
         </Text>
         <Layout style={{ paddingLeft: 32, background: "white" }}>
           <Divider style={{ justifySelf: "start" }}></Divider>
-          <Text>{group?.description}</Text>
-          <Button type="text" style={{ background: "white", marginBottom: 32 }}>
+          <div className="break-word">
+            <Text>{group?.description}</Text>
+          </div>
+
+          {/* <Button type="text" style={{ background: "white", marginBottom: 32 }}>
             See more
-          </Button>
+          </Button> */}
           <Row>
             <OverviewRow
               firstIcon={<PrivacyIcon />}

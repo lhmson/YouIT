@@ -270,7 +270,7 @@ function FeedPost({ post, setCurrentId }) {
       pathname: `post/create`,
       state: { pinnedUrl: `${window.location.origin}/post/${id}` },
     });
-  }
+  };
 
   const groupId = post?.groupPostInfo?.groupId;
 
@@ -317,7 +317,7 @@ function FeedPost({ post, setCurrentId }) {
                       <CaretRightOutlined
                         style={{ fontSize: 18, paddingBottom: 5 }}
                       />
-                      <Link to={`/group/${groupId._id}`} target="_blank">
+                      <Link to={`/group/${groupId._id}/main`} target="_blank">
                         <Text
                           className="clickable"
                           strong
@@ -395,15 +395,17 @@ function FeedPost({ post, setCurrentId }) {
                 </Text>
                 <Tooltip title="Upvote">
                   <ArrowUpOutlined
-                    className={`clickable icon ${myInteractions?.upvote ? "green" : "black"
-                      }`}
+                    className={`clickable icon ${
+                      myInteractions?.upvote ? "green" : "black"
+                    }`}
                     onClick={() => handleUpvoteClick(post._id)}
                   />
                 </Tooltip>
                 <Tooltip title="Downvote">
                   <ArrowDownOutlined
-                    className={`clickable icon ${myInteractions?.downvote ? "green" : "black"
-                      }`}
+                    className={`clickable icon ${
+                      myInteractions?.downvote ? "green" : "black"
+                    }`}
                     onClick={() => handleDownvoteClick(post._id)}
                   />
                 </Tooltip>

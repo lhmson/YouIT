@@ -80,11 +80,11 @@ function App() {
             <Route exact path="/post/:id" component={SpecificPostPage} />
             <Route path="/post/:id/:commentId" component={SpecificPostPage} />
             <Route exact path="/search" component={UserResultSearchPage} />
-            <PrivateRoute
+            {/* <PrivateRoute
               exact
               path="/group/:id/requests"
               component={GroupPage}
-            />
+            /> */}
             <Route path="/userinfo/:id/about" component={AboutPage} />
             <PrivateRoute
               exact
@@ -96,19 +96,19 @@ function App() {
               path="/mutualFriends/:id"
               component={MutualFriendPage}
             />
-            <Route exact path="/groups/" component={GroupManagementPage} />
+            <Route exact path="/groups" component={GroupManagementPage} />
             <Route path="/demoSocketIO" component={DemoSocket} />
             <PrivateRoute
               exact
               path="/group/create"
               component={CreateGroupPage}
             />
-            <Route exact path="/group/:id" component={GroupPage} />
+            <Route exact path="/group/:id/:menu" component={GroupPage} />
             <Route exact path="/settings" component={SettingsPage} />
             <Route exact path="/activate/:token" component={ActivationPage} />
             <PrivateRoute exact path="/message" component={MessagePage} />
-            <Route path="/group/:id/about" component={GroupPage} />
-            <Route path="/group/:id/members" component={GroupPage} />
+            {/* <Route path="/group/:id/about" component={GroupPage} />
+            <Route path="/group/:id/members" component={GroupPage} /> */}
             <PrivateRoute exact path="/admin">
               {isAdmin() ? (
                 <Redirect to="/admin/dashboard" />

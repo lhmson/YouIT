@@ -23,6 +23,7 @@ import searchRouter from "./routes/search.js";
 import friendRequestRouter from "./routes/friendRequest.js";
 import notificationRouter from "./routes/notification.js";
 import conversationRouter from "./routes/conversation.js";
+import reportUserRouter from "./routes/report.js";
 import CuteServerIO from "./socket/CuteServerIO.js";
 import friendRouter from "./routes/friend.js";
 import { setUpCuteIO } from "./socket/handlers/allHandlers.js";
@@ -47,7 +48,7 @@ const io = new Server(server, {
 export const cuteIO = new CuteServerIO(io);
 export const usersStatusManager = new UsersStatusManager();
 usersStatusManager.init(cuteIO);
-usersStatusManager.onUserStatusChange(notifyUserStatusToFriendsFunc(cuteIO))
+usersStatusManager.onUserStatusChange(notifyUserStatusToFriendsFunc(cuteIO));
 setUpCuteIO(cuteIO);
 cuteIO.start();
 
@@ -79,6 +80,7 @@ app.use("/friend", friendRouter);
 app.use("/conversation", conversationRouter);
 // app.use("/groupPendingMember", groupPendingMemberRouter);
 app.use("/hashtag", hashtagRouter);
+app.use("/reportUser", reportUserRouter);
 
 const PORT = process.env.PORT || 5000;
 

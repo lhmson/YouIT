@@ -32,13 +32,13 @@ export const GroupContext = createContext({
 });
 
 function GroupPage(props) {
-  const { id } = props.match.params;
+  const { id, menu } = props.match.params;
   const location = useLocation();
 
   const [group, setGroup] = useState(null);
   const valueContext = { group, setGroup };
 
-  const [modeSearch, setModeSearch] = useState("group");
+  // const [modeSearch, setModeSearch] = useState("group");
   const [user, setUser] = useLocalStorage("user");
   const history = useHistory();
 
@@ -155,16 +155,20 @@ function GroupPage(props) {
           <div className="feed-container">
             <AdminGroupSidebar
               className="sidebar"
-              setModeSearch={setModeSearch}
+              // setModeSearch={setModeSearch}
             />
             <div
               className="mainContent"
               id="scrollableDiv"
               style={{ minWidth: "87vw" }}
             >
-              {modeSearch === "memberRequests" ? (
+              {menu === "member_requests" ? (
                 <MemberRequestsResult />
-              ) : modeSearch === "group" ? (
+              ) : menu === "review_posts" ? (
+                <PostRequestsResult />
+              ) : menu === "setting" ? (
+                <SettingView />
+              ) : (
                 <div>
                   <Layout style={styles.avatarView}>
                     <Content
@@ -216,7 +220,7 @@ function GroupPage(props) {
                   <Layout>
                     <Content>
                       <Layout className="container">
-                        {location.pathname === `/group/${group?._id}` ? (
+                        {location.pathname === `/group/${group?._id}/main` ? (
                           <FeedPosts
                             limitPagination={5}
                             space="group"
@@ -232,10 +236,6 @@ function GroupPage(props) {
                     </Content>
                   </Layout>
                 </div>
-              ) : modeSearch === "approvePosts" ? (
-                <PostRequestsResult />
-              ) : (
-                <SettingView />
               )}
             </div>
           </div>
