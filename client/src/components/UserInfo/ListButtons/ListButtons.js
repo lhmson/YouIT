@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { Button, Menu, Row } from "antd";
+import { Button, Menu, message, Row, Modal, Input } from "antd";
 import { MailOutlined } from "@ant-design/icons";
-
 import { Link, useLocation } from "react-router-dom";
 
 import styles from "./styles.js";
@@ -26,12 +25,16 @@ import {
   removeSendingFriendRequest,
 } from "../../../api/user_info.js";
 
+import { createReportUser } from "../../../api/reportUser.js";
+const { TextArea } = Input;
+
 const ListButtons = () => {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user);
   const loginUser = JSON.parse(localStorage.getItem("user"))?.result;
   const isMyProfile = isLoginUser(user);
-
+  const [isModalReport, setIsModalReport] = useState(false);
+  const [contentReport, setContentReport] = useState("");
   const location = useLocation();
 
   const getDefaultSelectedItem = () => {
@@ -228,6 +231,57 @@ const ListButtons = () => {
     return <></>;
   };
 
+  const ReportButton = () => {
+    return (
+      <Button
+        className="green-button"
+        style={{ ...styles.button, backgroundColor: "red", color: "white" }}
+        onClick={() => {
+          setIsModalReport(true);
+          console.log("hello");
+        }}
+      >
+        Report
+      </Button>
+    );
+  };
+
+  const ModalReport = () => {
+    let contentReport = "";
+    const reportUser = async () => {
+      setIsModalReport(false);
+      setContentReport("");
+      const report = {
+        userReportId: loginUser._id,
+        userId: user._id,
+        content: contentReport,
+        status: "pending",
+      };
+      message.success("This user was reported by you successfully");
+      await createReportUser(report);
+    };
+    return (
+      <Modal
+        title="Why do you think this user should be reported?"
+        visible={isModalReport}
+        onOk={async () => {
+          await reportUser();
+        }}
+        onCancel={() => {
+          setIsModalReport(false);
+        }}
+      >
+        <TextArea
+          style={{ height: 200 }}
+          onChange={(e) => {
+            contentReport = e.target.value;
+          }}
+          // value={contentReport}
+          autoSize={{ minRows: 3, maxRows: 15 }}
+        />
+      </Modal>
+    );
+  };
   return (
     <>
       <Row
@@ -238,6 +292,7 @@ const ListButtons = () => {
           justifyContent: "space-between",
         }}
       >
+        <ModalReport></ModalReport>
         <div style={{ marginBottom: 32, maxWidth: "50vw" }}>
           <Menu
             onClick={handleClick}
@@ -260,6 +315,7 @@ const ListButtons = () => {
         <Row style={{ marginTop: 16 }}>
           <AddFriendButton />
           {FollowButton()}
+          <ReportButton></ReportButton>
         </Row>
       </Row>
     </>
