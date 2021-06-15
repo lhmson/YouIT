@@ -152,7 +152,7 @@ function FullPost({ post }) {
 
   const [user] = useLocalStorage("user");
 
-  const handleMore = () => { };
+  const handleMore = () => {};
 
   const tagList = ["Tag 1", "Tag 2", "Tag 3", "Tag 4", "Tag 5"];
 
@@ -274,7 +274,7 @@ function FullPost({ post }) {
       pathname: "/post/create",
       state: { pinnedUrl: `${window.location.origin}/post/${id}` },
     });
-  }
+  };
 
   const groupId = post?.groupPostInfo?.groupId;
 
@@ -321,7 +321,7 @@ function FullPost({ post }) {
                       <CaretRightOutlined
                         style={{ fontSize: 18, paddingBottom: 5 }}
                       />
-                      <Link to={`/group/${groupId._id}`}>
+                      <Link to={`/group/${groupId._id}/main`}>
                         <Text
                           className="clickable"
                           strong
@@ -386,15 +386,17 @@ function FullPost({ post }) {
                 </Text>
                 <Tooltip title="Upvote">
                   <ArrowUpOutlined
-                    className={`clickable icon ${myInteractions?.upvote ? "green" : "black"
-                      }`}
+                    className={`clickable icon ${
+                      myInteractions?.upvote ? "green" : "black"
+                    }`}
                     onClick={() => handleUpvoteClick(post._id)}
                   />
                 </Tooltip>
                 <Tooltip title="Downvote">
                   <ArrowDownOutlined
-                    className={`clickable icon ${myInteractions?.downvote ? "green" : "black"
-                      }`}
+                    className={`clickable icon ${
+                      myInteractions?.downvote ? "green" : "black"
+                    }`}
                     onClick={() => handleDownvoteClick(post._id)}
                   />
                 </Tooltip>

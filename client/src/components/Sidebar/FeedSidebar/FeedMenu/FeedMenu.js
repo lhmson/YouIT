@@ -48,7 +48,7 @@ function FeedMenu({ user, groups }) {
         {groups?.map((group, i) => (
           <Menu.Item key={group._id} style={styles.item}>
             <Tooltip title={group?.name} placement="right">
-              <Link to={`/group/${group?._id}`} target="_blank">
+              <Link to={`/group/${group?._id}/main`} target="_blank">
                 {limitNameLength(group?.name, 18)}
               </Link>
             </Tooltip>

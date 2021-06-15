@@ -177,7 +177,7 @@ export const inviteFriends = async (req, res) => {
           content: {
             description: `${user?.name} invited you to their group "${group?.name}".`,
           },
-          link: `/group/${groupId}`,
+          link: `/group/${groupId}/main`,
         });
       });
     }

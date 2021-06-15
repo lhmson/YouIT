@@ -8,6 +8,7 @@ import {
   MdLocationOn,
   FaMale,
   FaBirthdayCake,
+  MdWork,
 } from "react-icons/all";
 import { Row, Typography } from "antd";
 import styles from "./styles.js";
@@ -29,10 +30,15 @@ const IntroCard = () => {
   const gender = user?.userInfo?.gender;
   // educations la array, coi lai
   const educations = user?.userInfo?.educations;
+  const works = user?.userInfo?.works;
 
-  let education = "Trường ĐH Công nghệ Thông tin";
+  let education;
   if (educations) {
     education = educations[educations.length - 1];
+  }
+  let work;
+  if (works) {
+    work = works[works.length - 1];
   }
 
   return (
@@ -41,10 +47,18 @@ const IntroCard = () => {
         <Text style={styles.header}>Intro</Text>
       </Row>
       <div className="row" style={styles.lineinfo}>
-        <OverviewRow
-          firstIcon={<IoSchoolSharp style={styles.icon} />}
-          text={education?.schoolName}
-        />
+        {work && (
+          <OverviewRow
+            firstIcon={<MdWork style={styles.icon} />}
+            text={`${work?.position} at ${work?.location}`}
+          />
+        )}
+        {education && (
+          <OverviewRow
+            firstIcon={<IoSchoolSharp style={styles.icon} />}
+            text={`${education?.moreInfo} at ${education?.schoolName}`}
+          />
+        )}
         <OverviewRow
           firstIcon={<IoHome style={styles.icon} />}
           text={address}

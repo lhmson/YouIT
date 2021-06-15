@@ -32,7 +32,8 @@ function GroupJoinedCard({
   const history = useHistory();
   const txtButton = joined ? "Post" : "Cancel request";
   const onPressButton = async () => {
-    if (joined) { // don't if the text. Always trust just 1 source of truth. Also what if you have to support other languages?
+    if (joined) {
+      // don't if the text. Always trust just 1 source of truth. Also what if you have to support other languages?
       history.push({
         pathname: "/post/create",
         state: { initialGroupId: _id },
@@ -63,7 +64,7 @@ function GroupJoinedCard({
             />
 
             <div className="col-8" style={{ alignSelf: "center" }}>
-              <Link to={`/group/${_id}`}>
+              <Link to={`/group/${_id}/main`}>
                 <Text style={styles.textUser}>{nameGroup ?? "Name Group"}</Text>
               </Link>
               <div style={{ marginTop: 0 }}></div>

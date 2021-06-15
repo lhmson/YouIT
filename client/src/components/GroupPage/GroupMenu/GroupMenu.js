@@ -11,7 +11,7 @@ function GroupMenu() {
 
   const getDefaultSelectedItem = () => {
     switch (location.pathname) {
-      case `/group/${group?._id}`:
+      case `/group/${group?._id}/main`:
         return "groupPost";
       case `/group/${group?._id}/about`:
         return "about";
@@ -51,7 +51,7 @@ function GroupMenu() {
             mode="horizontal"
           >
             <Menu.Item key="groupPost">
-              <Link to={`/group/${group?._id}`} style={styles.linkView}>
+              <Link to={`/group/${group?._id}/main`} style={styles.linkView}>
                 Group Post
               </Link>
             </Menu.Item>
