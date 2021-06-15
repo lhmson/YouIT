@@ -29,6 +29,7 @@ import { setUpCuteIO } from "./socket/handlers/allHandlers.js";
 import hashtagRouter from "./routes/hashtag.js";
 import UsersStatusManager from "./businessLogics/userStatus.js";
 import { notifyUserStatusToFriendsFunc } from "./businessLogics/user.js";
+import { setAllDatabaseCleaners } from "./businessLogics/setAllDatabaseCleaners.js";
 
 dotenv.config();
 
@@ -49,6 +50,8 @@ usersStatusManager.init(cuteIO);
 usersStatusManager.onUserStatusChange(notifyUserStatusToFriendsFunc(cuteIO))
 setUpCuteIO(cuteIO);
 cuteIO.start();
+
+setAllDatabaseCleaners();
 
 app.use(bodyParser.json({ limit: "30mb", extended: true }));
 app.use(bodyParser.urlencoded({ limit: "30mb", extended: true }));
