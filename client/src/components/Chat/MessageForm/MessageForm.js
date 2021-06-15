@@ -1,8 +1,9 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import { Tooltip, Input, message } from "antd";
 import "../styles.css";
 import { SendOutlined, PaperClipOutlined } from "@ant-design/icons";
 import { Loading } from "../..";
+const { TextArea } = Input;
 
 function ChatForm({
   currentId,
@@ -12,9 +13,9 @@ function ChatForm({
   checkSending,
   addSending,
 }) {
-  // const [text, setText] = useState("");
+  const [inputText, setInputText] = useState({ content: "" });
 
-  const inputRef = useRef();
+  // const inputRef = useRef();
 
   // const handleChange = (e) => {
   //   e.preventDefault();
@@ -35,33 +36,39 @@ function ChatForm({
       return;
     }
     // alert(currentId + " || " + inputRef.current.state.value);
-    const text = inputRef.current.state.value?.trim();
+    const text = inputText.content.trim();
     if (text) {
       // sending message
       messageHandle.send(currentId, { text });
       addSending(currentId);
     }
-    inputRef.current.state.value = "";
+    // inputRef.current.state.value = "";
+    setInputText({ content: "" });
   };
 
   return (
     <div className="chat-form">
       <Tooltip title="Attach">
-        <PaperClipOutlined className="clickable icon white" />
+        <PaperClipOutlined className="clickable icon green ml-2 mr-4" />
       </Tooltip>
-      <Input
-        type="text"
-        placeholder="type a message"
+      <TextArea
+        autoSize={{ minRows: 1, maxRows: 3 }}
+        // type="text"
+        placeholder="Type a message"
         autoFocus
-        ref={inputRef}
+        onChange={(e) => setInputText({ content: e.target.value })}
+        value={inputText.content}
         disabled={currentId ? false : true}
-        onPressEnter={() => handleSendMessage()}
-      // onChange={(e) => handleChange(e)}
+        onPressEnter={(e) => {
+          e.preventDefault();
+          handleSendMessage();
+        }}
+        // onChange={(e) => handleChange(e)}
       />
       {!checkSending(currentId) ? (
         <Tooltip title="Send">
           <SendOutlined
-            className="clickable icon white"
+            className="clickable icon green ml-4 mr-2"
             onClick={() => handleSendMessage()}
           />
         </Tooltip>

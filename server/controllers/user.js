@@ -7,6 +7,7 @@ import sendVerificationMail from "../utils/sendVerificationMail.js";
 
 import { cuteIO, usersStatusManager } from "../index.js";
 import { httpStatusCodes } from "../utils/httpStatusCode.js";
+import moment from "moment";
 
 const JWT_KEY = "youit";
 
@@ -258,5 +259,56 @@ export const setUserStatus = async (req, res, next) => {
     return res
       .status(httpStatusCodes.internalServerError)
       .json({ message: error });
+  }
+};
+
+export const countNewUsers = async (req, res) => {
+  const { range, timeString } = req.params;
+  try {
+    let time = moment(timeString);
+    let labels = [];
+    let data = [];
+
+    switch (range) {
+      case "week":
+        labels = moment.weekdaysShort();
+        for (let i = 0; i < labels.length; i++) {
+          let temp = time.clone().set("day", i);
+          const start = temp.clone().startOf("day");
+          const end = temp.clone().endOf("day");
+          const count = await User.find({
+            createdAt: { $gt: start, $lte: end },
+          }).count();
+          data.push(count);
+        }
+        break;
+      case "month":
+        for (let i = 0; i < time.daysInMonth(); i++) {
+          labels.push(i + 1);
+          let temp = time.clone().set("date", i);
+          const start = temp.clone().startOf("day");
+          const end = temp.clone().endOf("day");
+          const count = await User.find({
+            createdAt: { $gt: start, $lte: end },
+          }).count();
+          data.push(count);
+        }
+        break;
+      case "year":
+        labels = moment.monthsShort();
+        for (let i = 0; i < labels.length; i++) {
+          let temp = time.clone().set("month", i);
+          const start = temp.clone().startOf("month");
+          const end = temp.clone().endOf("month");
+          const count = await User.find({
+            createdAt: { $gt: start, $lte: end },
+          }).count();
+          data.push(count);
+        }
+        break;
+    }
+    res.status(200).json({ labels, data });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
 };

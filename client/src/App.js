@@ -23,6 +23,7 @@ import {
   MutualFriendPage,
   GroupManagementPage,
   AuthAdminPage,
+  StatisticsPage,
 } from "./pages/index";
 
 import { CuteClientIOProvider } from "./socket/CuteClientIOProvider.js";
@@ -38,6 +39,7 @@ import { FriendsStatusProvider } from "./context/FriendsStatusContext.js";
 
 const loggedIn = () => {
   const user = JSON.parse(localStorage.getItem("user"));
+  console.log("user local storage", user);
   return user;
 };
 
@@ -117,6 +119,7 @@ function App() {
             <PrivateRoute exact path="/admin/dashboard">
               {isAdmin() ? <AdminDashboardPage /> : <Redirect to="/admin" />}
             </PrivateRoute>
+            <Route exact path="/statistics" component={StatisticsPage} />
             <Route>
               <ErrorPage code="404" />
             </Route>

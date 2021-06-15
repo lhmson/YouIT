@@ -24,6 +24,8 @@ export const fetchPostsPagination = (
   return API.get(url);
 };
 export const fetchOtherPosts = (id) => API.get(`post/${id}/others`);
+export const fetchCountPosts = (range, timeString) =>
+  API.get(`post/count/${range}/${timeString}`);
 
 export const createPost = (newPost) => API.post("/post", newPost);
 

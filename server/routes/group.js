@@ -15,6 +15,7 @@ import {
   inviteFriends,
   setGroupMemberRole,
   updateGroup,
+  countGroups,
 } from "../controllers/group.js";
 import auth from "../middleware/auth.js";
 import { haveGroupPermission, isOwner } from "../middleware/groupRole.js";
@@ -27,6 +28,7 @@ router.get("/list/joinedByMe", auth, getJoinedGroups);
 router.get("/:groupId/members", auth, getListMembers);
 router.get("/:groupId/pendingMembers", auth, getListPendingMembers);
 router.get("/list/pendingByMe", auth, getPendingGroups);
+router.get("/count/:range/:timeString", countGroups);
 
 router.post("/", auth, createGroup);
 router.post("/:groupId/inviteToGroup", auth, inviteFriends);

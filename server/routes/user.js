@@ -10,10 +10,13 @@ import {
   getFriendsStatus,
   setUserStatus,
   getUserStatus,
+  countNewUsers,
 } from "../controllers/user.js";
 import auth from "../middleware/auth.js";
 
 const router = express.Router();
+
+router.get("/newUsers/:range/:timeString", countNewUsers);
 
 router.post("/signin", signin);
 router.post("/signup", signup);
