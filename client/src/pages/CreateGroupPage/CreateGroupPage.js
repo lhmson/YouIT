@@ -47,10 +47,6 @@ function CreateGroupPage() {
   const [groupPrivacy, setGroupPrivacy] = useState("Public");
   const [groupTopic, setGroupTopic] = useState("General");
   const [groupMembers, setGroupMembers] = useState();
-
-  const [user] = useLocalStorage("user");
-
-  // const dispatch = useDispatch();
   const history = useHistory();
 
   const Data = () => {
@@ -81,11 +77,11 @@ function CreateGroupPage() {
       });
   };
 
-  const handleFinishFailed = (errorInfo) => {
-    // errorInfo.errorFields.map((err) => {
-    //   message.error(err.errors[0]);
-    // });
-  };
+  // const handleFinishFailed = (errorInfo) => {
+  //   errorInfo.errorFields.map((err) => {
+  //     message.error(err.errors[0]);
+  //   });
+  // };
 
   const privacyDescription =
     "Anyone can see who's in the group and what they post.";
@@ -241,11 +237,11 @@ function CreateGroupPage() {
                           style={{ fontSize: 40, fontWeight: "bold" }}
                           placeholder="Group Name"
                         >
-                          {groupName != "" ? groupName : "Group Name"}
+                          {groupName !== "" ? groupName : "Group Name"}
                         </Text>
-                        <Text style={{ fontSize: 18 }}>
-                          {" "}
-                          {groupPrivacy != "" ? groupPrivacy : "Privacy"}
+                        <Text style={{ fontSize: 18 }}>{groupPrivacy}</Text>
+                        <Text style={{ fontSize: 20, fontWeight: "bold" }}>
+                          {`#${groupTopic}`}
                         </Text>
                       </Layout>
                     </Col>
@@ -266,15 +262,15 @@ function CreateGroupPage() {
                       <Row>
                         <OverviewRow
                           firstIcon={
-                            groupPrivacy == "Public" ? (
+                            groupPrivacy === "Public" ? (
                               <PrivateIcon />
                             ) : (
                               <PublicIcon />
                             )
                           }
-                          text={groupPrivacy != "" ? groupPrivacy : "Privacy"}
+                          text={groupPrivacy !== "" ? groupPrivacy : "Privacy"}
                           subText={
-                            groupPrivacy == "Public"
+                            groupPrivacy === "Public"
                               ? publicDescription
                               : privacyDescription
                           }

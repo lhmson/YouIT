@@ -204,10 +204,6 @@ function GroupFunctionButtons() {
             >
               Create Post
             </Button>
-            {/* <Button type="primary" style={styles.button}>
-              Invite
-            </Button> */}
-
             <Popover
               content={
                 <>
