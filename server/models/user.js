@@ -69,6 +69,11 @@ const userSchema = mongoose.Schema(
         ref: "ActivityLogItem",
       },
     ],
+
+    isReported: {
+      type: Boolean,
+      default: false,
+    },
   },
   { timestamps: true }
 );

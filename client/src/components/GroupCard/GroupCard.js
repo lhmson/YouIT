@@ -48,7 +48,7 @@ function GroupCard({ nameGroup, _id, description, totalMembers, status }) {
           >
             <Avatar
               size={72}
-              src="https://vtv1.mediacdn.vn/thumb_w/650/2020/10/20/blackpink-lisa-mac-160316252527410005928.jpg"
+              src="https://i.pinimg.com/564x/03/d5/62/03d5624fae645eccaa74315f6ed49c03.jpg"
             />
 
             <div className="col-8" style={{ alignSelf: "center" }}>

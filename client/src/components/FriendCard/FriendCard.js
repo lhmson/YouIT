@@ -108,18 +108,20 @@ function FriendCard(props) {
               display: user?.result?._id === _id ? "none" : "block",
             }}
           >
-            <Button
-              className="mb-2"
-              type="primary"
-              style={{
-                background: "#27AE60",
-                borderColor: "#27AE60",
-                color: "white",
-                fontWeight: 500,
-              }}
-            >
-              {txtButton}
-            </Button>
+            <Link to={`/message`}>
+              <Button
+                className="mb-2"
+                type="primary"
+                style={{
+                  background: "#27AE60",
+                  borderColor: "#27AE60",
+                  color: "white",
+                  fontWeight: 500,
+                }}
+              >
+                {txtButton}
+              </Button>
+            </Link>
             <div>
               <Popover
                 placement="bottom"

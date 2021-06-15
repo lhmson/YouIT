@@ -27,6 +27,7 @@ import CuteServerIO from "./socket/CuteServerIO.js";
 import friendRouter from "./routes/friend.js";
 import { setUpCuteIO } from "./socket/handlers/allHandlers.js";
 import hashtagRouter from "./routes/hashtag.js";
+import reportUserRouter from "./routes/reportUser.js";
 
 dotenv.config();
 
@@ -71,6 +72,7 @@ app.use("/friend", friendRouter);
 app.use("/conversation", conversationRouter);
 // app.use("/groupPendingMember", groupPendingMemberRouter);
 app.use("/hashtag", hashtagRouter);
+app.use("/reportUser", reportUserRouter);
 
 const PORT = process.env.PORT || 5000;
 
