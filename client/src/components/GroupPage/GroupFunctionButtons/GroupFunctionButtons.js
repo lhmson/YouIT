@@ -1,11 +1,12 @@
-import { Button, message, Row, Select, Popover } from "antd";
+import { Button, message, Row, Select, Popover, Modal } from "antd";
 import React, { useState, useEffect, useContext, useMemo } from "react";
 import styles from "./styles.js";
-import { PlusCircleOutlined } from "@ant-design/icons";
-
+import {
+  PlusCircleOutlined,
+  ExclamationCircleOutlined,
+} from "@ant-design/icons";
 import { useHistory } from "react-router";
 import { GroupContext } from "../../../pages/GroupPage/GroupPage";
-
 import * as apiGroup from "../../../api/group";
 import * as apiFriend from "../../../api/friend";
 
@@ -18,6 +19,7 @@ function GroupFunctionButtons() {
   const [usersToInvite, setUsersToInvite] = useState([]);
   const history = useHistory();
   const { group, setGroup } = useContext(GroupContext);
+  const { confirm } = Modal;
 
   useEffect(() => {
     apiFriend.fetchListMyFriends(user?._id).then((res) => {
@@ -148,6 +150,33 @@ function GroupFunctionButtons() {
     [listFriends]
   );
 
+  const handleLeaveGroup = async (groupId, userId) => {
+    apiGroup
+      .leaveGroup(groupId, userId)
+      .then((res) => {
+        message.success("You have left the group.");
+        history.push(`/feed`);
+      })
+      .catch((error) => message.success(error.message));
+  };
+
+  const showDeleteConfirm = (id) => {
+    confirm({
+      title: "Are you sure leave this group?",
+      icon: <ExclamationCircleOutlined />,
+      content: "If you leave this group, this group will be deleted ",
+      okText: "Yes",
+      okType: "danger",
+      cancelText: "No",
+      onOk() {
+        handleDeleteGroup(id);
+      },
+      onCancel() {
+        console.log("Cancel");
+      },
+    });
+  };
+
   return (
     <>
       <Row
@@ -211,7 +240,17 @@ function GroupFunctionButtons() {
                 Invite
               </Button>
             </Popover>
-
+            <Button
+              className="green-button"
+              style={styles.button}
+              onClick={() => {
+                isOwner(user)
+                  ? showDeleteConfirm(group?._id)
+                  : handleLeaveGroup(group?._id, user?._id);
+              }}
+            >
+              Leave Group
+            </Button>
             {isOwner(user) ? (
               <Button
                 className="green-button"
@@ -223,7 +262,7 @@ function GroupFunctionButtons() {
                 Delete
               </Button>
             ) : (
-              ""
+              <></>
             )}
           </div>
         ) : (
