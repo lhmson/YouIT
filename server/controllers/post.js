@@ -226,7 +226,7 @@ export const updatePost = async (req, res) => {
         " It may be under review for a while." : "";
 
       res?.interactionInfo?.listUsersFollowing?.forEach((item, i) => {
-        isPostVisibleByUser(updatedPost, userId).then(visible => {
+        isPostVisibleByUser(updatedPost, item).then(visible => {
           if (visible) {
             // edit privacy to friend handle
             if (!item.equals(userId)) {
@@ -304,7 +304,7 @@ export const getMyPostInteractions = async (req, res) => {
     let filterJson = undefined;
     try {
       filterJson = JSON.parse(filter);
-    } catch {}
+    } catch { }
 
     const interactions = await getInteractionOfAUser(id, userId, filterJson);
     return res.status(httpStatusCodes.ok).json(interactions);
