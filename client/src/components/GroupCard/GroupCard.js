@@ -8,8 +8,8 @@ import { useLocalStorage } from "../../hooks/useLocalStorage";
 
 const { Title, Text } = Typography;
 
-function GroupCard({ nameGroup, _id, description, totalMembers }) {
-  const [txtButton, setTxtButton] = React.useState("Join");
+function GroupCard({ nameGroup, _id, description, totalMembers, status }) {
+  const [txtButton, setTxtButton] = React.useState(status);
   const [user, setUser] = useLocalStorage("user");
 
   const joinGroup = async () => {
