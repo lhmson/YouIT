@@ -14,6 +14,7 @@ import {
   getPendingGroups,
   inviteFriends,
   setGroupMemberRole,
+  updateGroup,
 } from "../controllers/group.js";
 import auth from "../middleware/auth.js";
 import { haveGroupPermission, isOwner } from "../middleware/groupRole.js";
@@ -30,6 +31,8 @@ router.get("/list/pendingByMe", auth, getPendingGroups);
 router.post("/", auth, createGroup);
 router.post("/:groupId/inviteToGroup", auth, inviteFriends);
 
+// chua phan quyen, cho xai thu cai cua Nghia
+router.put("/", auth, updateGroup);
 router.put(
   "/:groupId/addGroupMember/:memberId",
   auth,

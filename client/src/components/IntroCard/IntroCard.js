@@ -61,7 +61,7 @@ const IntroCard = () => {
       </div>
 
       <Row style={{ width: "100%", justifyContent: "center" }}>
-        <Button type="primary" style={styles.editBtn}>
+        <Button className="green-button" type="primary" style={styles.editBtn}>
           <Link to={`/userinfo/${user?._id}/about`}>Edit</Link>
         </Button>
       </Row>

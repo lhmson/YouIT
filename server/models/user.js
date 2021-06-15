@@ -10,7 +10,8 @@ const userSchema = mongoose.Schema(
     // id: Schema.Types.ObjectId,
 
     //SanhCute
-    avatarURL: { type: String },
+    avatarUrl: { type: String },
+    backgroundUrl: { type: String },
     status: { type: String },
     userType: { type: String },
 

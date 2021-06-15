@@ -40,7 +40,7 @@ function GroupFunctionButtons() {
       pathname: "/post/create",
       state: { initialGroupId: group?._id },
     });
-  }
+  };
 
   const handleInvite = (listInvitedFriends) => {
     apiGroup
@@ -168,7 +168,11 @@ function GroupFunctionButtons() {
               width: "100%",
             }}
           >
-            <Button className="green-button" style={styles.button} onClick={handleCreatePost}>
+            <Button
+              className="green-button"
+              style={styles.button}
+              onClick={handleCreatePost}
+            >
               Create Post
             </Button>
             {/* <Button type="primary" style={styles.button}>
@@ -210,7 +214,7 @@ function GroupFunctionButtons() {
 
             {isOwner(user) ? (
               <Button
-                type="primary"
+                className="green-button"
                 style={styles.button}
                 onClick={() => {
                   handleDeleteGroup(group?._id);

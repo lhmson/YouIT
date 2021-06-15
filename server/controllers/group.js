@@ -16,6 +16,12 @@ import { sendNotificationUser } from "../businessLogics/notification.js"
 export const getAGroup = async (req, res, next) => {
   const { groupId } = req.params;
 
+  if (!groupId.match(/^[0-9a-fA-F]{24}$/)) {
+    return res
+      .status(httpStatusCodes.notFound)
+      .json(`Cannot find a group with id: ${groupId}`);
+  }
+
   try {
     const { userId } = req;
     if (!userId)
@@ -29,7 +35,7 @@ export const getAGroup = async (req, res, next) => {
         else
           return res
             .status(httpStatusCodes.notFound)
-            .json(`Cannot find a group with id: ${id}`);
+            .json(`Cannot find a group with id: ${groupId}`);
       })
       .catch((err) => {
         return res
@@ -448,7 +454,29 @@ export const setGroupMemberRole = async (req, res) => {
       }
     });
   } catch (error) {
-    res
+    return res
+      .status(httpStatusCodes.internalServerError)
+      .json({ message: error.message });
+  }
+};
+
+/**
+ * @param {express.Request<ParamsDictionary, any, any, QueryString.ParsedQs, Record<string, any>>} req
+ * @param {express.Response<any, Record<string, any>, number>} res
+ * @param {express.NextFunction} next
+ */
+export const updateGroup = async (req, res) => {
+  const updatedGroup = req.body;
+  const { userId } = req;
+
+  if (!userId) return res.json({ message: "Unauthenticated" });
+
+  try {
+    await Group.findByIdAndUpdate(updatedGroup?._id, updatedGroup, {
+      new: true,
+    }).then((result) => res.status(httpStatusCodes.ok).json(result));
+  } catch (error) {
+    return res
       .status(httpStatusCodes.internalServerError)
       .json({ message: error.message });
   }

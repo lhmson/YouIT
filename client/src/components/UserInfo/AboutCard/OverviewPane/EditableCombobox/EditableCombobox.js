@@ -1,12 +1,13 @@
 import React, { useState } from "react";
 
-import { Button, Cascader, Input, Layout, Row, Typography } from "antd";
+import { Button, Cascader, Input, Layout, Row, Select, Typography } from "antd";
 
 import { OverviewRow } from "../../index.js";
 import { AiOutlineEdit } from "react-icons/all";
 
 import styles from "./styles.js";
 
+const { Option } = Select;
 const { Text } = Typography;
 
 function EditableCombobox({
@@ -18,6 +19,7 @@ function EditableCombobox({
   onChange,
   setPreviousState,
   editable,
+  placeholder,
 }) {
   const [isEditing, setIsEditing] = useState(false);
 
@@ -43,12 +45,16 @@ function EditableCombobox({
   if (isEditing) {
     return (
       <Layout style={styles.whiteBackground}>
-        <Cascader
+        <Text style={styles.text}>{placeholder}</Text>
+        <Select
           style={styles.cascader}
-          options={options}
-          defaultValue={[text]}
-          onChange={(value, selectedOptions) => onChange(value)}
-        ></Cascader>
+          defaultValue={text}
+          onChange={(value) => onChange(value)}
+        >
+          {options.map((option) => (
+            <Option value={option}>{option}</Option>
+          ))}
+        </Select>
         <Row style={{ justifyContent: "flex-end" }}>
           <Button style={styles.button} onClick={handleCancel}>
             Cancel

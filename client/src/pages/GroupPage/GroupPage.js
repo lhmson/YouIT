@@ -23,6 +23,7 @@ import { useHistory } from "react-router";
 import styles from "./styles.js";
 import "./styles.css";
 
+import SettingView from "../../components/GroupPage/SettingView/SettingView.js";
 const { Content } = Layout;
 const { Text } = Typography;
 export const GroupContext = createContext({
@@ -131,6 +132,21 @@ function GroupPage(props) {
     </Menu>
   );
 
+  useEffect(() => {
+    async function fetchGroupInfo() {
+      await api
+        .fetchAGroup(id)
+        .then((res) => {
+          setGroup(res.data);
+        })
+        .catch((error) => {
+          if (error.response?.status === 404) history.push("/error404");
+        });
+    }
+    fetchGroupInfo();
+    //console.log(group);
+  }, []);
+
   return (
     <GroupContext.Provider value={valueContext}>
       <Layout>
@@ -216,8 +232,10 @@ function GroupPage(props) {
                     </Content>
                   </Layout>
                 </div>
-              ) : (
+              ) : modeSearch === "approvePosts" ? (
                 <PostRequestsResult />
+              ) : (
+                <SettingView />
               )}
             </div>
           </div>

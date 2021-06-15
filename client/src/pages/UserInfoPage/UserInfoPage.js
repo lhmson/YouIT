@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { Button, Col, Layout, Row } from "antd";
+import React, { useEffect } from "react";
+import { Col, Layout, Row } from "antd";
 import styles from "./styles.js";
 
 import Navbar from "../../components/Navbar/Navbar";
@@ -13,19 +13,23 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router";
 import { getUser } from "../../redux/actions/user.js";
+import { useHistory } from "react-router-dom";
 
 const { Content } = Layout;
 
 function UserInfoPage() {
   let { id } = useParams();
 
-  const [currentId, setCurrentId] = useState(null);
-
   const user = useSelector((state) => state.user);
   const dispatch = useDispatch();
 
+  const history = useHistory();
+
   useEffect(() => {
     dispatch(getUser(id));
+    // setTimeout(() => {
+    //   if (!user) history.push("/error404");
+    // }, 2000);
   }, []);
 
   return (
