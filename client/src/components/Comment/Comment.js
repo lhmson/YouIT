@@ -20,7 +20,6 @@ import {
   EditOutlined,
   ExclamationCircleOutlined,
 } from "@ant-design/icons";
-import styles from "./styles";
 import COLOR from "../../constants/colors";
 import CommentForm from "../CommentForm/CommentForm";
 import {
@@ -29,10 +28,10 @@ import {
   unvoteComment,
   getMyCommentInteractions,
 } from "../../api/comment";
-import { Link, useHistory } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import { useDispatch } from "react-redux";
 
-const { Title, Text, Paragraph } = Typography;
+const { Text, Paragraph } = Typography;
 const { confirm } = Modal;
 
 const allInteractionReducer = (state, action) => {
@@ -172,7 +171,7 @@ function Comment({
   };
   const showConfirmDeleteComment = (id) => {
     confirm({
-      title: "Do you Want to delete this comment?",
+      title: "Do you want to delete this comment?",
       icon: <ExclamationCircleOutlined />,
       content: "You cannot undo this action",
       onOk() {

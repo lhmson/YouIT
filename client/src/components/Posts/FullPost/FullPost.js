@@ -160,7 +160,7 @@ function FullPost({ post }) {
 
   const showConfirmDeletePost = (id) => {
     confirm({
-      title: "Do you Want to delete this post?",
+      title: "Do you want to delete this post?",
       icon: <ExclamationCircleOutlined />,
       content: "You cannot undo this action",
       onOk() {

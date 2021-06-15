@@ -9,11 +9,15 @@ import * as api from "../../api/post.js";
 import { useHistory } from "react-router";
 import PostEditor from "./PostEditor/PostEditor.js";
 import CreatePostContentPinnedUrlInput from "./CreatePostContentPinnedUrlInput/CreatePostContentPinnedUrlInput.js";
-import { useLocalStorage } from '../../hooks/useLocalStorage.js'
-import { Prompt } from 'react-router-dom';
+import { useLocalStorage } from "../../hooks/useLocalStorage.js";
+import { Prompt } from "react-router-dom";
 
-function CreatePostForm({ postId = null, initialGroupId = null, pinnedUrl = "" }) {
-  const [user,] = useLocalStorage("user");
+function CreatePostForm({
+  postId = null,
+  initialGroupId = null,
+  pinnedUrl = "",
+}) {
+  const [user] = useLocalStorage("user");
   const [postTitle, setPostTitle] = useState("");
   const [postContentText, setPostContentText] = useState("");
   const [postContentPinnedUrl, setPostContentPinnedUrl] = useState(pinnedUrl);
@@ -35,8 +39,9 @@ function CreatePostForm({ postId = null, initialGroupId = null, pinnedUrl = "" }
     }
 
     if (postId)
-      api.fetchAPost(postId)
-        .then(res => {
+      api
+        .fetchAPost(postId)
+        .then((res) => {
           if (res.data?.userId._id !== user?.result?._id) {
             message.error("You cannot edit others' posts.", 1, () => {
               setSafeToLeave(true);
@@ -46,30 +51,29 @@ function CreatePostForm({ postId = null, initialGroupId = null, pinnedUrl = "" }
 
           setEditingPost(res.data);
         })
-        .catch(reason => {
+        .catch((reason) => {
           message.error("Something went wrong.", 1, () => {
             setSafeToLeave(true);
             history.goBack();
           });
-        })
-  }, [])
+        });
+  }, []);
 
   useEffect(() => {
-    if (editingPost)
-      setEditingPostToFields(editingPost);
-  }, [editingPost])
+    if (editingPost) setEditingPostToFields(editingPost);
+  }, [editingPost]);
 
   const setEditingPostToFields = (post) => {
     setPostTitle(post?.title ?? "");
     setPostContentText(post?.content?.text ?? "");
     setPostContentPinnedUrl(post?.content?.pinnedUrl ?? "");
-    setPostPrivacy(post?.privacy ?? "")
+    setPostPrivacy(post?.privacy ?? "");
 
     if (post?.groupPostInfo) {
       // setPostSpace(post?.groupPostInfo?.groupId?.name);
       // setSelectedGroup(post?.groupPostInfo?.groupId);
     }
-  }
+  };
 
   const wrapPostData = () => {
     const result = {
@@ -95,18 +99,20 @@ function CreatePostForm({ postId = null, initialGroupId = null, pinnedUrl = "" }
     const errorResult = (message) => ({
       isValid: false,
       message,
-    })
+    });
 
     if (!post) return errorResult("Something when wrong.");
     if (!post.title) return errorResult("A post must have a title.");
-    if ((!post.content?.text) && (!post.content?.pinnedUrl)) return errorResult("A post must have some content.");
-    if ((post.privacy === "Group") && (!post.groupId)) return errorResult("The selected group to post is not valid");
+    if (!post.content?.text && !post.content?.pinnedUrl)
+      return errorResult("A post must have some content.");
+    if (post.privacy === "Group" && !post.groupId)
+      return errorResult("The selected group to post is not valid");
 
     return {
       isValid: true,
       message: null,
-    }
-  }
+    };
+  };
 
   const handleSavePostButtonClick = () => {
     const newPost = wrapPostData();
@@ -122,7 +128,7 @@ function CreatePostForm({ postId = null, initialGroupId = null, pinnedUrl = "" }
         .createPost(newPost)
         .then((res) => {
           setSafeToLeave(true);
-          history.push(`/post/${res.data._id}`)
+          history.push(`/post/${res.data._id}`);
         }) // go to specific post
         .catch((error) => {
           message.error("Something goes wrong. Check all fields", 2);
@@ -133,7 +139,7 @@ function CreatePostForm({ postId = null, initialGroupId = null, pinnedUrl = "" }
         .updatePost(postId, newPost)
         .then((res) => {
           setSafeToLeave(true);
-          history.push(`/post/${res.data._id}`)
+          history.push(`/post/${res.data._id}`);
         })
         .catch((error) => {
           message.error("Something goes wrong. Check all fields", 2);
@@ -162,8 +168,10 @@ function CreatePostForm({ postId = null, initialGroupId = null, pinnedUrl = "" }
             postSpace={postSpace}
             setPostSpace={setPostSpace}
             onSelectedGroupChange={handleSelectedGroupChange}
-            initialGroupId={postId ? editingPost?.groupPostInfo?.groupId?._id : initialGroupId}
-            disabled={Boolean(postId)}
+            initialGroupId={
+              postId ? editingPost?.groupPostInfo?.groupId?._id : initialGroupId
+            }
+            disabled={Boolean(postId) || Boolean(initialGroupId)}
           />
         </div>
       </div>
