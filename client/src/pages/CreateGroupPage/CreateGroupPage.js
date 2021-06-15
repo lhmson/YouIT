@@ -258,8 +258,8 @@ function CreateGroupPage() {
                     </Text>
                     <Layout style={{ paddingLeft: 32, background: "white" }}>
                       <Divider style={{ justifySelf: "start" }}></Divider>
-                      <Text>{groupDescription}</Text>
-                      <Row>
+                      <Text style={{ fontSize: 18 }}>{groupDescription}</Text>
+                      {/* <Row>
                         <OverviewRow
                           firstIcon={
                             groupPrivacy === "Public" ? (
@@ -276,13 +276,7 @@ function CreateGroupPage() {
                           }
                         />
                         <OverviewRow />
-                        {/* <OverviewRow
-                          firstIcon={<ShopOutlined />}
-                          text="Topic"
-                          subText={groupTopic != "" ? groupTopic : "Topic"}
-                        />
-                        <OverviewRow /> */}
-                      </Row>
+                      </Row> */}
                     </Layout>
                   </Layout>
                 </Layout>

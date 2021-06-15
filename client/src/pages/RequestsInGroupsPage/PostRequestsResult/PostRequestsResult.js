@@ -1,6 +1,7 @@
 import React, { useContext, useState, useEffect } from "react";
 import * as api from "../../../api/post";
 import PostRequests from "../../../components/PostRequests/PostRequests";
+import COLOR from "../../../constants/colors";
 import { GroupContext } from "../../GroupPage/GroupPage";
 
 function PostRequestsResult() {
@@ -21,25 +22,25 @@ function PostRequestsResult() {
 
   const listPostRequestCard = () =>
     listPostRequest?.map((post, i) => (
-      <PostRequests
-        _id={post._id}
-        _idOwnerPost={post.userId._id}
-        title={post.title}
-        nameOwner={post.userId.name}
-        content={post.content.text}
-      ></PostRequests>
+      <PostRequests post={post}></PostRequests>
     ));
 
   return (
-    <div className="col-10 offset-1">
-      <div
-        className="row"
-        style={{
-          height: 900,
-          paddingTop: 16,
-        }}
-      >
-        <div className="col-10 offset-1">{listPostRequestCard()}</div>
+    <div
+      style={{
+        background: COLOR.whiteSmoke,
+      }}
+    >
+      <div className="col-10 offset-1">
+        <div
+          className="row"
+          style={{
+            height: 900,
+            paddingTop: 16,
+          }}
+        >
+          <div className="col-10 offset-1">{listPostRequestCard()}</div>
+        </div>
       </div>
     </div>
   );
