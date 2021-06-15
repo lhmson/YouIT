@@ -181,11 +181,7 @@ function Navbar({ selectedMenu, setTxtSearch, txtInitSearch }) {
           </Badge>
         </Menu.Item>
 
-        <Menu.Item
-          key="avatar"
-          className="text-center navitem notpickitem"
-          onClick={() => history.push(`/userinfo/${user?.result._id}`)}
-        >
+        <Menu.Item key="avatar" className="text-center navitem notpickitem">
           <Tooltip
             title={
               <div className="text-center">
@@ -214,6 +210,7 @@ function Navbar({ selectedMenu, setTxtSearch, txtInitSearch }) {
               size="large"
               alt={user?.result?.name}
               src={user?.result?.imageUrl}
+              onClick={() => history.push(`/userinfo/${user?.result._id}`)}
             >
               {user?.result?.name}
             </Avatar>

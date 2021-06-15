@@ -4,7 +4,7 @@ export const statusList = [
   { status: "online", color: COLOR.green },
   { status: "busy", color: COLOR.red },
   { status: "offline", color: COLOR.gray },
-  { status: "unknown", color: COLOR.white },
+  // { status: "unknown", color: COLOR.white },
 ];
 
 export const renderStatus = (status) => {

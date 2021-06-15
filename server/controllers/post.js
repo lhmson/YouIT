@@ -196,7 +196,7 @@ export const deletePost = async (req, res) => {
       return res.json({ message: "Unauthenticated" });
     }
 
-    const post = await await Post.findById(id);
+    const post = await Post.findById(id);
     if (!post) {
       return res
         .status(httpStatusCodes.notFound)

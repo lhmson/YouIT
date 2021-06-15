@@ -10,7 +10,6 @@ import {
 import Navbar from "../../components/Navbar/Navbar";
 import FullPost from "../../components/Posts/FullPost/FullPost.js";
 import RelatedCard from "../../components/RelatedCard/RelatedCard.js";
-import FixedRightPanel from "../../components/FixedRightPanel/FixedRightPanel.js";
 import * as postsApi from "../../api/post";
 import * as commentsApi from "../../api/comment";
 import CommentForm from "../../components/CommentForm/CommentForm.js";
@@ -19,7 +18,6 @@ import COLOR from "../../constants/colors.js";
 import { useHistory } from "react-router-dom";
 import Loading from "../../components/Loading/Loading.js";
 
-const { Content } = Layout;
 const { Title, Text } = Typography;
 
 function SpecificPostPage(props) {
