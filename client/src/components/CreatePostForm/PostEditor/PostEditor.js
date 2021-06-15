@@ -1,8 +1,10 @@
 import React from "react";
-import MDEditor from "@uiw/react-md-editor";
+// import MDEditor from "@uiw/react-md-editor";
+import SimpleMDE from "react-simplemde-editor";
+import "easymde/dist/easymde.min.css";
 
-import styles from "./styles.js";
-import { postEditorCommands } from "./commands.js";
+// import styles from "./styles.js";
+// import { postEditorCommands } from "./commands.js";
 
 function PostEditor({ postContentText, setPostContentText }) {
   if (postContentText === null || postContentText === undefined || !setPostContentText)
@@ -14,13 +16,9 @@ function PostEditor({ postContentText, setPostContentText }) {
 
   return (
     <div>
-      <MDEditor
-        commands={postEditorCommands}
+      <SimpleMDE
         value={postContentText}
         onChange={setPostContentText}
-        highlightEnable={false} // dis is veri buggi idk
-        visiableDragbar={false} // dis dun allow resizing editor
-        height={580}
       />
     </div>
   );
