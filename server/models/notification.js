@@ -23,6 +23,10 @@ const notificationSchema = mongoose.Schema(
       require: true,
       default: false,
     },
+    seenAt: {
+      type: Date,
+      require: true,
+    },
     link: {
       type: String,
       // require: true,

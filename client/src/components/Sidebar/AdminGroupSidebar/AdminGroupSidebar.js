@@ -1,10 +1,9 @@
 import React, { useContext } from "react";
-import { Layout, Menu, Avatar, Typography } from "antd";
+import { Layout, Menu, Typography } from "antd";
 import styles from "./styles.js";
 import { IoPersonAdd } from "react-icons/io5";
 import { FiCheckSquare } from "react-icons/fi";
 import { BiConversation } from "react-icons/bi";
-import { IoIosArrowDropdownCircle } from "react-icons/io";
 import { useLocalStorage } from "../../../hooks/useLocalStorage.js";
 import { GroupContext } from "../../../pages/GroupPage/GroupPage";
 
@@ -15,19 +14,33 @@ function AdminGroupSidebar(props) {
   const [user, setUser] = useLocalStorage("user");
   const { group } = useContext(GroupContext);
 
-  const isOwner = (user) => {
-    let isOwner = false;
+  const isAdmin = (user) => {
+    let isAdmin = false;
     group?.listMembers.forEach((member) => {
-      if (member?.userId == user?.result?._id) {
-        if (member?.role !== "Member") isOwner = true;
+      if (member?.userId === user?.result?._id) {
+        if (member?.role === "Admin" || member?.role === "Owner")
+          isAdmin = true;
       }
     });
-    return isOwner;
+    return isAdmin;
+  };
+
+  const isModerator = (user) => {
+    let isModerator = false;
+    group?.listMembers.forEach((member) => {
+      if (member?.userId === user?.result?._id) {
+        if (member?.role !== "Member") isModerator = true;
+      }
+    });
+    return isModerator;
   };
 
   return (
     <Sider
-      width={200}
+      breakpoint="lg"
+      // width={200}
+      collapsedWidth="0"
+      // trigger={null}
       style={{
         ...styles.paleBackground,
         ...styles.fixedSider,
@@ -55,7 +68,7 @@ function AdminGroupSidebar(props) {
         >
           Your Group
         </Menu.Item>
-        {isOwner(user) ? (
+        {isAdmin(user) ? (
           <Menu.Item
             key="memberRequests"
             style={styles.item}
@@ -67,7 +80,7 @@ function AdminGroupSidebar(props) {
         ) : (
           ""
         )}
-        {isOwner(user) ? (
+        {isModerator(user) ? (
           <Menu.Item
             key="approvePosts"
             style={styles.item}

@@ -23,4 +23,7 @@ export const addGroupMember = (groupId, memberId) =>
 export const setGroupMemberRole = (groupId, memberId, role) =>
   API.put(`/group/${groupId}/setMemberRole/${memberId}`, { newRole: role });
 
+export const inviteFriends = (groupId, listUsersToInvite) =>
+  API.post(`/group/${groupId}/inviteToGroup`, { listUsersToInvite });
+
 export const deleteGroup = (id) => API.delete(`/group/${id}`);

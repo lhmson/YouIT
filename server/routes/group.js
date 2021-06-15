@@ -12,6 +12,7 @@ import {
   deleteMember,
   leaveGroup,
   getPendingGroups,
+  inviteFriends,
   setGroupMemberRole,
 } from "../controllers/group.js";
 import auth from "../middleware/auth.js";
@@ -27,6 +28,7 @@ router.get("/:groupId/pendingMembers", auth, getListPendingMembers);
 router.get("/list/pendingByMe", auth, getPendingGroups);
 
 router.post("/", auth, createGroup);
+router.post("/:groupId/inviteToGroup", auth, inviteFriends);
 
 router.put(
   "/:groupId/addGroupMember/:memberId",
@@ -49,6 +51,6 @@ router.put(
   setGroupMemberRole
 );
 
-router.delete("/:groupId", auth, isOwner, deleteGroup);
+router.delete("/:id", auth, isOwner, deleteGroup); // chỗ này để id vì isOwner của Sanh để id
 
 export default router;

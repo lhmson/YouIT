@@ -1,10 +1,12 @@
 import express from "express";
 import Group from "../models/group.js";
+import User from "../models/user.js";
 import {
   isMemberOfGroup,
   isPendingMemberOfGroup,
 } from "../businessLogics/group.js";
 import { httpStatusCodes } from "../utils/httpStatusCode.js";
+import { sendNotificationUser } from "../businessLogics/notification.js"
 
 /**
  * @param {express.Request<ParamsDictionary, any, any, QueryString.ParsedQs, Record<string, any>>} req
@@ -115,9 +117,7 @@ export const createGroup = async (req, res) => {
  */
 export const addGroupMember = async (req, res) => {
   const { groupId, memberId } = req.params;
-  console.log("thyyyyyyyyyyyyyyyyyy");
-  console.log("groupid", groupId);
-  console.log("userid", memberId);
+
   //const { role } = req.query ?? "Member";
   const role = "Member";
   const addMember = { role, userId: memberId };
@@ -137,6 +137,45 @@ export const addGroupMember = async (req, res) => {
 
     await group.save();
     return res.status(httpStatusCodes.ok).json(group);
+  } catch (error) {
+    return res
+      .status(httpStatusCodes.internalServerError)
+      .json({ message: error.message });
+  }
+};
+
+/**
+ * @param {express.Request<ParamsDictionary, any, any, QueryString.ParsedQs, Record<string, any>>} req
+ * @param {express.Response<any, Record<string, any>, number>} res
+ * @param {express.NextFunction} next
+ */
+export const inviteFriends = async (req, res) => {
+  const { groupId } = req.params;
+  const { userId } = req;
+
+  /** @type {[]} */
+  const { listUsersToInvite } = req.body;
+
+  try {
+    const user = await User.findById(userId);
+    const group = await Group.findById(groupId);
+
+    // error 404...
+
+    if (listUsersToInvite) {
+      listUsersToInvite.forEach(invitedId => {
+        sendNotificationUser({
+          userId: invitedId,
+          kind: "InviteToGroup_InvitedUser",
+          content: {
+            description: `${user?.name} invited you to their group "${group?.name}".`,
+          },
+          link: `/group/${groupId}`,
+        });
+      })
+    }
+
+    return res.status(httpStatusCodes.ok).send("Invitation was sent.")
   } catch (error) {
     return res
       .status(httpStatusCodes.internalServerError)
@@ -264,7 +303,7 @@ export const getListPendingMembers = async (req, res) => {
 };
 
 export const deleteGroup = async (req, res) => {
-  const { groupId } = req.params;
+  const { id } = req.params;
 
   try {
     // auth
@@ -272,7 +311,7 @@ export const deleteGroup = async (req, res) => {
       return res.json({ message: "Unauthenticated" });
     }
 
-    if (!(await Group.findById(groupId))) {
+    if (!(await Group.findById(id))) {
       return res
         .status(httpStatusCodes.notFound)
         .send(`No group with id: ${id}`);
@@ -334,7 +373,7 @@ export const leaveGroup = async (req, res) => {
     if (
       group.listMembers.length > 1 &&
       group.listMembers.find((member) => member.userId.equals(userId)).role ===
-        "Owner"
+      "Owner"
     )
       return res
         .status(httpStatusCodes.badContent)
@@ -345,7 +384,7 @@ export const leaveGroup = async (req, res) => {
       "Owner"
     ) {
       return (
-        await Group.findByIdAndRemove(id),
+        await Group.findByIdAndRemove(groupId),
         res
           .status(httpStatusCodes.ok)
           .json({ message: "Group deleted successfully." })
@@ -356,7 +395,9 @@ export const leaveGroup = async (req, res) => {
       (member) => !member.userId.equals(userId) || member.role === "Owner"
     );
 
-    const newGroup = await Group.findByIdAndUpdate(id, group, { new: true });
+    const newGroup = await Group.findByIdAndUpdate(groupId, group, {
+      new: true,
+    });
     // await group.save();
     res.status(httpStatusCodes.ok).json(newGroup);
   } catch (error) {

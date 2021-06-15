@@ -32,8 +32,11 @@ function GroupJoinedCard({
   const history = useHistory();
   const txtButton = joined ? "Post" : "Cancel request";
   const onPressButton = async () => {
-    if (txtButton === "Post") {
-      history.push("./post/create");
+    if (joined) { // don't if the text. Always trust just 1 source of truth. Also what if you have to support other languages?
+      history.push({
+        pathname: "/post/create",
+        state: { initialGroupId: _id },
+      });
     } else {
       await cancelJoinGroup();
     }

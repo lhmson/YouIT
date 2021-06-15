@@ -110,7 +110,7 @@ function FeedPost({ post, setCurrentId }) {
   const handleEditPost = (postId, postTitle, postPrivacy, postContent) => {
     history.push({
       pathname: "/post/create",
-      state: { postId, postTitle, postContent, postPrivacy },
+      state: { postId },
     });
   };
 
@@ -265,6 +265,13 @@ function FeedPost({ post, setCurrentId }) {
       });
   };
 
+  const handleSharePost = (id) => {
+    history.push({
+      pathname: `post/create`,
+      state: { pinnedUrl: `${window.location.origin}/post/${id}` },
+    });
+  }
+
   const groupId = post?.groupPostInfo?.groupId;
 
   const renderPrivacyIcon = (privacy) => {
@@ -388,17 +395,15 @@ function FeedPost({ post, setCurrentId }) {
                 </Text>
                 <Tooltip title="Upvote">
                   <ArrowUpOutlined
-                    className={`clickable icon ${
-                      myInteractions?.upvote ? "green" : "black"
-                    }`}
+                    className={`clickable icon ${myInteractions?.upvote ? "green" : "black"
+                      }`}
                     onClick={() => handleUpvoteClick(post._id)}
                   />
                 </Tooltip>
                 <Tooltip title="Downvote">
                   <ArrowDownOutlined
-                    className={`clickable icon ${
-                      myInteractions?.downvote ? "green" : "black"
-                    }`}
+                    className={`clickable icon ${myInteractions?.downvote ? "green" : "black"
+                      }`}
                     onClick={() => handleDownvoteClick(post._id)}
                   />
                 </Tooltip>
@@ -429,7 +434,10 @@ function FeedPost({ post, setCurrentId }) {
                 />
               </Tooltip>
               <Tooltip title="Share">
-                <ShareAltOutlined className="clickable icon" />
+                <ShareAltOutlined
+                  className="clickable icon"
+                  onClick={() => handleSharePost(post._id)}
+                />
               </Tooltip>
             </Space>
           </Row>

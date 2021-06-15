@@ -1,5 +1,5 @@
 import { Button, message, Row, Select, Popover } from "antd";
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useMemo } from "react";
 import styles from "./styles.js";
 import { PlusCircleOutlined } from "@ant-design/icons";
 
@@ -13,18 +13,14 @@ const { Option } = Select;
 
 function GroupFunctionButtons() {
   const user = JSON.parse(localStorage.getItem("user"))?.result;
-
   const [visibleAdd, setVisibleAdd] = useState(false); // select display
-
   const [listFriends, setListFriends] = useState([]);
-
   const [usersToInvite, setUsersToInvite] = useState([]);
-
   const history = useHistory();
   const { group, setGroup } = useContext(GroupContext);
 
   useEffect(() => {
-    apiFriend.fetchListMyFriends(user?.result?._id).then((res) => {
+    apiFriend.fetchListMyFriends(user?._id).then((res) => {
       setListFriends(
         res.data?.map((item, i) => ({ _id: item._id, name: item.name }))
       );
@@ -39,13 +35,27 @@ function GroupFunctionButtons() {
     setVisibleAdd(visibleAdd);
   };
 
-  const handleInvite = () => {};
+  const handleCreatePost = () => {
+    history.push({
+      pathname: "/post/create",
+      state: { initialGroupId: group?._id },
+    });
+  }
 
-  const handleDeleteGroup = (id) => {
+  const handleInvite = (listInvitedFriends) => {
     apiGroup
-      .deleteGroup(id)
+      .inviteFriends(group?._id, listInvitedFriends)
       .then((res) => {
-        message.success(res.data.message);
+        message.success("Invitation sent!");
+      })
+      .catch((error) => message.success("pow" + error.message));
+  };
+
+  const handleDeleteGroup = (groupId) => {
+    apiGroup
+      .deleteGroup(groupId)
+      .then((res) => {
+        message.success("Group deleted successfully.");
         history.push(`/group/create`);
       })
       .catch((error) => message.success(error.message));
@@ -54,7 +64,17 @@ function GroupFunctionButtons() {
   const isJoinedGroup = () => {
     let isJoined = false;
     group?.listMembers.forEach((member) => {
-      if (member?.userId == user?._id) {
+      if (member?.userId === user?._id) {
+        isJoined = true;
+      }
+    });
+    return isJoined;
+  };
+
+  const isFriendJoinedGroup = (id) => {
+    let isJoined = false;
+    group?.listMembers.forEach((member) => {
+      if (member?.userId === id) {
         isJoined = true;
       }
     });
@@ -64,7 +84,7 @@ function GroupFunctionButtons() {
   const isSentJoinRequest = () => {
     let isSent = false;
     group?.listPendingMembers.forEach((pendingMem) => {
-      if (pendingMem?.userId == user?._id) {
+      if (pendingMem?.userId === user?._id) {
         isSent = true;
       }
     });
@@ -119,6 +139,15 @@ function GroupFunctionButtons() {
     );
   };
 
+  const listInvitedFriends = useMemo(
+    () =>
+      listFriends?.map((user, i) => {
+        if (!isFriendJoinedGroup(user._id))
+          return <Option key={user._id}>{user.name}</Option>;
+      }),
+    [listFriends]
+  );
+
   return (
     <>
       <Row
@@ -139,7 +168,7 @@ function GroupFunctionButtons() {
               width: "100%",
             }}
           >
-            <Button className="green-button" style={styles.button}>
+            <Button className="green-button" style={styles.button} onClick={handleCreatePost}>
               Create Post
             </Button>
             {/* <Button type="primary" style={styles.button}>
@@ -149,7 +178,9 @@ function GroupFunctionButtons() {
             <Popover
               content={
                 <>
-                  <Button onClick={() => handleInvite()}>OK</Button>
+                  <Button onClick={() => handleInvite(usersToInvite)}>
+                    OK
+                  </Button>
                 </>
               }
               title={
@@ -161,9 +192,7 @@ function GroupFunctionButtons() {
                     onChange={handleChangeUserToInvite}
                     style={{ width: "100%" }}
                   >
-                    {listFriends?.map((item) => (
-                      <Option key={item._id}>{item.name}</Option>
-                    ))}
+                    {listInvitedFriends}
                   </Select>
                 </div>
               }

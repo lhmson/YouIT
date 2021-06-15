@@ -9,10 +9,9 @@ import COLOR from "../../../../constants/colors.js";
 import * as api from "../../../../api/friend";
 import * as apiGroup from "../../../../api/group";
 import { GroupContext } from "../../../../pages/GroupPage/GroupPage.js";
-import { useHistory } from "react-router-dom";
 
 const { Text } = Typography;
-
+const { Item } = Menu;
 function MemberCard(props) {
   const [user, setUser] = useLocalStorage("user");
   const [listMutual, setListMutual] = useState([]);
@@ -22,7 +21,7 @@ function MemberCard(props) {
   const { _id } = props;
   const { role } = props;
   const { group } = useContext(GroupContext);
-  const history = useHistory();
+  const [roleUser, setRoleUser] = useState("");
 
   useEffect(() => {
     api
@@ -58,36 +57,118 @@ function MemberCard(props) {
       });
   }, []);
 
+  useEffect(() => {
+    group?.listMembers.forEach((member) => {
+      if (member?.userId == user?.result?._id) setRoleUser(member?.role);
+    });
+  }, []);
+
   const handleRemoveMember = async (groupId, userId) => {
     apiGroup
       .deleteMember(groupId, userId)
       .then((res) => {
-        message.success(res.data.message);
-        // history.push(`/group/${groupId}/members`);
+        message.success("This user has been removed from the group.");
         window.location.reload();
       })
       .catch((error) => message.success(error.message));
   };
 
-  const isOwner = (user) => {
-    let isOwner = false;
-    group?.listMembers.forEach((member) => {
-      if (member?.userId == user?.result?._id) {
-        if (member?.role !== "Member") isOwner = true;
-      }
-    });
-    return isOwner;
+  const handleSetMember = async (groupId, memberId, role) => {
+    apiGroup
+      .setGroupMemberRole(groupId, memberId, role)
+      .then((res) => {
+        message.success(
+          "This user no longer has the right to admin or moderate the group."
+        );
+        window.location.reload();
+      })
+      .catch((error) => message.success(error.message));
   };
 
-  const menuMore = (
-    <Menu>
-      <Menu.Item key="settings">
+  const handleSetModerator = async (groupId, memberId, role) => {
+    apiGroup
+      .setGroupMemberRole(groupId, memberId, role)
+      .then((res) => {
+        message.success("The user is set as the moderator of this group.");
+        window.location.reload();
+      })
+      .catch((error) => message.success(error.message));
+  };
+
+  const handleSetAdmin = async (groupId, memberId, role) => {
+    apiGroup
+      .setGroupMemberRole(groupId, memberId, role)
+      .then((res) => {
+        message.success("The user is set as the administrator of this group.");
+        window.location.reload();
+      })
+      .catch((error) => message.success(error.message));
+  };
+
+  const removeAdminMenuItem = () => {
+    return (
+      <Item
+        key="removeAdmin"
+        onClick={() => {
+          handleSetMember(group?._id, _id, "Member");
+        }}
+      >
+        <Row align="middle">
+          <Text>Remove as admin</Text>
+        </Row>
+      </Item>
+    );
+  };
+
+  const removeModeratorMenuItem = () => {
+    return (
+      <Item
+        key="removeModerator"
+        onClick={() => {
+          handleSetMember(group?._id, _id, "Member");
+        }}
+      >
+        <Row align="middle">
+          <Text>Remove as moderator</Text>
+        </Row>
+      </Item>
+    );
+  };
+
+  const addAdminMenuItem = () => {
+    return (
+      <Item
+        key="addAdmin"
+        onClick={() => {
+          handleSetAdmin(group?._id, _id, "Admin");
+        }}
+      >
         <Row align="middle">
           <Text>Add as admin</Text>
         </Row>
-      </Menu.Item>
-      <Menu.Item
-        key="logout"
+      </Item>
+    );
+  };
+
+  const addModeratorMenuItem = () => {
+    return (
+      <Item
+        key="AddModerator"
+        onClick={() => {
+          handleSetModerator(group?._id, _id, "Moderator");
+        }}
+      >
+        <Row align="middle">
+          <Text>Add as moderator</Text>
+        </Row>
+      </Item>
+    );
+  };
+
+  const removeMember = () => {
+    return (
+      <Item
+        key="removeMember"
         onClick={() => {
           handleRemoveMember(group?._id, _id);
         }}
@@ -95,7 +176,39 @@ function MemberCard(props) {
         <Row align="middle">
           <Text>Remove member</Text>
         </Row>
-      </Menu.Item>
+      </Item>
+    );
+  };
+
+  const isAdmin = () => {
+    if (roleUser === "Owner" || (roleUser === "Admin" && role !== "Owner"))
+      return true;
+    return false;
+  };
+
+  const menuMore = (
+    <Menu>
+      {roleUser === "Owner"
+        ? role === "Admin"
+          ? removeAdminMenuItem()
+          : addAdminMenuItem()
+        : ""}
+
+      {roleUser === "Owner"
+        ? role === "Member"
+          ? addModeratorMenuItem()
+          : role === "Moderator"
+          ? removeModeratorMenuItem()
+          : ""
+        : ""}
+
+      {roleUser === "Admin"
+        ? role !== "Moderator"
+          ? addModeratorMenuItem()
+          : removeModeratorMenuItem()
+        : ""}
+
+      {removeMember()}
     </Menu>
   );
 
@@ -172,7 +285,7 @@ function MemberCard(props) {
             >
               {txtButton}
             </Button>
-            {isOwner(user) ? (
+            {isAdmin() ? (
               <Dropdown
                 overlay={menuMore}
                 trigger={["click"]}

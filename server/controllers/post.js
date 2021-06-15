@@ -15,7 +15,7 @@ import User from "../models/user.js";
 import Group from "../models/group.js";
 import { asyncFilter } from "../utils/asyncFilter.js";
 import { customPagination } from "../utils/customPagination.js";
-import { isMemberOfGroup } from "../businessLogics/group.js";
+import { isMemberOfGroup, getMemberRoleInGroup, checkRoleHasPermissionOfRole } from "../businessLogics/group.js";
 
 //#region CRUD
 // GET post/list/all
@@ -47,19 +47,23 @@ export const getAPost = async (req, res) => {
       .then((post) => {
         const postObj = post.toObject();
 
-        if (
-          isPostVisibleByUser(
-            { ...postObj, userId: postObj.userId._id },
-            userId
-          )
-        )
-          return res.status(200).json(post);
-        else
+        isPostVisibleByUser(
+          { ...postObj, userId: postObj.userId._id },
+          userId
+        ).then(visible => {
+          if (visible)
+            return res.status(200).json(post);
+          else
+            return res
+              .status(httpStatusCodes.forbidden)
+              .json(
+                "You don't have permission to access this post due to its privacy"
+              );
+        }).catch(err => {
           return res
-            .status(httpStatusCodes.forbidden)
-            .json(
-              "You don't have permission to access this post due to its privacy"
-            );
+            .status(404)
+            .json({ message: `Cannot find a post with id: ${id}`, error: err });
+        })
       })
       .catch((err) => {
         return res
@@ -78,11 +82,15 @@ export const getAPost = async (req, res) => {
  */
 export const createPost = async (req, res) => {
   const post = req.body;
+  const { userId } = req;
 
   // new post shouldn't have an _id in it
   if (post._id) {
     return res.status(400).json("New post mustn't have _id field");
   }
+
+  let group = null;
+  let roleInGroup = null;
 
   // handle post in group
   if (post.privacy === "Group") {
@@ -93,7 +101,7 @@ export const createPost = async (req, res) => {
         .status(httpStatusCodes.badContent)
         .json({ message: `Field groupId is required when privacy is "Group"` });
 
-    const group = await Group.findById(groupId);
+    group = await Group.findById(groupId);
     if (!group)
       return res
         .status(httpStatusCodes.notFound)
@@ -104,8 +112,12 @@ export const createPost = async (req, res) => {
         .status(httpStatusCodes.forbidden)
         .send({ message: `You are not in this group` });
 
+    roleInGroup = getMemberRoleInGroup(userId, group)
+
     post.groupPostInfo = {
       groupId,
+      status: checkRoleHasPermissionOfRole(roleInGroup, "Moderator")
+        ? "Approved" : "Pending",
     };
   }
   delete post.groupId;
@@ -118,6 +130,24 @@ export const createPost = async (req, res) => {
 
   try {
     await newPost.save();
+
+    // send review notification to mod of Group posts
+    if (post.privacy === "Group") {
+      if (!checkRoleHasPermissionOfRole(roleInGroup, "Moderator")) {
+        group?.listMembers?.forEach(member => {
+          if (checkRoleHasPermissionOfRole(member?.role, "Moderator"))
+            sendNotificationUser({
+              userId: member?.userId,
+              kind: "NewGroupPost_GroupModerator",
+              content: {
+                description: `A new post "${newPost?.title}" has been uploaded to your group "${group.name}". Click here to review it.`,
+              },
+              link: `/post/${newPost?._id}`,
+            });
+        })
+      }
+    }
+
     return res.status(httpStatusCodes.created).json(newPost);
   } catch (error) {
     return res
@@ -139,7 +169,7 @@ export const updatePost = async (req, res) => {
         .status(httpStatusCodes.badContent)
         .send(`New post information is required`);
 
-    const post = await (await Post.findById(id)).toObject();
+    const post = (await Post.findById(id)).toObject();
     if (!post)
       return res
         .status(httpStatusCodes.notFound)
@@ -152,31 +182,66 @@ export const updatePost = async (req, res) => {
     }
 
     const updatedPost = {
+      ...post,
       ...newPost,
-      _id: id,
     };
+
+    // resetting group post status
+    let group = null;
+    let roleInGroup = null;
+
+    if (post.privacy === "Group") {
+      group = await Group.findById(post.groupPostInfo.groupId);
+      roleInGroup = getMemberRoleInGroup(userId, group)
+
+      post.groupPostInfo.status =
+        checkRoleHasPermissionOfRole(roleInGroup, "Moderator")
+          ? "Approved" : "Pending";
+    }
 
     if (isPostUpdated(post, updatedPost)) {
       updatedPost.contentUpdatedAt = Date.now();
     }
 
     await Post.findByIdAndUpdate(id, updatedPost, { new: true }).then((res) => {
-      res?.interactionInfo?.listUsersFollowing?.forEach((item, i) => {
-        if (isPostVisibleByUser(updatedPost, userId)) {
-          // edit privacy to friend handle
-          if (!item.equals(userId)) {
-            sendNotificationUser({
-              userId: item,
-              kind: "UpdatePost_PostFollowers",
-              content: {
-                description: `Post '${res?.title}' that you are following has been edited`,
-              },
-              link: `/post/${res?._id}`,
-            });
-          }
+      // send review notification to mod of Group posts
+      if (res?.privacy === "Group") {
+        if (!checkRoleHasPermissionOfRole(roleInGroup, "Moderator")) {
+          group?.listMembers?.forEach(member => {
+            if (checkRoleHasPermissionOfRole(member?.role, "Moderator"))
+              sendNotificationUser({
+                userId: member?.userId,
+                kind: "UpdatedGroupPost_GroupModerator",
+                content: {
+                  description: `The post "${res?.title}" in your group "${group.name}" has been updated. Click here to review it.`,
+                },
+                link: `/post/${res?._id}`,
+              });
+          })
         }
+      }
+
+      const groupPostNote = (res?.privacy === "Group" && res?.groupPostInfo?.status === "Pending") ?
+        " It may be under review for a while." : "";
+
+      res?.interactionInfo?.listUsersFollowing?.forEach((item, i) => {
+        isPostVisibleByUser(updatedPost, userId).then(visible => {
+          if (visible) {
+            // edit privacy to friend handle
+            if (!item.equals(userId)) {
+              sendNotificationUser({
+                userId: item,
+                kind: "UpdatePost_PostFollowers",
+                content: {
+                  description: `Post '${res?.title}' that you are following has been edited.` + groupPostNote,
+                },
+                link: `/post/${res?._id}`,
+              });
+            }
+          }
+        });
       });
-    });
+    })
     return res.status(httpStatusCodes.ok).json(updatedPost);
   } catch (error) {
     return res
@@ -238,7 +303,7 @@ export const getMyPostInteractions = async (req, res) => {
     let filterJson = undefined;
     try {
       filterJson = JSON.parse(filter);
-    } catch {}
+    } catch { }
 
     const interactions = await getInteractionOfAUser(id, userId, filterJson);
     return res.status(httpStatusCodes.ok).json(interactions);
@@ -369,14 +434,14 @@ export const getPostsPagination = async (req, res) => {
       .status(httpStatusCodes.ok)
       .send(
         `space query:\n` +
-          ` - (empty): All visible posts\n` +
-          ` - news_feed: All posts from other users and posts in joined group\n` +
-          ` - user_profile: All posts of a user which are not in group (ownerId query is required)\n` +
-          ` - pending_in_group: All posts that's currently pending in a group (groupId query is required)\n` +
-          ` - group: All approved posts in the same group (groupId query is required)\n` +
-          `\n` +
-          `ownerId query: Filter out all posts of just 1 user\n` +
-          `groupId query: Filter out all posts of just 1 group\n`
+        ` - (empty): All visible posts\n` +
+        ` - news_feed: All posts from other users and posts in joined group\n` +
+        ` - user_profile: All posts of a user which are not in group (ownerId query is required)\n` +
+        ` - pending_in_group: All posts that's currently pending in a group (groupId query is required)\n` +
+        ` - group: All approved posts in the same group (groupId query is required)\n` +
+        `\n` +
+        `ownerId query: Filter out all posts of just 1 user\n` +
+        `groupId query: Filter out all posts of just 1 group\n`
       );
   }
 
@@ -510,33 +575,132 @@ export const getOtherPosts = async (req, res) => {
   }
 };
 
+
 /**
- * @deprecated
+ * @param {express.Request<ParamsDictionary, any, any, QueryString.ParsedQs, Record<string, any>>} req
+ * @param {express.Response<any, Record<string, any>, number>} res
+ * @param {express.NextFunction} next
  */
-export const likePost = async (req, res) => {
-  const { id } = req.params;
+export const canReviewGroupPost = async (req, res, next) => {
+  const { userId } = req;
+  const { postId } = req.params;
 
-  // auth
-  if (!req.userId) {
-    return res.json({ message: "Unauthenticated" });
+  if (!userId)
+    return res.status(httpStatusCodes.unauthorized).send("You have to sign in to review a post");
+
+  try {
+    const post = await Post.findById(postId);
+
+    if (!post)
+      return res
+        .status(httpStatusCodes.notFound)
+        .send(`Cannot find a post with id: ${postId}`);
+
+    const { groupId } = post.groupPostInfo ?? {};
+
+    if (post.privacy !== "Group" || !groupId)
+      return res
+        .status(httpStatusCodes.badContent)
+        .send(`Not a group post`);
+
+    const group = await Group.findById(groupId);
+
+    if (!group)
+      return res
+        .status(httpStatusCodes.notFound)
+        .send("The group of this post does not exist");
+
+    const userRole = getMemberRoleInGroup(userId, group);
+    if (!checkRoleHasPermissionOfRole(userRole, "Moderator"))
+      return res
+        .status(httpStatusCodes.forbidden)
+        .send("You don't have permission to review this post due to your role or you're not in this group");
+
+    req.groupPost = {
+      post,
+      group,
+    }
+
+    return next?.();
+  } catch (error) {
+    return res
+      .status(httpStatusCodes.internalServerError)
+      .json({ message: error.message });
   }
+}
 
-  if (!mongoose.Types.ObjectId.isValid(id))
-    return res.status(404).send(`No post with id: ${id}`);
+/**
+ * @param {express.Request<ParamsDictionary, any, any, QueryString.ParsedQs, Record<string, any>>} req
+ * @param {express.Response<any, Record<string, any>, number>} res
+ * @param {express.NextFunction} next
+ */
+export const approveGroupPost = async (req, res, next) => {
+  try {
+    const { post, group } = req.groupPost;
+    const { postId } = req.params;
 
-  const post = await Post.findById(id);
+    if (post.groupPostInfo.status === "Approved")
+      return res
+        .status(httpStatusCodes.badContent)
+        .send("This post has already been approved")
 
-  const index = post.likes.findIndex((id) => id === String(req.userId));
+    post.groupPostInfo.status = "Approved";
+    const newPost = await Post.findByIdAndUpdate(postId, post, { new: true });
 
-  if (index === -1) {
-    post.likes.push(req.userId);
-  } else {
-    post.likes = post.likes.filter((id) => id !== String(req.userId));
+    sendNotificationUser({
+      userId: post?.userId?.toString(),
+      kind: "ApprovedPost_PostOwner",
+      content: {
+        description: `Your post "${post?.title}" in group "${group?.name}" has been approved.`,
+      },
+      link: `/post/${post?._id}`,
+    });
+
+    return res
+      .status(httpStatusCodes.ok)
+      .send(newPost);
+
+  } catch (error) {
+    return res
+      .status(httpStatusCodes.internalServerError)
+      .json({ message: error.message });
   }
+}
 
-  const updatedPost = await Post.findByIdAndUpdate(id, post, {
-    new: true,
-  });
+/**
+ * @param {express.Request<ParamsDictionary, any, any, QueryString.ParsedQs, Record<string, any>>} req
+ * @param {express.Response<any, Record<string, any>, number>} res
+ * @param {express.NextFunction} next
+ */
+export const declineGroupPost = async (req, res, next) => {
+  try {
+    const { post, group } = req.groupPost;
+    const { postId } = req.params;
 
-  res.json(updatedPost);
-};
+    const backUpContent = post?.toObject?.()?.content;
+    delete backUpContent.createdAt;
+    delete backUpContent.updatedAt;
+    delete backUpContent._id;
+
+    await Post.findByIdAndDelete(postId);
+
+    sendNotificationUser({
+      userId: post?.userId?.toString(),
+      kind: "DeclinedPost_PostOwner",
+      content: {
+        description: `Your post "${post?.title}" in group "${group?.name}" has been declined.`,
+        postBackUp: backUpContent,
+      },
+      link: `/?postBackUp=${JSON.stringify(backUpContent)}`,
+    });
+
+    return res
+      .status(httpStatusCodes.ok)
+      .send("Post declined and deleted");
+
+  } catch (error) {
+    return res
+      .status(httpStatusCodes.internalServerError)
+      .json({ message: error.message });
+  }
+}
