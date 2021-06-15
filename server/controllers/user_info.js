@@ -11,9 +11,24 @@ import Hashtag from "../models/hashtag.js";
 export const getUserInfo = async (req, res) => {
   const { id } = req.params;
 
+  if (!id.match(/^[0-9a-fA-F]{24}$/)) {
+    return res
+      .status(httpStatusCodes.notFound)
+      .json(`Cannot find user with id: ${id}`);
+  }
+
   try {
-    const currentUser = await User.findById(id);
-    res.status(200).json(currentUser);
+    await User.findById(id).then((user) => {
+      if (!user)
+        return res
+          .status(httpStatusCodes.notFound)
+          .json(`Cannot find user with id: ${id}`);
+      else {
+        const userObj = user.toObject();
+        delete userObj.password;
+        return res.status(httpStatusCodes.ok).json(userObj);
+      }
+    });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

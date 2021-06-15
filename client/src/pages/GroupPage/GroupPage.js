@@ -82,8 +82,14 @@ function GroupPage(props) {
 
   useEffect(() => {
     async function fetchGroupInfo() {
-      const { data } = await api.fetchAGroup(id);
-      setGroup(data);
+      await api
+        .fetchAGroup(id)
+        .then((res) => {
+          setGroup(res.data);
+        })
+        .catch((error) => {
+          if (error.response?.status === 404) history.push("/error404");
+        });
     }
     fetchGroupInfo();
     //console.log(group);

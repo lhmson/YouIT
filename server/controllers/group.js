@@ -14,6 +14,12 @@ import { httpStatusCodes } from "../utils/httpStatusCode.js";
 export const getAGroup = async (req, res, next) => {
   const { groupId } = req.params;
 
+  if (!groupId.match(/^[0-9a-fA-F]{24}$/)) {
+    return res
+      .status(httpStatusCodes.notFound)
+      .json(`Cannot find a group with id: ${groupId}`);
+  }
+
   try {
     const { userId } = req;
     if (!userId)
@@ -27,7 +33,7 @@ export const getAGroup = async (req, res, next) => {
         else
           return res
             .status(httpStatusCodes.notFound)
-            .json(`Cannot find a group with id: ${id}`);
+            .json(`Cannot find a group with id: ${groupId}`);
       })
       .catch((err) => {
         return res
