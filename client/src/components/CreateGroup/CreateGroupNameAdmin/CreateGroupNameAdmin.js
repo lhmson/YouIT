@@ -10,7 +10,7 @@ const CreateGroupNameAdmin = () => {
   const displayName = user?.result?.name ?? "";
 
   const avatarUrl =
-    user?.avatarUrl ??
+    user?.result?.avatarUrl ??
     "https://pbs.twimg.com/profile_images/1247161286518964226/m92qVTIT_400x400.jpg";
 
   return (
@@ -18,7 +18,7 @@ const CreateGroupNameAdmin = () => {
       <Link to="/">
         <Avatar
           src={avatarUrl}
-          alt="avatar"
+          alt={user?.result?.name}
           className="ml-1 clickable"
           size={80}
         />

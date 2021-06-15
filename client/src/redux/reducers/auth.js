@@ -9,6 +9,7 @@ const authReducer = (state = { authData: null }, action) => {
           result: {
             name: action?.data.result.name,
             _id: action?.data.result._id,
+            avatarUrl: action?.data.result.avatarUrl,
           },
         })
       );

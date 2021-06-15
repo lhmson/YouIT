@@ -33,11 +33,13 @@ export const getSearchPosts = async (req, res) => {
   }
   if (!q) return res.status(200).json([]);
   try {
-    const posts = await Post.find({}).populate("userId", "name").populate({
-      path: "groupPostInfo.groupId",
-      select: "name",
-      model: "Group",
-    });
+    const posts = await Post.find({})
+      .populate("userId", "name avatarUrl")
+      .populate({
+        path: "groupPostInfo.groupId",
+        select: "name",
+        model: "Group",
+      });
     asyncFilter(posts, async (post) => {
       // console.log(post.title, await isPostVisibleByUser(post, req.userId));
       return (

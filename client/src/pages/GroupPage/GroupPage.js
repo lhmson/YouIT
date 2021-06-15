@@ -155,6 +155,7 @@ function GroupPage(props) {
           <div className="feed-container">
             <AdminGroupSidebar
               className="sidebar"
+              selectMenu={menu}
               // setModeSearch={setModeSearch}
             />
             <div

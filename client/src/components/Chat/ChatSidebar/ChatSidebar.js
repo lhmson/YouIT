@@ -115,7 +115,7 @@ function ChatSidebar({
 
     messageHandle.onRemove((msg) => {
       handleFetchListUnseenConversations();
-    })
+    });
 
     messageHandle.onConversationCreated((msg) => {
       handleFetchListUnseenConversations();
@@ -140,7 +140,7 @@ function ChatSidebar({
   // }, []);
   // need real time update there
 
-  const handleSearch = () => { };
+  const handleSearch = () => {};
 
   const handleChangeUserToAdd = (value, options) => {
     // console.log("opt", options);
@@ -172,11 +172,17 @@ function ChatSidebar({
 
   const renderAvatar = (item) => {
     if (item.listMembers.length <= 2) {
+      // conversation of one or two
+      const member = item?.listMembers?.find(
+        (member) => member._id !== user?.result?._id
+      );
+
       return (
-        item.avatar ??
+        member.avatarUrl ??
         "https://st4.depositphotos.com/4329009/19956/v/380/depositphotos_199564354-stock-illustration-creative-vector-illustration-default-avatar.jpg"
       );
     } else {
+      // group chat
       return "https://cdn.iconscout.com/icon/free/png-256/group-1543545-1306001.png";
     }
   };
@@ -280,13 +286,14 @@ function ChatSidebar({
         <>
           <div className="conversation-list">
             {currentId &&
-              listConversations &&
-              listConversations.length !== 0 ? (
+            listConversations &&
+            listConversations.length !== 0 ? (
               listConversations.map((item, i) => (
                 <div key={item?._id} onClick={() => updateCurrentId(item?._id)}>
                   <div
-                    className={`conversation ${item?._id === currentId && "active"
-                      }`}
+                    className={`conversation ${
+                      item?._id === currentId && "active"
+                    }`}
                   >
                     <Badge
                       dot

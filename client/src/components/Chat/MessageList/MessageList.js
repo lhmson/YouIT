@@ -44,7 +44,7 @@ function ConversationList({ currentId, listSeenMembers, setListSeenMembers }) {
         if (msg.res.conversationId === currentId) {
           handleMessageDeleted(msg.res.messageId);
         }
-      })
+      });
 
       messageHandle.onSeen((msg) => {
         if (msg.res.conversationId === currentId) {
@@ -104,17 +104,19 @@ function ConversationList({ currentId, listSeenMembers, setListSeenMembers }) {
   /** send delete request */
   const handleDeleteMessage = (messageId) => {
     apiConversation.deleteMessage(currentId, messageId);
-  }
+  };
 
   /** handle when receive delete request */
   const handleMessageDeleted = (messageId) => {
-    setToBeDeletedMessages(prev => [...prev, messageId]);
+    setToBeDeletedMessages((prev) => [...prev, messageId]);
 
     setTimeout(() => {
-      setListMessages(prev => prev.filter(msg => msg?._id !== messageId));
-      setToBeDeletedMessages(prev => prev.filter(msg => msg?._id !== messageId))
-    }, MESSAGE_DELETE_DELAY)
-  }
+      setListMessages((prev) => prev.filter((msg) => msg?._id !== messageId));
+      setToBeDeletedMessages((prev) =>
+        prev.filter((msg) => msg?._id !== messageId)
+      );
+    }, MESSAGE_DELETE_DELAY);
+  };
 
   return (
     <div className="chat-message-list">
@@ -127,16 +129,20 @@ function ConversationList({ currentId, listSeenMembers, setListSeenMembers }) {
           {listMessages?.map((item, i) => (
             <div
               key={item.toString()}
-              className={`message-row ${item.senderId._id === user?.result?._id
-                ? "you-message"
-                : "other-message"
-                }`}
+              className={`message-row ${
+                item.senderId._id === user?.result?._id
+                  ? "you-message"
+                  : "other-message"
+              }`}
             >
               <div className="message-content">
                 <Tooltip title={item.senderId.name} placement="bottom">
                   {item.senderId._id !== user?.result?._id && (
                     <img
-                      src="https://st4.depositphotos.com/4329009/19956/v/380/depositphotos_199564354-stock-illustration-creative-vector-illustration-default-avatar.jpg"
+                      src={
+                        item.senderId.avatarUrl ??
+                        "https://st4.depositphotos.com/4329009/19956/v/380/depositphotos_199564354-stock-illustration-creative-vector-illustration-default-avatar.jpg"
+                      }
                       alt={item.senderId._id}
                     />
                   )}
@@ -145,7 +151,10 @@ function ConversationList({ currentId, listSeenMembers, setListSeenMembers }) {
                   {item.senderId._id === user?.result?._id && (
                     <>
                       <Tooltip title="Delete">
-                        <DeleteOutlined className="clickable icon mr-2" onClick={() => handleDeleteMessage(item?._id)} />
+                        <DeleteOutlined
+                          className="clickable icon mr-2"
+                          onClick={() => handleDeleteMessage(item?._id)}
+                        />
                       </Tooltip>
                     </>
                   )}
@@ -155,7 +164,11 @@ function ConversationList({ currentId, listSeenMembers, setListSeenMembers }) {
                   >
                     <div
                       className="message-text"
-                      style={toBeDeletedMessages.includes(item?._id) ? { backgroundColor: "#ff6961" } : {}} // Refactor this to CSS?
+                      style={
+                        toBeDeletedMessages.includes(item?._id)
+                          ? { backgroundColor: "#ff6961" }
+                          : {}
+                      } // Refactor this to CSS?
                     >
                       {item.text}
                     </div>

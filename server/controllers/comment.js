@@ -57,7 +57,7 @@ export const replyComment = async (req, res) => {
       .catch((error) => {
         res.status(404).json({ message: error.message });
       });
-  } catch (error) { }
+  } catch (error) {}
 };
 
 export const getComments = async (req, res) => {
@@ -70,7 +70,7 @@ export const getComments = async (req, res) => {
       path: "comments",
       populate: {
         path: "userId",
-        select: "name",
+        select: "name avatarUrl",
       },
     })
     .populate({
@@ -79,18 +79,18 @@ export const getComments = async (req, res) => {
         path: "quotedCommentId",
         populate: {
           path: "userId",
-          select: "name",
+          select: "name avatarUrl",
         },
       },
     })
     .then(
       (post) => {
         // console.log(post.comments.length);
-        if (!post)
-          res.status(404).send("Post not found");
+        if (!post) res.status(404).send("Post not found");
         else {
           post.comments.map((c) => {
-            if (c.quotedCommentId === null) console.log("null quoted comment", c);
+            if (c.quotedCommentId === null)
+              console.log("null quoted comment", c);
           });
           res.status(200).json(post.comments);
         }
@@ -113,7 +113,7 @@ export const getCommentsNumber = async (req, res) => {
         path: "quotedCommentId",
         populate: {
           path: "userId",
-          select: "name",
+          select: "name avatarUrl",
         },
       },
     })
@@ -195,7 +195,7 @@ export const getMyCommentInteractions = async (req, res) => {
     let filterJson = undefined;
     try {
       filterJson = JSON.parse(filter);
-    } catch { }
+    } catch {}
 
     const interactions = await getInteractionOfAUser(id, userId, filterJson);
     return res.status(httpStatusCodes.ok).json(interactions);

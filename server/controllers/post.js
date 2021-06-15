@@ -39,7 +39,7 @@ export const getAPost = async (req, res) => {
 
   try {
     await Post.findById(id)
-      .populate("userId", "name") // need to populate more item (avatar, )
+      .populate("userId", "name avatarUrl") // need to populate more item (avatar, )
       .populate({
         path: "groupPostInfo.groupId",
         select: "name",
@@ -458,7 +458,7 @@ export const getPostsPagination = async (req, res) => {
 
   try {
     await Post.find()
-      .populate("userId", "name")
+      .populate("userId", "name avatarUrl")
       .populate({
         path: "groupPostInfo.groupId",
         select: "name",

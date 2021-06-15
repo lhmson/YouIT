@@ -209,7 +209,7 @@ function Navbar({ selectedMenu, setTxtSearch, txtInitSearch }) {
             <Avatar
               size="large"
               alt={user?.result?.name}
-              src={user?.result?.imageUrl}
+              src={user?.result?.avatarUrl}
               onClick={() => history.push(`/userinfo/${user?.result._id}`)}
             >
               {user?.result?.name}
