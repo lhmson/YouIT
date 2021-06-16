@@ -19,7 +19,6 @@ import {
   ShareAltOutlined,
   CaretRightOutlined,
   EditFilled,
-  StopOutlined,
   DeleteFilled,
   BellOutlined,
   FlagOutlined,
@@ -32,6 +31,7 @@ import moment from "moment";
 import { useDispatch } from "react-redux";
 import { Link, useHistory } from "react-router-dom";
 import styles from "./styles";
+import { ReactTinyLink } from "react-tiny-link";
 import {
   upvotePost,
   unvotePost,
@@ -45,6 +45,7 @@ import { deletePost } from "../../../../redux/actions/posts";
 import { HashLink } from "react-router-hash-link";
 import { useLocalStorage } from "../../../../hooks/useLocalStorage";
 import { limitNameLength } from "../../../../utils/limitNameLength";
+import ShareButton from "./ShareButton";
 
 const { Title, Text, Paragraph } = Typography;
 
@@ -265,14 +266,18 @@ function FeedPost({ post, setCurrentId }) {
       });
   };
 
-  const handleSharePost = (id) => {
-    history.push({
-      pathname: `post/create`,
-      state: { pinnedUrl: `${window.location.origin}/post/${id}` },
-    });
-  };
-
   const groupId = post?.groupPostInfo?.groupId;
+
+  const renderUserInfo = () => {
+    const userInfo = post?.userId?.userInfo;
+    const education = userInfo.educations?.[userInfo.educations?.length - 1];
+    const work = userInfo.works?.[userInfo.works?.length - 1];
+    const educationInfo = education
+      ? `${education?.moreInfo} at ${education?.schoolName}`
+      : null;
+    const workInfo = work ? `${work?.position} at ${work?.location}` : null;
+    return workInfo || educationInfo;
+  };
 
   const renderPrivacyIcon = (privacy) => {
     switch (privacy) {
@@ -330,7 +335,9 @@ function FeedPost({ post, setCurrentId }) {
                   )}
                 </Space>
               </Row>
-              <Text>Fullstack Developer</Text>
+              <Text strong className="green">
+                {renderUserInfo()}
+              </Text>
             </div>
           </Row>
           <Row className="justify-content-end align-items-center pb-3">
@@ -381,6 +388,19 @@ function FeedPost({ post, setCurrentId }) {
               sunt in culpa qui officia deserunt mollit anim id est laborum.
             </Paragraph> */}
             <Paragraph>{limitNameLength(post?.content?.text, 500)}</Paragraph>
+            <Row className="justify-content-center">
+              <ReactTinyLink
+                cardSize="small"
+                width={1500}
+                // header="YouIT Share"
+                showGraphic={true}
+                defaultMedia="http://localhost:3000/static/media/lightlogo.c68302e9.png"
+                maxLine={2}
+                minLine={1}
+                url="http://localhost:3000/userinfo/60b8fec93496700f58ecfc70"
+              />
+            </Row>
+
             <Link to={`/post/${post._id}`} target="_blank">
               <Text className="clickable bold">Click here to read more</Text>
             </Link>
@@ -435,12 +455,7 @@ function FeedPost({ post, setCurrentId }) {
                   onClick={() => copyLink(post._id)}
                 />
               </Tooltip>
-              <Tooltip title="Share">
-                <ShareAltOutlined
-                  className="clickable icon"
-                  onClick={() => handleSharePost(post._id)}
-                />
-              </Tooltip>
+              <ShareButton post={post} />
             </Space>
           </Row>
         </Row>

@@ -278,6 +278,17 @@ function FullPost({ post }) {
 
   const groupId = post?.groupPostInfo?.groupId;
 
+  const renderUserInfo = () => {
+    const userInfo = post?.userId?.userInfo;
+    const education = userInfo.educations?.[userInfo.educations?.length - 1];
+    const work = userInfo.works?.[userInfo.works?.length - 1];
+    const educationInfo = education
+      ? `${education?.moreInfo} at ${education?.schoolName}`
+      : null;
+    const workInfo = work ? `${work?.position} at ${work?.location}` : null;
+    return workInfo || educationInfo;
+  };
+
   const renderPrivacyIcon = (privacy) => {
     switch (privacy) {
       case "Friend":
@@ -334,7 +345,9 @@ function FullPost({ post }) {
                   )}
                 </Space>
               </Row>
-              <Text>Fullstack Developer</Text>
+              <Text strong className="green">
+                {renderUserInfo()}
+              </Text>
             </div>
           </Row>
           <Row className="justify-content-end align-items-center pb-3">
