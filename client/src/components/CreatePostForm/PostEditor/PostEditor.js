@@ -21,7 +21,7 @@ function PostEditor({ postContentText, setPostContentText }) {
       },
       previewImagesInEditor: true,
       placeholder: "// Start your blog here!",
-      uploadImage: true,
+      // uploadImage: true,
       imageUploadFunction: () => console.log("yooo"),
       toolbar: [
         'heading', 'bold', 'italic', 'strikethrough', 'code', '|',

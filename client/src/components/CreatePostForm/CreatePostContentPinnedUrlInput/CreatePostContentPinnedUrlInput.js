@@ -10,7 +10,7 @@ function CreatePostContentPinnedUrlInput({ contentPinnedUrl, setContentPinnedUrl
   return (
     <div>
       <Input
-        placeholder="Enter title"
+        placeholder="Attached URL"
         value={contentPinnedUrl}
         onChange={handleTextChange}
       />
