@@ -11,6 +11,7 @@ import PostEditor from "./PostEditor/PostEditor.js";
 import CreatePostContentPinnedUrlInput from "./CreatePostContentPinnedUrlInput/CreatePostContentPinnedUrlInput.js";
 import { useLocalStorage } from "../../hooks/useLocalStorage.js";
 import { Prompt } from "react-router-dom";
+import { isURL } from "../../utils/isUrl.js";
 
 function CreatePostForm({
   postId = null,
@@ -103,8 +104,10 @@ function CreatePostForm({
 
     if (!post) return errorResult("Something when wrong.");
     if (!post.title) return errorResult("A post must have a title.");
-    if (!post.content?.text && !post.content?.pinnedUrl)
+    if ((!post.content?.text) && (!post.content?.pinnedUrl))
       return errorResult("A post must have some content.");
+    if ((post?.content?.pinnedUrl) && (!isURL(post?.content?.pinnedUrl)))
+      return errorResult("Attached URL is not valid");
     if (post.privacy === "Group" && !post.groupId)
       return errorResult("The selected group to post is not valid");
 

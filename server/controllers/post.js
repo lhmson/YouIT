@@ -63,12 +63,10 @@ export const getAPost = async (req, res) => {
                 );
           })
           .catch((err) => {
-            return res
-              .status(404)
-              .json({
-                message: `Cannot find a post with id: ${id}`,
-                error: err,
-              });
+            return res.status(404).json({
+              message: `Cannot find a post with id: ${id}`,
+              error: err,
+            });
           });
       })
       .catch((err) => {
@@ -237,7 +235,7 @@ export const updatePost = async (req, res) => {
           : "";
 
       res?.interactionInfo?.listUsersFollowing?.forEach((item, i) => {
-        isPostVisibleByUser(updatedPost, userId).then((visible) => {
+        isPostVisibleByUser(updatedPost, item).then((visible) => {
           if (visible) {
             // edit privacy to friend handle
             if (!item.equals(userId)) {

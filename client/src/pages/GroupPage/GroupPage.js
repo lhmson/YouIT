@@ -1,6 +1,5 @@
-import { Layout, Row, Dropdown, Menu, Typography, message, Modal } from "antd";
 import React, { createContext, useEffect, useState } from "react";
-import { EllipsisOutlined, ExclamationCircleOutlined } from "@ant-design/icons";
+import { Layout, Row, Modal, message, Menu, Typography } from "antd";
 import {
   AdminGroupSidebar,
   CoverPhoto,
@@ -16,12 +15,11 @@ import { useLocation } from "react-router";
 import * as api from "../../api/group";
 import MemberRequestsResult from "../RequestsInGroupsPage/MemberRequestsResult/MemberRequestsResult.js";
 import PostRequestsResult from "../RequestsInGroupsPage/PostRequestsResult/PostRequestsResult.js";
-//import { leaveGroup } from "../../../../server/controllers/group.js";
-import COLOR from "../../constants/colors.js";
 import { useLocalStorage } from "../../hooks/useLocalStorage.js";
 import { useHistory } from "react-router";
 import styles from "./styles.js";
 import "./styles.css";
+import { ExclamationCircleOutlined } from "@ant-design/icons";
 
 import SettingView from "../../components/GroupPage/SettingView/SettingView.js";
 const { Content } = Layout;
@@ -34,11 +32,8 @@ export const GroupContext = createContext({
 function GroupPage(props) {
   const { id, menu } = props.match.params;
   const location = useLocation();
-
   const [group, setGroup] = useState(null);
   const valueContext = { group, setGroup };
-
-  // const [modeSearch, setModeSearch] = useState("group");
   const [user, setUser] = useLocalStorage("user");
   const history = useHistory();
 
@@ -223,30 +218,6 @@ function GroupPage(props) {
                       </Row>
                       <Row style={{ justifyContent: "space-between" }}>
                         <GroupMenu />
-                        {isJoinedGroup() ? (
-                          <Row
-                            style={{
-                              display: "flex",
-                              alignItems: "center",
-                            }}
-                          >
-                            <Dropdown
-                              overlay={menuMore}
-                              trigger={["click"]}
-                              placement="bottomCenter"
-                            >
-                              <EllipsisOutlined
-                                style={{
-                                  fontSize: 20,
-                                  color: COLOR.black,
-                                  marginLeft: 20,
-                                }}
-                              />
-                            </Dropdown>
-                          </Row>
-                        ) : (
-                          <></>
-                        )}
                       </Row>
                     </Content>
                   </Layout>

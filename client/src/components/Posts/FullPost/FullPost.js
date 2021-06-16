@@ -38,6 +38,7 @@ import {
 import { Link, useHistory } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { deletePost } from "../../../redux/actions/posts";
+import MarkdownRenderer from "../MarkdownRenderer/MarkdownRenderer";
 
 const { Title, Text, Paragraph } = Typography;
 const { confirm } = Modal;
@@ -152,7 +153,7 @@ function FullPost({ post }) {
 
   const [user] = useLocalStorage("user");
 
-  const handleMore = () => {};
+  const handleMore = () => { };
 
   const tagList = ["Tag 1", "Tag 2", "Tag 3", "Tag 4", "Tag 5"];
 
@@ -387,7 +388,8 @@ function FullPost({ post }) {
         <div className="break-word">
           <Title level={2}>{post?.title}</Title>
           <div className="pb-2">
-            <Paragraph>{post?.content?.text}</Paragraph>
+            {/* <Paragraph>{post?.content?.text}</Paragraph> */}
+            <MarkdownRenderer text={post?.content?.text} />
           </div>
         </div>
         <Row className="justify-content-between mb-4">
@@ -399,17 +401,15 @@ function FullPost({ post }) {
                 </Text>
                 <Tooltip title="Upvote">
                   <ArrowUpOutlined
-                    className={`clickable icon ${
-                      myInteractions?.upvote ? "green" : "black"
-                    }`}
+                    className={`clickable icon ${myInteractions?.upvote ? "green" : "black"
+                      }`}
                     onClick={() => handleUpvoteClick(post._id)}
                   />
                 </Tooltip>
                 <Tooltip title="Downvote">
                   <ArrowDownOutlined
-                    className={`clickable icon ${
-                      myInteractions?.downvote ? "green" : "black"
-                    }`}
+                    className={`clickable icon ${myInteractions?.downvote ? "green" : "black"
+                      }`}
                     onClick={() => handleDownvoteClick(post._id)}
                   />
                 </Tooltip>

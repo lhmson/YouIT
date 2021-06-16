@@ -14,6 +14,7 @@ import {
 } from "../businessLogics/comment.js";
 
 import { sendNotificationUser } from "../businessLogics/notification.js";
+import { isPostVisibleByUser } from "../businessLogics/post.js";
 
 export const createComment = async (req, res) => {
   const { postId } = req.params;
@@ -22,16 +23,48 @@ export const createComment = async (req, res) => {
   }
   const comment = new Comment(req.body);
   comment.userId = req.userId;
+
+  const user = await User.findById(req.userId);
+
+  if (!user) {
+    return res.status(httpStatusCodes.notFound).send("User not found.");
+  }
+
   await comment.save();
   try {
     await Post.findById(postId)
       .then(async (post) => {
+        if (!post)
+          return res.status(httpStatusCodes.notFound).send("Post not found.");
+
         post.comments.push(comment._id);
         await post.save();
+
+        post?.interactionInfo?.listUsersFollowing?.forEach((followerId) => {
+          isPostVisibleByUser(post, followerId).then(visible => {
+            if (visible) {
+              if (!followerId.equals(req.userId)) {
+                sendNotificationUser({
+                  userId: followerId,
+                  kind: "CommentToPost_PostFollowers",
+                  content: {
+                    description: `${user.name} has just commented on the post "${post.title}" that you followed.`,
+                  },
+                  link: `/post/${post?._id}/${comment._id}`,
+                });
+              }
+            }
+          });
+        });
+
+
+        post.inter
+
         res.status(201).json(post);
       })
       .catch((error) => {
-        res.status(404).json({ message: error.message });
+        console.error(error);
+        res.status(500).json({ message: error.message });
       });
   } catch (error) {
     res.status(500).json({ message: error.message });

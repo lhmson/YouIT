@@ -123,9 +123,7 @@ function PostRequests(props) {
         </div>
 
         <div className="row" style={{ padding: 16 }}>
-          <Paragraph>
-            {content ?? " ................................................."}
-          </Paragraph>
+          <Paragraph>{content ?? ""}</Paragraph>
           {/* <Link href="#" target="_blank" strong style={{ color: COLOR.green }}>
             Xem toàn bộ bài viết
           </Link> */}
