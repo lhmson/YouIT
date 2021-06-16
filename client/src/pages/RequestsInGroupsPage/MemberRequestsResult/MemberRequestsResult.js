@@ -2,6 +2,7 @@ import React, { useContext, useState, useEffect } from "react";
 import { GroupContext } from "../../GroupPage/GroupPage";
 import MemberRequests from "../../../components/MemberRequests/MemberRequests";
 import * as api from "../../../api/group";
+import COLOR from "../../../constants/colors";
 
 function MemberRequestsResult(props) {
   const { group } = useContext(GroupContext);
@@ -29,17 +30,23 @@ function MemberRequestsResult(props) {
     ));
 
   return (
-    <div className="col-10 offset-1">
-      <div
-        className="row"
-        style={{
-          height: 900,
-          paddingTop: 16,
-        }}
-      >
-        <div className="col-10 offset-1">
-          {/* <Text style={{ fontSize: 32, fontWeight: "bold" }}>Member</Text> */}
-          {listMembersRequestCard()}
+    <div
+      style={{
+        background: COLOR.whiteSmoke,
+      }}
+    >
+      <div className="col-10 offset-1">
+        <div
+          className="row"
+          style={{
+            height: 900,
+            paddingTop: 16,
+          }}
+        >
+          <div className="col-10 offset-1">
+            {/* <Text style={{ fontSize: 32, fontWeight: "bold" }}>Member</Text> */}
+            {listMembersRequestCard()}
+          </div>
         </div>
       </div>
     </div>

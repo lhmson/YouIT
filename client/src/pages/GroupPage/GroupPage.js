@@ -15,7 +15,6 @@ import { useLocation } from "react-router";
 import * as api from "../../api/group";
 import MemberRequestsResult from "../RequestsInGroupsPage/MemberRequestsResult/MemberRequestsResult.js";
 import PostRequestsResult from "../RequestsInGroupsPage/PostRequestsResult/PostRequestsResult.js";
-import { useLocalStorage } from "../../hooks/useLocalStorage.js";
 import { useHistory } from "react-router";
 import styles from "./styles.js";
 import "./styles.css";
@@ -32,7 +31,6 @@ function GroupPage(props) {
   const location = useLocation();
   const [group, setGroup] = useState(null);
   const valueContext = { group, setGroup };
-  const [user, setUser] = useLocalStorage("user");
   const history = useHistory();
 
   useEffect(() => {

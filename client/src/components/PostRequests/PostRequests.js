@@ -37,7 +37,7 @@ function PostRequests(props) {
         <Row className="align-items-center" style={{ marginBottom: 16 }}>
           <Avatar
             className="ml-1 clickable"
-            size={45}
+            size={60}
             src="https://scontent-xsp1-1.xx.fbcdn.net/v/t1.6435-9/150532368_2890525287933380_4029393584172411335_n.jpg?_nc_cat=108&ccb=1-3&_nc_sid=09cbfe&_nc_ohc=vNeUmNaYi4gAX92GO8S&_nc_ht=scontent-xsp1-1.xx&oh=121b4b571f04f2b3741faa799e988b9d&oe=60A2B225"
           />
           <div className="d-inline-flex flex-column ml-3 break-word">

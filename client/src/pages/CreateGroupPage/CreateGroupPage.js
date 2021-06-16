@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import {
   Card,
   Row,
@@ -10,18 +10,16 @@ import {
   Select,
   Divider,
   message,
+  Image,
 } from "antd";
 import COLOR from "../../constants/colors.js";
 import { useHistory } from "react-router";
 import { createGroup } from "../../api/group";
-import CoverPhoto from "../../components/CreateGroup/CoverPhoto/CoverPhoto.js";
 import Navbar from "../../components/Navbar/Navbar";
 import CreateGroupName from "../../components/CreateGroup/CreateGroupName/CreateGroupName";
 import CreateGroupDescription from "../../components/CreateGroup/CreateGroupDescription/CreateGroupDescription";
 import CreateGroupMembers from "../../components/CreateGroup/CreateGroupMembers/CreateGroupMembers";
-import { OverviewRow } from "../../components/UserInfo/AboutCard/index.js";
 import { IoMdLock } from "react-icons/all";
-import { useLocalStorage } from "../../hooks/useLocalStorage";
 import CreateGroupNameAdmin from "../../components/CreateGroup/CreateGroupNameAdmin/CreateGroupNameAdmin.js";
 
 import styles from "./styles.js";
@@ -77,6 +75,25 @@ function CreateGroupPage() {
       });
   };
 
+  const [background, setBackground] = useState(
+    "https://vnn-imgs-f.vgcloud.vn/2020/09/07/15/.jpg"
+  );
+
+  const hiddenBackgroundInput = useRef(null);
+
+  // const handleBackgroundChange = async (e) => {
+  //   const fileUploaded = e.target.files[0];
+  //   const base64 = await convertFileToBase64(fileUploaded);
+
+  //   const updatedGroup = {
+  //     ...group,
+  //     backgroundUrl: base64,
+  //   };
+  //   const { data } = await apiGroup.updateGroup(updatedGroup);
+  //   console.log(data);
+  //   setBackground(data.backgroundUrl);
+  // };
+
   // const handleFinishFailed = (errorInfo) => {
   //   errorInfo.errorFields.map((err) => {
   //     message.error(err.errors[0]);
@@ -87,7 +104,7 @@ function CreateGroupPage() {
     "Anyone can see who's in the group and what they post.";
 
   const publicDescription =
-    "Anyone can see who's in the group and what they post.";
+    "Only group members can see who's in the group and what they post. .";
 
   const PrivateIcon = () => {
     return <IoMdLock style={styles.icon} />;
@@ -114,15 +131,9 @@ function CreateGroupPage() {
         <Card className="shadow-lg rounded" bordered={false}>
           <Row>
             <Col span={8} style={{ paddingRight: 24, marginBottom: 0 }}>
-              <Row>
-                <Title style={{ marginBottom: 8 }}>Create a group</Title>
-              </Row>
-              <Row style={{ marginBottom: 18, marginTop: 18 }}>
-                <CreateGroupNameAdmin />
-                {/* <AvatarView /> */}
-              </Row>
+              <Title style={{ marginBottom: 20 }}>Create a group</Title>
+              <CreateGroupNameAdmin />
               <Form
-                style={{ marginTop: 40 }}
                 name="basic"
                 size="large"
                 // onFinish={handleFinish}
@@ -142,7 +153,6 @@ function CreateGroupPage() {
 
                 <Row gutter={8}>
                   <Col span={10}>
-                    {" "}
                     <Form.Item
                       name="groupPrivacyItem"
                       // rules={[
@@ -229,21 +239,61 @@ function CreateGroupPage() {
                       Preview
                     </Title>
                   </Row>
-                  <CoverPhoto />
-                  <Row style={{ display: "flex", flexDirection: "row" }}>
-                    <Col span={12}>
-                      <Layout style={{ marginBottom: 32 }}>
-                        <Text
-                          style={{ fontSize: 40, fontWeight: "bold" }}
-                          placeholder="Group Name"
+                  {/* <CoverPhoto /> */}
+                  <div style={{ position: "relative" }}>
+                    <Layout
+                      style={{
+                        position: "relative",
+                        height: "40vh",
+                        marginBottom: 32,
+                      }}
+                    >
+                      <Image
+                        src={background}
+                        style={{
+                          maxHeight: "40vh",
+                          width: "100%",
+                          objectFit: "cover",
+                          height: "auto",
+                          display: "block",
+                        }}
+                      ></Image>
+                      <div>
+                        <Button
+                          className="green-button"
+                          style={styles.editImageBtn}
+                          onClick={() => hiddenBackgroundInput.current.click()}
                         >
-                          {groupName !== "" ? groupName : "Group Name"}
-                        </Text>
-                        <Text style={{ fontSize: 18 }}>{groupPrivacy}</Text>
-                        <Text style={{ fontSize: 20, fontWeight: "bold" }}>
-                          {`#${groupTopic}`}
-                        </Text>
-                      </Layout>
+                          Edit cover photo
+                        </Button>
+                        <input
+                          type="file"
+                          ref={hiddenBackgroundInput}
+                          style={{ display: "none" }}
+                          // onChange={handleBackgroundChange}
+                        ></input>
+                      </div>
+                    </Layout>
+                  </div>
+                  <Row style={{ display: "flex", flexDirection: "row" }}>
+                    <Col
+                      style={{
+                        marginBottom: 32,
+                        display: "flex",
+                        flexDirection: "column",
+                        justifyContent: "space-between",
+                      }}
+                    >
+                      <Text
+                        style={{ fontSize: 40, fontWeight: "bold" }}
+                        placeholder="Group Name"
+                      >
+                        {groupName !== "" ? groupName : "Group Name"}
+                      </Text>
+                      <Text style={{ fontSize: 18 }}>{groupPrivacy}</Text>
+                      <Text style={{ fontSize: 20, fontWeight: "bold" }}>
+                        {`#${groupTopic}`}
+                      </Text>
                     </Col>
                   </Row>
                   <Layout
