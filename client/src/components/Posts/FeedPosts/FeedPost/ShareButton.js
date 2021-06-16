@@ -1,68 +1,30 @@
-import React, { useState, useEffect, useReducer } from "react";
-import { Typography, Modal, Tooltip, Image } from "antd";
-import { LinkOutlined, ShareAltOutlined } from "@ant-design/icons";
-import { useLocalStorage } from "../../../../hooks/useLocalStorage";
+import React, { useState } from "react";
+import { Modal, Tooltip } from "antd";
+import { ShareAltOutlined } from "@ant-design/icons";
 import { useHistory } from "react-router-dom";
 import {
   FacebookShareCount,
-  PinterestShareCount,
-  VKShareCount,
-  OKShareCount,
   RedditShareCount,
-  TumblrShareCount,
-  HatenaShareCount,
   FacebookShareButton,
   FacebookMessengerShareButton,
   FacebookMessengerIcon,
   LinkedinShareButton,
   TwitterShareButton,
-  PinterestShareButton,
-  VKShareButton,
-  OKShareButton,
   TelegramShareButton,
   WhatsappShareButton,
   RedditShareButton,
   EmailShareButton,
-  TumblrShareButton,
-  LivejournalShareButton,
-  MailruShareButton,
-  ViberShareButton,
-  WorkplaceShareButton,
-  LineShareButton,
-  WeiboShareButton,
-  PocketShareButton,
-  InstapaperShareButton,
-  HatenaShareButton,
   FacebookIcon,
   TwitterIcon,
   LinkedinIcon,
-  PinterestIcon,
-  VKIcon,
-  OKIcon,
   TelegramIcon,
   WhatsappIcon,
   RedditIcon,
-  TumblrIcon,
-  MailruIcon,
   EmailIcon,
-  LivejournalIcon,
-  ViberIcon,
-  WorkplaceIcon,
-  LineIcon,
-  PocketIcon,
-  InstapaperIcon,
-  WeiboIcon,
-  HatenaIcon,
 } from "react-share";
 import logo from "../../../../assets/lightlogo.png";
 
-const { Title, Text, Paragraph } = Typography;
-
-const { confirm } = Modal;
-
 function ShareButton({ post }) {
-  const [user] = useLocalStorage("user");
-
   const history = useHistory();
 
   const shareUrl = "https://github.com/kunal-mandalia/LevelUp";
