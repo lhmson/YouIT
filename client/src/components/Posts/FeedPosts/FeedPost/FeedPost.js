@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useReducer } from "react";
+import React, { useState, useEffect, useReducer, useMemo } from "react";
 import {
   Avatar,
   Typography,
@@ -84,8 +84,6 @@ function FeedPost({ post, setCurrentId }) {
       // add more items later
     }
   );
-
-  const tagList = ["tag 1", "tag 2", "tag 3", "tag 4"]; // handle tag later
 
   //#region menu more
   const showConfirmDeletePost = (id) => {
@@ -369,10 +367,12 @@ function FeedPost({ post, setCurrentId }) {
           </Row>
         </Row>
         <Row className="mb-1">
-          {tagList?.map((item, i) => (
-            <Tag key={i} className="mb-2 tag">
-              {item}
-            </Tag>
+          {post?.hashtags?.map((item, i) => (
+            <Tooltip title={`Mentioned ${item?.count} time${item?.count > 1 ? "s" : ""}`}>
+              <Tag key={i} className="mb-2 tag">
+                {item.name}
+              </Tag>
+            </Tooltip>
           ))}
         </Row>
         <div className="break-word">
@@ -415,17 +415,15 @@ function FeedPost({ post, setCurrentId }) {
                 </Text>
                 <Tooltip title="Upvote">
                   <ArrowUpOutlined
-                    className={`clickable icon ${
-                      myInteractions?.upvote ? "green" : "black"
-                    }`}
+                    className={`clickable icon ${myInteractions?.upvote ? "green" : "black"
+                      }`}
                     onClick={() => handleUpvoteClick(post._id)}
                   />
                 </Tooltip>
                 <Tooltip title="Downvote">
                   <ArrowDownOutlined
-                    className={`clickable icon ${
-                      myInteractions?.downvote ? "green" : "black"
-                    }`}
+                    className={`clickable icon ${myInteractions?.downvote ? "green" : "black"
+                      }`}
                     onClick={() => handleDownvoteClick(post._id)}
                   />
                 </Tooltip>

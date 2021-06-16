@@ -155,8 +155,6 @@ function FullPost({ post }) {
 
   const handleMore = () => { };
 
-  const tagList = ["Tag 1", "Tag 2", "Tag 3", "Tag 4", "Tag 5"];
-
   //#region menu more
 
   const showConfirmDeletePost = (id) => {
@@ -379,10 +377,12 @@ function FullPost({ post }) {
           </Row>
         </Row>
         <Row className="mb-1">
-          {tagList?.map((item, i) => (
-            <Tag key={i} className="mb-2 tag">
-              {item}
-            </Tag>
+          {post?.hashtags?.map((item, i) => (
+            <Tooltip title={`Mentioned ${item?.count} time${item?.count > 1 ? "s" : ""}`}>
+              <Tag key={i} className="mb-2 tag">
+                {item.name}
+              </Tag>
+            </Tooltip>
           ))}
         </Row>
         <div className="break-word">

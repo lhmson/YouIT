@@ -21,6 +21,7 @@ import {
   checkRoleHasPermissionOfRole,
 } from "../businessLogics/group.js";
 import moment from "moment";
+import { handleCreateHashtag, handleDeleteHashtags } from "../businessLogics/hashtag.js";
 
 //#region CRUD
 // GET post/list/all
@@ -48,6 +49,11 @@ export const getAPost = async (req, res) => {
         path: "groupPostInfo.groupId",
         select: "name",
         model: "Group",
+      })
+      .populate({
+        path: `hashtags`,
+        model: `Hashtag`,
+        select: "name count",
       })
       .then((post) => {
         const postObj = post.toObject();
@@ -127,6 +133,22 @@ export const createPost = async (req, res) => {
   }
   delete post.groupId;
 
+  // hashtags
+  if (post?.hashtagNames) {
+    post.hashtags = [];
+
+    for (let tagName of post?.hashtagNames) {
+      const addTagResult = await handleCreateHashtag({ name: tagName });
+
+      // add to official list hashtags
+      if (addTagResult.successful) {
+        post.hashtags.push(addTagResult.hashtag._id);
+      }
+    }
+
+    delete post.hashtagNames;
+  }
+
   const newPost = new Post({
     ...post,
     userId: req.userId,
@@ -174,11 +196,30 @@ export const updatePost = async (req, res) => {
         .status(httpStatusCodes.badContent)
         .send(`New post information is required`);
 
+    // hashtags
+    if (newPost?.hashtagNames) {
+      newPost.hashtags = [];
+
+      for (let tagName of newPost?.hashtagNames) {
+        const addTagResult = await handleCreateHashtag({ name: tagName });
+
+        // add to official list hashtags
+        if (addTagResult.successful) {
+          newPost.hashtags.push(addTagResult.hashtag._id);
+        }
+      }
+
+      delete newPost.hashtagNames;
+    }
+
     const post = (await Post.findById(id)).toObject();
     if (!post)
       return res
         .status(httpStatusCodes.notFound)
         .send(`Cannot find a post with id: ${id}`);
+
+    if (post?.hashtags)
+      await handleDeleteHashtags(post.hashtags)
 
     if (!userId || !post.userId.equals(userId)) {
       return res
@@ -286,6 +327,9 @@ export const deletePost = async (req, res) => {
         .json({ message: `You don't have permission to delete this post` });
     }
 
+    if (post?.hashtags)
+      await handleDeleteHashtags(post.hashtags)
+
     await Post.findByIdAndRemove(id);
     res
       .status(httpStatusCodes.ok)
@@ -315,7 +359,7 @@ export const getMyPostInteractions = async (req, res) => {
     let filterJson = undefined;
     try {
       filterJson = JSON.parse(filter);
-    } catch {}
+    } catch { }
 
     const interactions = await getInteractionOfAUser(id, userId, filterJson);
     return res.status(httpStatusCodes.ok).json(interactions);
@@ -446,14 +490,14 @@ export const getPostsPagination = async (req, res) => {
       .status(httpStatusCodes.ok)
       .send(
         `space query:\n` +
-          ` - (empty): All visible posts\n` +
-          ` - news_feed: All posts from other users and posts in joined group\n` +
-          ` - user_profile: All posts of a user which are not in group (ownerId query is required)\n` +
-          ` - pending_in_group: All posts that's currently pending in a group (groupId query is required)\n` +
-          ` - group: All approved posts in the same group (groupId query is required)\n` +
-          `\n` +
-          `ownerId query: Filter out all posts of just 1 user\n` +
-          `groupId query: Filter out all posts of just 1 group\n`
+        ` - (empty): All visible posts\n` +
+        ` - news_feed: All posts from other users and posts in joined group\n` +
+        ` - user_profile: All posts of a user which are not in group (ownerId query is required)\n` +
+        ` - pending_in_group: All posts that's currently pending in a group (groupId query is required)\n` +
+        ` - group: All approved posts in the same group (groupId query is required)\n` +
+        `\n` +
+        `ownerId query: Filter out all posts of just 1 user\n` +
+        `groupId query: Filter out all posts of just 1 group\n`
       );
   }
 
@@ -474,6 +518,11 @@ export const getPostsPagination = async (req, res) => {
         path: "groupPostInfo.groupId",
         select: "name",
         model: "Group",
+      })
+      .populate({
+        path: `hashtags`,
+        model: `Hashtag`,
+        select: "name count",
       })
       .sort({ createdAt: -1 })
       // .skip(_page > 0 ? _page * _limit : 0)
@@ -691,6 +740,9 @@ export const declineGroupPost = async (req, res, next) => {
     delete backUpContent.createdAt;
     delete backUpContent.updatedAt;
     delete backUpContent._id;
+
+    if (post?.hashtags)
+      await handleDeleteHashtags(post.hashtags)
 
     await Post.findByIdAndDelete(postId);
 

@@ -1,5 +1,6 @@
 import express from "express";
 import mongoose from "mongoose";
+import { handleCreateHashtag, handleDeleteHashtag } from "../businessLogics/hashtag.js";
 import Hashtag from "../models/hashtag.js";
 import User from "../models/user.js";
 import { httpStatusCodes } from "../utils/httpStatusCode.js";
@@ -12,28 +13,29 @@ import { httpStatusCodes } from "../utils/httpStatusCode.js";
 export const createHashtag = async (req, res) => {
   const hashtag = req.body;
 
-  if (hashtag._id) {
+  if (hashtag?._id) {
     return res
       .status(httpStatusCodes.badContent)
       .json("New hashtag mustn't have _id field");
   }
 
   try {
-    const hashtags = await Hashtag.find();
+    if (!hashtag?.name)
+      return res
+        .status(httpStatusCodes.badContent)
+        .json("New hashtag must have name field");
 
-    const existedHashtag = hashtags.find((tag) => tag?.name === hashtag?.name);
-    if (existedHashtag) {
-      existedHashtag.count++;
-      await existedHashtag.save();
-      return res.status(httpStatusCodes.ok).json(existedHashtag);
+    const createResult = await handleCreateHashtag(hashtag);
+
+    if (createResult.successful)
+      return res.status(httpStatusCodes.created).json(createResult.hashtag);
+    else {
+      res.status(createResult.errorCode);
+
+      switch (createResult.errorCode) {
+        case httpStatusCodes.internalServerError: return res.json({ message: "Unknown error" });
+      }
     }
-
-    const newHashtag = new Hashtag({
-      ...hashtag,
-      count: 1,
-    });
-    await newHashtag.save();
-    return res.status(httpStatusCodes.created).json(newHashtag);
   } catch (error) {
     res
       .status(httpStatusCodes.internalServerError)
@@ -88,20 +90,16 @@ export const deleteHashtag = async (req, res) => {
   const { hashtagId } = req.params;
 
   try {
-    const hashtag = await Hashtag.findById(hashtagId);
+    const delResult = await handleDeleteHashtag(hashtagId);
 
-    if (!hashtag)
-      return res
-        .status(httpStatusCodes.notFound)
-        .json({ message: "Hashtag not found" });
+    if (!delResult.successful) {
+      res.status(delResult.errorCode);
 
-    if (hashtag.count > 1) {
-      hashtag.count--;
-      await hashtag.save();
-      return res.status(httpStatusCodes.ok).json(hashtag);
+      switch (delResult.errorCode) {
+        case httpStatusCodes.notFound: return res.json({ message: "Hashtag not found" });
+      }
     }
 
-    await hashtag.remove();
     return res
       .status(httpStatusCodes.ok)
       .json({ message: "Delete hashtag successfully" });
