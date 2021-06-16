@@ -55,6 +55,37 @@ function GroupPage(props) {
     return isJoined;
   };
 
+  const isOwner = (user) => {
+    let isOwner = false;
+    group?.listMembers.forEach((member) => {
+      if (member?.userId === user?.result?._id) {
+        if (member?.role === "Owner") isOwner = true;
+      }
+    });
+    return isOwner;
+  };
+
+  const isAdmin = (user) => {
+    let isAdmin = false;
+    group?.listMembers.forEach((member) => {
+      if (member?.userId === user?.result?._id) {
+        if (member?.role === "Admin" || member?.role === "Owner")
+          isAdmin = true;
+      }
+    });
+    return isAdmin;
+  };
+
+  const isModerator = (user) => {
+    let isModerator = false;
+    group?.listMembers.forEach((member) => {
+      if (member?.userId === user?.result?._id) {
+        if (member?.role !== "Member") isModerator = true;
+      }
+    });
+    return isModerator;
+  };
+
   useEffect(() => {
     async function fetchGroupInfo() {
       const { data } = await api.fetchAGroup(id);
@@ -73,16 +104,6 @@ function GroupPage(props) {
         history.push(`/feed`);
       })
       .catch((error) => message.success(error.message));
-  };
-
-  const isOwner = (user) => {
-    let isOwner = false;
-    group?.listMembers.forEach((member) => {
-      if (member?.userId === user?.result?._id) {
-        if (member?.role === "Owner") isOwner = true;
-      }
-    });
-    return isOwner;
   };
 
   const handleDeleteGroup = (id) => {
@@ -146,6 +167,17 @@ function GroupPage(props) {
     fetchGroupInfo();
     //console.log(group);
   }, []);
+
+  // check authorization for route
+  useEffect(() => {
+    if (
+      (!isOwner(user) && menu === "setting") ||
+      (!isAdmin(user) && menu === "member_requests") ||
+      (!isModerator(user) && menu === "review_posts")
+    ) {
+      history.push(`/group/${group?._id}/main`);
+    }
+  }, [menu]);
 
   return (
     <GroupContext.Provider value={valueContext}>
