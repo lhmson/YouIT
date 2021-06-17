@@ -10,10 +10,7 @@ const { Content } = Layout;
 /// postId exists if user is editing a new post, otherwise is just editing an old post
 function CreatePostPage() {
   const location = useLocation();
-  const postId = location.state?.postId;
-  const postPrivacy = location.state?.postPrivacy;
-  const postTitle = location.state?.postTitle;
-  const postContent = location.state?.postContent;
+  const { postId, initialGroupId, pinnedUrl } = location.state ?? {};
 
   return (
     <>
@@ -26,9 +23,8 @@ function CreatePostPage() {
             </h1>
             <CreatePostForm
               postId={postId}
-              title={postTitle}
-              content={postContent}
-              privacy={postPrivacy}
+              initialGroupId={initialGroupId}
+              pinnedUrl={pinnedUrl}
             />
           </Content>
         </Layout>

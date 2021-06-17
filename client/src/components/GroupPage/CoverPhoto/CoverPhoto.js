@@ -34,7 +34,7 @@ function CoverPhoto() {
   };
 
   return (
-    <>
+    <div style={{ position: "relative" }}>
       <Layout
         style={{
           position: "relative",
@@ -68,7 +68,7 @@ function CoverPhoto() {
           ></input>
         </div>
       </Layout>
-    </>
+    </div>
   );
 }
 

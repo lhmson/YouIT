@@ -23,12 +23,14 @@ import searchRouter from "./routes/search.js";
 import friendRequestRouter from "./routes/friendRequest.js";
 import notificationRouter from "./routes/notification.js";
 import conversationRouter from "./routes/conversation.js";
+import reportUserRouter from "./routes/report.js";
 import CuteServerIO from "./socket/CuteServerIO.js";
 import friendRouter from "./routes/friend.js";
 import { setUpCuteIO } from "./socket/handlers/allHandlers.js";
 import hashtagRouter from "./routes/hashtag.js";
 import UsersStatusManager from "./businessLogics/userStatus.js";
 import { notifyUserStatusToFriendsFunc } from "./businessLogics/user.js";
+import { setAllDatabaseCleaners } from "./businessLogics/setAllDatabaseCleaners.js";
 
 dotenv.config();
 
@@ -46,9 +48,11 @@ const io = new Server(server, {
 export const cuteIO = new CuteServerIO(io);
 export const usersStatusManager = new UsersStatusManager();
 usersStatusManager.init(cuteIO);
-usersStatusManager.onUserStatusChange(notifyUserStatusToFriendsFunc(cuteIO))
+usersStatusManager.onUserStatusChange(notifyUserStatusToFriendsFunc(cuteIO));
 setUpCuteIO(cuteIO);
 cuteIO.start();
+
+setAllDatabaseCleaners();
 
 app.use(bodyParser.json({ limit: "30mb", extended: true }));
 app.use(bodyParser.urlencoded({ limit: "30mb", extended: true }));
@@ -76,6 +80,7 @@ app.use("/friend", friendRouter);
 app.use("/conversation", conversationRouter);
 // app.use("/groupPendingMember", groupPendingMemberRouter);
 app.use("/hashtag", hashtagRouter);
+app.use("/reportUser", reportUserRouter);
 
 const PORT = process.env.PORT || 5000;
 

@@ -128,7 +128,7 @@ export const removeInteraction = (post, userId, interactionType) => {
  * @param {any} post
  * @param {string | mongoose.Types.ObjectId} userId
  * @param {boolean=} allowedUnjoinedGroups
- * @returns {boolean}
+ * @returns {Promise<boolean>}
  */
 export const isPostVisibleByUser = async (post, userId) => {
   const postOwnerId = post.userId?._id ?? post.userId;
@@ -143,6 +143,7 @@ export const isPostVisibleByUser = async (post, userId) => {
       if (postOwnerId.equals(userId)) return true;
 
       // only group moderator, admin and owner can see this post
+      // Gonna refactor later: use function in bussiness logic / group
       const userRoleInGroup = group?.listMembers?.find((member) =>
         member?.userId?.equals(userId)
       )?.role;

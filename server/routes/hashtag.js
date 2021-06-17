@@ -10,8 +10,8 @@ import auth from "../middleware/auth.js";
 
 const router = express.Router();
 
-router.get("/list/all", auth, getAllHashtags);
-router.get("/:id", auth, getAHashtag);
+router.get("/list/all", getAllHashtags);
+router.get("/:id", getAHashtag);
 router.get("/:userId/programmingHashtags", auth, getUserProgrammingHashtags);
 
 router.post("/", auth, createHashtag);

@@ -9,8 +9,8 @@ import { useLocalStorage } from "../../hooks/useLocalStorage";
 
 const { Title, Text } = Typography;
 
-function GroupCard({ nameGroup, _id, description, totalMembers }) {
-  const [txtButton, setTxtButton] = React.useState("Join");
+function GroupCard({ nameGroup, _id, description, totalMembers, status }) {
+  const [txtButton, setTxtButton] = React.useState(status);
   const [user, setUser] = useLocalStorage("user");
 
   const isMobile = useMobile();
@@ -52,16 +52,14 @@ function GroupCard({ nameGroup, _id, description, totalMembers }) {
               // minWidth: 600,
             }}
           >
-            <div>
-              <Avatar
-                size={72}
-                src="https://vtv1.mediacdn.vn/thumb_w/650/2020/10/20/blackpink-lisa-mac-160316252527410005928.jpg"
-              />
-            </div>
+            <Avatar
+              size={72}
+              src="https://i.pinimg.com/564x/03/d5/62/03d5624fae645eccaa74315f6ed49c03.jpg"
+            />
 
             <div className="ml-3 break-word">
               <div className="break-word">
-                <Link to={`/group/${_id}`}>
+                <Link to={`/group/${_id}/main`}>
                   <Title style={styles.textUser}>
                     {nameGroup ?? "Name Group"}
                   </Title>

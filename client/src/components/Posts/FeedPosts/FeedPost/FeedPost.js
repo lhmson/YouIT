@@ -19,7 +19,6 @@ import {
   ShareAltOutlined,
   CaretRightOutlined,
   EditFilled,
-  StopOutlined,
   DeleteFilled,
   BellOutlined,
   FlagOutlined,
@@ -32,6 +31,7 @@ import moment from "moment";
 import { useDispatch } from "react-redux";
 import { Link, useHistory } from "react-router-dom";
 import styles from "./styles";
+import { ReactTinyLink } from "react-tiny-link";
 import {
   upvotePost,
   unvotePost,
@@ -45,6 +45,7 @@ import { deletePost } from "../../../../redux/actions/posts";
 import { HashLink } from "react-router-hash-link";
 import { useLocalStorage } from "../../../../hooks/useLocalStorage";
 import { limitNameLength } from "../../../../utils/limitNameLength";
+import ShareButton from "./ShareButton";
 
 const { Title, Text, Paragraph } = Typography;
 
@@ -84,12 +85,10 @@ function FeedPost({ post, setCurrentId }) {
     }
   );
 
-  const tagList = ["tag 1", "tag 2", "tag 3", "tag 4"]; // handle tag later
-
   //#region menu more
   const showConfirmDeletePost = (id) => {
     confirm({
-      title: "Do you Want to delete this post?",
+      title: "Do you want to delete this post?",
       icon: <ExclamationCircleOutlined />,
       content: "You cannot undo this action",
       onOk() {
@@ -110,7 +109,7 @@ function FeedPost({ post, setCurrentId }) {
   const handleEditPost = (postId, postTitle, postPrivacy, postContent) => {
     history.push({
       pathname: "/post/create",
-      state: { postId, postTitle, postContent, postPrivacy },
+      state: { postId },
     });
   };
 
@@ -267,6 +266,19 @@ function FeedPost({ post, setCurrentId }) {
 
   const groupId = post?.groupPostInfo?.groupId;
 
+  const renderUserInfo = () => {
+    const userInfo = post?.userId?.userInfo;
+    const education = userInfo
+      ? userInfo.educations?.[userInfo.educations?.length - 1]
+      : null;
+    const work = userInfo ? userInfo.works?.[userInfo.works?.length - 1] : null;
+    const educationInfo = education
+      ? `${education?.moreInfo} at ${education?.schoolName}`
+      : null;
+    const workInfo = work ? `${work?.position} at ${work?.location}` : null;
+    return workInfo || educationInfo;
+  };
+
   const renderPrivacyIcon = (privacy) => {
     switch (privacy) {
       case "Friend":
@@ -290,7 +302,7 @@ function FeedPost({ post, setCurrentId }) {
             <Avatar
               className="ml-1 clickable"
               size={45}
-              src="https://scontent-xsp1-1.xx.fbcdn.net/v/t1.6435-9/150532368_2890525287933380_4029393584172411335_n.jpg?_nc_cat=108&ccb=1-3&_nc_sid=09cbfe&_nc_ohc=vNeUmNaYi4gAX92GO8S&_nc_ht=scontent-xsp1-1.xx&oh=121b4b571f04f2b3741faa799e988b9d&oe=60A2B225"
+              src={post?.userId?.avatarUrl}
             />
             <div className="d-inline-flex flex-column ml-3 break-word">
               <Row className="align-items-center">
@@ -310,7 +322,7 @@ function FeedPost({ post, setCurrentId }) {
                       <CaretRightOutlined
                         style={{ fontSize: 18, paddingBottom: 5 }}
                       />
-                      <Link to={`/group/${groupId._id}`} target="_blank">
+                      <Link to={`/group/${groupId._id}/main`} target="_blank">
                         <Text
                           className="clickable"
                           strong
@@ -323,7 +335,9 @@ function FeedPost({ post, setCurrentId }) {
                   )}
                 </Space>
               </Row>
-              <Text>Fullstack Developer</Text>
+              <Text strong className="green">
+                {renderUserInfo()}
+              </Text>
             </div>
           </Row>
           <Row className="justify-content-end align-items-center pb-3">
@@ -355,10 +369,16 @@ function FeedPost({ post, setCurrentId }) {
           </Row>
         </Row>
         <Row className="mb-1">
-          {tagList?.map((item, i) => (
-            <Tag key={i} className="mb-2 tag">
-              {item}
-            </Tag>
+          {post?.hashtags?.map((item, i) => (
+            <Tooltip
+              title={`Mentioned ${item?.count} time${
+                item?.count > 1 ? "s" : ""
+              }`}
+            >
+              <Tag key={i} className="mb-2 tag">
+                {item.name}
+              </Tag>
+            </Tooltip>
           ))}
         </Row>
         <div className="break-word">
@@ -374,6 +394,19 @@ function FeedPost({ post, setCurrentId }) {
               sunt in culpa qui officia deserunt mollit anim id est laborum.
             </Paragraph> */}
             <Paragraph>{limitNameLength(post?.content?.text, 500)}</Paragraph>
+            <Row className="justify-content-center">
+              <ReactTinyLink
+                cardSize="small"
+                width={1500}
+                // header="YouIT Share"
+                showGraphic={true}
+                defaultMedia="http://localhost:3000/static/media/lightlogo.c68302e9.png"
+                maxLine={2}
+                minLine={1}
+                url="http://localhost:3000/userinfo/60b8fec93496700f58ecfc70"
+              />
+            </Row>
+
             <Link to={`/post/${post._id}`} target="_blank">
               <Text className="clickable bold">Click here to read more</Text>
             </Link>
@@ -428,9 +461,7 @@ function FeedPost({ post, setCurrentId }) {
                   onClick={() => copyLink(post._id)}
                 />
               </Tooltip>
-              <Tooltip title="Share">
-                <ShareAltOutlined className="clickable icon" />
-              </Tooltip>
+              <ShareButton post={post} />
             </Space>
           </Row>
         </Row>

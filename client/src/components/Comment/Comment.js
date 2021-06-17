@@ -20,7 +20,6 @@ import {
   EditOutlined,
   ExclamationCircleOutlined,
 } from "@ant-design/icons";
-import styles from "./styles";
 import COLOR from "../../constants/colors";
 import CommentForm from "../CommentForm/CommentForm";
 import {
@@ -29,10 +28,10 @@ import {
   unvoteComment,
   getMyCommentInteractions,
 } from "../../api/comment";
-import { Link, useHistory } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import { useDispatch } from "react-redux";
 
-const { Title, Text, Paragraph } = Typography;
+const { Text, Paragraph } = Typography;
 const { confirm } = Modal;
 
 const allInteractionReducer = (state, action) => {
@@ -172,7 +171,7 @@ function Comment({
   };
   const showConfirmDeleteComment = (id) => {
     confirm({
-      title: "Do you Want to delete this comment?",
+      title: "Do you want to delete this comment?",
       icon: <ExclamationCircleOutlined />,
       content: "You cannot undo this action",
       onOk() {
@@ -254,7 +253,7 @@ function Comment({
           <Avatar
             className="ml-1 clickable"
             size={45}
-            src="https://scontent.fsgn5-6.fna.fbcdn.net/v/t1.6435-1/p240x240/167274298_2791941774405213_2973980969027075470_n.jpg?_nc_cat=109&ccb=1-3&_nc_sid=7206a8&_nc_ohc=QpKEyCIKuj0AX8HRcN6&_nc_ht=scontent.fsgn5-6.fna&tp=6&oh=96abb4f8e352f1223ecf465f760a78e8&oe=60A5BF59"
+            src={comment?.userId?.avatarUrl}
           />
           <div className="d-inline-flex flex-column ml-3 break-word">
             <Row style={{ alignItems: "center" }}>

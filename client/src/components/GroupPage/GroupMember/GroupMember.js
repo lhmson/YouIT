@@ -7,16 +7,18 @@ import { OverviewRow } from "../../UserInfo/AboutCard/index.js";
 import MemberCard from "./MemberCard/MemberCard.js";
 import * as api from "../../../api/group";
 import { useLocalStorage } from "../../../hooks/useLocalStorage";
+import { useMobile } from "../../../utils/responsiveQuery.js";
 import styles from "./styles.js";
 
 const { Text } = Typography;
 
 function GroupMember() {
+  const user = JSON.parse(localStorage.getItem("user"))?.result;
   const { group } = useContext(GroupContext);
 
   const [listMembers, setListMembers] = useState([]);
-  const [txtSearch, setTxtSearch] = useState("");
-  // const [mode, setMode] = useState("Friends");
+  const [listName, setListName] = useState([]);
+  const isMobile = useMobile();
 
   useEffect(() => {
     api
@@ -30,6 +32,14 @@ function GroupMember() {
       });
   }, [group]);
 
+  useEffect(() => {}, []);
+
+  //   listMembers.sort(function(a, b){
+  //     if(a.firstname < b.firstname) { return -1; }
+  //     if(a.firstname > b.firstname) { return 1; }
+  //     return 0;
+  // })
+
   const listMembersCard = () =>
     listMembers?.map((user, i) => (
       <MemberCard
@@ -40,6 +50,24 @@ function GroupMember() {
       ></MemberCard>
     ));
 
+  const isJoinedGroup = () => {
+    let isJoined = false;
+    group?.listMembers.forEach((member) => {
+      if (member?.userId == user?._id) {
+        isJoined = true;
+      }
+    });
+
+    return isJoined;
+  };
+
+  const isPublicGroup = () => {
+    let isPublicGroup = false;
+    if (group?.privacy === "Public") isPublicGroup = true;
+
+    return isPublicGroup;
+  };
+
   return (
     <div>
       <div
@@ -49,7 +77,11 @@ function GroupMember() {
           marginTop: 30,
         }}
       >
-        <Row>{listMembersCard()}</Row>
+        {isJoinedGroup() || isPublicGroup() ? (
+          <div className={`${!isMobile && "col-12"}`}>{listMembersCard()}</div>
+        ) : (
+          ""
+        )}
       </div>
     </div>
   );

@@ -2,12 +2,13 @@ import React, { useEffect, useState, useContext } from "react";
 import { Button, Typography, message } from "antd";
 import { Avatar, Tag } from "antd";
 import styles from "./styles.js";
-import COLOR from "../../constants/colors";
 import OverviewRow from "../IntroCard/OverviewRow/OverviewRow.js";
-import { IoSchoolSharp, IoHome, MdLocationOn } from "react-icons/all";
+import { IoSchoolSharp, MdLocationOn } from "react-icons/all";
 import * as api from "../../api/group";
 import { Link } from "react-router-dom";
 import { GroupContext } from "../../pages/GroupPage/GroupPage";
+import * as apiUserInfo from "../../api/user_info";
+import { useHistory } from "react-router-dom";
 
 const { Text } = Typography;
 
@@ -15,12 +16,13 @@ function MemberRequests(props) {
   const { name } = props;
   const { _id } = props;
   const { group } = useContext(GroupContext);
+  const history = useHistory();
 
   const acceptMemberRequest = async (groupId, memberId) => {
     api
       .addGroupMember(groupId, memberId)
       .then((res) => {
-        message.success(res.data.message);
+        message.success("The account has been added as a member");
         api.removePendingMember(groupId, memberId);
         window.location.reload();
       })
@@ -31,13 +33,19 @@ function MemberRequests(props) {
     api
       .removePendingMember(groupId, memberId)
       .then((res) => {
-        message.success(res.data.message);
+        message.success("The account denied to become a member ");
         window.location.reload();
       })
       .catch((error) => message.success(error.message));
   };
 
   const [userInfo, setUserInfo] = useState([]);
+
+  useEffect(() => {
+    apiUserInfo.fetchUserInfo(_id).then((res) => {
+      setUserInfo(res.data.userInfo);
+    });
+  }, []);
 
   return (
     <>

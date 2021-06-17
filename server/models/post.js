@@ -47,6 +47,12 @@ const postSchema = mongoose.Schema(
       default: defaultInteractionInfoValue,
     },
 
+    hashtags: {
+      type: [mongoose.Schema.Types.ObjectId],
+      require: false,
+      default: [],
+    },
+
     comments: {
       type: [
         {

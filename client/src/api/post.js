@@ -24,6 +24,8 @@ export const fetchPostsPagination = (
   return API.get(url);
 };
 export const fetchOtherPosts = (id) => API.get(`post/${id}/others`);
+export const fetchCountPosts = (range, timeString) =>
+  API.get(`post/count/${range}/${timeString}`);
 
 export const createPost = (newPost) => API.post("/post", newPost);
 
@@ -34,8 +36,6 @@ export const updatePost = (id, updatedPost) =>
 export const deletePost = (id) => API.delete(`/post/${id}`);
 
 // user interaction
-// export const likePost = (id) => API.put(`/post/${id}/likePost`);
-
 export const upvotePost = (id) => API.put(`/post/${id}/upvote`);
 
 export const unvotePost = (id) => API.put(`/post/${id}/unvote`);
@@ -49,6 +49,11 @@ export const unhidePost = (id) => API.put(`/post/${id}/unhide`);
 export const followPost = (id) => API.put(`/post/${id}/follow`);
 
 export const unfollowPost = (id) => API.put(`/post/${id}/unfollow`);
+
+
+export const approveGroupPost = (id) => API.put(`/post/${id}/group/approve`)
+export const declineGroupPost = (id) => API.delete(`/post/${id}/group/decline`)
+
 
 export const getMyInteractions = (id) => API.get(`/post/${id}/myInteractions`);
 

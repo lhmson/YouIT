@@ -1,10 +1,15 @@
 import React, { useState, useEffect } from "react";
-import { Modal, Typography, Menu, Tooltip, Tabs, Avatar } from "antd";
+import { Modal, Typography, Menu, Tooltip, Tabs, Button, Avatar } from "antd";
 import moment from "moment";
 import styles from "./styles";
 import COLOR from "../../../constants/colors";
 import * as api from "../../../api/notification";
+import { useDispatch } from "react-redux";
 import { limitNameLength } from "../../../utils/limitNameLength";
+import {
+  refreshNotifications,
+  setSeenNotification,
+} from "../../../redux/actions/notifications";
 
 const { Text } = Typography;
 const { TabPane } = Tabs;
@@ -13,8 +18,11 @@ function NotificationList({ handleClickNotificationItem, notifications }) {
   const [allNoti, setAllNoti] = useState([]);
   const [unseenNoti, setUnseenNoti] = useState([]);
   const [seenNoti, setSeenNoti] = useState([]);
+  const [isUpdate, setIsUpdate] = useState(false);
 
-  useEffect(() => {
+  const dispatch = useDispatch();
+
+  const handleFetchNoti = () => {
     api.fetchAllNotifications().then((res) => {
       setAllNoti(res.data);
     });
@@ -24,7 +32,21 @@ function NotificationList({ handleClickNotificationItem, notifications }) {
     api.fetchUnseenNotifications().then((res) => {
       setUnseenNoti(res.data);
     });
-  }, []);
+  };
+
+  const handleMarkAll = () => {
+    unseenNoti.forEach((item) => {
+      dispatch(setSeenNotification(item._id, "true"));
+    });
+    dispatch(refreshNotifications());
+    setIsUpdate(true);
+    Modal.destroyAll();
+  };
+
+  useEffect(() => {
+    handleFetchNoti();
+    setIsUpdate(false);
+  }, [isUpdate]);
 
   const NotiList = ({ noti }) => {
     return (
@@ -91,6 +113,9 @@ function NotificationList({ handleClickNotificationItem, notifications }) {
               <NotiList noti={allNoti} />
             </TabPane>
           </Tabs>
+          <Button className="green-button" onClick={handleMarkAll}>
+            Mark all as read
+          </Button>
         </div>
       ),
       onOk() {},

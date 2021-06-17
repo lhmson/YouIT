@@ -1,44 +1,16 @@
 import React, { useState, useEffect } from "react";
 import styles from "./styles.js";
-import {
-  Layout,
-  Typography,
-  Menu,
-  Card,
-  Row,
-  Dropdown,
-  message,
-  Tabs,
-  Col,
-  Form,
-  Divider,
-  Input,
-  Select,
-  Button,
-} from "antd";
-import {
-  DownOutlined,
-  FieldTimeOutlined,
-  MailOutlined,
-} from "@ant-design/icons";
+import { Layout, Typography, Menu, message, Form, Input, Button } from "antd";
 
 import Navbar from "../../components/Navbar/Navbar";
-import FullPost from "../../components/Posts/FullPost/FullPost.js";
-import RelatedCard from "../../components/RelatedCard/RelatedCard.js";
-import FixedRightPanel from "../../components/FixedRightPanel/FixedRightPanel.js";
-import * as postsApi from "../../api/post";
-import * as commentsApi from "../../api/comment";
-import CommentForm from "../../components/CommentForm/CommentForm.js";
-import Comment from "../../components/Comment/Comment.js";
+
 import COLOR from "../../constants/colors.js";
 import { useHistory } from "react-router-dom";
 import { Content } from "antd/lib/layout/layout";
 import Sider from "antd/lib/layout/Sider";
-import SubMenu from "antd/lib/menu/SubMenu";
 import EditableText from "../../components/UserInfo/AboutCard/OverviewPane/EditableText/EditableText.js";
 import * as authAPI from "../../api/auth";
 
-const { TabPane } = Tabs;
 const { Title, Text } = Typography;
 
 const GeneralTab = () => {

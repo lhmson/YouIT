@@ -10,7 +10,11 @@ const userSchema = mongoose.Schema(
     // id: Schema.Types.ObjectId,
 
     //SanhCute
-    avatarUrl: { type: String },
+    avatarUrl: {
+      type: String,
+      default:
+        "https://st4.depositphotos.com/4329009/19956/v/380/depositphotos_199564354-stock-illustration-creative-vector-illustration-default-avatar.jpg",
+    },
     backgroundUrl: { type: String },
     status: { type: String },
     userType: { type: String },
@@ -75,6 +79,11 @@ const userSchema = mongoose.Schema(
       type: String,
       enum: ["online", "busy", "offline"],
       default: "online",
+    },
+
+    isReported: {
+      type: Boolean,
+      default: false,
     },
   },
   { timestamps: true }

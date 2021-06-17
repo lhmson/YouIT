@@ -1,9 +1,5 @@
-import { Layout, Row, Dropdown, Menu, Typography, message } from "antd";
-import Sider from "antd/lib/layout/Sider";
 import React, { createContext, useEffect, useState } from "react";
-// import { BsThreeDots } from "react-icons/bs";
-import { EllipsisOutlined } from "@ant-design/icons";
-import { GoSearch } from "react-icons/go";
+import { Layout, Row, Modal, message, Menu, Typography } from "antd";
 import {
   AdminGroupSidebar,
   CoverPhoto,
@@ -16,14 +12,15 @@ import {
   GroupMember,
 } from "../../components/index.js";
 import { useLocation } from "react-router";
-import styles from "./styles.js";
 import * as api from "../../api/group";
 import MemberRequestsResult from "../RequestsInGroupsPage/MemberRequestsResult/MemberRequestsResult.js";
 import PostRequestsResult from "../RequestsInGroupsPage/PostRequestsResult/PostRequestsResult.js";
-//import { leaveGroup } from "../../../../server/controllers/group.js";
-import COLOR from "../../constants/colors.js";
 import { useLocalStorage } from "../../hooks/useLocalStorage.js";
 import { useHistory } from "react-router";
+import styles from "./styles.js";
+import "./styles.css";
+import { ExclamationCircleOutlined } from "@ant-design/icons";
+
 import SettingView from "../../components/GroupPage/SettingView/SettingView.js";
 const { Content } = Layout;
 const { Text } = Typography;
@@ -33,44 +30,115 @@ export const GroupContext = createContext({
 });
 
 function GroupPage(props) {
-  const { id } = props.match.params;
+  const { id, menu } = props.match.params;
   const location = useLocation();
-
   const [group, setGroup] = useState(null);
   const valueContext = { group, setGroup };
-
-  const [modeSearch, setModeSearch] = useState("group");
   const [user, setUser] = useLocalStorage("user");
   const history = useHistory();
-  const handleRemoveMember = async (groupId, userId) => {
-    // apiGroup
-    //   .deleteMember(groupId, userId)
-    //   .then((res) => {
-    //     message.success(res.data.message);
-    //     // history.push(`/group/${groupId}/members`);
-    //     window.location.reload();
-    //   })
-    //   .catch((error) => message.success(error.message));
+
+  const { confirm } = Modal;
+
+  const isJoinedGroup = () => {
+    let isJoined = false;
+    group?.listMembers.forEach((member) => {
+      if (member?.userId === user?.result?._id) {
+        isJoined = true;
+      }
+    });
+
+    return isJoined;
   };
 
-  const handleLeaveGroup = async (id, userId) => {
-    console.log("groupid", id);
-    console.log("userid", userId);
+  const isOwner = (user) => {
+    let isOwner = false;
+    group?.listMembers.forEach((member) => {
+      if (member?.userId === user?.result?._id) {
+        if (member?.role === "Owner") isOwner = true;
+      }
+    });
+    return isOwner;
+  };
+
+  const isAdmin = (user) => {
+    let isAdmin = false;
+    group?.listMembers.forEach((member) => {
+      if (member?.userId === user?.result?._id) {
+        if (member?.role === "Admin" || member?.role === "Owner")
+          isAdmin = true;
+      }
+    });
+    return isAdmin;
+  };
+
+  const isModerator = (user) => {
+    let isModerator = false;
+    group?.listMembers.forEach((member) => {
+      if (member?.userId === user?.result?._id) {
+        if (member?.role !== "Member") isModerator = true;
+      }
+    });
+    return isModerator;
+  };
+
+  useEffect(() => {
+    async function fetchGroupInfo() {
+      const { data } = await api.fetchAGroup(id);
+      setGroup(data);
+    }
+    fetchGroupInfo();
+    isJoinedGroup();
+    //console.log(group);
+  }, []);
+
+  const handleLeaveGroup = async (groupId, userId) => {
     api
-      .leaveGroup(id, userId)
+      .leaveGroup(groupId, userId)
       .then((res) => {
-        message.success(res.data.message);
+        message.success("You have left the group.");
         history.push(`/feed`);
       })
       .catch((error) => message.success(error.message));
   };
 
+  const handleDeleteGroup = (id) => {
+    api
+      .deleteGroup(id)
+      .then((res) => {
+        message.success(res.data.message);
+        history.push(`/group/create`);
+      })
+      .catch((error) => message.success(error.message));
+  };
+
+  const showDeleteConfirm = (id) => {
+    confirm({
+      title: "Are you sure leave this group?",
+      icon: <ExclamationCircleOutlined />,
+      content: "If you leave this group, this group will be deleted ",
+      okText: "Yes",
+      okType: "danger",
+      cancelText: "No",
+      onOk() {
+        handleDeleteGroup(id);
+      },
+      onCancel() {
+        console.log("Cancel");
+      },
+    });
+  };
+
   const menuMore = (
     <Menu>
       <Menu.Item
-        key="logout"
+        key="leaveGroup"
         onClick={() => {
-          handleLeaveGroup(id, user?.result?._id);
+          // eslint-disable-next-line no-lone-blocks
+          {
+            isOwner(user)
+              ? showDeleteConfirm(id)
+              : handleLeaveGroup(id, user?.result?._id);
+          }
         }}
       >
         <Row align="middle">
@@ -95,105 +163,86 @@ function GroupPage(props) {
     //console.log(group);
   }, []);
 
+  // check authorization for route
+  useEffect(() => {
+    if (
+      (!isOwner(user) && menu === "setting") ||
+      (!isAdmin(user) && menu === "member_requests") ||
+      (!isModerator(user) && menu === "review_posts")
+    ) {
+      history.push(`/group/${group?._id}/main`);
+    }
+  }, [menu]);
+
   return (
     <GroupContext.Provider value={valueContext}>
       <Layout>
-        <Navbar />
-        <Sider>
-          <AdminGroupSidebar setModeSearch={setModeSearch} />
-        </Sider>
-        {/* <Layout style={styles.mainArea}> */}
-        <Layout style={{ marginTop: 60 }}>
-          <Content>
-            {modeSearch === "memberRequests" ? (
-              <MemberRequestsResult />
-            ) : modeSearch === "group" ? (
-              <Layout>
-                <Layout style={styles.avatarView}>
-                  <Content
-                    className="container"
-                    style={{
-                      padding: 8,
-                    }}
-                  >
-                    <CoverPhoto />
-                    <Row
+        <Navbar selectedMenu="feed" />
+        <Layout style={styles.mainArea}>
+          <div className="feed-container">
+            <AdminGroupSidebar
+              className="sidebar"
+              selectMenu={menu}
+              // setModeSearch={setModeSearch}
+            />
+            <div
+              className="mainContent"
+              id="scrollableDiv"
+              style={{ minWidth: "87vw" }}
+            >
+              {menu === "member_requests" ? (
+                <MemberRequestsResult />
+              ) : menu === "review_posts" ? (
+                <PostRequestsResult />
+              ) : menu === "setting" ? (
+                <SettingView />
+              ) : (
+                <div>
+                  <Layout style={styles.avatarView}>
+                    <Content
+                      className="container"
                       style={{
-                        display: "flex",
-                        flexDirection: "row",
-                        justifyContent: "space-between",
+                        padding: 8,
                       }}
                     >
-                      {/* <Button type="primary" style={styles.button}>
-                  Create Post
-                </Button>
-                <Button type="primary" style={styles.button}>
-                  Invite
-                </Button>
-                <Button
-                  type="primary"
-                  style={styles.button}
-                  onClick={() => {
-                    // handleDeleteGroup(id); */}
-
-                      <GroupBasicInfo />
-                      <GroupFunctionButtons />
-                    </Row>
-                    <Row style={{ justifyContent: "space-between" }}>
-                      <GroupMenu />
+                      <CoverPhoto />
                       <Row
                         style={{
                           display: "flex",
-                          alignItems: "center",
+                          flexDirection: "row",
+                          justifyContent: "space-between",
                         }}
                       >
-                        <GoSearch
-                          size={24}
-                          style={styles.icon}
-                          onClick={() => {}}
-                        />
-                        <Dropdown
-                          overlay={menuMore}
-                          trigger={["click"]}
-                          placement="bottomCenter"
-                        >
-                          <EllipsisOutlined
-                            style={{
-                              fontSize: 20,
-                              color: COLOR.black,
-                              marginLeft: 20,
-                            }}
-                          />
-                        </Dropdown>
-                        {/* <BsThreeDots size={24} style={styles.icon} /> */}
+                        <GroupBasicInfo />
+                        <GroupFunctionButtons />
                       </Row>
-                    </Row>
-                  </Content>
-                </Layout>
-                <Layout>
-                  <Content>
-                    <Layout className="container">
-                      {location.pathname === `/group/${group?._id}` ? (
-                        <FeedPosts
-                          limitPagination={5}
-                          space="group"
-                          groupId={group?._id}
-                        />
-                      ) : location.pathname === `/group/${group?._id}/about` ? (
-                        <GroupAboutCard />
-                      ) : (
-                        <GroupMember />
-                      )}
-                    </Layout>
-                  </Content>
-                </Layout>
-              </Layout>
-            ) : modeSearch == "approvePosts" ? (
-              <PostRequestsResult />
-            ) : (
-              <SettingView />
-            )}
-          </Content>
+                      <Row style={{ justifyContent: "space-between" }}>
+                        <GroupMenu />
+                      </Row>
+                    </Content>
+                  </Layout>
+                  <Layout>
+                    <Content>
+                      <Layout className="container">
+                        {location.pathname === `/group/${group?._id}/main` ? (
+                          <FeedPosts
+                            limitPagination={5}
+                            space="group"
+                            groupId={group?._id}
+                          />
+                        ) : location.pathname ===
+                          `/group/${group?._id}/about` ? (
+                          <GroupAboutCard />
+                        ) : (
+                          <GroupMember />
+                        )}
+                      </Layout>
+                    </Content>
+                  </Layout>
+                </div>
+              )}
+            </div>
+          </div>
         </Layout>
       </Layout>
     </GroupContext.Provider>

@@ -19,6 +19,7 @@ import MutualFriendPage from "./FriendMangementPage/MutualFriendPage";
 import GroupManagementPage from "./GroupManagementPage/GroupMangagementPage";
 import RequestsInGroupPage from "./RequestsInGroupsPage/RequestsInGroupPage";
 import AuthAdminPage from "./SystemAdmin/AuthAdminPage/AuthAdminPage";
+import StatisticsPage from "./StatisticsPage/StatisticsPage";
 export {
   HomePage,
   AboutPage,
@@ -41,4 +42,5 @@ export {
   GroupManagementPage,
   RequestsInGroupPage,
   AuthAdminPage,
+  StatisticsPage,
 };

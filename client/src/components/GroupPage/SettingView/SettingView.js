@@ -80,26 +80,32 @@ const SettingView = () => {
   // thieu edit topic, nho render len ben about luon
   return (
     <div style={styles.settingView}>
-      <EditableText
-        firstIcon={<GrGroup style={styles.icon} />}
-        text={group?.name}
-        subText="Group Name"
-        placeholder="Group name"
-        onChange={(value) => setGroupName(value.target.value)}
-        onSave={saveGroupName}
-        editable={true}
-        setPreviousState={() => {}}
-      />
-      <EditableText
-        firstIcon={<MdDescription style={styles.icon} />}
-        text={group?.description}
-        subText="Group description"
-        placeholder="Group description"
-        onChange={(value) => setDescription(value.target.value)}
-        onSave={saveDescription}
-        editable={true}
-        setPreviousState={() => {}}
-      />
+      <div className="break-word">
+        <EditableText
+          firstIcon={<GrGroup style={styles.icon} />}
+          text={group?.name}
+          subText="Group Name"
+          placeholder="Group name"
+          onChange={(value) => setGroupName(value.target.value)}
+          onSave={saveGroupName}
+          editable={true}
+          setPreviousState={() => {}}
+        />
+      </div>
+
+      <div className="break-word">
+        <EditableText
+          firstIcon={<MdDescription style={styles.icon} />}
+          text={group?.description}
+          subText="Group description"
+          placeholder="Group description"
+          onChange={(value) => setDescription(value.target.value)}
+          onSave={saveDescription}
+          editable={true}
+          setPreviousState={() => {}}
+        />
+      </div>
+
       <EditableCombobox
         firstIcon={<MdPublic style={styles.icon} />}
         text={group?.privacy}

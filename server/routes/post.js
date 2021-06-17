@@ -5,7 +5,6 @@ import {
   createPost,
   updatePost,
   deletePost,
-  likePost,
   getPostsPagination,
   getAPost,
   getOtherPosts,
@@ -17,6 +16,10 @@ import {
   unhidePost,
   followPost,
   unfollowPost,
+  canReviewGroupPost,
+  approveGroupPost,
+  declineGroupPost,
+  countPosts,
 } from "../controllers/post.js";
 
 import {
@@ -38,13 +41,13 @@ router.get("/:id/comment", getComments);
 router.get("/:id/commentsNumber", getCommentsNumber);
 router.get("/list/all", getPosts);
 router.get("/:id/myInteractions/", auth, getMyPostInteractions);
+router.get("/count/:range/:timeString", countPosts);
 
 router.post("/", auth, createPost);
 router.post("/:postId/comment", auth, createComment);
 router.post("/:postId/comment/:commentId", auth, replyComment);
 
 router.put("/:id", auth, updatePost);
-router.put("/:id/likePost", auth, likePost);
 router.put("/:id/unvote", auth, unvotePost);
 router.put("/:id/upvote", auth, upvotePost);
 router.put("/:id/downvote", auth, downvotePost);
@@ -52,7 +55,19 @@ router.put("/:id/hide", auth, hidePost);
 router.put("/:id/unhide", auth, unhidePost);
 router.put("/:id/follow", auth, followPost);
 router.put("/:id/unfollow", auth, unfollowPost);
+router.put(
+  "/:postId/group/approve",
+  auth,
+  canReviewGroupPost,
+  approveGroupPost
+);
 
 router.delete("/:id", auth, deletePost);
+router.delete(
+  "/:postId/group/decline",
+  auth,
+  canReviewGroupPost,
+  declineGroupPost
+);
 
 export default router;

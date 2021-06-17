@@ -4,8 +4,6 @@ import { Switch, Route, Redirect } from "react-router-dom";
 
 import Navbar from "./components/Navbar/Navbar";
 
-import WallPage from "./pages/WallPage/WallPage";
-
 import {
   CreatePostPage,
   FeedPage,
@@ -25,6 +23,7 @@ import {
   MutualFriendPage,
   GroupManagementPage,
   AuthAdminPage,
+  StatisticsPage,
 } from "./pages/index";
 
 import { CuteClientIOProvider } from "./socket/CuteClientIOProvider.js";
@@ -40,6 +39,7 @@ import { FriendsStatusProvider } from "./context/FriendsStatusContext.js";
 
 const loggedIn = () => {
   const user = JSON.parse(localStorage.getItem("user"));
+  console.log("user local storage", user);
   return user;
 };
 
@@ -80,12 +80,11 @@ function App() {
             <Route exact path="/post/:id" component={SpecificPostPage} />
             <Route path="/post/:id/:commentId" component={SpecificPostPage} />
             <Route exact path="/search" component={UserResultSearchPage} />
-            <PrivateRoute
+            {/* <PrivateRoute
               exact
               path="/group/:id/requests"
               component={GroupPage}
-            />
-            <Route exact path="/wall" component={WallPage} />
+            /> */}
             <Route path="/userinfo/:id/about" component={AboutPage} />
             <PrivateRoute
               exact
@@ -97,19 +96,22 @@ function App() {
               path="/mutualFriends/:id"
               component={MutualFriendPage}
             />
-            <Route exact path="/groups/" component={GroupManagementPage} />
+            <Route exact path="/groups" component={GroupManagementPage} />
             <Route path="/demoSocketIO" component={DemoSocket} />
             <PrivateRoute
               exact
               path="/group/create"
               component={CreateGroupPage}
             />
-            <Route exact path="/group/:id" component={GroupPage} />
+            <Route exact path="/group/:id/:menu" component={GroupPage} />
+            <Route exact path="/group/:id">
+              <Redirect to="/group/:id/main" />
+            </Route>
             <Route exact path="/settings" component={SettingsPage} />
             <Route exact path="/activate/:token" component={ActivationPage} />
             <PrivateRoute exact path="/message" component={MessagePage} />
-            <Route path="/group/:id/about" component={GroupPage} />
-            <Route path="/group/:id/members" component={GroupPage} />
+            {/* <Route path="/group/:id/about" component={GroupPage} />
+            <Route path="/group/:id/members" component={GroupPage} /> */}
             <PrivateRoute exact path="/admin">
               {isAdmin() ? (
                 <Redirect to="/admin/dashboard" />
@@ -120,6 +122,7 @@ function App() {
             <PrivateRoute exact path="/admin/dashboard">
               {isAdmin() ? <AdminDashboardPage /> : <Redirect to="/admin" />}
             </PrivateRoute>
+            <Route exact path="/statistics" component={StatisticsPage} />
             <Route>
               <ErrorPage code="404" />
             </Route>

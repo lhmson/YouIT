@@ -94,8 +94,8 @@ function ChatSidebar({
         message.warn("You're no longer in this conversation!", 1, () =>
           window.location.reload()
         );
-      if (!currentId && res.data?.length > 0)
-        updateCurrentId(res?.data?.[0]?._id);
+      // if (!currentId && res.data?.length > 0) // buggy, don't use
+      // updateCurrentId(res?.data?.[0]?._id);
     });
   };
 
@@ -110,6 +110,10 @@ function ChatSidebar({
     });
 
     messageHandle.onSeen((msg) => {
+      handleFetchListUnseenConversations();
+    });
+
+    messageHandle.onRemove((msg) => {
       handleFetchListUnseenConversations();
     });
 
@@ -168,11 +172,17 @@ function ChatSidebar({
 
   const renderAvatar = (item) => {
     if (item.listMembers.length <= 2) {
+      // conversation of one or two
+      const member = item?.listMembers?.find(
+        (member) => member._id !== user?.result?._id
+      );
+
       return (
-        item.avatar ??
+        member.avatarUrl ??
         "https://st4.depositphotos.com/4329009/19956/v/380/depositphotos_199564354-stock-illustration-creative-vector-illustration-default-avatar.jpg"
       );
     } else {
+      // group chat
       return "https://cdn.iconscout.com/icon/free/png-256/group-1543545-1306001.png";
     }
   };
