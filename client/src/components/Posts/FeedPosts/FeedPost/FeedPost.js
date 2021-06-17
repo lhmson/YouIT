@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useReducer, useMemo } from "react";
+import React, { useState, useEffect, useReducer } from "react";
 import {
   Avatar,
   Typography,
@@ -268,8 +268,10 @@ function FeedPost({ post, setCurrentId }) {
 
   const renderUserInfo = () => {
     const userInfo = post?.userId?.userInfo;
-    const education = userInfo.educations?.[userInfo.educations?.length - 1];
-    const work = userInfo.works?.[userInfo.works?.length - 1];
+    const education = userInfo
+      ? userInfo.educations?.[userInfo.educations?.length - 1]
+      : null;
+    const work = userInfo ? userInfo.works?.[userInfo.works?.length - 1] : null;
     const educationInfo = education
       ? `${education?.moreInfo} at ${education?.schoolName}`
       : null;
@@ -368,7 +370,11 @@ function FeedPost({ post, setCurrentId }) {
         </Row>
         <Row className="mb-1">
           {post?.hashtags?.map((item, i) => (
-            <Tooltip title={`Mentioned ${item?.count} time${item?.count > 1 ? "s" : ""}`}>
+            <Tooltip
+              title={`Mentioned ${item?.count} time${
+                item?.count > 1 ? "s" : ""
+              }`}
+            >
               <Tag key={i} className="mb-2 tag">
                 {item.name}
               </Tag>
@@ -415,15 +421,17 @@ function FeedPost({ post, setCurrentId }) {
                 </Text>
                 <Tooltip title="Upvote">
                   <ArrowUpOutlined
-                    className={`clickable icon ${myInteractions?.upvote ? "green" : "black"
-                      }`}
+                    className={`clickable icon ${
+                      myInteractions?.upvote ? "green" : "black"
+                    }`}
                     onClick={() => handleUpvoteClick(post._id)}
                   />
                 </Tooltip>
                 <Tooltip title="Downvote">
                   <ArrowDownOutlined
-                    className={`clickable icon ${myInteractions?.downvote ? "green" : "black"
-                      }`}
+                    className={`clickable icon ${
+                      myInteractions?.downvote ? "green" : "black"
+                    }`}
                     onClick={() => handleDownvoteClick(post._id)}
                   />
                 </Tooltip>

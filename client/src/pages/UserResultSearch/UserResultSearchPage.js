@@ -1,29 +1,30 @@
 import React, { useState, useEffect } from "react";
-import { Layout, Typography, Breadcrumb, Row, Col } from "antd";
+import { Layout } from "antd";
 import styles from "./styles.js";
 import "./styles.css";
 
 import Navbar from "../../components/Navbar/Navbar";
 
-import { useDispatch } from "react-redux";
 import SearchSidebar from "../../components/Sidebar/SearchSidebar/SearchSidebar";
 import SearchUserResult from "../../components/SearchResults/SearchUserResult/SearchUserResult";
 import SearchGroupResult from "../../components/SearchResults/SearchGroupResult/SearchGroupResult";
 import SearchPostResult from "../../components/SearchResults/SearchPostResult/SearchPostResult";
 import SearchAllResult from "../../components/SearchResults/SearchAllResult/SearchAllResult";
-import { useLocation } from "react-router";
+import { useHistory, useLocation } from "react-router";
 
 const { Content } = Layout;
-const { Title, Text } = Typography;
 
 function UserResultSearchPage() {
   const location = useLocation();
+  // const history = useHistory();
   const txtInitSearch = location.state?.txtSearch;
 
-  const [currentId, setCurrentId] = useState(null);
-  const dispatch = useDispatch();
   const [modeSearch, setModeSearch] = useState("All");
   const [txtSearch, setTxtSearch] = useState(txtInitSearch ?? "");
+
+  // useEffect(() => {
+  //   history.push(`/search?q=${txtSearch}`);
+  // }, []);
 
   return (
     <>

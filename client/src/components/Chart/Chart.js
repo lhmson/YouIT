@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Bar, Doughnut, Line, Pie } from "react-chartjs-2";
 import { Tabs, Typography, Select, DatePicker, message } from "antd";
 import moment from "moment";
-import * as userAPI from "../../api/user";
+import * as apiUser from "../../api/user";
 import { useRef } from "react";
 const { Title } = Typography;
 const { TabPane } = Tabs;

@@ -10,7 +10,6 @@ import {
   Avatar,
   Badge,
   Tooltip,
-  Button,
   notification,
 } from "antd";
 import styles from "./styles";
