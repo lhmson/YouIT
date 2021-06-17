@@ -12,7 +12,7 @@ import { Link } from "react-router-dom";
 
 const { SubMenu } = Menu;
 
-function SystemAdminMenu({ setModeManage, user, groups }) {
+function SystemAdminMenu({ user, groups }) {
   return (
     <Menu
       mode="inline"
@@ -25,7 +25,7 @@ function SystemAdminMenu({ setModeManage, user, groups }) {
     >
       <Menu.Item
         key="all"
-        onClick={() => setModeManage("All")}
+        // onClick={() => setModeManage("All")}
         style={styles.item}
         icon={<KeyOutlined style={{ fontSize: "1.4rem" }} />}
       >
@@ -33,14 +33,14 @@ function SystemAdminMenu({ setModeManage, user, groups }) {
       </Menu.Item>
       <Menu.Item
         key="post"
-        onClick={() => setModeManage("Post")}
+        // onClick={() => setModeManage("Post")}
         style={styles.item}
         icon={<FileTextOutlined style={{ fontSize: "1.4rem" }} />}
       >
         Post
       </Menu.Item>
       <Menu.Item
-        onClick={() => setModeManage("User")}
+        // onClick={() => setModeManage("User")}
         key="user"
         style={styles.item}
         icon={<TeamOutlined style={{ fontSize: "1.4rem" }} />}
@@ -49,7 +49,7 @@ function SystemAdminMenu({ setModeManage, user, groups }) {
       </Menu.Item>
 
       <Menu.Item
-        onClick={() => setModeManage("Group")}
+        // onClick={() => setModeManage("Group")}
         key="group"
         style={styles.item}
         icon={<LaptopOutlined style={{ fontSize: "1.4rem" }} />}

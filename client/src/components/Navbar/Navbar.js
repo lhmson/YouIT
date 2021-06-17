@@ -10,7 +10,6 @@ import {
   Avatar,
   Badge,
   Tooltip,
-  Button,
   notification,
 } from "antd";
 import styles from "./styles";
@@ -85,10 +84,33 @@ function Navbar({ selectedMenu, setTxtSearch, txtInitSearch }) {
     }
   }, [user, dispatch]);
 
+  const openNotification = (msg) => {
+    // alert("abc");
+    const key = `open${Date.now()}`;
+    // const btn = (
+    //   <Button className="green-button" onClick={() => console.log("open", msg)}>
+    //     Check out
+    //   </Button>
+    // );
+    notification.open({
+      message: "Something new for you to see",
+      description: msg?.content?.description ?? "",
+      onClick: () => {
+        handleClickNotificationItem(msg?.link, msg?._id);
+      },
+      key,
+      duration: 3,
+      placement: "bottomLeft",
+      // btn,
+    });
+  };
+
   useEffect(() => {
     const listener = (event, msg) => {
       if (event.indexOf("Notification") === 0) {
         dispatch(addUserNotifications(msg)); // add noti to it
+        // console.log("noti", msg);
+        openNotification(msg);
       }
     };
     cuteIO.onReceiveAny(listener);
@@ -209,7 +231,7 @@ function Navbar({ selectedMenu, setTxtSearch, txtInitSearch }) {
             <Avatar
               size="large"
               alt={user?.result?.name}
-              src={user?.result?.imageUrl}
+              src={user?.result?.avatarUrl}
               onClick={() => history.push(`/userinfo/${user?.result._id}`)}
             >
               {user?.result?.name}
@@ -315,25 +337,6 @@ function Navbar({ selectedMenu, setTxtSearch, txtInitSearch }) {
   const [numberUnseenMessages, setNumberUnseenMessages] = useState(0);
 
   const messageHandle = useMessage();
-
-  const openNotification = (msg) => {
-    alert("abc");
-    const key = `open${Date.now()}`;
-    const btn = (
-      <Button className="green-button" onClick={() => console.log(msg)}>
-        Check out
-      </Button>
-    );
-    notification.open({
-      message: "Hey this is something for you",
-      description: msg,
-      onClick: () => {
-        console.log("Notification Clicked!");
-      },
-      key,
-      btn,
-    });
-  };
 
   const handleFetchListUnseenConversations = () => {
     apiConversation

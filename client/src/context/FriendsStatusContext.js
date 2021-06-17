@@ -31,7 +31,6 @@ export const FriendsStatusProvider = ({ children, userId }) => {
     fetchMyStatus().then(res => {
       if (res.status === 200) {
         if (res.data) {
-          console.log(res.data);
           setDictFriendsStatus(prev => ({ ...prev, [userId]: res.data }));
         }
       }

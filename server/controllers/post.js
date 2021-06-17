@@ -15,8 +15,13 @@ import User from "../models/user.js";
 import Group from "../models/group.js";
 import { asyncFilter } from "../utils/asyncFilter.js";
 import { customPagination } from "../utils/customPagination.js";
-import { isMemberOfGroup, getMemberRoleInGroup, checkRoleHasPermissionOfRole } from "../businessLogics/group.js";
+import {
+  isMemberOfGroup,
+  getMemberRoleInGroup,
+  checkRoleHasPermissionOfRole,
+} from "../businessLogics/group.js";
 import moment from "moment";
+import { handleCreateHashtag, handleDeleteHashtags } from "../businessLogics/hashtag.js";
 
 //#region CRUD
 // GET post/list/all
@@ -39,32 +44,36 @@ export const getAPost = async (req, res) => {
 
   try {
     await Post.findById(id)
-      .populate("userId", "name") // need to populate more item (avatar, )
+      .populate("userId", "name avatarUrl userInfo") // need to populate more item (avatar, )
       .populate({
         path: "groupPostInfo.groupId",
         select: "name",
         model: "Group",
       })
+      .populate({
+        path: `hashtags`,
+        model: `Hashtag`,
+        select: "name count",
+      })
       .then((post) => {
         const postObj = post.toObject();
 
-        isPostVisibleByUser(
-          { ...postObj, userId: postObj.userId._id },
-          userId
-        ).then(visible => {
-          if (visible)
-            return res.status(200).json(post);
-          else
-            return res
-              .status(httpStatusCodes.forbidden)
-              .json(
-                "You don't have permission to access this post due to its privacy"
-              );
-        }).catch(err => {
-          return res
-            .status(404)
-            .json({ message: `Cannot find a post with id: ${id}`, error: err });
-        })
+        isPostVisibleByUser({ ...postObj, userId: postObj.userId._id }, userId)
+          .then((visible) => {
+            if (visible) return res.status(200).json(post);
+            else
+              return res
+                .status(httpStatusCodes.forbidden)
+                .json(
+                  "You don't have permission to access this post due to its privacy"
+                );
+          })
+          .catch((err) => {
+            return res.status(404).json({
+              message: `Cannot find a post with id: ${id}`,
+              error: err,
+            });
+          });
       })
       .catch((err) => {
         return res
@@ -113,15 +122,32 @@ export const createPost = async (req, res) => {
         .status(httpStatusCodes.forbidden)
         .send({ message: `You are not in this group` });
 
-    roleInGroup = getMemberRoleInGroup(userId, group)
+    roleInGroup = getMemberRoleInGroup(userId, group);
 
     post.groupPostInfo = {
       groupId,
       status: checkRoleHasPermissionOfRole(roleInGroup, "Moderator")
-        ? "Approved" : "Pending",
+        ? "Approved"
+        : "Pending",
     };
   }
   delete post.groupId;
+
+  // hashtags
+  if (post?.hashtagNames) {
+    post.hashtags = [];
+
+    for (let tagName of post?.hashtagNames) {
+      const addTagResult = await handleCreateHashtag({ name: tagName });
+
+      // add to official list hashtags
+      if (addTagResult.successful) {
+        post.hashtags.push(addTagResult.hashtag._id);
+      }
+    }
+
+    delete post.hashtagNames;
+  }
 
   const newPost = new Post({
     ...post,
@@ -135,7 +161,7 @@ export const createPost = async (req, res) => {
     // send review notification to mod of Group posts
     if (post.privacy === "Group") {
       if (!checkRoleHasPermissionOfRole(roleInGroup, "Moderator")) {
-        group?.listMembers?.forEach(member => {
+        group?.listMembers?.forEach((member) => {
           if (checkRoleHasPermissionOfRole(member?.role, "Moderator"))
             sendNotificationUser({
               userId: member?.userId,
@@ -145,7 +171,7 @@ export const createPost = async (req, res) => {
               },
               link: `/post/${newPost?._id}`,
             });
-        })
+        });
       }
     }
 
@@ -170,11 +196,30 @@ export const updatePost = async (req, res) => {
         .status(httpStatusCodes.badContent)
         .send(`New post information is required`);
 
+    // hashtags
+    if (newPost?.hashtagNames) {
+      newPost.hashtags = [];
+
+      for (let tagName of newPost?.hashtagNames) {
+        const addTagResult = await handleCreateHashtag({ name: tagName });
+
+        // add to official list hashtags
+        if (addTagResult.successful) {
+          newPost.hashtags.push(addTagResult.hashtag._id);
+        }
+      }
+
+      delete newPost.hashtagNames;
+    }
+
     const post = (await Post.findById(id)).toObject();
     if (!post)
       return res
         .status(httpStatusCodes.notFound)
         .send(`Cannot find a post with id: ${id}`);
+
+    if (post?.hashtags)
+      await handleDeleteHashtags(post.hashtags)
 
     if (!userId || !post.userId.equals(userId)) {
       return res
@@ -193,11 +238,14 @@ export const updatePost = async (req, res) => {
 
     if (post.privacy === "Group") {
       group = await Group.findById(post.groupPostInfo.groupId);
-      roleInGroup = getMemberRoleInGroup(userId, group)
+      roleInGroup = getMemberRoleInGroup(userId, group);
 
-      post.groupPostInfo.status =
-        checkRoleHasPermissionOfRole(roleInGroup, "Moderator")
-          ? "Approved" : "Pending";
+      post.groupPostInfo.status = checkRoleHasPermissionOfRole(
+        roleInGroup,
+        "Moderator"
+      )
+        ? "Approved"
+        : "Pending";
     }
 
     if (isPostUpdated(post, updatedPost)) {
@@ -208,7 +256,7 @@ export const updatePost = async (req, res) => {
       // send review notification to mod of Group posts
       if (res?.privacy === "Group") {
         if (!checkRoleHasPermissionOfRole(roleInGroup, "Moderator")) {
-          group?.listMembers?.forEach(member => {
+          group?.listMembers?.forEach((member) => {
             if (checkRoleHasPermissionOfRole(member?.role, "Moderator"))
               sendNotificationUser({
                 userId: member?.userId,
@@ -218,15 +266,17 @@ export const updatePost = async (req, res) => {
                 },
                 link: `/post/${res?._id}`,
               });
-          })
+          });
         }
       }
 
-      const groupPostNote = (res?.privacy === "Group" && res?.groupPostInfo?.status === "Pending") ?
-        " It may be under review for a while." : "";
+      const groupPostNote =
+        res?.privacy === "Group" && res?.groupPostInfo?.status === "Pending"
+          ? " It may be under review for a while."
+          : "";
 
       res?.interactionInfo?.listUsersFollowing?.forEach((item, i) => {
-        isPostVisibleByUser(updatedPost, userId).then(visible => {
+        isPostVisibleByUser(updatedPost, item).then((visible) => {
           if (visible) {
             // edit privacy to friend handle
             if (!item.equals(userId)) {
@@ -234,7 +284,9 @@ export const updatePost = async (req, res) => {
                 userId: item,
                 kind: "UpdatePost_PostFollowers",
                 content: {
-                  description: `Post '${res?.title}' that you are following has been edited.` + groupPostNote,
+                  description:
+                    `Post '${res?.title}' that you are following has been edited.` +
+                    groupPostNote,
                 },
                 link: `/post/${res?._id}`,
               });
@@ -242,7 +294,7 @@ export const updatePost = async (req, res) => {
           }
         });
       });
-    })
+    });
     return res.status(httpStatusCodes.ok).json(updatedPost);
   } catch (error) {
     return res
@@ -275,6 +327,9 @@ export const deletePost = async (req, res) => {
         .json({ message: `You don't have permission to delete this post` });
     }
 
+    if (post?.hashtags)
+      await handleDeleteHashtags(post.hashtags)
+
     await Post.findByIdAndRemove(id);
     res
       .status(httpStatusCodes.ok)
@@ -304,7 +359,7 @@ export const getMyPostInteractions = async (req, res) => {
     let filterJson = undefined;
     try {
       filterJson = JSON.parse(filter);
-    } catch {}
+    } catch { }
 
     const interactions = await getInteractionOfAUser(id, userId, filterJson);
     return res.status(httpStatusCodes.ok).json(interactions);
@@ -458,11 +513,16 @@ export const getPostsPagination = async (req, res) => {
 
   try {
     await Post.find()
-      .populate("userId", "name")
+      .populate("userId", "name avatarUrl userInfo")
       .populate({
         path: "groupPostInfo.groupId",
         select: "name",
         model: "Group",
+      })
+      .populate({
+        path: `hashtags`,
+        model: `Hashtag`,
+        select: "name count",
       })
       .sort({ createdAt: -1 })
       // .skip(_page > 0 ? _page * _limit : 0)
@@ -576,7 +636,6 @@ export const getOtherPosts = async (req, res) => {
   }
 };
 
-
 /**
  * @param {express.Request<ParamsDictionary, any, any, QueryString.ParsedQs, Record<string, any>>} req
  * @param {express.Response<any, Record<string, any>, number>} res
@@ -587,7 +646,9 @@ export const canReviewGroupPost = async (req, res, next) => {
   const { postId } = req.params;
 
   if (!userId)
-    return res.status(httpStatusCodes.unauthorized).send("You have to sign in to review a post");
+    return res
+      .status(httpStatusCodes.unauthorized)
+      .send("You have to sign in to review a post");
 
   try {
     const post = await Post.findById(postId);
@@ -600,9 +661,7 @@ export const canReviewGroupPost = async (req, res, next) => {
     const { groupId } = post.groupPostInfo ?? {};
 
     if (post.privacy !== "Group" || !groupId)
-      return res
-        .status(httpStatusCodes.badContent)
-        .send(`Not a group post`);
+      return res.status(httpStatusCodes.badContent).send(`Not a group post`);
 
     const group = await Group.findById(groupId);
 
@@ -615,12 +674,14 @@ export const canReviewGroupPost = async (req, res, next) => {
     if (!checkRoleHasPermissionOfRole(userRole, "Moderator"))
       return res
         .status(httpStatusCodes.forbidden)
-        .send("You don't have permission to review this post due to your role or you're not in this group");
+        .send(
+          "You don't have permission to review this post due to your role or you're not in this group"
+        );
 
     req.groupPost = {
       post,
       group,
-    }
+    };
 
     return next?.();
   } catch (error) {
@@ -628,7 +689,7 @@ export const canReviewGroupPost = async (req, res, next) => {
       .status(httpStatusCodes.internalServerError)
       .json({ message: error.message });
   }
-}
+};
 
 /**
  * @param {express.Request<ParamsDictionary, any, any, QueryString.ParsedQs, Record<string, any>>} req
@@ -643,7 +704,7 @@ export const approveGroupPost = async (req, res, next) => {
     if (post.groupPostInfo.status === "Approved")
       return res
         .status(httpStatusCodes.badContent)
-        .send("This post has already been approved")
+        .send("This post has already been approved");
 
     post.groupPostInfo.status = "Approved";
     const newPost = await Post.findByIdAndUpdate(postId, post, { new: true });
@@ -657,16 +718,13 @@ export const approveGroupPost = async (req, res, next) => {
       link: `/post/${post?._id}`,
     });
 
-    return res
-      .status(httpStatusCodes.ok)
-      .send(newPost);
-
+    return res.status(httpStatusCodes.ok).send(newPost);
   } catch (error) {
     return res
       .status(httpStatusCodes.internalServerError)
       .json({ message: error.message });
   }
-}
+};
 
 /**
  * @param {express.Request<ParamsDictionary, any, any, QueryString.ParsedQs, Record<string, any>>} req
@@ -683,6 +741,9 @@ export const declineGroupPost = async (req, res, next) => {
     delete backUpContent.updatedAt;
     delete backUpContent._id;
 
+    if (post?.hashtags)
+      await handleDeleteHashtags(post.hashtags)
+
     await Post.findByIdAndDelete(postId);
 
     sendNotificationUser({
@@ -695,16 +756,13 @@ export const declineGroupPost = async (req, res, next) => {
       link: `/?postBackUp=${JSON.stringify(backUpContent)}`,
     });
 
-    return res
-      .status(httpStatusCodes.ok)
-      .send("Post declined and deleted");
-
+    return res.status(httpStatusCodes.ok).send("Post declined and deleted");
   } catch (error) {
     return res
       .status(httpStatusCodes.internalServerError)
       .json({ message: error.message });
   }
-}
+};
 
 export const countPosts = async (req, res) => {
   const { range, timeString } = req.params;

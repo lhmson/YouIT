@@ -38,6 +38,7 @@ import {
 import { Link, useHistory } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { deletePost } from "../../../redux/actions/posts";
+import MarkdownRenderer from "../MarkdownRenderer/MarkdownRenderer";
 
 const { Title, Text, Paragraph } = Typography;
 const { confirm } = Modal;
@@ -152,9 +153,7 @@ function FullPost({ post }) {
 
   const [user] = useLocalStorage("user");
 
-  const handleMore = () => {};
-
-  const tagList = ["Tag 1", "Tag 2", "Tag 3", "Tag 4", "Tag 5"];
+  const handleMore = () => { };
 
   //#region menu more
 
@@ -278,6 +277,17 @@ function FullPost({ post }) {
 
   const groupId = post?.groupPostInfo?.groupId;
 
+  const renderUserInfo = () => {
+    const userInfo = post?.userId?.userInfo;
+    const education = userInfo.educations?.[userInfo.educations?.length - 1];
+    const work = userInfo.works?.[userInfo.works?.length - 1];
+    const educationInfo = education
+      ? `${education?.moreInfo} at ${education?.schoolName}`
+      : null;
+    const workInfo = work ? `${work?.position} at ${work?.location}` : null;
+    return workInfo || educationInfo;
+  };
+
   const renderPrivacyIcon = (privacy) => {
     switch (privacy) {
       case "Friend":
@@ -304,7 +314,7 @@ function FullPost({ post }) {
             <Avatar
               className="ml-1 clickable"
               size={45}
-              src="https://scontent-xsp1-1.xx.fbcdn.net/v/t1.6435-9/150532368_2890525287933380_4029393584172411335_n.jpg?_nc_cat=108&ccb=1-3&_nc_sid=09cbfe&_nc_ohc=vNeUmNaYi4gAX92GO8S&_nc_ht=scontent-xsp1-1.xx&oh=121b4b571f04f2b3741faa799e988b9d&oe=60A2B225"
+              src={post?.userId?.avatarUrl}
             />
             <div className="d-inline-flex flex-column ml-3 break-word">
               <Row style={{ alignItems: "center" }}>
@@ -334,7 +344,9 @@ function FullPost({ post }) {
                   )}
                 </Space>
               </Row>
-              <Text>Fullstack Developer</Text>
+              <Text strong className="green">
+                {renderUserInfo()}
+              </Text>
             </div>
           </Row>
           <Row className="justify-content-end align-items-center pb-3">
@@ -365,16 +377,19 @@ function FullPost({ post }) {
           </Row>
         </Row>
         <Row className="mb-1">
-          {tagList?.map((item, i) => (
-            <Tag key={i} className="mb-2 tag">
-              {item}
-            </Tag>
+          {post?.hashtags?.map((item, i) => (
+            <Tooltip title={`Mentioned ${item?.count} time${item?.count > 1 ? "s" : ""}`}>
+              <Tag key={i} className="mb-2 tag">
+                {item.name}
+              </Tag>
+            </Tooltip>
           ))}
         </Row>
         <div className="break-word">
           <Title level={2}>{post?.title}</Title>
           <div className="pb-2">
-            <Paragraph>{post?.content?.text}</Paragraph>
+            {/* <Paragraph>{post?.content?.text}</Paragraph> */}
+            <MarkdownRenderer text={post?.content?.text} />
           </div>
         </div>
         <Row className="justify-content-between mb-4">
@@ -386,17 +401,15 @@ function FullPost({ post }) {
                 </Text>
                 <Tooltip title="Upvote">
                   <ArrowUpOutlined
-                    className={`clickable icon ${
-                      myInteractions?.upvote ? "green" : "black"
-                    }`}
+                    className={`clickable icon ${myInteractions?.upvote ? "green" : "black"
+                      }`}
                     onClick={() => handleUpvoteClick(post._id)}
                   />
                 </Tooltip>
                 <Tooltip title="Downvote">
                   <ArrowDownOutlined
-                    className={`clickable icon ${
-                      myInteractions?.downvote ? "green" : "black"
-                    }`}
+                    className={`clickable icon ${myInteractions?.downvote ? "green" : "black"
+                      }`}
                     onClick={() => handleDownvoteClick(post._id)}
                   />
                 </Tooltip>

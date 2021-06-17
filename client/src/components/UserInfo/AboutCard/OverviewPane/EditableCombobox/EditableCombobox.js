@@ -51,8 +51,10 @@ function EditableCombobox({
           defaultValue={text}
           onChange={(value) => onChange(value)}
         >
-          {options.map((option) => (
-            <Option value={option}>{option}</Option>
+          {options.map((option, index) => (
+            <Option key={index} value={option}>
+              {option}
+            </Option>
           ))}
         </Select>
         <Row style={{ justifyContent: "flex-end" }}>

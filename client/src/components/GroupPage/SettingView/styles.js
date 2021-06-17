@@ -6,8 +6,8 @@ const styles = {
   settingView: {
     background: "white",
     marginTop: 32,
-    marginRight: 128,
-    marginLeft: 128,
+    // marginRight: 128,
+    // marginLeft: 128,
     padding: 32,
   },
 };

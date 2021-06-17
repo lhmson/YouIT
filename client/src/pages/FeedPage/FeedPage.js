@@ -20,7 +20,7 @@ function FeedPage() {
             <div
               className="mainContent"
               id="scrollableDiv"
-              style={{ minWidth: "84vw" }}
+              style={{ minWidth: "86vw" }}
             >
               <FeedPosts space="news_feed" />
             </div>

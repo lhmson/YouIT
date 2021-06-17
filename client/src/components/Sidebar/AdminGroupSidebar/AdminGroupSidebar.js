@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext } from "react";
 import { Layout, Menu, Typography } from "antd";
 import styles from "./styles.js";
 import { IoPersonAdd, IoSettingsSharp } from "react-icons/io5";
@@ -17,7 +17,7 @@ function AdminGroupSidebar(props) {
 
   const history = useHistory();
 
-  const [selectMenu, setSelectMenu] = useState("group");
+  // const [selectMenu, setSelectMenu] = useState("group");
 
   const isAdmin = (user) => {
     let isAdmin = false;
@@ -63,7 +63,7 @@ function AdminGroupSidebar(props) {
     >
       <Menu
         mode="inline"
-        defaultSelectedKeys={[selectMenu]}
+        defaultSelectedKeys={[props.selectMenu]}
         //defaultOpenKeys={["1"]}
         style={{
           height: "100%",
@@ -76,12 +76,12 @@ function AdminGroupSidebar(props) {
           Admin Tools
         </Text>
         <Menu.Item
-          key="group"
+          key="main"
           style={styles.item}
           icon={<BiConversation style={styles.transparent} />}
           // onClick={() => props.setModeSearch("group")}
           onClick={() => {
-            setSelectMenu("group");
+            // setSelectMenu("group");
             history.push(`/group/${group?._id}/main`);
           }}
         >
@@ -89,12 +89,12 @@ function AdminGroupSidebar(props) {
         </Menu.Item>
         {isAdmin(user) ? (
           <Menu.Item
-            key="memberRequests"
+            key="member_requests"
             style={styles.item}
             icon={<IoPersonAdd style={styles.transparent} />}
             // onClick={() => props.setModeSearch("memberRequests")}
             onClick={() => {
-              setSelectMenu("memberRequests");
+              // setSelectMenu("memberRequests");
               history.push(`/group/${group?._id}/member_requests`);
             }}
           >
@@ -105,16 +105,16 @@ function AdminGroupSidebar(props) {
         )}
         {isModerator(user) ? (
           <Menu.Item
-            key="approvePosts"
+            key="review_posts"
             style={styles.item}
             icon={<FiCheckSquare style={styles.transparent} />}
             // onClick={() => props.setModeSearch("approvePosts")}
             onClick={() => {
-              setSelectMenu("approvePosts");
+              // setSelectMenu("approvePosts");
               history.push(`/group/${group?._id}/review_posts`);
             }}
           >
-            Approve Posts
+            Review Posts
           </Menu.Item>
         ) : (
           ""
@@ -126,7 +126,7 @@ function AdminGroupSidebar(props) {
             icon={<IoSettingsSharp style={styles.transparent} />}
             // onClick={() => props.setModeSearch("setting")}
             onClick={() => {
-              setSelectMenu("setting");
+              // setSelectMenu("setting");
               history.push(`/group/${group?._id}/setting`);
             }}
           >

@@ -11,13 +11,18 @@ const CreateGroupNameAdmin = () => {
   const displayName = user?.result?.name ?? "";
 
   const avatarUrl =
-    user?.avatarUrl ??
+    user?.result?.avatarUrl ??
     "https://pbs.twimg.com/profile_images/1247161286518964226/m92qVTIT_400x400.jpg";
 
   return (
     <Row className="pb-2 justify-content-between align-items-center">
       <Row className="align-items-center" style={{ marginBottom: 16 }}>
-        <Avatar className="ml-1 clickable" size={70} src={avatarUrl} />
+        <Avatar
+          className="ml-1 clickable"
+          size={70}
+          src={avatarUrl}
+          alt={user?.result?.name}
+        />
         <div className="d-inline-flex flex-column ml-3 break-word">
           <Row className="align-items-center">
             <Space size={4}>

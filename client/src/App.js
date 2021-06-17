@@ -104,6 +104,9 @@ function App() {
               component={CreateGroupPage}
             />
             <Route exact path="/group/:id/:menu" component={GroupPage} />
+            <Route exact path="/group/:id">
+              <Redirect to="/group/:id/main" />
+            </Route>
             <Route exact path="/settings" component={SettingsPage} />
             <Route exact path="/activate/:token" component={ActivationPage} />
             <PrivateRoute exact path="/message" component={MessagePage} />

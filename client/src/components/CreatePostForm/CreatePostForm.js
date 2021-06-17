@@ -11,6 +11,7 @@ import PostEditor from "./PostEditor/PostEditor.js";
 import CreatePostContentPinnedUrlInput from "./CreatePostContentPinnedUrlInput/CreatePostContentPinnedUrlInput.js";
 import { useLocalStorage } from "../../hooks/useLocalStorage.js";
 import { Prompt } from "react-router-dom";
+import { isURL } from "../../utils/isUrl.js";
 
 function CreatePostForm({
   postId = null,
@@ -25,6 +26,7 @@ function CreatePostForm({
   const [selectedGroup, setSelectedGroup] = useState(null); // actual group
   const [postPrivacy, setPostPrivacy] = useState("");
   const [editingPost, setEditingPost] = useState(null);
+  const [listHashtagNames, setListHashtagNames] = useState([]);
 
   const [safeToLeave, setSafeToLeave] = useState(false);
 
@@ -69,6 +71,8 @@ function CreatePostForm({
     setPostContentPinnedUrl(post?.content?.pinnedUrl ?? "");
     setPostPrivacy(post?.privacy ?? "");
 
+    setListHashtagNames(post?.hashtags?.map(tag => tag?.name));
+
     if (post?.groupPostInfo) {
       // setPostSpace(post?.groupPostInfo?.groupId?.name);
       // setSelectedGroup(post?.groupPostInfo?.groupId);
@@ -83,6 +87,7 @@ function CreatePostForm({
         pinnedUrl: postContentPinnedUrl,
       },
       privacy: postPrivacy,
+      hashtagNames: listHashtagNames,
     };
 
     if (selectedGroup) {
@@ -103,8 +108,10 @@ function CreatePostForm({
 
     if (!post) return errorResult("Something when wrong.");
     if (!post.title) return errorResult("A post must have a title.");
-    if (!post.content?.text && !post.content?.pinnedUrl)
+    if ((!post.content?.text) && (!post.content?.pinnedUrl))
       return errorResult("A post must have some content.");
+    if ((post?.content?.pinnedUrl) && (!isURL(post?.content?.pinnedUrl)))
+      return errorResult("Attached URL is not valid");
     if (post.privacy === "Group" && !post.groupId)
       return errorResult("The selected group to post is not valid");
 
@@ -178,7 +185,10 @@ function CreatePostForm({
 
       <div className="d-flex justify-content-start py-2">
         <div className="col-8">
-          <CreatePostTagSelect />
+          <CreatePostTagSelect
+            onChange={setListHashtagNames}
+            defaultTags={listHashtagNames ?? []}
+          />
         </div>
         <div className="col-2">
           <CreatePostPrivacySelect
