@@ -23,7 +23,7 @@ import { useToken } from "../../context/TokenContext";
 import { useLocalStorage } from "../../hooks/useLocalStorage";
 import { resendVerificationMail } from "../../api/auth";
 
-const { Title, Text, Paragraph } = Typography;
+const { Title, Text } = Typography;
 
 const initialState = {
   email: "",
@@ -142,10 +142,10 @@ function LoginPage() {
                     onChange={handleChange}
                   />
                 </Form.Item>
-                <Row justify="space-between" style={{ marginBottom: 24 }}>
-                  <Checkbox name="remember" onChange={handleChange}>
+                <Row justify="end" style={{ marginBottom: 24 }}>
+                  {/* <Checkbox name="remember" onChange={handleChange}>
                     Remember me
-                  </Checkbox>
+                  </Checkbox> */}
                   <Text className="clickable green ">Forgot password?</Text>
                 </Row>
 

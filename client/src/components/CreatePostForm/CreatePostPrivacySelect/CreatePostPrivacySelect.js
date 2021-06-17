@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { Select } from "antd";
-import styles from "./styles.js";
-import COLOR from "../../../constants/colors.js";
 
 function CreatePostPrivacySelect({
   postSpace = undefined,

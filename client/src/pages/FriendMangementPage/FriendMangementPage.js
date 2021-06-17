@@ -59,7 +59,7 @@ function FriendMangementPage() {
     user.name.toLowerCase().includes(txtSearch.toLowerCase())
   );
 
-  if (mode === "Invites") {
+  if (mode === "Requests") {
     listFilter = listRequest.filter((user) =>
       user.name.toLowerCase().includes(txtSearch.toLowerCase())
     );
@@ -120,18 +120,18 @@ function FriendMangementPage() {
                   </div>
                   <div className="offset-5 col-2">
                     <Button
-                      onClick={() => setMode("Invites")}
+                      onClick={() => setMode("Requests")}
                       type="primary"
                       style={{
-                        background: "#27AE60",
-                        borderColor: "#27AE60",
+                        background: COLOR.green,
+                        borderColor: COLOR.green,
                         color: "white",
                         fontWeight: 500,
                         display: "flex",
                         justifyContent: "center",
                       }}
                     >
-                      Invites ({listRequest.length})
+                      Requests ({listRequest.length})
                     </Button>
                   </div>
 

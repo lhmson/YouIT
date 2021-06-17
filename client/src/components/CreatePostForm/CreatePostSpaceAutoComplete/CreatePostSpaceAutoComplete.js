@@ -2,10 +2,15 @@ import React, { useEffect, useState } from "react";
 import { AutoComplete } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchUserJoinedGroups } from "../../../redux/actions/group.js";
-import styles from "./styles.js";
 
-function CreatePostSpaceAutoComplete({ postSpace, setPostSpace, onSelectedGroupChange, initialGroupId, disabled = false }) {
-  const groups = useSelector(state => state.groups);
+function CreatePostSpaceAutoComplete({
+  postSpace,
+  setPostSpace,
+  onSelectedGroupChange,
+  initialGroupId,
+  disabled = false,
+}) {
+  const groups = useSelector((state) => state.groups);
   const [selectedGroup, setSelectedGroup] = useState(null);
   const dispatch = useDispatch();
 
@@ -16,27 +21,26 @@ function CreatePostSpaceAutoComplete({ postSpace, setPostSpace, onSelectedGroupC
 
   useEffect(() => {
     dispatch(fetchUserJoinedGroups());
-  }, [])
+  }, []);
 
   useEffect(() => {
-    if (!groups)
-      setOptions([]);
+    if (!groups) setOptions([]);
     else
-      setOptions(groups.map(
-        g => ({
+      setOptions(
+        groups.map((g) => ({
           value: g.name,
           data: g,
-        })
-      ));
-  }, [groups])
+        }))
+      );
+  }, [groups]);
 
   useEffect(() => {
-    if ((!selectedGroup) && initialGroupId) {
-      const toBeSelectedGroup = groups.find(g => g._id === initialGroupId);
+    if (!selectedGroup && initialGroupId) {
+      const toBeSelectedGroup = groups.find((g) => g._id === initialGroupId);
       setSelectedGroup(toBeSelectedGroup);
       setPostSpace(toBeSelectedGroup?.name);
     }
-  }, [groups, initialGroupId])
+  }, [groups, initialGroupId]);
 
   const handlePostSpaceChange = (value) => {
     setSelectedGroup(null);
@@ -45,11 +49,11 @@ function CreatePostSpaceAutoComplete({ postSpace, setPostSpace, onSelectedGroupC
 
   useEffect(() => {
     onSelectedGroupChange(selectedGroup);
-  }, [selectedGroup, onSelectedGroupChange])
+  }, [selectedGroup, onSelectedGroupChange]);
 
   const handlePostSpaceSelect = (value, { data }) => {
     setSelectedGroup(data);
-  }
+  };
 
   const isValid = () => selectedGroup || !postSpace;
 

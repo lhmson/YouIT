@@ -11,6 +11,7 @@ import {
   Badge,
   Tooltip,
   notification,
+  Button,
 } from "antd";
 import styles from "./styles";
 import logo from "../../assets/darklogo.png";
@@ -75,7 +76,7 @@ function Navbar({ selectedMenu, setTxtSearch, txtInitSearch }) {
   const handleClickNotificationItem = (url, notificationId) => {
     dispatch(setSeenNotification(notificationId, "true"));
     history.push(url);
-    window.location.reload(); // fix bug push not route
+    setTimeout(location.reload); // fix bug push not route
   };
 
   useEffect(() => {
@@ -87,11 +88,14 @@ function Navbar({ selectedMenu, setTxtSearch, txtInitSearch }) {
   const openNotification = (msg) => {
     // alert("abc");
     const key = `open${Date.now()}`;
-    // const btn = (
-    //   <Button className="green-button" onClick={() => console.log("open", msg)}>
-    //     Check out
-    //   </Button>
-    // );
+    const btn = (
+      <Button
+        className="green-button"
+        onClick={() => handleClickNotificationItem(msg?.link, msg?._id)}
+      >
+        Check out
+      </Button>
+    );
     notification.open({
       message: "Something new for you to see",
       description: msg?.content?.description ?? "",
@@ -101,7 +105,7 @@ function Navbar({ selectedMenu, setTxtSearch, txtInitSearch }) {
       key,
       duration: 3,
       placement: "bottomLeft",
-      // btn,
+      btn,
     });
   };
 

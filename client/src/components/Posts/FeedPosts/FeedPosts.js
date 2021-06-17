@@ -7,6 +7,8 @@ import useInfiniteScroll from "../../../hooks/useInfiniteScroll";
 
 import InfiniteScroll from "react-infinite-scroll-component";
 
+import { useHistory } from "react-router-dom";
+
 import * as api from "../../../api/post";
 
 import FeedPost from "./FeedPost/FeedPost";
@@ -27,6 +29,8 @@ function FeedPosts({
   const [page, setPage] = useState(0);
   //we need to know if there is more data
   const [hasMore, setHasMore] = useState(true);
+
+  const history = useHistory();
 
   const handleFetchPosts = useCallback((res) => {
     setPosts((prev) => {
@@ -82,7 +86,11 @@ function FeedPosts({
             loader={<Loading />}
             scrollableTarget="scrollableDiv"
             endMessage={
-              <p style={{ textAlign: "center", fontSize: "1rem" }}>
+              <p
+                style={{ textAlign: "center", fontSize: "1rem" }}
+                className="clickable"
+                onClick={() => history.push("/post/create")}
+              >
                 <b>You have reached all posts. Let's share your own, right?</b>
               </p>
             }

@@ -1,7 +1,7 @@
 import React from "react";
-import { Typography, Row, Col, Card, Tag, Button } from "antd";
+import { Typography, Row, Card, Button } from "antd";
 import { Link } from "react-router-dom";
-const { Title, Text } = Typography;
+const { Title } = Typography;
 
 const buttonWidth = 100;
 

@@ -36,6 +36,7 @@ import SettingsPage from "./pages/SettingsPage/SettingsPage.js";
 import ActivationPage from "./pages/ActivationPage/ActivationPage.js";
 import AdminDashboardPage from "./pages/SystemAdmin/AdminDashboardPage/AdminDashboardPage.js";
 import { FriendsStatusProvider } from "./context/FriendsStatusContext.js";
+import { BACKEND_URL } from "./constants/config.js";
 
 const loggedIn = () => {
   const user = JSON.parse(localStorage.getItem("user"));
@@ -54,7 +55,7 @@ function App() {
   return (
     <div className={styles.App}>
       <CuteClientIOProvider
-        serverUri={"http://localhost:5000"} //TODO: change all localhost to deploy link
+        serverUri={BACKEND_URL} //TODO: change all localhost to deploy link
         token={token}
         onNewConnection={handleNewIOConnection}
       >

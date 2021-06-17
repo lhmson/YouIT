@@ -46,6 +46,7 @@ import { HashLink } from "react-router-hash-link";
 import { useLocalStorage } from "../../../../hooks/useLocalStorage";
 import { limitNameLength } from "../../../../utils/limitNameLength";
 import ShareButton from "./ShareButton";
+import { BACKEND_URL, FRONTEND_URL } from "../../../../constants/config";
 
 const { Title, Text, Paragraph } = Typography;
 
@@ -349,11 +350,13 @@ function FeedPost({ post, setCurrentId }) {
             </Tooltip>
 
             <div className="mr-4">
-              <Tooltip title={`Created ${moment(post?.createdAt).fromNow()}`}>
-                <Text className="clickable" underline type="secondary">
-                  Last edited {moment(post?.contentUpdatedAt).fromNow()}
-                </Text>
-              </Tooltip>
+              <Link to={`/post/${post._id}`} target="_blank">
+                <Tooltip title={`Created ${moment(post?.createdAt).fromNow()}`}>
+                  <Text className="clickable" underline type="secondary">
+                    Last edited {moment(post?.contentUpdatedAt).fromNow()}
+                  </Text>
+                </Tooltip>
+              </Link>
             </div>
             <Dropdown
               overlay={menuMore}
@@ -394,18 +397,17 @@ function FeedPost({ post, setCurrentId }) {
               sunt in culpa qui officia deserunt mollit anim id est laborum.
             </Paragraph> */}
             <Paragraph>{limitNameLength(post?.content?.text, 500)}</Paragraph>
-            <Row className="justify-content-center">
-              <ReactTinyLink
-                cardSize="small"
-                width={1500}
-                // header="YouIT Share"
-                showGraphic={true}
-                defaultMedia="http://localhost:3000/static/media/lightlogo.c68302e9.png"
-                maxLine={2}
-                minLine={1}
-                url="http://localhost:3000/userinfo/60b8fec93496700f58ecfc70"
-              />
-            </Row>
+            {post?.content?.pinnedUrl && (
+              <Row className="justify-content-center">
+                <ReactTinyLink
+                  cardSize="small"
+                  showGraphic={true}
+                  maxLine={2}
+                  minLine={1}
+                  url={post?.content?.pinnedUrl}
+                />
+              </Row>
+            )}
 
             <Link to={`/post/${post._id}`} target="_blank">
               <Text className="clickable bold">Click here to read more</Text>

@@ -13,7 +13,7 @@ function CoverPhoto() {
         }}
       >
         <Image
-          src="https://vnn-imgs-f.vgcloud.vn/2020/09/07/15/.jpg"
+          src="https://marketingweek.imgix.net/content/uploads/2015/03/Digital_tech_breaker.png?auto=compress,format&q=60&w=980&h=400"
           style={{
             maxHeight: "40vh",
             width: "100%",
