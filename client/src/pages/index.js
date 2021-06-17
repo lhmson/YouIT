@@ -18,6 +18,8 @@ import FriendMangementPage from "./FriendMangementPage/FriendMangementPage";
 import MutualFriendPage from "./FriendMangementPage/MutualFriendPage";
 import GroupManagementPage from "./GroupManagementPage/GroupMangagementPage";
 import RequestsInGroupPage from "./RequestsInGroupsPage/RequestsInGroupPage";
+import ReportUserPage from "./ReportPage/ReportUserPage/ReportUserPage";
+
 export {
   HomePage,
   AboutPage,
@@ -39,4 +41,5 @@ export {
   MutualFriendPage,
   GroupManagementPage,
   RequestsInGroupPage,
+  ReportUserPage,
 };

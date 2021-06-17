@@ -24,6 +24,7 @@ import {
   FriendMangementPage,
   MutualFriendPage,
   GroupManagementPage,
+  ReportUserPage,
 } from "./pages/index";
 
 import { CuteClientIOProvider } from "./socket/CuteClientIOProvider.js";
@@ -93,6 +94,7 @@ function App() {
           <PrivateRoute exact path="/message" component={MessagePage} />
           <Route path="/group/:id/about" component={GroupPage} />
           <Route path="/group/:id/members" component={GroupPage} />
+          <Route path="/reports/user" component={ReportUserPage} />
           <Route>
             <ErrorPage code="404" />
           </Route>

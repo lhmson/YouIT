@@ -7,6 +7,15 @@ import { httpStatusCodes } from "../utils/httpStatusCode.js";
 export const getAllReportUserRequests = async (req, res) => {
   try {
     const requests = await ReportUser.find();
+    const users = await User.find();
+
+    let pendingReports = [];
+    for (let i=0; i<requests?.length; i++)
+      if (requests[i].status === "pending")
+      {
+        
+      }
+
     return res.status(httpStatusCodes.ok).json(requests);
   } catch (error) {
     return res
