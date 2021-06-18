@@ -1,12 +1,13 @@
-import React from "react";
-import { Avatar, Typography, Layout, Row } from "antd";
+import React, { useEffect } from "react";
+import { Avatar, Typography, Row, Space } from "antd";
 import { Link } from "react-router-dom";
 import { useLocalStorage } from "../../../hooks/useLocalStorage.js";
-import COLOR from "../../../constants/colors";
+import { useSelector } from "react-redux";
 const { Title, Text } = Typography;
 
 const CreateGroupNameAdmin = () => {
   const [user] = useLocalStorage("user");
+  // const user = useSelector((state) => state.user);
   const displayName = user?.result?.name ?? "";
 
   const avatarUrl =
@@ -14,25 +15,31 @@ const CreateGroupNameAdmin = () => {
     "https://pbs.twimg.com/profile_images/1247161286518964226/m92qVTIT_400x400.jpg";
 
   return (
-    <Row style={{ marginBottom: 18, marginTop: 18 }}>
-      <Link to="/">
+    <Row className="pb-2 justify-content-between align-items-center">
+      <Row className="align-items-center" style={{ marginBottom: 16 }}>
         <Avatar
+          className="ml-1 clickable"
+          size={70}
           src={avatarUrl}
           alt={user?.result?.name}
-          className="ml-1 clickable"
-          size={80}
         />
-      </Link>
-      <Layout style={{ background: COLOR.white }}>
-        <Text
-          className="clickable"
-          strong
-          style={{ marginLeft: 15, fontSize: "1.8rem" }}
-        >
-          {displayName}
-        </Text>
-        <Text style={{ marginLeft: 15, fontSize: 16 }}>Owner</Text>
-      </Layout>
+        <div className="d-inline-flex flex-column ml-3 break-word">
+          <Row className="align-items-center">
+            <Space size={4}>
+              <Link to={`/userinfo/${user?.result?._id}`} target="_blank">
+                <Text
+                  className="clickable"
+                  strong
+                  style={{ fontSize: "1.2rem" }}
+                >
+                  {displayName}
+                </Text>
+              </Link>
+            </Space>
+          </Row>
+          <Text>Owner</Text>
+        </div>
+      </Row>
     </Row>
   );
 };
