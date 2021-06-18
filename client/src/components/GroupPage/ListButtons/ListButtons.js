@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Button, Menu, Row } from "antd";
+import { Menu, Row } from "antd";
 import { MailOutlined } from "@ant-design/icons";
 
 import { Link, useLocation } from "react-router-dom";
