@@ -326,7 +326,7 @@ function Comment({
             </div>
           ) : null}
           <div className="mb-2">
-            <div className={`ellipsis !== "full" && "ellipsis" break-word`}>
+            <div>
               <Paragraph className="">{comment?.content}</Paragraph>
             </div>
             {ellipsis !== "full" && <div className="bottom-fade"></div>}
