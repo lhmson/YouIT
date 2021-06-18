@@ -4,31 +4,31 @@ import { message } from "antd";
 
 export const signin =
   (formData, router, setLocalStorageUser, oldToken, setToken, setResend) =>
-    async (dispatch) => {
-      try {
-        console.log("signin");
-        const { data } = await api.signIn(formData);
-        dispatch({ type: AUTH, data, setLocalStorageUser });
-        // dirty code to force sign in
-        // setTimeout(() => {
-        //   setToken(JSON.parse(localStorage.getItem("user"))?.token);
-        // }, 2000);
-        // forceGetNewLocalStorageToken(oldToken, setToken);
+  async (dispatch) => {
+    try {
+      console.log("signin");
+      const { data } = await api.signIn(formData);
+      dispatch({ type: AUTH, data, setLocalStorageUser });
+      // dirty code to force sign in
+      // setTimeout(() => {
+      //   setToken(JSON.parse(localStorage.getItem("user"))?.token);
+      // }, 2000);
+      // forceGetNewLocalStorageToken(oldToken, setToken);
 
-        // router.push("/");
-        window.location.reload();
-        message.success("Login successfully!");
-      } catch (error) {
-        const code = error.response?.status;
-        const data = error.response.data;
-        if (code === 401 || code === 404) {
-          if (data.message === "Unactivated") {
-            setResend(true);
-            message.success("Please check your email to verify.");
-          } else message.error("Wrong username or password.");
-        } else if (code === 500) message.error("Something went wrong.");
-      }
-    };
+      // router.push("/");
+      window.location.reload();
+      message.success("Login successfully!");
+    } catch (error) {
+      const code = error.response?.status;
+      const data = error.response?.data;
+      if (code === 401 || code === 404) {
+        if (data.message === "Unactivated") {
+          setResend(true);
+          message.success("Please check your email to verify.");
+        } else message.error("Wrong username or password.");
+      } else if (code === 500) message.error("Something went wrong.");
+    }
+  };
 
 export const signup = (formData, setResend) => async (dispatch) => {
   try {
