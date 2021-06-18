@@ -264,9 +264,9 @@ function MessageHeader({ setOpenSidebar, currentId, listSeenMembers }) {
           <Tooltip
             title={
               <div>
-                Seen
+                Seen by:
                 {listSeenMembers.map((item) => (
-                  <div>{item.name}</div>
+                  <div>{"• " + item.name}</div>
                 ))}
               </div>
             }

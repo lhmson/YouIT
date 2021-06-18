@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Button, message, Tooltip, Typography } from "antd";
+import { Button, Tooltip, Typography } from "antd";
 import "../styles.css";
 import { useLocalStorage } from "../../../hooks/useLocalStorage";
 import { useMessage } from "../../../hooks/useMessage";
@@ -30,13 +30,13 @@ function ConversationList({ currentId, listSeenMembers, setListSeenMembers }) {
     if (currentId) {
       messageHandle.onReceive((msg) => {
         if (msg.res.conversationId === currentId) {
-          handleLoadNewMessage();
+          handleAddNewMessage(msg?.res?.message);
         }
       });
 
       messageHandle.onSent((msg) => {
         if (msg.res.conversationId === currentId) {
-          handleLoadNewMessage();
+          handleAddNewMessage(msg?.res?.message);
         }
       });
 
@@ -65,14 +65,11 @@ function ConversationList({ currentId, listSeenMembers, setListSeenMembers }) {
     };
   }, [currentId]);
 
-  const handleLoadNewMessage = () => {
-    apiConversation.fetchAConversation(currentId, 0, 0).then((res) => {
-      const fetchedMsgs = res.data?.listMessages;
-      if (fetchedMsgs) {
-        setListMessages((prev) => [...fetchedMsgs, ...prev]);
-        handleSetSeenMessage();
-      }
-    });
+  const handleAddNewMessage = (newMsg) => {
+    if (newMsg) {
+      setListMessages((prev) => [newMsg, ...prev]);
+      handleSetSeenMessage();
+    }
   };
 
   const handleLoadMoreMessage = (start) => {
@@ -129,11 +126,10 @@ function ConversationList({ currentId, listSeenMembers, setListSeenMembers }) {
           {listMessages?.map((item, i) => (
             <div
               key={item.toString()}
-              className={`message-row ${
-                item.senderId._id === user?.result?._id
-                  ? "you-message"
-                  : "other-message"
-              }`}
+              className={`message-row ${item.senderId._id === user?.result?._id
+                ? "you-message"
+                : "other-message"
+                }`}
             >
               <div className="message-content">
                 <Tooltip title={item.senderId.name} placement="bottom">
