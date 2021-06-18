@@ -374,9 +374,8 @@ function FeedPost({ post, setCurrentId }) {
         <Row className="mb-1">
           {post?.hashtags?.map((item, i) => (
             <Tooltip
-              title={`Mentioned ${item?.count} time${
-                item?.count > 1 ? "s" : ""
-              }`}
+              title={`Mentioned ${item?.count} time${item?.count > 1 ? "s" : ""
+                }`}
             >
               <Tag key={i} className="mb-2 tag">
                 {item.name}
@@ -387,16 +386,8 @@ function FeedPost({ post, setCurrentId }) {
         <div className="break-word">
           <Title level={2}>{post?.title}</Title>
           <div className="pb-2">
-            {/* <Paragraph>
-              Some word Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-              sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-              Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris
-              nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in
-              reprehenderit in voluptate velit esse cillum dolore eu fugiat
-              nulla pariatur. Excepteur sint occaecat cupidatat non proident,
-              sunt in culpa qui officia deserunt mollit anim id est laborum.
-            </Paragraph> */}
-            <Paragraph>{limitNameLength(post?.content?.text, 500)}</Paragraph>
+            <Paragraph>{post?.content?.overview}</Paragraph>
+
             {post?.content?.pinnedUrl && (
               <Row className="justify-content-center">
                 <ReactTinyLink
@@ -423,17 +414,15 @@ function FeedPost({ post, setCurrentId }) {
                 </Text>
                 <Tooltip title="Upvote">
                   <ArrowUpOutlined
-                    className={`clickable icon ${
-                      myInteractions?.upvote ? "green" : "black"
-                    }`}
+                    className={`clickable icon ${myInteractions?.upvote ? "green" : "black"
+                      }`}
                     onClick={() => handleUpvoteClick(post._id)}
                   />
                 </Tooltip>
                 <Tooltip title="Downvote">
                   <ArrowDownOutlined
-                    className={`clickable icon ${
-                      myInteractions?.downvote ? "green" : "black"
-                    }`}
+                    className={`clickable icon ${myInteractions?.downvote ? "green" : "black"
+                      }`}
                     onClick={() => handleDownvoteClick(post._id)}
                   />
                 </Tooltip>

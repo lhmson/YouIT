@@ -109,7 +109,7 @@ function CreatePostForm({
     if (!post.content?.overview) return errorResult("A post must have an overview.");
     if (!post.content?.text && !post.content?.pinnedUrl)
       return errorResult("A post must have some content.");
-    if (post.content.text.length <= 15 && !post.content?.pinnedUrl) {
+    if (post.content.text.length <= 10 && !post.content?.pinnedUrl) {
       return errorResult("Your post is too short, at least 15 characters");
     }
     if (post?.content?.pinnedUrl && !isURL(post?.content?.pinnedUrl))

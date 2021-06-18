@@ -39,6 +39,7 @@ import { Link, useHistory } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { deletePost } from "../../../redux/actions/posts";
 import MarkdownRenderer from "../../Markdown/MarkdownRenderer/MarkdownRenderer";
+import { ReactTinyLink } from "react-tiny-link";
 
 const { Title, Text, Paragraph } = Typography;
 const { confirm } = Modal;
@@ -387,9 +388,23 @@ function FullPost({ post }) {
         </Row>
         <div className="break-word">
           <Title level={2}>{post?.title}</Title>
+
           <div className="pb-2">
-            {/* <Paragraph>{post?.content?.text}</Paragraph> */}
+            <Paragraph>{post?.content?.overview}</Paragraph>
+
             <MarkdownRenderer text={post?.content?.text} />
+
+            {post?.content?.pinnedUrl && (
+              <Row className="justify-content-center">
+                <ReactTinyLink
+                  cardSize="small"
+                  showGraphic={true}
+                  maxLine={2}
+                  minLine={1}
+                  url={post?.content?.pinnedUrl}
+                />
+              </Row>
+            )}
           </div>
         </div>
         <Row className="justify-content-between mb-4">
