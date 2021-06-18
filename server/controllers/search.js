@@ -39,7 +39,12 @@ export const getSearchPosts = async (req, res) => {
         path: "groupPostInfo.groupId",
         select: "name",
         model: "Group",
-      });
+      })
+      .populate({
+        path: `hashtags`,
+        model: `Hashtag`,
+        select: "name count",
+      })
     asyncFilter(posts, async (post) => {
       // console.log(post.title, await isPostVisibleByUser(post, req.userId));
       return (
