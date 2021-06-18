@@ -15,6 +15,7 @@ import styles from "./styles.js";
 import { Layout, Button } from "antd";
 import { Link } from "react-router-dom";
 import moment from "moment";
+import Loading from "../Loading/Loading";
 
 const { Header, Footer, Sider, Content } = Layout;
 
@@ -40,6 +41,8 @@ const IntroCard = () => {
   if (works) {
     work = works[works.length - 1];
   }
+
+  if (!user) return <Loading />;
 
   return (
     <Layout style={styles.backgroundheader}>

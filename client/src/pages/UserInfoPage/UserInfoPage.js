@@ -14,6 +14,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router";
 import { getUser } from "../../redux/actions/user.js";
 import { useHistory } from "react-router-dom";
+import Loading from "../../components/Loading/Loading";
 
 const { Content } = Layout;
 
@@ -26,11 +27,19 @@ function UserInfoPage() {
   const history = useHistory();
 
   useEffect(() => {
+    console.log("navigate user");
     dispatch(getUser(id));
     // setTimeout(() => {
     //   if (!user) history.push("/error404");
     // }, 2000);
-  }, []);
+  }, [id]);
+
+  useEffect(() => {
+    if (!user || user?._id != id) return <Loading />;
+  }, [user]);
+  console.log(user?._id);
+  console.log(id);
+  if (!user || user?._id != id) return <Loading />;
 
   return (
     <>
