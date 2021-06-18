@@ -22,8 +22,11 @@ import "./styles.css";
 import { ExclamationCircleOutlined } from "@ant-design/icons";
 
 import SettingView from "../../components/GroupPage/SettingView/SettingView.js";
+import Loading from "../../components/Loading/Loading";
+
 const { Content } = Layout;
 const { Text } = Typography;
+
 export const GroupContext = createContext({
   group: {},
   setGroup: () => {},
@@ -80,16 +83,6 @@ function GroupPage(props) {
     });
     return isModerator;
   };
-
-  useEffect(() => {
-    async function fetchGroupInfo() {
-      const { data } = await api.fetchAGroup(id);
-      setGroup(data);
-    }
-    fetchGroupInfo();
-    isJoinedGroup();
-    //console.log(group);
-  }, []);
 
   const handleLeaveGroup = async (groupId, userId) => {
     api
@@ -160,6 +153,7 @@ function GroupPage(props) {
         });
     }
     fetchGroupInfo();
+    isJoinedGroup();
     //console.log(group);
   }, []);
 
@@ -173,6 +167,63 @@ function GroupPage(props) {
       history.push(`/group/${group?._id}/main`);
     }
   }, [menu]);
+
+  // if (!group) return <Loading />;
+  const SelectedGroupMenu = () => {
+    switch (menu) {
+      case "member_requests":
+        return <MemberRequestsResult />;
+      case "review_posts":
+        return <PostRequestsResult />;
+      case "setting":
+        return <SettingView />;
+      default:
+        return (
+          <div>
+            <Layout style={styles.avatarView}>
+              <Content
+                className="container"
+                style={{
+                  padding: 8,
+                }}
+              >
+                <CoverPhoto />
+                <Row
+                  style={{
+                    display: "flex",
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <GroupBasicInfo />
+                  <GroupFunctionButtons />
+                </Row>
+                <Row style={{ justifyContent: "space-between" }}>
+                  <GroupMenu />
+                </Row>
+              </Content>
+            </Layout>
+            <Layout>
+              <Content>
+                <Layout className="container">
+                  {location.pathname === `/group/${group?._id}/main` ? (
+                    <FeedPosts
+                      limitPagination={5}
+                      space="group"
+                      groupId={group?._id}
+                    />
+                  ) : location.pathname === `/group/${group?._id}/about` ? (
+                    <GroupAboutCard />
+                  ) : (
+                    <GroupMember />
+                  )}
+                </Layout>
+              </Content>
+            </Layout>
+          </div>
+        );
+    }
+  };
 
   return (
     <GroupContext.Provider value={valueContext}>
@@ -190,57 +241,7 @@ function GroupPage(props) {
               id="scrollableDiv"
               style={{ minWidth: "87vw" }}
             >
-              {menu === "member_requests" ? (
-                <MemberRequestsResult />
-              ) : menu === "review_posts" ? (
-                <PostRequestsResult />
-              ) : menu === "setting" ? (
-                <SettingView />
-              ) : (
-                <div>
-                  <Layout style={styles.avatarView}>
-                    <Content
-                      className="container"
-                      style={{
-                        padding: 8,
-                      }}
-                    >
-                      <CoverPhoto />
-                      <Row
-                        style={{
-                          display: "flex",
-                          flexDirection: "row",
-                          justifyContent: "space-between",
-                        }}
-                      >
-                        <GroupBasicInfo />
-                        <GroupFunctionButtons />
-                      </Row>
-                      <Row style={{ justifyContent: "space-between" }}>
-                        <GroupMenu />
-                      </Row>
-                    </Content>
-                  </Layout>
-                  <Layout>
-                    <Content>
-                      <Layout className="container">
-                        {location.pathname === `/group/${group?._id}/main` ? (
-                          <FeedPosts
-                            limitPagination={5}
-                            space="group"
-                            groupId={group?._id}
-                          />
-                        ) : location.pathname ===
-                          `/group/${group?._id}/about` ? (
-                          <GroupAboutCard />
-                        ) : (
-                          <GroupMember />
-                        )}
-                      </Layout>
-                    </Content>
-                  </Layout>
-                </div>
-              )}
+              {group ? <SelectedGroupMenu /> : <Loading />}
             </div>
           </div>
         </Layout>
