@@ -7,10 +7,16 @@ import {
   signup,
   verifyToken,
   signout,
+  getFriendsStatus,
+  setUserStatus,
+  getUserStatus,
+  countNewUsers,
 } from "../controllers/user.js";
 import auth from "../middleware/auth.js";
 
 const router = express.Router();
+
+router.get("/newUsers/:range/:timeString", countNewUsers);
 
 router.post("/signin", signin);
 router.post("/signup", signup);
@@ -19,5 +25,10 @@ router.get("/password/check/:password", auth, checkPassword);
 router.put("/verify/:token", verifyToken);
 router.post("/resend", resendVerificationMail);
 router.post("/signout", signout);
+
+// user status APIs
+router.get("/list/friendsStatus", auth, getFriendsStatus);
+router.get("/getStatus", auth, getUserStatus);
+router.put("/setStatus/:newStatus", auth, setUserStatus);
 
 export default router;

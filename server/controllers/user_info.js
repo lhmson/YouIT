@@ -2,15 +2,33 @@ import express from "express";
 import mongoose from "mongoose";
 import { sendNotificationUser } from "../businessLogics/notification.js";
 import User from "../models/user.js";
+import FriendRequest from "../models/friendrequest.js";
 import { httpStatusCodes } from "../utils/httpStatusCode.js";
+import { getRelationship } from "../businessLogics/user.js";
+import Hashtag from "../models/hashtag.js";
 
 // GET userinfo/:id
 export const getUserInfo = async (req, res) => {
   const { id } = req.params;
 
+  if (!id.match(/^[0-9a-fA-F]{24}$/)) {
+    return res
+      .status(httpStatusCodes.notFound)
+      .json(`Cannot find user with id: ${id}`);
+  }
+
   try {
-    const currentUser = await User.findById(id);
-    res.status(200).json(currentUser);
+    await User.findById(id).then((user) => {
+      if (!user)
+        return res
+          .status(httpStatusCodes.notFound)
+          .json(`Cannot find user with id: ${id}`);
+      else {
+        const userObj = user.toObject();
+        delete userObj.password;
+        return res.status(httpStatusCodes.ok).json(userObj);
+      }
+    });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -129,7 +147,7 @@ export const removeSendingFriendRequest = async (req, res) => {
  * @param {express.NextFunction} next
  */
 export const addFriend = async (req, res) => {
-  const friend = req.body;
+  const friendRequest = req.body;
   const { userId } = req;
 
   if (!userId)
@@ -137,38 +155,54 @@ export const addFriend = async (req, res) => {
       .status(httpStatusCodes.unauthorized)
       .json({ message: "Unauthorized" });
 
+  // if (!(await FriendRequest.findById(friendRequest?._id)))
+  //   return res
+  //     .status(httpStatusCodes.notFound)
+  //     .json({ message: "Request not found" });
+
   try {
+    // await has an effect =.=
+    const relationship = await getRelationship(
+      friendRequest?.userConfirmId,
+      friendRequest?.userSendRequestId
+    );
+    console.log(relationship);
+    if (relationship == "Friend")
+      return res
+        .status(httpStatusCodes.badContent)
+        .json({ message: "Have already been friend" });
+
     // add friendId to user's list friends
     const acceptingUser = await User.findById(userId);
-
-    if (!acceptingUser)
-      return res.status(httpStatusCodes.notFound).send("Accepting user not found");
-
-    acceptingUser.listFriends.push(friend?._id);
+    acceptingUser.listFriends.push(friendRequest?.userSendRequestId);
     await acceptingUser.save();
 
     // add userId to friend's list friends
-    await User.findById(friend?._id).then(async (user) => {
-      user.listFriends.push(userId);
-      await user.save();
-      // res.status(httpStatusCodes.ok).json(user);
-    });
+    const acceptedUser = await User.findById(friendRequest?.userSendRequestId);
+
+    if (!acceptedUser)
+      return res
+        .status(httpStatusCodes.notFound)
+        .send("User sending friend request is not found");
+
+    acceptedUser.listFriends.push(userId);
+    await acceptedUser.save();
 
     // notification
     sendNotificationUser({
-      userId: friend?._id,
+      userId: friendRequest?.userSendRequestId,
       content: {
         acceptingUserId: userId,
-        acceptedUserId: friend._id,
+        acceptedUserId: friendRequest?.userSendRequestId,
         description: `${acceptingUser.name} accepted your friend request!`,
       },
       link: `/userinfo/${acceptingUser._id}`,
       kind: "AcceptFriend_AcceptedFriend",
     });
 
-    return res.status(httpStatusCodes.ok).json(acceptingUser);
+    return res.status(httpStatusCodes.ok).json(acceptedUser);
   } catch (error) {
-    //console.log(error.message);
+    console.log(error);
     res
       .status(httpStatusCodes.internalServerError)
       .json({ message: error.message });
@@ -226,6 +260,11 @@ export const followUser = async (req, res) => {
   try {
     await User.findById(followedId)
       .then(async (user) => {
+        if (user.listFriendFollows.includes(userId))
+          return res
+            .status(httpStatusCodes.badContent)
+            .json({ message: "Followed this user" });
+
         user.listFriendFollows.push(userId);
         await user.save();
         res.status(httpStatusCodes.ok).json(user);
@@ -276,6 +315,116 @@ export const unfollowUser = async (req, res) => {
   } catch (error) {
     console.log(error);
     res
+      .status(httpStatusCodes.internalServerError)
+      .json({ message: error.message });
+  }
+};
+
+/**
+ * @param {express.Request<ParamsDictionary, any, any, QueryString.ParsedQs, Record<string, any>>} req
+ * @param {express.Response<any, Record<string, any>, number>} res
+ * @param {express.NextFunction} next
+ */
+export const addProgrammingHashtag = async (req, res) => {
+  const { hashtagId } = req.params;
+  const { userId } = req;
+
+  if (!userId)
+    return res
+      .status(httpStatusCodes.unauthorized)
+      .json({ message: "Unauthorized" });
+
+  try {
+    const hashtag = await Hashtag.findById(hashtagId);
+
+    if (!hashtag)
+      return res
+        .status(httpStatusCodes.notFound)
+        .json({ message: "Hashtag not found" });
+
+    await User.findById(userId).then(async (user) => {
+      if (user.userInfo.programmingHashtags.includes(hashtagId))
+        return res
+          .status(httpStatusCodes.badContent)
+          .json({ message: "This hashtag has already been added" });
+
+      user.userInfo.programmingHashtags.push(hashtagId);
+      await user.save();
+      return res.status(httpStatusCodes.ok).json(user);
+    });
+  } catch (error) {
+    return res
+      .status(httpStatusCodes.internalServerError)
+      .json({ message: error.message });
+  }
+};
+
+/**
+ * @param {express.Request<ParamsDictionary, any, any, QueryString.ParsedQs, Record<string, any>>} req
+ * @param {express.Response<any, Record<string, any>, number>} res
+ * @param {express.NextFunction} next
+ */
+export const removeProgrammingHashtag = async (req, res) => {
+  const { hashtagId } = req.params;
+  const { userId } = req;
+
+  if (!userId)
+    return res
+      .status(httpStatusCodes.unauthorized)
+      .json({ message: "Unauthorized" });
+
+  try {
+    const hashtag = await Hashtag.findById(hashtagId);
+
+    if (!hashtag)
+      return res
+        .status(httpStatusCodes.notFound)
+        .json({ message: "Hashtag not found" });
+
+    await User.findById(userId).then(async (user) => {
+      if (!user.userInfo.programmingHashtags.includes(hashtagId))
+        return res
+          .status(httpStatusCodes.badContent)
+          .json({ message: "This hashtag has not been added" });
+
+      user.userInfo.programmingHashtags =
+        user.userInfo.programmingHashtags.filter(
+          (hashtag) => hashtag?._id != hashtagId
+        );
+      await user.save();
+      return res.status(httpStatusCodes.ok).json(user);
+    });
+  } catch (error) {
+    return res
+      .status(httpStatusCodes.internalServerError)
+      .json({ message: error.message });
+  }
+};
+
+/**
+ * @param {express.Request<ParamsDictionary, any, any, QueryString.ParsedQs, Record<string, any>>} req
+ * @param {express.Response<any, Record<string, any>, number>} res
+ * @param {express.NextFunction} next
+ */
+export const editImage = async (req, res) => {
+  const image = req.body;
+  const { userId } = req;
+
+  if (!userId) return res.json({ message: "Unauthorized" });
+
+  try {
+    const user = await User.findById(userId);
+
+    if (!user)
+      return res
+        .status(httpStatusCodes.notFound)
+        .json({ message: "User not found" });
+
+    user[image?.type] = image?.base64;
+    await user.save();
+    return res.status(httpStatusCodes.ok).json(user[image?.type]);
+  } catch (error) {
+    return res
       .status(httpStatusCodes.internalServerError)
       .json({ message: error.message });
   }

@@ -10,7 +10,8 @@ import {
   Avatar,
   Badge,
   Tooltip,
-  Space,
+  notification,
+  Button,
 } from "antd";
 import styles from "./styles";
 import logo from "../../assets/darklogo.png";
@@ -23,9 +24,11 @@ import {
   EllipsisOutlined,
   SettingOutlined,
   PicLeftOutlined,
+  StarFilled,
 } from "@ant-design/icons";
 import { useMobile } from "../../utils/responsiveQuery";
 import { useMediaQuery } from "react-responsive";
+import { GrStatusGoodSmall } from "react-icons/gr";
 
 import decode from "jwt-decode";
 import { useDispatch, useSelector } from "react-redux";
@@ -44,6 +47,9 @@ import {
 import * as apiConversation from "../../api/conversation";
 import NotificationList from "./NotificationList/NotificationList";
 import { useMessage } from "../../hooks/useMessage";
+import { renderStatus, statusList } from "../../utils/userStatus";
+import { setMyStatus } from "../../api/userStatus";
+import { useFriendsStatus } from "../../context/FriendsStatusContext";
 
 const { Header } = Layout;
 const { Text } = Typography;
@@ -70,7 +76,7 @@ function Navbar({ selectedMenu, setTxtSearch, txtInitSearch }) {
   const handleClickNotificationItem = (url, notificationId) => {
     dispatch(setSeenNotification(notificationId, "true"));
     history.push(url);
-    window.location.reload(); // fix bug push not route
+    setTimeout(location.reload); // fix bug push not route
   };
 
   useEffect(() => {
@@ -79,10 +85,36 @@ function Navbar({ selectedMenu, setTxtSearch, txtInitSearch }) {
     }
   }, [user, dispatch]);
 
+  const openNotification = (msg) => {
+    // alert("abc");
+    const key = `open${Date.now()}`;
+    const btn = (
+      <Button
+        className="green-button"
+        onClick={() => handleClickNotificationItem(msg?.link, msg?._id)}
+      >
+        Check out
+      </Button>
+    );
+    notification.open({
+      message: "Something new for you to see",
+      description: msg?.content?.description ?? "",
+      onClick: () => {
+        handleClickNotificationItem(msg?.link, msg?._id);
+      },
+      key,
+      duration: 3,
+      placement: "bottomLeft",
+      btn,
+    });
+  };
+
   useEffect(() => {
     const listener = (event, msg) => {
       if (event.indexOf("Notification") === 0) {
         dispatch(addUserNotifications(msg)); // add noti to it
+        // console.log("noti", msg);
+        openNotification(msg);
       }
     };
     cuteIO.onReceiveAny(listener);
@@ -106,6 +138,10 @@ function Navbar({ selectedMenu, setTxtSearch, txtInitSearch }) {
     history.push("/post/create");
   };
 
+  const handleFeed = () => {
+    history.push("/feed");
+  };
+
   const handleMessage = () => {
     history.push("/message");
   };
@@ -118,6 +154,16 @@ function Navbar({ selectedMenu, setTxtSearch, txtInitSearch }) {
         mode={!isSmallScreen ? "horizontal" : "vertical"}
         defaultSelectedKeys={[selectedMenu]}
       >
+        <Menu.Item
+          key="feed"
+          className="navitem pickitem text-center"
+          onClick={handleFeed}
+        >
+          <Tooltip title="Feed" placement="bottom">
+            <StarFilled spin style={{ fontSize: 24, color: COLOR.white }} />
+          </Tooltip>
+        </Menu.Item>
+
         <Menu.Item key="noti" className="navitem notpickitem text-center">
           <Dropdown
             overlay={NotificationList({
@@ -161,19 +207,38 @@ function Navbar({ selectedMenu, setTxtSearch, txtInitSearch }) {
           </Badge>
         </Menu.Item>
 
-        <Menu.Item key="avatar" className="text-center navitem">
-          <Tooltip title={user?.result?.name} placement="bottom">
+        <Menu.Item key="avatar" className="text-center navitem notpickitem">
+          <Tooltip
+            title={
+              <div className="text-center">
+                <div>{user?.result?.name}</div>
+                <Dropdown
+                  overlay={menuStatus}
+                  trigger={["click"]}
+                  placement="bottomRight"
+                >
+                  <Tooltip title="Status" placement="right">
+                    <GrStatusGoodSmall
+                      className="icon"
+                      style={{
+                        color: renderStatus(
+                          friendsStatusManager.getStatus(user?.result?._id)
+                        ),
+                      }}
+                    />
+                  </Tooltip>
+                </Dropdown>
+              </div>
+            }
+            placement="bottom"
+          >
             <Avatar
               size="large"
               alt={user?.result?.name}
-              src={user?.result?.imageUrl}
+              src={user?.result?.avatarUrl}
+              onClick={() => history.push(`/userinfo/${user?.result._id}`)}
             >
-              <Link
-                to={`/userinfo/${user?.result._id}`}
-                style={{ color: COLOR.white }}
-              >
-                {user?.result?.name}
-              </Link>
+              {user?.result?.name}
             </Avatar>
           </Tooltip>
         </Menu.Item>
@@ -201,6 +266,25 @@ function Navbar({ selectedMenu, setTxtSearch, txtInitSearch }) {
     history.push("/group/create");
   };
 
+  const friendsStatusManager = useFriendsStatus();
+
+  const handleChangeStatus = (status) => {
+    setMyStatus(status);
+  };
+
+  const menuStatus = (
+    <Menu>
+      {statusList.map((item, i) => (
+        <Menu.Item key={i} onClick={() => handleChangeStatus(item.status)}>
+          <Row align="middle" style={{ color: item.color }}>
+            <GrStatusGoodSmall className="mr-2" />
+            <Text>{item.status}</Text>
+          </Row>
+        </Menu.Item>
+      ))}
+    </Menu>
+  );
+
   const menuMore = (
     <Menu>
       {isSmallScreen && <MainMenuItems />}
@@ -216,6 +300,16 @@ function Navbar({ selectedMenu, setTxtSearch, txtInitSearch }) {
           <Text>Create group</Text>
         </Row>
       </Menu.Item>
+      {/* <Dropdown
+        overlay={menuStatus}
+        trigger={["click"]}
+        placement="bottomRight"
+      >
+        <Tooltip title="Status" placement="right">
+          <GrStatusGoodSmall className="clickable icon" />
+        </Tooltip>
+      </Dropdown> */}
+
       <Menu.Item key="logout" onClick={() => handleLogOut()}>
         <Row align="middle">
           <LogoutOutlined className=" red mr-2" />

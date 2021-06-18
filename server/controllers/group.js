@@ -1,10 +1,13 @@
 import express from "express";
 import Group from "../models/group.js";
+import User from "../models/user.js";
 import {
   isMemberOfGroup,
   isPendingMemberOfGroup,
 } from "../businessLogics/group.js";
 import { httpStatusCodes } from "../utils/httpStatusCode.js";
+import { sendNotificationUser } from "../businessLogics/notification.js";
+import moment from "moment";
 
 /**
  * @param {express.Request<ParamsDictionary, any, any, QueryString.ParsedQs, Record<string, any>>} req
@@ -12,7 +15,13 @@ import { httpStatusCodes } from "../utils/httpStatusCode.js";
  * @param {express.NextFunction} next
  */
 export const getAGroup = async (req, res, next) => {
-  const { id } = req.params;
+  const { groupId } = req.params;
+
+  if (!groupId.match(/^[0-9a-fA-F]{24}$/)) {
+    return res
+      .status(httpStatusCodes.notFound)
+      .json(`Cannot find a group with id: ${groupId}`);
+  }
 
   try {
     const { userId } = req;
@@ -21,13 +30,13 @@ export const getAGroup = async (req, res, next) => {
         .status(httpStatusCodes.unauthorized)
         .json(".... // cho nay k login k vao dc");
 
-    Group.findById(id)
+    Group.findById(groupId)
       .then((group) => {
         if (group) return res.status(httpStatusCodes.ok).json(group);
         else
           return res
             .status(httpStatusCodes.notFound)
-            .json(`Cannot find a group with id: ${id}`);
+            .json(`Cannot find a group with id: ${groupId}`);
       })
       .catch((err) => {
         return res
@@ -115,9 +124,7 @@ export const createGroup = async (req, res) => {
  */
 export const addGroupMember = async (req, res) => {
   const { groupId, memberId } = req.params;
-  console.log("thyyyyyyyyyyyyyyyyyy");
-  console.log("groupid", groupId);
-  console.log("userid", memberId);
+
   //const { role } = req.query ?? "Member";
   const role = "Member";
   const addMember = { role, userId: memberId };
@@ -144,12 +151,51 @@ export const addGroupMember = async (req, res) => {
   }
 };
 
+/**
+ * @param {express.Request<ParamsDictionary, any, any, QueryString.ParsedQs, Record<string, any>>} req
+ * @param {express.Response<any, Record<string, any>, number>} res
+ * @param {express.NextFunction} next
+ */
+export const inviteFriends = async (req, res) => {
+  const { groupId } = req.params;
+  const { userId } = req;
+
+  /** @type {[]} */
+  const { listUsersToInvite } = req.body;
+
+  try {
+    const user = await User.findById(userId);
+    const group = await Group.findById(groupId);
+
+    // error 404...
+
+    if (listUsersToInvite) {
+      listUsersToInvite.forEach((invitedId) => {
+        sendNotificationUser({
+          userId: invitedId,
+          kind: "InviteToGroup_InvitedUser",
+          content: {
+            description: `${user?.name} invited you to their group "${group?.name}".`,
+          },
+          link: `/group/${groupId}/main`,
+        });
+      });
+    }
+
+    return res.status(httpStatusCodes.ok).send("Invitation was sent.");
+  } catch (error) {
+    return res
+      .status(httpStatusCodes.internalServerError)
+      .json({ message: error.message });
+  }
+};
+
 export const addGroupPendingMember = async (req, res) => {
-  const { id, memberId } = req.params;
+  const { groupId, memberId } = req.params;
   const pendingMember = { userId: memberId };
 
   try {
-    const group = await Group.findById(id);
+    const group = await Group.findById(groupId);
     if (!group) {
       return res
         .status(httpStatusCodes.notFound)
@@ -188,10 +234,10 @@ export const addGroupPendingMember = async (req, res) => {
  * @param {express.NextFunction} next
  */
 export const removeGroupPendingMember = async (req, res) => {
-  const { id, memberId } = req.params;
+  const { groupId, memberId } = req.params;
 
   try {
-    const group = await Group.findById(id);
+    const group = await Group.findById(groupId);
 
     if (!group) {
       return res
@@ -214,9 +260,9 @@ export const removeGroupPendingMember = async (req, res) => {
 };
 
 export const getListMembers = async (req, res) => {
-  const { id } = req.params;
+  const { groupId } = req.params;
   try {
-    const group = await Group.findById(id).populate({
+    const group = await Group.findById(groupId).populate({
       path: "listMembers",
       populate: {
         path: "userId",
@@ -322,10 +368,10 @@ export const deleteMember = async (req, res) => {
 };
 
 export const leaveGroup = async (req, res) => {
-  const { id, userId } = req.params;
+  const { groupId, userId } = req.params;
 
   try {
-    const group = await Group.findById(id);
+    const group = await Group.findById(groupId);
     if (!isMemberOfGroup(userId, group))
       return res
         .status(httpStatusCodes.badContent)
@@ -345,7 +391,7 @@ export const leaveGroup = async (req, res) => {
       "Owner"
     ) {
       return (
-        await Group.findByIdAndRemove(id),
+        await Group.findByIdAndRemove(groupId),
         res
           .status(httpStatusCodes.ok)
           .json({ message: "Group deleted successfully." })
@@ -356,12 +402,139 @@ export const leaveGroup = async (req, res) => {
       (member) => !member.userId.equals(userId) || member.role === "Owner"
     );
 
-    const newGroup = await Group.findByIdAndUpdate(id, group, { new: true });
+    const newGroup = await Group.findByIdAndUpdate(groupId, group, {
+      new: true,
+    });
     // await group.save();
     res.status(httpStatusCodes.ok).json(newGroup);
   } catch (error) {
     res
       .status(httpStatusCodes.internalServerError)
       .json({ message: error.message });
+  }
+};
+
+/**
+ * @param {express.Request<ParamsDictionary, any, any, QueryString.ParsedQs, Record<string, any>>} req
+ * @param {express.Response<any, Record<string, any>, number>} res
+ * @param {express.NextFunction} next
+ */
+export const setGroupMemberRole = async (req, res) => {
+  const { groupId, memberId } = req.params;
+  const { newRole } = req.body;
+  console.log(newRole);
+  const { userGroupRole } = req;
+
+  const group = await Group.findById(groupId);
+
+  if (!group)
+    return res
+      .status(httpStatusCodes.notFound)
+      .json({ message: "Group not found" });
+
+  try {
+    if (!isMemberOfGroup(memberId, group))
+      return res
+        .status(httpStatusCodes.notFound)
+        .json({ message: "This user is not a member of group" });
+
+    const rolesCanSet = ["Member", "Moderator", "Admin", "Owner"];
+    const userRoleIndex = rolesCanSet.indexOf(userGroupRole);
+    rolesCanSet.length = userRoleIndex;
+
+    if (!rolesCanSet.includes(newRole))
+      return res
+        .status(httpStatusCodes.forbidden)
+        .json({ message: `${userGroupRole} can't set member to ${newRole}` });
+
+    group.listMembers.forEach(async (member) => {
+      if (member.userId.equals(memberId)) {
+        member.role = newRole;
+        await group.save();
+        return res.status(httpStatusCodes.ok).json(group);
+      }
+    });
+  } catch (error) {
+    return res
+      .status(httpStatusCodes.internalServerError)
+      .json({ message: error.message });
+  }
+};
+
+/**
+ * @param {express.Request<ParamsDictionary, any, any, QueryString.ParsedQs, Record<string, any>>} req
+ * @param {express.Response<any, Record<string, any>, number>} res
+ * @param {express.NextFunction} next
+ */
+export const updateGroup = async (req, res) => {
+  const updatedGroup = req.body;
+  const { userId } = req;
+
+  if (!userId) return res.json({ message: "Unauthenticated" });
+
+  try {
+    await Group.findByIdAndUpdate(updatedGroup?._id, updatedGroup, {
+      new: true,
+    }).then((result) => res.status(httpStatusCodes.ok).json(result));
+  } catch (error) {
+    return res
+      .status(httpStatusCodes.internalServerError)
+      .json({ message: error.message });
+  }
+};
+
+export const countGroups = async (req, res) => {
+  const { range, timeString } = req.params;
+  let time = moment(timeString);
+  let labels = [];
+  let publicGroups = [];
+  let privateGroups = [];
+  const countPrivate = async (start, end) => {
+    const count = await Group.find({
+      createdAt: { $gt: start, $lte: end },
+      privacy: "Private",
+    }).count();
+    privateGroups.push(count);
+  };
+  const countPublic = async (start, end) => {
+    const count = await Group.find({
+      createdAt: { $gt: start, $lte: end },
+      privacy: "Public",
+    }).count();
+    publicGroups.push(count);
+  };
+  const addData = async (time, unit) => {
+    const start = time.clone().startOf(unit);
+    const end = time.clone().endOf(unit);
+    await countPrivate(start, end);
+    await countPublic(start, end);
+  };
+  try {
+    switch (range) {
+      case "week":
+        labels = moment.weekdaysShort();
+        for (let i = 0; i < labels.length; i++) {
+          let temp = time.clone().set("day", i);
+          await addData(temp, "day");
+        }
+        break;
+      case "month":
+        for (let i = 0; i < time.daysInMonth(); i++) {
+          labels.push(i + 1);
+          let temp = time.clone().set("date", i);
+          await addData(temp, "day");
+        }
+        break;
+      case "year":
+        labels = moment.monthsShort();
+        for (let i = 0; i < labels.length; i++) {
+          let temp = time.clone().set("month", i);
+          await addData(temp, "month");
+        }
+        break;
+    }
+    res.status(200).json({ labels, publicGroups, privateGroups });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
 };

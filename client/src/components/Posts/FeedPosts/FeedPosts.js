@@ -7,11 +7,13 @@ import useInfiniteScroll from "../../../hooks/useInfiniteScroll";
 
 import InfiniteScroll from "react-infinite-scroll-component";
 
+import { useHistory } from "react-router-dom";
+
 import * as api from "../../../api/post";
 
 import FeedPost from "./FeedPost/FeedPost";
 
-const {Text} = Typography
+const { Text } = Typography;
 
 function FeedPosts({
   setCurrentId,
@@ -27,6 +29,8 @@ function FeedPosts({
   const [page, setPage] = useState(0);
   //we need to know if there is more data
   const [hasMore, setHasMore] = useState(true);
+
+  const history = useHistory();
 
   const handleFetchPosts = useCallback((res) => {
     setPosts((prev) => {
@@ -72,7 +76,6 @@ function FeedPosts({
       {!posts.length ? (
         <div className="text-center">
           <Loading />
-          <Text>No posts to show</Text>
         </div>
       ) : (
         <div>
@@ -83,13 +86,17 @@ function FeedPosts({
             loader={<Loading />}
             scrollableTarget="scrollableDiv"
             endMessage={
-              <p style={{ textAlign: "center", fontSize: "1rem" }}>
+              <p
+                style={{ textAlign: "center", fontSize: "1rem" }}
+                className="clickable"
+                onClick={() => history.push("/post/create")}
+              >
                 <b>You have reached all posts. Let's share your own, right?</b>
               </p>
             }
           >
             <Row style={styles.postsBox}>
-              {posts.map((post) => (
+              {posts?.map((post) => (
                 <FeedPost
                   key={post._id}
                   post={post}

@@ -23,7 +23,7 @@ import { useToken } from "../../context/TokenContext";
 import { useLocalStorage } from "../../hooks/useLocalStorage";
 import { resendVerificationMail } from "../../api/auth";
 
-const { Title, Text, Paragraph } = Typography;
+const { Title, Text } = Typography;
 
 const initialState = {
   email: "",
@@ -47,7 +47,16 @@ function LoginPage() {
 
   const handleFinish = async (values) => {
     const browserId = JSON.parse(localStorage.getItem("browser"))?.id;
-    dispatch(signin({ ...form, browserId }, history, setUser, token, setToken, setResend));
+    dispatch(
+      signin(
+        { ...form, browserId },
+        history,
+        setUser,
+        token,
+        setToken,
+        setResend
+      )
+    );
   };
 
   const handleResend = async () => {
@@ -72,16 +81,18 @@ function LoginPage() {
           paddingBottom: 0,
         }}
       >
-        <Row style={{ justifyContent: "center" }}> </Row>
         <Card className="shadow-lg rounded" bordered={false}>
-          <Row>
-            <Col span={12} style={{ paddingRight: 24, marginBottom: 24 }}>
-              <Row>
+          <Row style={{ alignItems: "center" }}>
+            <div
+              className="col-md-6"
+              style={{ paddingRight: 24, marginBottom: 24 }}
+            >
+              <div className="row">
                 <Link to="/">
                   <img src={logo} alt="Logo" height="58" className="mr-2" />
                 </Link>
                 <Title style={{ marginBottom: 8 }}>Login</Title>
-              </Row>
+              </div>
               <div style={{ marginBottom: 16 }}>
                 <Text>
                   No account?{" "}
@@ -131,10 +142,10 @@ function LoginPage() {
                     onChange={handleChange}
                   />
                 </Form.Item>
-                <Row justify="space-between" style={{ marginBottom: 24 }}>
-                  <Checkbox name="remember" onChange={handleChange}>
+                <Row justify="end" style={{ marginBottom: 24 }}>
+                  {/* <Checkbox name="remember" onChange={handleChange}>
                     Remember me
-                  </Checkbox>
+                  </Checkbox> */}
                   <Text className="clickable green ">Forgot password?</Text>
                 </Row>
 
@@ -184,12 +195,15 @@ function LoginPage() {
                   </Col>
                 </Row>
               </Form>
-            </Col>
-            <Col span={12}>
+            </div>
+            <div
+              className="col-md-5 d-md-block d-sm-none d-none"
+              style={{ justifyItems: "center" }}
+            >
               <div>
                 <ReactLogo />
               </div>
-            </Col>
+            </div>
           </Row>
         </Card>
       </div>

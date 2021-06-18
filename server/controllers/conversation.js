@@ -2,10 +2,14 @@ import express from "express";
 import {
   isConversationSeenByUser,
   isMemberOfConversation,
+  isOwnerOfConversation,
 } from "../businessLogics/conversation.js";
+import { isValidUser } from "../businessLogics/user.js";
 import Conversation from "../models/conversation.js";
-import { customPagination } from "../utils/customPagination.js";
 import { httpStatusCodes } from "../utils/httpStatusCode.js";
+import { asyncFilter } from "../utils/asyncFilter.js";
+import { cuteIO } from "../index.js";
+import Message from "../models/message.js";
 
 /**
  * @param {express.Request<ParamsDictionary, any, any, QueryString.ParsedQs, Record<string, any>>} req
@@ -47,6 +51,16 @@ export const createConversation = async (req, res, next) => {
     });
 
     await newConversation.save();
+
+    listMembers.forEach((memberId) =>
+      cuteIO.sendToUser(memberId, "Message-conversationCreated", {
+        res: {
+          conversationId: newConversation._id,
+          senderId: userId,
+        },
+      })
+    );
+
     return res.status(httpStatusCodes.created).json(newConversation);
   } catch (error) {
     return res
@@ -134,13 +148,13 @@ export const getAConversation = async (req, res, next) => {
         model: `Message`,
         populate: {
           path: `senderId`,
-          select: `name`,
+          select: `name avatarUrl`,
           model: `User`,
         },
       })
       .populate({
         path: `listMembers`,
-        select: `name`,
+        select: `name avatarUrl`,
         model: `User`,
       })
       .populate({
@@ -208,22 +222,25 @@ export const getConversationsOfUser = async (req, res, next) => {
         model: `Message`,
         populate: {
           path: `senderId`,
-          select: `name`,
+          select: `name avatarUrl`,
           model: `User`,
         },
       })
       .populate({
         path: `listMembers`,
-        select: `name`,
+        select: `name avatarUrl`,
         model: `User`,
       })
       .exec()
       .then((conversations) => {
-        const conversationObjs = conversations
-          .map((c) => c.toObject())
-          .filter((c) => isMemberOfConversation(userId, c));
+        const filteredConversation = conversations.filter((c) =>
+          isMemberOfConversation(userId, c)
+        );
+        filteredConversation.forEach((c) => {
+          if (c.listMessages?.length > 0) c.listMessages.length = 1;
+        }); // only fetch the first message for optimization
 
-        res.status(httpStatusCodes.ok).send(conversationObjs);
+        res.status(httpStatusCodes.ok).send(filteredConversation);
       })
       .catch((error) => {
         return res
@@ -256,10 +273,221 @@ export const getUnseenConversationIds = async (req, res, next) => {
     const conversations = await Conversation.find();
 
     conversations.forEach((c) => {
-      if (!isConversationSeenByUser(userId, c)) result.push(c._id.toString());
+      if (
+        isMemberOfConversation(userId, c) &&
+        !isConversationSeenByUser(userId, c)
+      )
+        result.push(c._id.toString());
     });
 
     return res.status(httpStatusCodes.ok).send(result);
+  } catch (error) {
+    return res
+      .status(httpStatusCodes.internalServerError)
+      .json({ message: error });
+  }
+};
+
+/**
+ * @param {express.Request<ParamsDictionary, any, any, QueryString.ParsedQs, Record<string, any>>} req
+ * @param {express.Response<any, Record<string, any>, number>} res
+ * @param {express.NextFunction} next
+ */
+export const updateConversation = async (req, res, next) => {
+  const { userId } = req;
+  const { conversationId } = req.params;
+  const newConversationData = req.body;
+
+  if (!userId) {
+    return res
+      .status(httpStatusCodes.unauthorized)
+      .send("You must sign in to update your conversations");
+  }
+
+  try {
+    const conversation = await Conversation.findById(conversationId);
+
+    if (!conversation)
+      return res
+        .status(httpStatusCodes.notFound)
+        .send(`No conversation with id ${conversationId}`);
+
+    if (!isOwnerOfConversation(userId, conversation))
+      return res
+        .status(httpStatusCodes.forbidden)
+        .send("You are not a conversation owner");
+
+    const newConversation = conversation.toObject();
+
+    if (newConversationData.listMembers) {
+      // check if each user is cool
+      newConversationData.listMembers = await asyncFilter(
+        newConversationData.listMembers,
+        isValidUser
+      );
+      newConversation.listMembers = [
+        ...new Set([
+          ...newConversationData.listMembers,
+          ...newConversation.listOwners?.map((userId) => userId?.toString()),
+        ]),
+      ];
+
+      if (newConversation.listMembers.length < 2) {
+        return res
+          .status(httpStatusCodes.badContent)
+          .send(
+            "A conversation must have at least 2 members. Consider remove conversation instead"
+          );
+      }
+    }
+
+    if (newConversationData.title) {
+      if (newConversationData.title === "")
+        return res
+          .status(httpStatusCodes.badContent)
+          .send("The title must not be empty");
+      newConversation.title = newConversationData.title;
+    }
+
+    const receivers = [
+      ...new Set([
+        ...newConversation.listMembers,
+        ...conversation.listMembers?.map((userId) => userId?.toString()),
+      ]),
+    ];
+
+    const updatedConversation = await Conversation.findByIdAndUpdate(
+      conversationId,
+      newConversation,
+      { new: true }
+    );
+
+    receivers.forEach((memberId) =>
+      cuteIO.sendToUser(memberId, "Message-conversationUpdated", {
+        res: {
+          conversationId,
+          senderId: userId,
+        },
+      })
+    );
+
+    return res.status(httpStatusCodes.ok).send(updatedConversation);
+  } catch (error) {
+    return res
+      .status(httpStatusCodes.internalServerError)
+      .json({ message: error });
+  }
+};
+
+/**
+ * @param {express.Request<ParamsDictionary, any, any, QueryString.ParsedQs, Record<string, any>>} req
+ * @param {express.Response<any, Record<string, any>, number>} res
+ * @param {express.NextFunction} next
+ */
+export const deleteConversation = async (req, res, next) => {
+  const { userId } = req;
+  const { conversationId } = req.params;
+
+  if (!userId) {
+    return res
+      .status(httpStatusCodes.unauthorized)
+      .send("You must sign in to delete your conversations");
+  }
+
+  try {
+    const conversation = await Conversation.findById(conversationId);
+
+    if (!conversation)
+      return res
+        .status(httpStatusCodes.notFound)
+        .send(`No conversation with id ${conversationId}`);
+
+    if (!isOwnerOfConversation(userId, conversation))
+      return res
+        .status(httpStatusCodes.forbidden)
+        .send("You are not a conversation owner");
+
+    conversation.listMembers?.forEach((memberId) =>
+      cuteIO.sendToUser(memberId.toString(), "Message-conversationDeleted", {
+        res: {
+          conversationId,
+          senderId: userId,
+        },
+      })
+    );
+
+    await Conversation.findByIdAndDelete(conversationId);
+    return res
+      .status(httpStatusCodes.ok)
+      .send(`Conversation deleted successfully`);
+  } catch (error) {
+    return res
+      .status(httpStatusCodes.internalServerError)
+      .json({ message: error });
+  }
+};
+
+/**
+ * @param {express.Request<ParamsDictionary, any, any, QueryString.ParsedQs, Record<string, any>>} req
+ * @param {express.Response<any, Record<string, any>, number>} res
+ * @param {express.NextFunction} next
+ */
+export const deleteMessage = async (req, res, next) => {
+  const { userId } = req;
+  const { conversationId, messageId } = req.params;
+
+  if (!userId) {
+    return res
+      .status(httpStatusCodes.unauthorized)
+      .send("You must sign in to delete your conversations");
+  }
+
+  try {
+    const conversation = await Conversation.findById(conversationId);
+
+    if (!conversation)
+      return res
+        .status(httpStatusCodes.notFound)
+        .send(`No conversation with id ${conversationId}`);
+
+    const oldListLength = conversation?.listMessages?.length;
+    conversation.listMessages = conversation?.listMessages?.filter(
+      (msgId) => !msgId.equals(messageId)
+    );
+
+    if (oldListLength <= conversation?.listMessages?.length)
+      return res
+        .status(httpStatusCodes.notFound)
+        .send(
+          `No message with id ${messageId} in a conversation with id ${conversationId}`
+        );
+
+    const message = await Message.findById(messageId);
+
+    if (!message)
+      return res
+        .status(httpStatusCodes.notFound)
+        .send(`No message with id ${messageId}`);
+
+    if (!message?.senderId?.equals(userId))
+      return res
+        .status(httpStatusCodes.forbidden)
+        .send(`Cannot delete others' messages`);
+
+    await Conversation.findByIdAndUpdate(conversationId, conversation);
+    await Message.findByIdAndDelete(messageId);
+
+    conversation?.listMembers?.forEach((memberId) =>
+      cuteIO.sendToUser(memberId.toString(), "Message-remove", {
+        res: {
+          conversationId,
+          messageId,
+          senderId: userId,
+        },
+      })
+    );
+
+    return res.status(httpStatusCodes.ok).send(`Deleted successfully`);
   } catch (error) {
     return res
       .status(httpStatusCodes.internalServerError)

@@ -36,25 +36,23 @@ function ChatSpace() {
 
   // const [isAddConversation, setIsAdd] = useState(false); // to render conversation when add
 
-  const [isAddMessage, setIsAddMessage] = useState(false);
-
   useEffect(() => {
     apiConversation.fetchConversationsOfUser().then((res) => {
       if (res.data.length > 0) {
         conversations.updateCurrentId(res.data[0]?._id);
+      } else {
+        // hotfix minor bug: cannot update when there's not yet a conversation
+        messageHandle.onConversationCreated((msg) => {
+          window.location.reload();
+        });
       }
     });
   }, []);
 
   // test notification message
   useEffect(() => {
-    messageHandle.onReceive((msg) => {
-      setIsAddMessage(true);
-    });
-
     messageHandle.onSent((msg) => {
       removeSending(msg?.res?.conversationId);
-      setIsAddMessage(true);
     });
 
     messageHandle.onFailed((msg) => {
@@ -72,42 +70,37 @@ function ChatSpace() {
   // }, [isAddConversation]);
 
   return (
-    <div>
-      <div className="chat-container">
-        <ChatSidebar
-          isOpen={isSidebarOpen}
-          setIsOpen={setIsSidebarOpen}
-          currentId={currentId}
-          listConversations={listConversations}
-          updateCurrentId={updateCurrentId}
-          addConversation={addConversation}
-          updateListConversations={updateListConversations}
-          // setCurrentId={setCurrentId}
-          // isAddConversation={isAddConversation}
-          // setIsAdd={setIsAdd}
-        />
-        <MessageHeader
-          setOpenSidebar={setIsSidebarOpen}
-          currentId={currentId}
-          listSeenMembers={listSeenMembers}
-        />
-        <MessageList
-          currentId={currentId}
-          isAddMessage={isAddMessage}
-          setIsAddMessage={setIsAddMessage}
-          listSeenMembers={listSeenMembers}
-          setListSeenMembers={setListSeenMembers}
-        />
-        <MessageForm
-          currentId={currentId}
-          setIsAddMessage={setIsAddMessage}
-          messageHandle={messageHandle}
-          listConversations={listConversations}
-          updateListConversations={updateListConversations}
-          addSending={addSending}
-          checkSending={checkSending}
-        />
-      </div>
+    <div className="chat-container">
+      <ChatSidebar
+        isOpen={isSidebarOpen}
+        setIsOpen={setIsSidebarOpen}
+        currentId={currentId}
+        listConversations={listConversations}
+        updateCurrentId={updateCurrentId}
+        addConversation={addConversation}
+        updateListConversations={updateListConversations}
+        // setCurrentId={setCurrentId}
+        // isAddConversation={isAddConversation}
+        // setIsAdd={setIsAdd}
+      />
+      <MessageHeader
+        setOpenSidebar={setIsSidebarOpen}
+        currentId={currentId}
+        listSeenMembers={listSeenMembers}
+      />
+      <MessageList
+        currentId={currentId}
+        listSeenMembers={listSeenMembers}
+        setListSeenMembers={setListSeenMembers}
+      />
+      <MessageForm
+        currentId={currentId}
+        messageHandle={messageHandle}
+        listConversations={listConversations}
+        updateListConversations={updateListConversations}
+        addSending={addSending}
+        checkSending={checkSending}
+      />
     </div>
   );
 }

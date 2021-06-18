@@ -1,15 +1,15 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { Layout, Typography, Breadcrumb, Row, Col } from "antd";
-import styles from "./styles.js";
+import { Typography } from "antd";
 import FeedPost from "../../Posts/FeedPosts/FeedPost/FeedPost";
 import * as api from "../../../api/search";
 import NoDataSearch from "../../../components/NoDataSearch/NoDataSearch";
-
-const { Content } = Layout;
-const { Title, Text } = Typography;
+import { useMobile } from "../../../utils/responsiveQuery.js";
 
 const SearchPostResult = ({ txtSearch }) => {
   const [listPost, setListPost] = useState([]);
+
+  const isMobile = useMobile();
+
   useEffect(() => {
     api
       .fetchSearchPost(txtSearch)
@@ -27,30 +27,30 @@ const SearchPostResult = ({ txtSearch }) => {
   const listPostCard = useMemo(
     () =>
       listPost?.map((post, i) => {
-        return <FeedPost key={i} post={post}></FeedPost>;
+        return <FeedPost key={post._id} post={post}></FeedPost>;
       }),
     [listPost]
   );
 
   return (
-    <div className="col-12">
-      <div
-        className="row"
-        style={{
-          paddingTop: 16,
-          paddingLeft: 32,
-          paddingRight: 32,
-        }}
-      >
-        <div className="col-12">
-          {listPostCard.length === 0 ? (
-            <NoDataSearch></NoDataSearch>
-          ) : (
-            listPostCard
-          )}
-        </div>
+    // <div className="col-12">
+    <div
+      className="row justify-content-center"
+      style={{
+        paddingTop: 16,
+        paddingLeft: 32,
+        paddingRight: 32,
+      }}
+    >
+      <div className={`${!isMobile && "col-12"}`}>
+        {listPostCard.length === 0 ? (
+          <NoDataSearch></NoDataSearch>
+        ) : (
+          listPostCard
+        )}
       </div>
     </div>
+    // </div>
   );
 };
 

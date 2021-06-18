@@ -1,9 +1,14 @@
 import React, { useState, useEffect } from "react";
-import { Modal, Typography, Menu, Tabs, Avatar } from "antd";
+import { Modal, Typography, Menu, Tooltip, Tabs, Button, Avatar } from "antd";
 import moment from "moment";
-import styles from "./styles";
 import COLOR from "../../../constants/colors";
 import * as api from "../../../api/notification";
+import { useDispatch } from "react-redux";
+import { limitNameLength } from "../../../utils/limitNameLength";
+import {
+  refreshNotifications,
+  setSeenNotification,
+} from "../../../redux/actions/notifications";
 
 const { Text } = Typography;
 const { TabPane } = Tabs;
@@ -12,8 +17,11 @@ function NotificationList({ handleClickNotificationItem, notifications }) {
   const [allNoti, setAllNoti] = useState([]);
   const [unseenNoti, setUnseenNoti] = useState([]);
   const [seenNoti, setSeenNoti] = useState([]);
+  const [isUpdate, setIsUpdate] = useState(false);
 
-  useEffect(() => {
+  const dispatch = useDispatch();
+
+  const handleFetchNoti = () => {
     api.fetchAllNotifications().then((res) => {
       setAllNoti(res.data);
     });
@@ -23,7 +31,21 @@ function NotificationList({ handleClickNotificationItem, notifications }) {
     api.fetchUnseenNotifications().then((res) => {
       setUnseenNoti(res.data);
     });
-  }, []);
+  };
+
+  const handleMarkAll = () => {
+    unseenNoti.forEach((item) => {
+      dispatch(setSeenNotification(item._id, "true"));
+    });
+    dispatch(refreshNotifications());
+    setIsUpdate(true);
+    Modal.destroyAll();
+  };
+
+  useEffect(() => {
+    handleFetchNoti();
+    setIsUpdate(false);
+  }, [isUpdate]);
 
   const NotiList = ({ noti }) => {
     return (
@@ -36,9 +58,9 @@ function NotificationList({ handleClickNotificationItem, notifications }) {
           </div>
         ) : (
           <>
-            {noti.map((item, i) => (
+            {noti?.map((item, i) => (
               <div
-                key={`${i}-all`}
+                key={`${item._id}-all`}
                 className="whitegreen-button clickable"
                 onClick={() =>
                   handleClickNotificationItem(item?.link, item?._id)
@@ -50,9 +72,17 @@ function NotificationList({ handleClickNotificationItem, notifications }) {
                     backgroundColor: !item?.seen && COLOR.greenSmoke,
                   }}
                 >
-                  <Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
+                  {/* <Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" /> */}
                   <div className="d-flex ml-1 flex-column">
-                    <Text>{item.content?.description}</Text>
+                    <Tooltip
+                      title={item.content?.description}
+                      placement="bottom"
+                    >
+                      <Text>
+                        {limitNameLength(item.content?.description, 54)}
+                      </Text>
+                    </Tooltip>
+
                     <Text type="secondary">
                       {moment(item?.createdAt).fromNow()}
                     </Text>
@@ -82,8 +112,13 @@ function NotificationList({ handleClickNotificationItem, notifications }) {
               <NotiList noti={allNoti} />
             </TabPane>
           </Tabs>
+          <Button className="green-button" onClick={handleMarkAll}>
+            Mark all as read
+          </Button>
         </div>
       ),
+      okButtonProps: { style: { display: "none" } },
+      closable: true,
       onOk() {},
     });
   }
@@ -98,9 +133,9 @@ function NotificationList({ handleClickNotificationItem, notifications }) {
         </Menu.Item>
       ) : (
         <>
-          {notifications.slice(0, 5).map((item, i) => (
+          {notifications?.slice(0, 5).map((item, i) => (
             <Menu.Item
-              key={i}
+              key={item._id}
               className="whitegreen-button"
               onClick={() => handleClickNotificationItem(item?.link, item?._id)}
             >
@@ -108,9 +143,14 @@ function NotificationList({ handleClickNotificationItem, notifications }) {
                 className="d-flex align-items-center p-2 w-100"
                 style={{ backgroundColor: !item?.seen && COLOR.greenSmoke }}
               >
-                <Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
+                {/* <Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" /> */}
                 <div className="d-flex ml-1 flex-column">
-                  <Text>{item.content?.description}</Text>
+                  <Tooltip title={item.content?.description} placement="bottom">
+                    <Text>
+                      {limitNameLength(item.content?.description, 54)}
+                    </Text>
+                  </Tooltip>
+
                   <Text type="secondary">
                     {moment(item?.createdAt).fromNow()}
                   </Text>

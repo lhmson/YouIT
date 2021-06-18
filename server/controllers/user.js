@@ -1,11 +1,13 @@
+import express from "express";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
 import User from "../models/user.js";
 import sendVerificationMail from "../utils/sendVerificationMail.js";
 
-import { cuteIO } from "../index.js";
+import { cuteIO, usersStatusManager } from "../index.js";
 import { httpStatusCodes } from "../utils/httpStatusCode.js";
+import moment from "moment";
 
 const JWT_KEY = "youit";
 
@@ -168,4 +170,145 @@ export const signout = async (req, res) => {
   }
 
   res.status(httpStatusCodes.accepted).send("Ok");
+};
+
+/**
+ * @param {express.Request<ParamsDictionary, any, any, QueryString.ParsedQs, Record<string, any>>} req
+ * @param {express.Response<any, Record<string, any>, number>} res
+ * @param {express.NextFunction} next
+ */
+export const getFriendsStatus = async (req, res, next) => {
+  const { userId } = req;
+
+  if (!userId) {
+    return res.status(httpStatusCodes.unauthorized).send("Not signed in");
+  }
+
+  try {
+    const user = await User.findById(userId);
+
+    if (!user)
+      return res
+        .status(httpStatusCodes.notFound)
+        .send("Signed in user's not found");
+
+    const result = {};
+
+    const { listFriends } = user;
+    if (listFriends)
+      listFriends.forEach((frId) => {
+        result[frId] = usersStatusManager.getUserStatus(frId);
+      });
+
+    return res.status(httpStatusCodes.ok).send(result);
+  } catch (error) {
+    return res
+      .status(httpStatusCodes.internalServerError)
+      .json({ message: error });
+  }
+};
+
+/**
+ * @param {express.Request<ParamsDictionary, any, any, QueryString.ParsedQs, Record<string, any>>} req
+ * @param {express.Response<any, Record<string, any>, number>} res
+ * @param {express.NextFunction} next
+ */
+export const getUserStatus = async (req, res, next) => {
+  const { userId } = req;
+  const { newStatus } = req.params;
+
+  if (!userId) {
+    return res.status(httpStatusCodes.unauthorized).send("Not signed in");
+  }
+
+  try {
+    return res
+      .status(httpStatusCodes.ok)
+      .send(usersStatusManager.getUserStatus(userId));
+  } catch (error) {
+    return res
+      .status(httpStatusCodes.internalServerError)
+      .json({ message: error });
+  }
+};
+
+/**
+ * @param {express.Request<ParamsDictionary, any, any, QueryString.ParsedQs, Record<string, any>>} req
+ * @param {express.Response<any, Record<string, any>, number>} res
+ * @param {express.NextFunction} next
+ */
+export const setUserStatus = async (req, res, next) => {
+  const { userId } = req;
+  const { newStatus } = req.params;
+
+  if (!userId) {
+    return res.status(httpStatusCodes.unauthorized).send("Not signed in");
+  }
+
+  try {
+    if (!["busy", "online", "offline"].includes(newStatus))
+      return res
+        .status(httpStatusCodes.badContent)
+        .send(
+          `${newStatus} is not a valid status. (only "busy", "online", "offline" are acceptable)`
+        );
+    usersStatusManager.setLockedStatus(userId, newStatus);
+
+    return res.status(httpStatusCodes.ok).send("Ok");
+  } catch (error) {
+    return res
+      .status(httpStatusCodes.internalServerError)
+      .json({ message: error });
+  }
+};
+
+export const countNewUsers = async (req, res) => {
+  const { range, timeString } = req.params;
+  try {
+    let time = moment(timeString);
+    let labels = [];
+    let data = [];
+
+    switch (range) {
+      case "week":
+        labels = moment.weekdaysShort();
+        for (let i = 0; i < labels.length; i++) {
+          let temp = time.clone().set("day", i);
+          const start = temp.clone().startOf("day");
+          const end = temp.clone().endOf("day");
+          const count = await User.find({
+            createdAt: { $gt: start, $lte: end },
+          }).count();
+          data.push(count);
+        }
+        break;
+      case "month":
+        for (let i = 0; i < time.daysInMonth(); i++) {
+          labels.push(i + 1);
+          let temp = time.clone().set("date", i);
+          const start = temp.clone().startOf("day");
+          const end = temp.clone().endOf("day");
+          const count = await User.find({
+            createdAt: { $gt: start, $lte: end },
+          }).count();
+          data.push(count);
+        }
+        break;
+      case "year":
+        labels = moment.monthsShort();
+        for (let i = 0; i < labels.length; i++) {
+          let temp = time.clone().set("month", i);
+          const start = temp.clone().startOf("month");
+          const end = temp.clone().endOf("month");
+          const count = await User.find({
+            createdAt: { $gt: start, $lte: end },
+          }).count();
+          data.push(count);
+        }
+        break;
+    }
+    res.status(200).json({ labels, data });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
 };

@@ -2,9 +2,12 @@ import React, { useState, useEffect, useMemo } from "react";
 import UserCard from "../../../components/UserCard/UserCard";
 import * as api from "../../../api/search";
 import NoDataSearch from "../../../components/NoDataSearch/NoDataSearch";
+import { useMobile } from "../../../utils/responsiveQuery";
 
 function SearchUserResult({ userNameSearch }) {
   const [listUser, setListUser] = useState([]);
+
+  const isMobile = useMobile();
 
   useEffect(() => {
     api
@@ -24,6 +27,7 @@ function SearchUserResult({ userNameSearch }) {
       listUser?.map((user, i) => {
         return (
           <UserCard
+            key={i}
             _id={user._id}
             name={user.name}
             relationship="Add Friend"
@@ -34,26 +38,24 @@ function SearchUserResult({ userNameSearch }) {
   );
 
   return (
-    <div className="col-12">
-      <div
-        className="row"
-        style={{
-          paddingTop: 16,
-          paddingLeft: 32,
-          paddingRight: 32,
-        }}
-      >
-        <div
-          className="col-12"
-        >
-          {listUserCard.length === 0 ? (
-            <NoDataSearch></NoDataSearch>
-          ) : (
-            listUserCard
-          )}
-        </div>
+    // <div className="col-12">
+    <div
+      className="row justify-content-center"
+      style={{
+        paddingTop: 16,
+        paddingLeft: 32,
+        paddingRight: 32,
+      }}
+    >
+      <div className={`${!isMobile && "col-12"}`}>
+        {listUserCard.length === 0 ? (
+          <NoDataSearch></NoDataSearch>
+        ) : (
+          listUserCard
+        )}
       </div>
     </div>
+    // </div>
   );
 }
 

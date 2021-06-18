@@ -1,7 +1,6 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, message, Tooltip, Typography } from "antd";
 import "../styles.css";
-import { Link } from "react-router-dom";
 import { useLocalStorage } from "../../../hooks/useLocalStorage";
 import { useMessage } from "../../../hooks/useMessage";
 import moment from "moment";
@@ -12,14 +11,9 @@ import * as apiConversation from "../../../api/conversation";
 
 const { Text } = Typography;
 
-function ConversationList({
-  currentId,
-  isAddMessage,
-  setIsAddMessage,
-  listSeenMembers,
-  setListSeenMembers,
-}) {
+function ConversationList({ currentId, listSeenMembers, setListSeenMembers }) {
   const MESSAGE_PER_LOAD = 5;
+  const MESSAGE_DELETE_DELAY = 1000;
 
   const [listMessages, setListMessages] = useState([]);
 
@@ -27,6 +21,8 @@ function ConversationList({
 
   //we need to know if there is more data
   const [hasMore, setHasMore] = useState(true);
+
+  const [toBeDeletedMessages, setToBeDeletedMessages] = useState([]);
 
   const messageHandle = useMessage();
 
@@ -41,6 +37,12 @@ function ConversationList({
       messageHandle.onSent((msg) => {
         if (msg.res.conversationId === currentId) {
           handleLoadNewMessage();
+        }
+      });
+
+      messageHandle.onRemove((msg) => {
+        if (msg.res.conversationId === currentId) {
+          handleMessageDeleted(msg.res.messageId);
         }
       });
 
@@ -62,11 +64,6 @@ function ConversationList({
       setListSeenMembers([]);
     };
   }, [currentId]);
-
-  // test
-  useEffect(() => {
-    console.log(listSeenMembers);
-  }, [listSeenMembers]);
 
   const handleLoadNewMessage = () => {
     apiConversation.fetchAConversation(currentId, 0, 0).then((res) => {
@@ -104,6 +101,23 @@ function ConversationList({
     });
   };
 
+  /** send delete request */
+  const handleDeleteMessage = (messageId) => {
+    apiConversation.deleteMessage(currentId, messageId);
+  };
+
+  /** handle when receive delete request */
+  const handleMessageDeleted = (messageId) => {
+    setToBeDeletedMessages((prev) => [...prev, messageId]);
+
+    setTimeout(() => {
+      setListMessages((prev) => prev.filter((msg) => msg?._id !== messageId));
+      setToBeDeletedMessages((prev) =>
+        prev.filter((msg) => msg?._id !== messageId)
+      );
+    }, MESSAGE_DELETE_DELAY);
+  };
+
   return (
     <div className="chat-message-list">
       {!hasMore && listMessages.length === 0 ? (
@@ -112,9 +126,9 @@ function ConversationList({
         </div>
       ) : (
         <>
-          {listMessages.map((item, i) => (
+          {listMessages?.map((item, i) => (
             <div
-              key={i}
+              key={item.toString()}
               className={`message-row ${
                 item.senderId._id === user?.result?._id
                   ? "you-message"
@@ -125,7 +139,10 @@ function ConversationList({
                 <Tooltip title={item.senderId.name} placement="bottom">
                   {item.senderId._id !== user?.result?._id && (
                     <img
-                      src="https://st4.depositphotos.com/4329009/19956/v/380/depositphotos_199564354-stock-illustration-creative-vector-illustration-default-avatar.jpg"
+                      src={
+                        item.senderId.avatarUrl ??
+                        "https://st4.depositphotos.com/4329009/19956/v/380/depositphotos_199564354-stock-illustration-creative-vector-illustration-default-avatar.jpg"
+                      }
                       alt={item.senderId._id}
                     />
                   )}
@@ -134,7 +151,10 @@ function ConversationList({
                   {item.senderId._id === user?.result?._id && (
                     <>
                       <Tooltip title="Delete">
-                        <DeleteOutlined className="clickable icon mr-2" />
+                        <DeleteOutlined
+                          className="clickable icon mr-2"
+                          onClick={() => handleDeleteMessage(item?._id)}
+                        />
                       </Tooltip>
                     </>
                   )}
@@ -142,7 +162,16 @@ function ConversationList({
                     title={moment(item.createdAt).format("MMMM Do YYYY")}
                     placement="top"
                   >
-                    <div className="message-text">{item.text}</div>
+                    <div
+                      className="message-text"
+                      style={
+                        toBeDeletedMessages.includes(item?._id)
+                          ? { backgroundColor: "#ff6961" }
+                          : {}
+                      } // Refactor this to CSS?
+                    >
+                      {item.text}
+                    </div>
                   </Tooltip>
                 </div>
 

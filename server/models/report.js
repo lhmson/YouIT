@@ -1,14 +1,13 @@
 import mongoose from "mongoose";
 
-const reportUserSchema = mongoose.Schema(
+const reportSchema = mongoose.Schema(
   {
     userReportId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
     },
-    userId: {
+    itemId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
     },
     content: {
       type: String,
@@ -19,10 +18,15 @@ const reportUserSchema = mongoose.Schema(
       enum: ["pending", "accept", "deny"],
       default: "pending",
     },
+    kind: {
+      type: String,
+      enum: ["user", "post", "group"],
+      required: true,
+    },
   },
   { timestamps: true }
 );
 
-var ReportUser = mongoose.model("ReportUser", reportUserSchema);
+var Report = mongoose.model("Report", reportSchema);
 
-export default ReportUser;
+export default Report;

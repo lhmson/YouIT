@@ -10,7 +10,6 @@ import {
 import Navbar from "../../components/Navbar/Navbar";
 import FullPost from "../../components/Posts/FullPost/FullPost.js";
 import RelatedCard from "../../components/RelatedCard/RelatedCard.js";
-import FixedRightPanel from "../../components/FixedRightPanel/FixedRightPanel.js";
 import * as postsApi from "../../api/post";
 import * as commentsApi from "../../api/comment";
 import CommentForm from "../../components/CommentForm/CommentForm.js";
@@ -18,8 +17,8 @@ import Comment from "../../components/Comment/Comment.js";
 import COLOR from "../../constants/colors.js";
 import { useHistory } from "react-router-dom";
 import Loading from "../../components/Loading/Loading.js";
+import { FRONTEND_URL } from "../../constants/config.js";
 
-const { Content } = Layout;
 const { Title, Text } = Typography;
 
 function SpecificPostPage(props) {
@@ -172,7 +171,7 @@ function SpecificPostPage(props) {
 
   const handleCopyCommentLink = (id) => {
     navigator.clipboard
-      .writeText(`localhost:3000/post/${post?._id}/${id}`) // change to deployment link later
+      .writeText(`${FRONTEND_URL}/post/${post?._id}/${id}`) // change to deployment link later
       .then(() => message.success("Link copied to clipboard"))
       .catch((error) => {
         message.error("Something goes wrong copying link");

@@ -3,14 +3,12 @@ import { Layout, Menu, Typography } from "antd";
 import styles from "./styles.js";
 
 import { useDispatch } from "react-redux";
-import Navbar from "../../components/Navbar/Navbar";
-import SignInForm from "../../components/Auth/SignInForm/SignInForm.js";
-import SignUpForm from "../../components/Auth/SignUpForm/SignUpForm.js";
+import Navbar from "../../../components/Navbar/Navbar";
+import { SignInForm } from "../../../components/index";
 
 const { Content } = Layout;
-const { Title, Text } = Typography;
 
-function AuthPage() {
+function AuthAdminPage() {
   const [isSignIn, setIsSignIn] = useState(true);
   const dispatch = useDispatch();
 
@@ -23,11 +21,7 @@ function AuthPage() {
         <Layout>
           <Layout style={{ padding: "24px" }}>
             <Content style={{ ...styles.paleBackground, ...styles.mainArea }}>
-              {isSignIn ? (
-                <SignInForm setIsSignIn={setIsSignIn} />
-              ) : (
-                <SignUpForm setIsSignIn={setIsSignIn} />
-              )}
+              <SignInForm setIsSignIn={setIsSignIn} />)
             </Content>
           </Layout>
         </Layout>
@@ -36,4 +30,4 @@ function AuthPage() {
   );
 }
 
-export default AuthPage;
+export default AuthAdminPage;

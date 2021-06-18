@@ -1,5 +1,5 @@
 import React from "react";
-import { Menu } from "antd";
+import { Menu, Tooltip } from "antd";
 import {
   RocketOutlined,
   LaptopOutlined,
@@ -7,6 +7,7 @@ import {
 } from "@ant-design/icons";
 import styles from "../styles.js";
 import { Link } from "react-router-dom";
+import { limitNameLength } from "../../../../utils/limitNameLength";
 
 const { SubMenu } = Menu;
 
@@ -37,15 +38,20 @@ function FeedMenu({ user, groups }) {
         <Link to="/friends">Friends</Link>
       </Menu.Item>
       <SubMenu
-        key="sub3"
+        key="groups"
         icon={<LaptopOutlined style={{ fontSize: "1.4rem" }} />}
         title="Groups"
       >
-        {groups.map((group, i) => (
-          <Menu.Item key={i} style={styles.item}>
-            <Link to={`/group/${group?._id}`} target="_blank">
-              {group?.name}
-            </Link>
+        <Menu.Item key="groups-all" style={styles.item}>
+          <Link to="/groups">All</Link>
+        </Menu.Item>
+        {groups?.map((group, i) => (
+          <Menu.Item key={group._id} style={styles.item}>
+            <Tooltip title={group?.name} placement="right">
+              <Link to={`/group/${group?._id}/main`} target="_blank">
+                {limitNameLength(group?.name, 18)}
+              </Link>
+            </Tooltip>
           </Menu.Item>
         ))}
       </SubMenu>

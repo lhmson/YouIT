@@ -5,8 +5,6 @@ import {
   Drawer,
   Typography,
   Badge,
-  Modal,
-  Tooltip,
   Select,
   Popover,
   message,
@@ -23,6 +21,8 @@ import { useMobile } from "../../../utils/responsiveQuery.js";
 import * as apiFriend from "../../../api/friend";
 import * as apiConversation from "../../../api/conversation";
 import { useMessage } from "../../../hooks/useMessage.js";
+import { useFriendsStatus } from "../../../context/FriendsStatusContext.js";
+import { renderStatus } from "../../../utils/userStatus.js";
 
 const { Title } = Typography;
 
@@ -55,7 +55,11 @@ function ChatSidebar({
 
   const [listUnseenConversations, setListUnseenConversations] = useState([]);
 
+  const [listShown, setListShown] = useState([]);
+
   const messageHandle = useMessage();
+
+  const friendsStatusManager = useFriendsStatus();
 
   // const [listConversations, setListConversations] = useState([]);
 
@@ -83,11 +87,30 @@ function ChatSidebar({
 
     apiConversation.fetchConversationsOfUser().then((res) => {
       updateListConversations(res.data);
-      // console.log("update list", res.data);
+
+      setListShown(res.data);
+
+      // if there's no longer a conversation with current id, refresh!
+      if (
+        currentId &&
+        !res.data?.some((conversation) => conversation._id === currentId)
+      )
+        message.warn("You're no longer in this conversation!", 1, () =>
+          window.location.reload()
+        );
+      // if (!currentId && res.data?.length > 0) // buggy, don't use
+      // updateCurrentId(res?.data?.[0]?._id);
+      // return res.data;
     });
+    // .then((res) => setListShown(res));
   };
 
   useEffect(() => {
+    handleFetchListUnseenConversations();
+  }, []);
+
+  useEffect(() => {
+    // needs optimization later :)
     messageHandle.onReceive((msg) => {
       handleFetchListUnseenConversations();
     });
@@ -96,10 +119,24 @@ function ChatSidebar({
       handleFetchListUnseenConversations();
     });
 
-    handleFetchListUnseenConversations();
+    messageHandle.onRemove((msg) => {
+      handleFetchListUnseenConversations();
+    });
+
+    messageHandle.onConversationCreated((msg) => {
+      handleFetchListUnseenConversations();
+    });
+
+    messageHandle.onConversationUpdated((msg) => {
+      handleFetchListUnseenConversations();
+    });
+
+    messageHandle.onConversationDeleted((msg) => {
+      handleFetchListUnseenConversations();
+    });
 
     return messageHandle.cleanUpAll;
-  }, []);
+  }, [currentId]);
 
   // useEffect(() => {
   //   apiConversation.fetchConversationsOfUser().then((res) => {
@@ -109,7 +146,16 @@ function ChatSidebar({
   // }, []);
   // need real time update there
 
-  const handleSearch = () => {};
+  const handleSearch = () => {
+    const search = searchInputRef.current.state.value;
+    if (search) {
+      setListShown(
+        listConversations.filter((item) => item?.title?.includes(search))
+      );
+    } else {
+      setListShown(listConversations);
+    }
+  };
 
   const handleChangeUserToAdd = (value, options) => {
     // console.log("opt", options);
@@ -139,28 +185,36 @@ function ChatSidebar({
     setVisibleAdd(visibleAdd);
   };
 
-  const renderStatus = (status) => {
-    switch (status) {
-      case "online":
-        return COLOR.green;
-      case "busy":
-        return COLOR.red;
-      case "offline":
-        return COLOR.gray;
-      default:
-        return COLOR.white;
-    }
-  };
-
   const renderAvatar = (item) => {
     if (item.listMembers.length <= 2) {
+      // conversation of one or two
+      const member = item?.listMembers?.find(
+        (member) => member._id !== user?.result?._id
+      );
+
       return (
-        item.avatar ??
+        member.avatarUrl ??
         "https://st4.depositphotos.com/4329009/19956/v/380/depositphotos_199564354-stock-illustration-creative-vector-illustration-default-avatar.jpg"
       );
     } else {
+      // group chat
       return "https://cdn.iconscout.com/icon/free/png-256/group-1543545-1306001.png";
     }
+  };
+
+  const getConversationStatus = (conversation) => {
+    let result = "offline";
+    conversation?.listMembers?.forEach((item) => {
+      if (item._id !== user?.result?._id) {
+        const status = friendsStatusManager.getStatus(item._id);
+        if (status === "online") {
+          result = "online";
+        } else if (status === "busy" && result !== "online") {
+          result = "busy";
+        }
+      }
+    });
+    return result;
   };
 
   const Header = () => {
@@ -185,7 +239,8 @@ function ChatSidebar({
                   style={{ margin: "5px 0" }}
                 />
                 <Select
-                  mode="tags"
+                  mode="multiple"
+                  allowClear
                   placeholder="Add friend"
                   value={usersToAdd}
                   onChange={handleChangeUserToAdd}
@@ -245,17 +300,18 @@ function ChatSidebar({
       {isOpen && (
         <>
           <div className="conversation-list">
-            {currentId &&
-            listConversations &&
-            listConversations.length !== 0 ? (
-              listConversations.map((item, i) => (
+            {currentId && listShown && listShown.length !== 0 ? (
+              listShown.map((item, i) => (
                 <div key={item?._id} onClick={() => updateCurrentId(item?._id)}>
                   <div
                     className={`conversation ${
                       item?._id === currentId && "active"
                     }`}
                   >
-                    <Badge dot color={renderStatus(item.status)}>
+                    <Badge
+                      dot
+                      color={renderStatus(getConversationStatus(item))}
+                    >
                       <img src={renderAvatar(item)} alt={item?._id} />
                     </Badge>
                     <div className="title-text">{item?.title}</div>

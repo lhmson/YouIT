@@ -128,9 +128,11 @@ export const removeInteraction = (post, userId, interactionType) => {
  * @param {any} post
  * @param {string | mongoose.Types.ObjectId} userId
  * @param {boolean=} allowedUnjoinedGroups
- * @returns {boolean}
+ * @returns {Promise<boolean>}
  */
 export const isPostVisibleByUser = async (post, userId) => {
+  const postOwnerId = post.userId?._id ?? post.userId;
+
   if (post.privacy === "Group") {
     const group = await Group.findById(post?.groupPostInfo?.groupId);
 
@@ -138,9 +140,10 @@ export const isPostVisibleByUser = async (post, userId) => {
 
     if (post?.groupPostInfo?.status !== "Approved") {
       // the user can still see post from herself/himself even if it's not approved
-      if (post.userId.equals(userId)) return true;
+      if (postOwnerId.equals(userId)) return true;
 
       // only group moderator, admin and owner can see this post
+      // Gonna refactor later: use function in bussiness logic / group
       const userRoleInGroup = group?.listMembers?.find((member) =>
         member?.userId?.equals(userId)
       )?.role;
@@ -158,7 +161,7 @@ export const isPostVisibleByUser = async (post, userId) => {
     else return isMemberOfGroup(userId, group);
   }
 
-  const rela = await getRelationship(userId, post.userId);
+  const rela = await getRelationship(userId, postOwnerId);
   switch (post.privacy) {
     case "Public":
       return true;

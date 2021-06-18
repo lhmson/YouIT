@@ -1,30 +1,41 @@
-import { Select } from "antd";
-import React from "react";
-import styles from "./styles.js";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchHashtags } from "../../../redux/actions/hashtag.js";
 
+import { Select } from "antd";
 const { Option } = Select;
 
-const children = [];
-for (let i = 10; i < 36; i++) {
-  children.push(<Option key={i.toString(36) + i}>{i.toString(36) + i}</Option>);
-}
 
-function handleChange(value) {
-  console.log(`Selected: ${value}`);
-}
+function CreatePostTagSelect({ onChange, defaultTags }) {
+  const dispatch = useDispatch();
+  /** @type {[]} */
+  const listHashtags = useSelector(state => state.hashtags)?.filter(tag => tag?.name);
 
-function CreatePostTagSelect() {
+  useEffect(() => {
+    dispatch(fetchHashtags());
+  }, [dispatch])
+
+  // list of hashtag's names
+  // function handleChange(value) {
+  //   console.log(`Selected: ${value}`);
+  // }
+
   return (
     <>
       <Select
         mode="tags"
         // size={size}
-        placeholder="Please select"
-        defaultValue={["a10", "c12"]}
-        onChange={handleChange}
+        value={defaultTags}
+        placeholder="# Hashtags"
+        onChange={onChange}
         style={{ width: "100%" }}
       >
-        {children}
+        {listHashtags.map((tag, i) =>
+          <Option
+            key={tag?.name ?? i}
+          >
+            {tag?.name}
+          </Option>)}
       </Select>
     </>
   );

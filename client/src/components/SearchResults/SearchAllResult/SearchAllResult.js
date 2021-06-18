@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { Layout, Typography, Breadcrumb, Row, Col } from "antd";
+import { Row } from "antd";
 import FeedPost from "../../Posts/FeedPosts/FeedPost/FeedPost";
 import * as api from "../../../api/search";
 import * as api1 from "../../../api/friend";
 import GroupCard from "../../../components/GroupCard/GroupCard";
 import UserCard from "../../../components/UserCard/UserCard";
 import NoDataSearch from "../../../components/NoDataSearch/NoDataSearch";
+import { useMobile } from "../../../utils/responsiveQuery";
 import { useLocalStorage } from "../../../hooks/useLocalStorage";
 
 const SearchAllResult = ({ txtSearch }) => {
@@ -13,6 +14,8 @@ const SearchAllResult = ({ txtSearch }) => {
   const [listUser, setListUser] = useState([]);
   const [listGroup, setListGroup] = useState([]);
   const [user, setUser] = useLocalStorage("user");
+
+  const isMobile = useMobile();
 
   useEffect(() => {
     api1
@@ -59,7 +62,7 @@ const SearchAllResult = ({ txtSearch }) => {
   const listPostCard = useMemo(
     () =>
       listPost?.map((post, i) => {
-        return <FeedPost key={i} post={post}></FeedPost>;
+        return <FeedPost key={post._id} post={post}></FeedPost>;
       }),
     [listPost]
   );
@@ -99,7 +102,7 @@ const SearchAllResult = ({ txtSearch }) => {
       listUser?.map((user, i) => {
         return (
           <UserCard
-            key={i}
+            key={user._id}
             _id={user._id}
             name={user.name}
             relationship="Add Friend"
@@ -115,21 +118,24 @@ const SearchAllResult = ({ txtSearch }) => {
     listUserCard.length === 0;
 
   return (
-    <div className="col-12">
+    // <div className="col-12">
+    <div
+      className="row justify-content-center"
+      style={{
+        paddingTop: 16,
+        paddingLeft: 32,
+        paddingRight: 32,
+      }}
+    >
       <div
-        className="row"
-        style={{
-          paddingTop: 16,
-          paddingLeft: 32,
-          paddingRight: 32,
-        }}
+        className={`${!isMobile && "col-12"}`}
+        style={{ marginRight: checkNoData ? 32 : 0 }}
       >
-        <div className="col-12" style={{ marginRight: checkNoData ? 32 : 0 }}>
-          {listPostCard} {listGroupCard} {listUserCard}
-          {checkNoData ? <NoDataSearch></NoDataSearch> : null}
-        </div>
+        {listPostCard} {listGroupCard} {listUserCard}
+        {checkNoData ? <NoDataSearch></NoDataSearch> : null}
       </div>
     </div>
+    // </div>
   );
 };
 

@@ -1,5 +1,5 @@
 import AboutPage from "./AboutPage/AboutPage";
-import AuthPage from "./AuthPage/AuthPage";
+import AuthPage from "./AuthPage_deprecated/AuthPage";
 import CreatePostPage from "./CreatePostPage/CreatePostPage";
 import FeedPage from "./FeedPage/FeedPage";
 import TestPage from "./TestPage/TestPage";
@@ -20,6 +20,8 @@ import GroupManagementPage from "./GroupManagementPage/GroupMangagementPage";
 import RequestsInGroupPage from "./RequestsInGroupsPage/RequestsInGroupPage";
 import ReportUserPage from "./ReportPage/ReportUserPage/ReportUserPage";
 
+import AuthAdminPage from "./SystemAdmin/AuthAdminPage/AuthAdminPage";
+import StatisticsPage from "./StatisticsPage/StatisticsPage";
 export {
   HomePage,
   AboutPage,
@@ -42,4 +44,6 @@ export {
   GroupManagementPage,
   RequestsInGroupPage,
   ReportUserPage,
+  AuthAdminPage,
+  StatisticsPage,
 };

@@ -1,10 +1,13 @@
 import express from "express";
 import {
   addFriend,
+  addProgrammingHashtag,
   addReceivingFriendRequest,
   addSendingFriendRequest,
+  editImage,
   followUser,
   getUserInfo,
+  removeProgrammingHashtag,
   removeReceivingFriendRequest,
   removeSendingFriendRequest,
   unfollowUser,
@@ -17,7 +20,7 @@ const router = express.Router();
 
 router.get("/:id", getUserInfo);
 
-router.put("/:id", auth, updateUserInfo);
+router.put("/", auth, updateUserInfo);
 router.put("/:id/receiveFriendRequest/add", auth, addReceivingFriendRequest);
 router.put("/:id/sendFriendRequest/add", auth, addSendingFriendRequest);
 router.put(
@@ -26,9 +29,16 @@ router.put(
   removeReceivingFriendRequest
 );
 router.put("/:id/sendFriendRequest/remove", auth, removeSendingFriendRequest);
-router.put("/:id/addfriend", auth, addFriend);
+router.put("/addfriend", auth, addFriend);
 router.put("/:id/unfriend/:friendId", auth, unfriend);
 router.put("/:followedId/follow", auth, followUser);
 router.put("/:followedId/unfollow", auth, unfollowUser);
+router.put("/addProgrammingHashtag/:hashtagId", auth, addProgrammingHashtag);
+router.put(
+  "/removeProgrammingHashtag/:hashtagId",
+  auth,
+  removeProgrammingHashtag
+);
+router.put("/editImage", auth, editImage);
 
 export default router;

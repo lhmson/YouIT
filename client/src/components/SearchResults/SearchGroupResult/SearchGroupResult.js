@@ -2,11 +2,14 @@ import React, { useState, useEffect, useMemo } from "react";
 import GroupCard from "../../../components/GroupCard/GroupCard";
 import * as api from "../../../api/search";
 import NoDataSearch from "../../../components/NoDataSearch/NoDataSearch";
+import { useMobile } from "../../../utils/responsiveQuery";
 import { useLocalStorage } from "../../../hooks/useLocalStorage";
 
 const SearchGroupResult = ({ txtSearch }) => {
   const [listGroup, setListGroup] = useState([]);
   const [user, setUser] = useLocalStorage("user");
+
+  const isMobile = useMobile();
 
   useEffect(() => {
     api
@@ -39,6 +42,7 @@ const SearchGroupResult = ({ txtSearch }) => {
           }
         return (
           <GroupCard
+            key={i}
             _id={group._id}
             nameGroup={group.name}
             description={group.description}
@@ -51,15 +55,16 @@ const SearchGroupResult = ({ txtSearch }) => {
   );
 
   return (
-    <div className="col-12">
-      <div
-        className="col-12"
-        style={{
-          paddingTop: 16,
-          paddingLeft: 32,
-          paddingRight: 32,
-        }}
-      >
+    // <div className="col-12">
+    <div
+      className="row justify-content-center"
+      style={{
+        paddingTop: 16,
+        paddingLeft: 32,
+        paddingRight: 32,
+      }}
+    >
+      <div className={`${!isMobile && "col-12"}`}>
         {listGroupCard.length === 0 ? (
           <NoDataSearch></NoDataSearch>
         ) : (
@@ -67,6 +72,7 @@ const SearchGroupResult = ({ txtSearch }) => {
         )}
       </div>
     </div>
+    // </div>
   );
 };
 

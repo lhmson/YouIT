@@ -73,7 +73,14 @@ export const setSeen = async (req, res, next) => {
       })
     }
 
-    await Notification.findByIdAndUpdate(notificationId, { seen: newValue }, { new: true })
+    const updateData = {
+      seen: newValue
+    }
+
+    if (newValue)
+      updateData.seenAt = Date.now();
+
+    await Notification.findByIdAndUpdate(notificationId, updateData, { new: true })
       .exec()
       .then(
         newNotification => res.status(httpStatusCodes.ok).json(newNotification)

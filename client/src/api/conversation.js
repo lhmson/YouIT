@@ -9,5 +9,23 @@ export const fetchUnseenConversationId = () =>
 
 export const createConversation = (usersToAdd) =>
   API.post(`/conversation/`, usersToAdd);
+
 export const addMessage = (conversationId, newMessage) =>
   API.put(`/conversation/${conversationId}/addMessage`, newMessage);
+
+
+/**
+ * @param {string} conversationId 
+ * @param {{title: string, listMembers: [string]}} newConversationData 
+ * @returns 
+ */
+export const updateConversation = (conversationId, newConversationData) =>
+  API.put(`/conversation/${conversationId}`, newConversationData);
+
+
+export const deleteConversation = (conversationId) =>
+  API.delete(`/conversation/${conversationId}`)
+
+
+export const deleteMessage = (conversationId, messageId) =>
+  API.delete(`/conversation/${conversationId}/message/${messageId}`)

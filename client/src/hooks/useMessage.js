@@ -59,6 +59,47 @@ export const useMessage = () => {
     cleanUpCallbacks.current.push(cleanUp);
   }
 
+
+  /**
+   * add handler to handle when a message is removed
+   * @param {(msg: MessageEventParams) => any} handler
+   */
+  const onRemove = (handler) => {
+    const cleanUp = cuteIO.onReceive("Message-remove", handler);
+    cleanUpCallbacks.current.push(cleanUp);
+  }
+
+
+  /**
+   * add handler to handle when a conversation is created 
+   * @param {(msg: MessageEventParams) => any} handler
+   */
+  const onConversationCreated = (handler) => {
+    const cleanUp = cuteIO.onReceive("Message-conversationCreated", handler);
+    cleanUpCallbacks.current.push(cleanUp);
+  }
+
+
+  /**
+   * add handler to handle when a conversation is updated 
+   * @param {(msg: MessageEventParams) => any} handler
+   */
+  const onConversationUpdated = (handler) => {
+    const cleanUp = cuteIO.onReceive("Message-conversationUpdated", handler);
+    cleanUpCallbacks.current.push(cleanUp);
+  }
+
+
+  /**
+   * add handler to handle when a conversation is deleted 
+   * @param {(msg: MessageEventParams) => any} handler
+   */
+  const onConversationDeleted = (handler) => {
+    const cleanUp = cuteIO.onReceive("Message-conversationDeleted", handler);
+    cleanUpCallbacks.current.push(cleanUp);
+  }
+
+
   const cleanUpAll = () => {
     cleanUpCallbacks.current.forEach(clean => clean());
     cleanUpCallbacks.current.length = 0;
@@ -69,9 +110,14 @@ export const useMessage = () => {
     onSent,
     onFailed,
     onReceive,
+    onRemove,
 
     setSeen,
     onSeen,
+
+    onConversationCreated,
+    onConversationUpdated,
+    onConversationDeleted,
 
     cleanUpAll,
   }
@@ -79,5 +125,5 @@ export const useMessage = () => {
 
 /** @typedef {object} MessageEventParams
  * @property {{code: string, msg: string}} Status
- * @property {{senderId: string, conversationId: string, seenValue: boolean, message: any, listSeenMembers: [string]}} res
+ * @property {{senderId: string, conversationId: string, seenValue: boolean, message: any, listSeenMembers: [string], messageId:string}} res
  */

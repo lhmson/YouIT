@@ -1,14 +1,11 @@
 import React, { useState, useEffect, useRef, useMemo } from "react";
-import { Layout, Typography, Table, Button } from "antd";
+import { Layout, Typography, Table, Button, message } from "antd";
 import styles from "./styles.js";
-
 import Navbar from "../../../components/Navbar/Navbar";
-
 import ReportUserCard from "../../../components/ReportUserCard/ReportUserCard";
-
 import COLOR from "../../../constants/colors";
-import * as api from "../../../api/reportUser";
 import { useLocalStorage } from "../../../hooks/useLocalStorage";
+import * as api from "../../../api/report";
 
 const { Content } = Layout;
 const { Title, Text } = Typography;
@@ -16,19 +13,21 @@ const { Title, Text } = Typography;
 function ReportUserPage() {
   const [user, setUser] = useLocalStorage("user");
   const [selectedRowkeys, setSelectedRowkeys] = useState([]);
+  const [listReports, setListReports] = useState([]);
+  const [update, setUpdate] = useState(false);
 
-  // useEffect(() => {
-  //   api
-  //     .fetchAllReportUser()
-  //     .then((res) => {
-  //       console.log(res.data);
-  //       if (res.data instanceof Array) setListReports(res.data);
-  //       else setListReports([]);
-  //     })
-  //     .catch((e) => {
-  //       console.log(e);
-  //     });
-  // }, [user]);
+  useEffect(() => {
+    api
+      .fetchAllReportUser()
+      .then((res) => {
+        console.log("report", res.data);
+        if (res.data instanceof Array) setListReports(res.data);
+        else setListReports([]);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  }, [update]);
 
   const columns = [
     {
@@ -43,28 +42,30 @@ function ReportUserPage() {
     },
     {
       title: "Number of Reports",
-      dataIndex: "reports",
+      dataIndex: "numberOfReports",
       width: "20%",
     },
     {
       title: "Number of Groups",
-      dataIndex: "groups",
+      dataIndex: "numberOfGroups",
       width: "20%",
     },
   ];
 
   const onSelectChange = (selectedRowKeys) => {
     setSelectedRowkeys(selectedRowKeys);
+    console.log("rows", selectedRowkeys);
   };
 
   const data = [];
-  for (let i = 0; i < 46; i++) {
+  for (let i = 0; i < listReports.length; i++) {
     data.push({
       key: i,
-      stt: i,
-      name: `Edward King ${i}`,
-      reports: 32,
-      groups: 12,
+      stt: i + 1,
+      name: listReports[i].name,
+      numberOfReports: listReports[i].numberOfReports,
+      numberOfGroups: listReports[i].numberOfGroups,
+      _id: listReports[i]._id,
     });
   }
 
@@ -124,13 +125,38 @@ function ReportUserPage() {
   };
 
   const ButtonFooter = () => {
+    const banUser = async () => {
+      for (let i = 0; i < selectedRowkeys.length; i++) {
+        await api
+          .banUser(data[selectedRowkeys[i]]._id)
+          .then((res) => {})
+          .catch((e) => {
+            console.log(e);
+          });
+      }
+      message.success("Ban users successfully");
+      setUpdate(!update);
+    };
+
+    const deleteAllReportsUser = async () => {
+      for (let i = 0; i < selectedRowkeys.length; i++) {
+        await api
+          .deleteAllReportsUser(data[selectedRowkeys[i]]._id)
+          .then((res) => {})
+          .catch((e) => {
+            console.log(e);
+          });
+      }
+      message.success("Delete reports successfully");
+      setUpdate(!update);
+    };
     return (
       <div
         className="row"
         style={{ justifyContent: "flex-end", alignItems: "center" }}
       >
         <Button
-          onClick={() => {}}
+          onClick={deleteAllReportsUser}
           className="mb-2"
           type="primary"
           style={{
@@ -138,15 +164,15 @@ function ReportUserPage() {
             borderColor: "red",
             color: "white",
             fontWeight: 500,
-            width: 100,
+            width: 150,
             marginRight: 64,
           }}
         >
-          Ban
+          Delete Reports
         </Button>
 
         <Button
-          onClick={() => {}}
+          onClick={banUser}
           className="mb-2"
           type="primary"
           style={{
@@ -154,11 +180,11 @@ function ReportUserPage() {
             borderColor: "#27AE60",
             color: "white",
             fontWeight: 500,
-            width: 100,
+            width: 150,
             marginRight: 64,
           }}
         >
-          Accept
+          Accept Reports
         </Button>
       </div>
     );

@@ -25,7 +25,7 @@ import {
   removeSendingFriendRequest,
 } from "../../../api/user_info.js";
 
-import { createReportUser } from "../../../api/reportUser.js";
+import { createReport } from "../../../api/report.js";
 const { TextArea } = Input;
 
 const ListButtons = () => {
@@ -97,11 +97,12 @@ const ListButtons = () => {
   };
 
   const acceptFriendRequest = async () => {
-    await addFriend(loginUser, user);
-    dispatch(followUser(user?._id));
-
     if (matchingFriendRequest) {
       const request = matchingFriendRequest[0];
+
+      await addFriend(request);
+      dispatch(followUser(user?._id));
+
       await cancelFriendRequest(request);
     }
   };
@@ -253,12 +254,13 @@ const ListButtons = () => {
       setContentReport("");
       const report = {
         userReportId: loginUser._id,
-        userId: user._id,
+        itemId: user._id,
         content: contentReport,
         status: "pending",
+        kind: "user",
       };
       message.success("This user was reported by you successfully");
-      await createReportUser(report);
+      await createReport(report);
     };
     return (
       <Modal

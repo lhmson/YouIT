@@ -3,6 +3,7 @@ import { Button, Row, Col, Divider, Form, Typography, Input, Card } from "antd";
 import { Avatar, Image, Tag, message } from "antd";
 import styles from "./styles.js";
 import { Link, useHistory, useLocation } from "react-router-dom";
+import { useMobile } from "../../utils/responsiveQuery.js";
 import * as apiGroup from "../../api/group";
 import { useLocalStorage } from "../../hooks/useLocalStorage";
 
@@ -11,6 +12,8 @@ const { Title, Text } = Typography;
 function GroupCard({ nameGroup, _id, description, totalMembers, status }) {
   const [txtButton, setTxtButton] = React.useState(status);
   const [user, setUser] = useLocalStorage("user");
+
+  const isMobile = useMobile();
 
   const joinGroup = async () => {
     const { data } = await apiGroup.addPendingMemberGroup(
@@ -38,12 +41,15 @@ function GroupCard({ nameGroup, _id, description, totalMembers, status }) {
   return (
     <>
       <div style={styles.card}>
-        <div className="row ml-2" style={{ justifyContent: "space-between" }}>
+        <div
+          className={`${!isMobile && "row"} m-2`}
+          style={{ justifyContent: "space-between" }}
+        >
           <div
             style={{
               display: "flex",
-              justifyContent: "center",
-              minWidth: 600,
+              flexDirection: "row",
+              // minWidth: 600,
             }}
           >
             <Avatar
@@ -51,25 +57,21 @@ function GroupCard({ nameGroup, _id, description, totalMembers, status }) {
               src="https://i.pinimg.com/564x/03/d5/62/03d5624fae645eccaa74315f6ed49c03.jpg"
             />
 
-            <div className="col-8" style={{ alignSelf: "center" }}>
-              <Link to={`/group/${_id}`}>
-                <Text style={styles.textUser}>{nameGroup ?? "Name Group"}</Text>
-              </Link>
-              <div style={{ marginTop: 0 }}></div>
-              <Text>{description ?? "Blackpink in your area"}</Text>
+            <div className="ml-3 break-word">
+              <div className="break-word">
+                <Link to={`/group/${_id}/main`}>
+                  <Title style={styles.textUser}>
+                    {nameGroup ?? "Name Group"}
+                  </Title>
+                </Link>
+              </div>
+              <div>
+                <Text>{description ?? "Blackpink in your area"}</Text>
+              </div>
             </div>
-            <div
-              style={{
-                marginLeft: 0,
-                justifyContent: "center",
-                flex: 1,
-                display: "flex",
-              }}
-            ></div>
           </div>
 
           <div
-            className="mr-3"
             style={{
               justifyContent: "flex-end",
               alignItems: "flex-end",

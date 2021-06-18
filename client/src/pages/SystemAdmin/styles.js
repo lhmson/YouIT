@@ -8,10 +8,9 @@ const styles = {
     background: COLOR.green,
   },
   mainArea: {
-    minHeight: "100vh",
+    // minHeight: "100vh",
     marginTop: 64,
-    // marginLeft: 128,
-    // marginRight: 128,
+    // marginLeft: 80,
   },
 };
 

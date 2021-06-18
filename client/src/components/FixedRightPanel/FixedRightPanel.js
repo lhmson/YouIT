@@ -1,10 +1,4 @@
-import React, { useState, useEffect } from "react";
-import styles from "./styles.js";
-import { Layout } from "antd";
-
-import RelatedCard from "../../components/RelatedCard/RelatedCard.js";
-
-const { Sider } = Layout;
+import React from "react";
 
 function FixedRightPanel(props) {
   const { children } = props;
