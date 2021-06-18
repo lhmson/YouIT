@@ -19,11 +19,12 @@ import {
   ErrorPage,
   HomePage,
   MessagePage,
-  FriendMangementPage,
+  FriendManagementPage,
   MutualFriendPage,
   GroupManagementPage,
   AuthAdminPage,
   StatisticsPage,
+  ReportUserPage,
 } from "./pages/index";
 
 import { CuteClientIOProvider } from "./socket/CuteClientIOProvider.js";
@@ -90,7 +91,7 @@ function App() {
             <PrivateRoute
               exact
               path="/friends"
-              component={FriendMangementPage}
+              component={FriendManagementPage}
             />
             <PrivateRoute
               exact
@@ -124,6 +125,7 @@ function App() {
               {isAdmin() ? <AdminDashboardPage /> : <Redirect to="/admin" />}
             </PrivateRoute>
             <Route exact path="/statistics" component={StatisticsPage} />
+            <Route exact path="/admin/user" component={ReportUserPage} />
             <Route exact path="/error403">
               <ErrorPage code="403" />
             </Route>

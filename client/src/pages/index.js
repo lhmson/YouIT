@@ -14,9 +14,11 @@ import LoginPage from "./LoginPage/LoginPage";
 import RegisterPage from "./RegisterPage/RegisterPage";
 import ErrorPage from "./ErrorPage/ErrorPage";
 import HomePage from "./HomePage/HomePage";
-import FriendMangementPage from "./FriendMangementPage/FriendMangementPage";
-import MutualFriendPage from "./FriendMangementPage/MutualFriendPage";
+import FriendManagementPage from "./FriendManagementPage/FriendManagementPage";
+import MutualFriendPage from "./FriendManagementPage/MutualFriendPage";
 import GroupManagementPage from "./GroupManagementPage/GroupMangagementPage";
+import ReportUserPage from "./ReportPage/ReportUserPage/ReportUserPage";
+
 import AuthAdminPage from "./SystemAdmin/AuthAdminPage/AuthAdminPage";
 import StatisticsPage from "./StatisticsPage/StatisticsPage";
 export {
@@ -36,9 +38,10 @@ export {
   RegisterPage,
   ErrorPage,
   MessagePage,
-  FriendMangementPage,
+  FriendManagementPage,
   MutualFriendPage,
   GroupManagementPage,
+  ReportUserPage,
   AuthAdminPage,
   StatisticsPage,
 };

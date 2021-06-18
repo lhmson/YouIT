@@ -17,7 +17,7 @@ import { SearchOutlined } from "@ant-design/icons";
 const { Content } = Layout;
 const { Title, Text } = Typography;
 
-function FriendMangementPage() {
+function FriendManagementPage() {
   const [user, setUser] = useLocalStorage("user");
   const inputRef = useRef();
   const [listFriend, setListFriend] = useState([]);
@@ -192,4 +192,4 @@ function FriendMangementPage() {
   );
 }
 
-export default FriendMangementPage;
+export default FriendManagementPage;
