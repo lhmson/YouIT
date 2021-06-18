@@ -89,7 +89,7 @@ export const replyComment = async (req, res) => {
       .catch((error) => {
         res.status(404).json({ message: error.message });
       });
-  } catch (error) {}
+  } catch (error) { }
 };
 
 export const getComments = async (req, res) => {
@@ -228,7 +228,7 @@ export const getMyCommentInteractions = async (req, res) => {
     let filterJson = undefined;
     try {
       filterJson = JSON.parse(filter);
-    } catch {}
+    } catch { }
 
     const interactions = await getInteractionOfAUser(id, userId, filterJson);
     return res.status(httpStatusCodes.ok).json(interactions);
@@ -274,21 +274,17 @@ const handleUpdateCommentInteraction = (actions) => async (req, res) => {
         case "add":
           newComment = addInteraction(newComment, userId, a.interactionType);
 
-          // Test socket.io
           if (a.interactionType === "upvote") {
-            // cuteIO.sendToUser(
-            //   newPost.userId.toString(),
-            //   "UpvotePost_PostOwner",
-            //   { upvoter: userId, post: newPost }
-            // );
-            sendNotificationUser({
-              userId: newComment.userId.toString(),
-              kind: "UpvotePost_PostOwner",
-              content: {
-                description: `${user?.name} has upvoted your comment.`,
-              },
-              link: `/post/${postId}/${newComment._id}`,
-            });
+            if (!newComment.userId.equals(userId)) {
+              sendNotificationUser({
+                userId: newComment.userId.toString(),
+                kind: "UpvotePost_PostOwner",
+                content: {
+                  description: `${user?.name} has upvoted your comment.`,
+                },
+                link: `/post/${postId}/${newComment._id}`,
+              });
+            }
           }
 
           break;
