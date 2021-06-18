@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Modal, Typography, Menu, Tooltip, Tabs, Button, Avatar } from "antd";
 import moment from "moment";
-import styles from "./styles";
 import COLOR from "../../../constants/colors";
 import * as api from "../../../api/notification";
 import { useDispatch } from "react-redux";
@@ -73,7 +72,7 @@ function NotificationList({ handleClickNotificationItem, notifications }) {
                     backgroundColor: !item?.seen && COLOR.greenSmoke,
                   }}
                 >
-                  <Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
+                  {/* <Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" /> */}
                   <div className="d-flex ml-1 flex-column">
                     <Tooltip
                       title={item.content?.description}
@@ -118,6 +117,8 @@ function NotificationList({ handleClickNotificationItem, notifications }) {
           </Button>
         </div>
       ),
+      okButtonProps: { style: { display: "none" } },
+      closable: true,
       onOk() {},
     });
   }
@@ -142,7 +143,7 @@ function NotificationList({ handleClickNotificationItem, notifications }) {
                 className="d-flex align-items-center p-2 w-100"
                 style={{ backgroundColor: !item?.seen && COLOR.greenSmoke }}
               >
-                <Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
+                {/* <Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" /> */}
                 <div className="d-flex ml-1 flex-column">
                   <Tooltip title={item.content?.description} placement="bottom">
                     <Text>

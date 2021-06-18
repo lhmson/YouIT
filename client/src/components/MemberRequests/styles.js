@@ -1,10 +1,11 @@
 import COLOR from "../../constants/colors";
 
 const styles = {
-  card: {
-    background: "white",
-    padding: 16,
-    margin: 16,
+  item: {
+    background: COLOR.white,
+    padding: 24,
+    marginBottom: 24,
+    fontSize: "1rem",
   },
   tag: {
     color: "#219653",
@@ -24,12 +25,6 @@ const styles = {
 
   paleBackground: {
     background: COLOR.white,
-  },
-  item: {
-    display: "flex",
-    alignItems: "center",
-    minHeight: 50,
-    // backgroundColor: "red",
   },
   transparent: {
     backgroundColor: "transparent",

@@ -1,10 +1,9 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, message } from "antd";
 import CreatePostPrivacySelect from "./CreatePostPrivacySelect/CreatePostPrivacySelect.js";
 import CreatePostSpaceAutoComplete from "./CreatePostSpaceAutoComplete/CreatePostSpaceAutoComplete.js";
 import CreatePostTagSelect from "./CreatePostTagSelect/CreatePostTagSelect.js";
 import CreatePostTitleInput from "./CreatePostTitleInput/CreatePostTitleInput.js";
-import styles from "./styles.js";
 import * as api from "../../api/post.js";
 import { useHistory } from "react-router";
 import PostEditor from "./PostEditor/PostEditor.js";
@@ -71,7 +70,7 @@ function CreatePostForm({
     setPostContentPinnedUrl(post?.content?.pinnedUrl ?? "");
     setPostPrivacy(post?.privacy ?? "");
 
-    setListHashtagNames(post?.hashtags?.map(tag => tag?.name));
+    setListHashtagNames(post?.hashtags?.map((tag) => tag?.name));
 
     if (post?.groupPostInfo) {
       // setPostSpace(post?.groupPostInfo?.groupId?.name);
@@ -108,9 +107,12 @@ function CreatePostForm({
 
     if (!post) return errorResult("Something when wrong.");
     if (!post.title) return errorResult("A post must have a title.");
-    if ((!post.content?.text) && (!post.content?.pinnedUrl))
+    if (!post.content?.text && !post.content?.pinnedUrl)
       return errorResult("A post must have some content.");
-    if ((post?.content?.pinnedUrl) && (!isURL(post?.content?.pinnedUrl)))
+    if (post.content.text.length <= 15) {
+      return errorResult("Your post is too short, at least 15 characters");
+    }
+    if (post?.content?.pinnedUrl && !isURL(post?.content?.pinnedUrl))
       return errorResult("Attached URL is not valid");
     if (post.privacy === "Group" && !post.groupId)
       return errorResult("The selected group to post is not valid");

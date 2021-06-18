@@ -7,7 +7,7 @@ export const changePassword = (password) =>
 export const checkPassword = (password) => {
   return API.get(`/user/password/check/${password}`);
 };
-export const verifyToken = (token) => API.put(`user/verify/${token}`);
+export const verifyToken = (token) => API.put(`/user/verify/${token}`);
 export const resendVerificationMail = (email) =>
-  API.post(`user/resend`, { email: email });
+  API.post(`/user/resend`, { email: email });
 export const signOut = (browserId) => API.post("/user/signout", { browserId });

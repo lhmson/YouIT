@@ -1,13 +1,9 @@
 import React, { useEffect } from "react";
-
 import { useDispatch } from "react-redux";
 import { getUser } from "../../redux/actions/user.js";
-
 import { Layout } from "antd";
 import styles from "./styles.js";
-
 import Navbar from "../../components/Navbar/Navbar";
-
 import {
   AboutCard,
   AvatarView,

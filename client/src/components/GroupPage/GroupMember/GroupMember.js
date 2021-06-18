@@ -1,16 +1,9 @@
-import { Button, Divider, Layout, Row, Typography } from "antd";
 import React, { useContext, useState, useEffect, useRef, useMemo } from "react";
-import { IoMdLock } from "react-icons/all";
-import COLOR from "../../../constants/colors.js";
 import { GroupContext } from "../../../pages/GroupPage/GroupPage.js";
-import { OverviewRow } from "../../UserInfo/AboutCard/index.js";
 import MemberCard from "./MemberCard/MemberCard.js";
 import * as api from "../../../api/group";
 import { useLocalStorage } from "../../../hooks/useLocalStorage";
 import { useMobile } from "../../../utils/responsiveQuery.js";
-import styles from "./styles.js";
-
-const { Text } = Typography;
 
 function GroupMember() {
   const user = JSON.parse(localStorage.getItem("user"))?.result;

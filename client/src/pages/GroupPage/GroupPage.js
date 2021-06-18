@@ -15,12 +15,10 @@ import { useLocation } from "react-router";
 import * as api from "../../api/group";
 import MemberRequestsResult from "../RequestsInGroupsPage/MemberRequestsResult/MemberRequestsResult.js";
 import PostRequestsResult from "../RequestsInGroupsPage/PostRequestsResult/PostRequestsResult.js";
-import { useLocalStorage } from "../../hooks/useLocalStorage.js";
 import { useHistory } from "react-router";
 import styles from "./styles.js";
 import "./styles.css";
-import { ExclamationCircleOutlined } from "@ant-design/icons";
-
+import { useLocalStorage } from "../../hooks/useLocalStorage.js";
 import SettingView from "../../components/GroupPage/SettingView/SettingView.js";
 import Loading from "../../components/Loading/Loading";
 
@@ -37,21 +35,8 @@ function GroupPage(props) {
   const location = useLocation();
   const [group, setGroup] = useState(null);
   const valueContext = { group, setGroup };
-  const [user, setUser] = useLocalStorage("user");
   const history = useHistory();
-
-  const { confirm } = Modal;
-
-  const isJoinedGroup = () => {
-    let isJoined = false;
-    group?.listMembers.forEach((member) => {
-      if (member?.userId === user?.result?._id) {
-        isJoined = true;
-      }
-    });
-
-    return isJoined;
-  };
+  const [user, setUser] = useLocalStorage("user");
 
   const isOwner = (user) => {
     let isOwner = false;
@@ -84,63 +69,6 @@ function GroupPage(props) {
     return isModerator;
   };
 
-  const handleLeaveGroup = async (groupId, userId) => {
-    api
-      .leaveGroup(groupId, userId)
-      .then((res) => {
-        message.success("You have left the group.");
-        history.push(`/feed`);
-      })
-      .catch((error) => message.success(error.message));
-  };
-
-  const handleDeleteGroup = (id) => {
-    api
-      .deleteGroup(id)
-      .then((res) => {
-        message.success(res.data.message);
-        history.push(`/group/create`);
-      })
-      .catch((error) => message.success(error.message));
-  };
-
-  const showDeleteConfirm = (id) => {
-    confirm({
-      title: "Are you sure leave this group?",
-      icon: <ExclamationCircleOutlined />,
-      content: "If you leave this group, this group will be deleted ",
-      okText: "Yes",
-      okType: "danger",
-      cancelText: "No",
-      onOk() {
-        handleDeleteGroup(id);
-      },
-      onCancel() {
-        console.log("Cancel");
-      },
-    });
-  };
-
-  const menuMore = (
-    <Menu>
-      <Menu.Item
-        key="leaveGroup"
-        onClick={() => {
-          // eslint-disable-next-line no-lone-blocks
-          {
-            isOwner(user)
-              ? showDeleteConfirm(id)
-              : handleLeaveGroup(id, user?.result?._id);
-          }
-        }}
-      >
-        <Row align="middle">
-          <Text>Leave group</Text>
-        </Row>
-      </Menu.Item>
-    </Menu>
-  );
-
   useEffect(() => {
     async function fetchGroupInfo() {
       await api
@@ -153,7 +81,6 @@ function GroupPage(props) {
         });
     }
     fetchGroupInfo();
-    isJoinedGroup();
     //console.log(group);
   }, []);
 
@@ -164,7 +91,7 @@ function GroupPage(props) {
       (!isAdmin(user) && menu === "member_requests") ||
       (!isModerator(user) && menu === "review_posts")
     ) {
-      history.push(`/group/${group?._id}/main`);
+      // history.push(`/group/${group?._id}/main`);
     }
   }, [menu]);
 

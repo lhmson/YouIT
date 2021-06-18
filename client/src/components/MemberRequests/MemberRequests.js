@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from "react";
-import { Button, Typography, message } from "antd";
+import { Button, Typography, message, Row, Space } from "antd";
 import { Avatar, Tag } from "antd";
 import styles from "./styles.js";
 import OverviewRow from "../IntroCard/OverviewRow/OverviewRow.js";
@@ -8,15 +8,13 @@ import * as api from "../../api/group";
 import { Link } from "react-router-dom";
 import { GroupContext } from "../../pages/GroupPage/GroupPage";
 import * as apiUserInfo from "../../api/user_info";
-import { useHistory } from "react-router-dom";
-
 const { Text } = Typography;
 
 function MemberRequests(props) {
   const { name } = props;
   const { _id } = props;
   const { group } = useContext(GroupContext);
-  const history = useHistory();
+  const [avatar, setAvatar] = useState("");
 
   const acceptMemberRequest = async (groupId, memberId) => {
     api
@@ -49,84 +47,63 @@ function MemberRequests(props) {
 
   return (
     <>
-      <div style={styles.card}>
-        <div className="row">
-          <div
-            className="col-6"
-            style={{
-              display: "flex",
-              justifyContent: "center",
-            }}
-          >
-            <Avatar
-              size={72}
-              src="https://vtv1.mediacdn.vn/thumb_w/650/2020/10/20/blackpink-lisa-mac-160316252527410005928.jpg"
-            />
-
-            <div className="col-9" style={{ alignSelf: "center" }}>
-              <Link to={`/userinfo/${_id}`}>
-                <Text style={styles.textUser}>{name ?? "Lalisa Manobal"}</Text>
-              </Link>
-              <div style={{ marginTop: 0 }}></div>
-              <Text>React Native Developer</Text>
+      <div style={styles.item}>
+        <Row className="pb-2 justify-content-between align-items-center">
+          <Row className="align-items-center" style={{ marginBottom: 16 }}>
+            <Avatar className="ml-1 clickable" size={60} src={avatar} />
+            <div className="d-inline-flex flex-column ml-3 break-word">
+              <Row className="align-items-center">
+                <Space size={4}>
+                  <Link to={`/userinfo/${_id}`} target="_blank">
+                    <Text
+                      className="clickable"
+                      strong
+                      style={{ fontSize: "1.2rem" }}
+                    >
+                      {name ?? "Lalisa Manobal"}
+                    </Text>
+                  </Link>
+                </Space>
+              </Row>
+              <Text>Fullstack Developer</Text>
             </div>
-            <div
-              style={{
-                marginLeft: 0,
-                justifyContent: "center",
-                flex: 1,
-                display: "flex",
-              }}
-            ></div>
-          </div>
-
-          <div
-            className="col-2"
-            style={{
-              justifyContent: "center",
-              alignItems: "center",
-              alignSelf: "center",
-            }}
-          >
-            <Button
-              onClick={() => acceptMemberRequest(group?._id, _id)}
-              type="primary"
-              style={{
-                background: "#27AE60",
-                borderColor: "#27AE60",
-                color: "white",
-                fontWeight: 500,
-                width: 120,
-              }}
-              // onClick={() => handleAccept(post._id)}
-            >
-              Accept
-            </Button>
-          </div>
-
-          <div
-            className="col-2"
-            style={{
-              justifyContent: "center",
-              alignItems: "center",
-              alignSelf: "center",
-            }}
-          >
-            <Button
-              onClick={() => declineMemberRequest(group?._id, _id)}
-              type="ghost"
-              style={{
-                background: "#BDBDBD",
-                borderColor: "#BDBDBD",
-                color: "black",
-                fontWeight: 500,
-                width: 120,
-              }}
-            >
-              Decline
-            </Button>
-          </div>
-        </div>
+          </Row>
+          <Row className="justify-content-end align-items-center pb-3">
+            <div className="mr-4">
+              {/* <Text className="clickable" underline type="secondary">
+                Created {createdAt.toString().slice(0, 10)}
+              </Text> */}
+              <Button
+                type="primary"
+                style={{
+                  background: "#27AE60",
+                  borderColor: "#27AE60",
+                  color: "white",
+                  fontWeight: 500,
+                  width: 120,
+                }}
+                onClick={() => acceptMemberRequest(group?._id, _id)}
+              >
+                Accept
+              </Button>
+            </div>
+            <div className="mr-4">
+              <Button
+                type="ghost"
+                style={{
+                  background: "#BDBDBD",
+                  borderColor: "#BDBDBD",
+                  color: "black",
+                  fontWeight: 500,
+                  width: 120,
+                }}
+                onClick={() => declineMemberRequest(group?._id, _id)}
+              >
+                Decline
+              </Button>
+            </div>
+          </Row>
+        </Row>
 
         <div className="row" style={{ marginTop: 8 }}>
           <div className="col-10">

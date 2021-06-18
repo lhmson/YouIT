@@ -56,7 +56,7 @@ export const setSeen = async (req, res, next) => {
   if (!userId)
     return res.status(httpStatusCodes.unauthorized).json({
       message:
-        'Unauthenticated: user have to sign in to fetch "my notifications"',
+        'Unauthenticated: user have to sign in to set seen "my notifications"',
     });
 
   try {

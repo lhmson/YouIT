@@ -5,7 +5,7 @@ export const createGroup = (newGroup) => API.post("/group", newGroup);
 export const fetchAGroup = (id) => API.get(`/group/${id}`);
 export const fetchUserJoinedGroups = () => API.get(`/group/list/joinedByMe`);
 export const fetchCountGroups = (range, timeString) =>
-  API.get(`group/count/${range}/${timeString}`);
+  API.get(`/group/count/${range}/${timeString}`);
 
 export const getListMembers = (id) => API.get(`/group/${id}/members`);
 export const getListPendingMembers = (groupId) =>

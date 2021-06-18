@@ -2,6 +2,11 @@ import React, { useContext, useState, useEffect } from "react";
 import { GroupContext } from "../../GroupPage/GroupPage";
 import MemberRequests from "../../../components/MemberRequests/MemberRequests";
 import * as api from "../../../api/group";
+import COLOR from "../../../constants/colors";
+import { Typography, Row } from "antd";
+import styles from "./styles.js";
+
+const { Text } = Typography;
 
 function MemberRequestsResult(props) {
   const { group } = useContext(GroupContext);
@@ -18,6 +23,8 @@ function MemberRequestsResult(props) {
       .catch((e) => {
         console.log(e);
       });
+
+    console.log("thyyy", listMembersRequest.forEach);
   }, [group]);
 
   const listMembersRequestCard = () =>
@@ -28,18 +35,33 @@ function MemberRequestsResult(props) {
       ></MemberRequests>
     ));
 
+  const noRequestPending = () => (
+    <div style={styles.item}>
+      <Row className="pb-2 justify-content-between align-items-center">
+        <Text style={{ fontSize: 24 }}>No member request pending.</Text>
+      </Row>
+    </div>
+  );
+
   return (
-    <div className="col-10 offset-1">
-      <div
-        className="row"
-        style={{
-          height: 900,
-          paddingTop: 16,
-        }}
-      >
-        <div className="col-10 offset-1">
-          {/* <Text style={{ fontSize: 32, fontWeight: "bold" }}>Member</Text> */}
-          {listMembersRequestCard()}
+    <div
+      style={{
+        background: COLOR.whiteSmoke,
+      }}
+    >
+      <div className="col-10 offset-1">
+        <div
+          className="row"
+          style={{
+            height: 900,
+            paddingTop: 16,
+          }}
+        >
+          <div className="col-10 offset-1">
+            {listMembersRequest.length === 0
+              ? noRequestPending()
+              : listMembersRequestCard()}
+          </div>
         </div>
       </div>
     </div>

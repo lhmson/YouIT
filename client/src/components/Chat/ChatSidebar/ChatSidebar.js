@@ -55,6 +55,8 @@ function ChatSidebar({
 
   const [listUnseenConversations, setListUnseenConversations] = useState([]);
 
+  const [listShown, setListShown] = useState([]);
+
   const messageHandle = useMessage();
 
   const friendsStatusManager = useFriendsStatus();
@@ -86,6 +88,8 @@ function ChatSidebar({
     apiConversation.fetchConversationsOfUser().then((res) => {
       updateListConversations(res.data);
 
+      setListShown(res.data);
+
       // if there's no longer a conversation with current id, refresh!
       if (
         currentId &&
@@ -96,7 +100,9 @@ function ChatSidebar({
         );
       // if (!currentId && res.data?.length > 0) // buggy, don't use
       // updateCurrentId(res?.data?.[0]?._id);
+      // return res.data;
     });
+    // .then((res) => setListShown(res));
   };
 
   useEffect(() => {
@@ -140,7 +146,16 @@ function ChatSidebar({
   // }, []);
   // need real time update there
 
-  const handleSearch = () => {};
+  const handleSearch = () => {
+    const search = searchInputRef.current.state.value;
+    if (search) {
+      setListShown(
+        listConversations.filter((item) => item?.title?.includes(search))
+      );
+    } else {
+      setListShown(listConversations);
+    }
+  };
 
   const handleChangeUserToAdd = (value, options) => {
     // console.log("opt", options);
@@ -285,10 +300,8 @@ function ChatSidebar({
       {isOpen && (
         <>
           <div className="conversation-list">
-            {currentId &&
-            listConversations &&
-            listConversations.length !== 0 ? (
-              listConversations.map((item, i) => (
+            {currentId && listShown && listShown.length !== 0 ? (
+              listShown.map((item, i) => (
                 <div key={item?._id} onClick={() => updateCurrentId(item?._id)}>
                   <div
                     className={`conversation ${

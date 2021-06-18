@@ -1,23 +1,12 @@
 import React from "react";
-import {
-  Button,
-  Row,
-  Col,
-  Divider,
-  Form,
-  Typography,
-  Input,
-  Card,
-  message,
-} from "antd";
-import { Avatar, Image, Tag } from "antd";
+import { Button, Avatar, Tag, Typography, message } from "antd";
 import styles from "./styles.js";
 import { Link, useLocation } from "react-router-dom";
 import { useHistory } from "react-router";
 import * as apiGroup from "../../api/group";
 import { useLocalStorage } from "../../hooks/useLocalStorage";
 
-const { Title, Text } = Typography;
+const { Text } = Typography;
 
 function GroupJoinedCard({
   nameGroup,
