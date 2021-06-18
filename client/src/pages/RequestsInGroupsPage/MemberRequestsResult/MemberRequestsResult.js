@@ -23,8 +23,6 @@ function MemberRequestsResult(props) {
       .catch((e) => {
         console.log(e);
       });
-
-    console.log("thyyy", listMembersRequest.forEach);
   }, [group]);
 
   const listMembersRequestCard = () =>

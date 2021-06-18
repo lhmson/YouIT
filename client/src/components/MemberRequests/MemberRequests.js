@@ -3,11 +3,19 @@ import { Button, Typography, message, Row, Space } from "antd";
 import { Avatar, Tag } from "antd";
 import styles from "./styles.js";
 import OverviewRow from "../IntroCard/OverviewRow/OverviewRow.js";
-import { IoSchoolSharp, MdLocationOn } from "react-icons/all";
+import {
+  IoSchoolSharp,
+  MdLocationOn,
+  IoHome,
+  FaBirthdayCake,
+  MdWork,
+} from "react-icons/all";
 import * as api from "../../api/group";
 import { Link } from "react-router-dom";
 import { GroupContext } from "../../pages/GroupPage/GroupPage";
 import * as apiUserInfo from "../../api/user_info";
+import moment from "moment";
+
 const { Text } = Typography;
 
 function MemberRequests(props) {
@@ -44,6 +52,21 @@ function MemberRequests(props) {
       setUserInfo(res.data.userInfo);
     });
   }, []);
+
+  const educations = userInfo?.educations;
+  const works = userInfo?.works;
+  const address = userInfo?.address ?? "Viet Nam";
+  const workLocation = userInfo?.workLocation ?? "Viet Nam";
+  const dateOfBirth = moment(userInfo?.dateOfBirth).format("DD/MM/YYYY");
+
+  let education;
+  if (educations) {
+    education = educations[educations.length - 1];
+  }
+  let work;
+  if (works) {
+    work = works[works.length - 1];
+  }
 
   return (
     <>
@@ -114,22 +137,30 @@ function MemberRequests(props) {
         </div>
 
         <div className="row" style={{ marginTop: 10, marginLeft: 0 }}>
-          <div className="col-7" style={{ marginTop: 10 }}>
+          <div className="col-10" style={{ marginTop: 10 }}>
+            {work && (
+              <OverviewRow
+                firstIcon={<MdWork style={styles.icon} />}
+                text={`${work?.position} at ${work?.location}`}
+              />
+            )}
+            {education && (
+              <OverviewRow
+                firstIcon={<IoSchoolSharp style={styles.icon} />}
+                text={`${education?.moreInfo} at ${education?.schoolName}`}
+              />
+            )}
             <OverviewRow
-              firstIcon={<IoSchoolSharp style={styles.icon} />}
-              text="Lives in Ho Chi Minh City, Vietnam"
-            />
-            <OverviewRow
-              firstIcon={<IoSchoolSharp style={styles.icon} />}
-              text="Lives in Ho Chi Minh City, Vietnam"
+              firstIcon={<IoHome style={styles.icon} />}
+              text={`live in ${address}`}
             />
             <OverviewRow
               firstIcon={<MdLocationOn style={styles.icon} />}
-              text="Lives in Ho Chi Minh City, Vietnam"
+              text={`working in ${workLocation}`}
             />
             <OverviewRow
-              firstIcon={<MdLocationOn style={styles.icon} />}
-              text="Lives in Ho Chi Minh City, Vietnam"
+              firstIcon={<FaBirthdayCake style={styles.icon} />}
+              text={`Birthday: ${dateOfBirth}`}
             />
           </div>
         </div>
