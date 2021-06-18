@@ -36,29 +36,29 @@ export const isConversationSeenByUser =
  */
 const addMemberOfConversationFunc =
   (pathName, allowDuplicated = false) =>
-  (userId, conversation) => {
-    if (!conversation) return null;
-    if (!userId) return conversation;
+    (userId, conversation) => {
+      if (!conversation) return null;
+      if (!userId) return conversation;
 
-    userId = new mongoose.Types.ObjectId(userId);
+      userId = new mongoose.Types.ObjectId(userId);
 
-    /** @type [*]? */
-    let listUsers = conversation[pathName];
-    listUsers = Array.isArray(listUsers) ? [...listUsers] : [];
+      /** @type [*]? */
+      let listUsers = conversation[pathName];
+      listUsers = Array.isArray(listUsers) ? [...listUsers] : [];
 
-    // I don't believe in set here so yeah let's implement it ourselves!
-    if (
-      allowDuplicated ||
-      !listUsers.find((memberId) => userId.equals(memberId))
-    ) {
-      listUsers.push(userId);
-    }
+      // I don't believe in set here so yeah let's implement it ourselves!
+      if (
+        allowDuplicated ||
+        !listUsers.find((memberId) => userId.equals(memberId))
+      ) {
+        listUsers.push(userId);
+      }
 
-    return {
-      ...conversation,
-      [pathName]: listUsers,
+      return {
+        ...conversation,
+        [pathName]: listUsers,
+      };
     };
-  };
 
 /**
  * Return an immutable function to remove a member from a specific list
@@ -160,7 +160,12 @@ export const addMessageToConversation = async (
       ...message,
     });
 
-    await newMessage.save();
+    await (await newMessage.save()).populate({
+      path: `senderId`,
+      select: `name avatarUrl`,
+      model: `User`,
+    }).execPopulate();
+
   } catch (error) {
     return {
       status: {
