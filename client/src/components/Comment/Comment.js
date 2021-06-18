@@ -32,6 +32,7 @@ import { useHistory } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import MarkdownRenderer from "../Markdown/MarkdownRenderer/MarkdownRenderer";
 import moment from "moment";
+import { useLocalStorage } from "../../hooks/useLocalStorage";
 
 const { Text, Paragraph } = Typography;
 const { confirm } = Modal;
@@ -67,6 +68,8 @@ function Comment({
   const [isEdit, setIsEdit] = useState(false);
   const [ellipsis, setEllipsis] = useState("full");
 
+  const [user] = useLocalStorage("user");
+
   const [allInteractions, dispatchInteractions] = useReducer(
     allInteractionReducer,
     {
@@ -88,6 +91,11 @@ function Comment({
   }, [comment]);
 
   const handleUpvoteClick = async (id) => {
+    if (!user) {
+      message.info("You need to log in to upvote this comment!");
+      return;
+    }
+
     if (myInteractions?.upvote) {
       unvoteComment(id, postId)
         .then((res) => {
@@ -117,6 +125,11 @@ function Comment({
   };
 
   const handleDownvoteClick = async (id) => {
+    if (!user) {
+      message.info("You need to log in to downvote this comment!");
+      return;
+    }
+
     if (myInteractions?.downvote) {
       unvoteComment(id, postId)
         .then((res) => {
@@ -146,6 +159,9 @@ function Comment({
   };
 
   const fetchMyInteractions = () => {
+    if (!user)
+      return;
+
     const interactions = getMyCommentInteractions(comment._id)
       .then((res) => {
         setMyInteractions(res.data);
@@ -365,17 +381,15 @@ function Comment({
                   </Text>
                   <Tooltip title="Upvote">
                     <ArrowUpOutlined
-                      className={`clickable icon ${
-                        myInteractions?.upvote ? "green" : "black"
-                      }`}
+                      className={`clickable icon ${myInteractions?.upvote ? "green" : "black"
+                        }`}
                       onClick={() => handleUpvoteClick(comment._id)}
                     />
                   </Tooltip>
                   <Tooltip title="Downvote">
                     <ArrowDownOutlined
-                      className={`clickable icon ${
-                        myInteractions?.downvote ? "green" : "black"
-                      }`}
+                      className={`clickable icon ${myInteractions?.downvote ? "green" : "black"
+                        }`}
                       onClick={() => handleDownvoteClick(comment._id)}
                     />
                   </Tooltip>

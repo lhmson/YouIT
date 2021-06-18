@@ -70,9 +70,12 @@ function FullPost({ post }) {
   const [listInteractions, setListInteractions] = useState({});
   // const [post, setPost] = useState(null);
 
+  const [user] = useLocalStorage("user");
+
   useEffect(() => {
     // setPost(props.post);
-    fetchMyInteractions();
+    if (post)
+      fetchMyInteractions();
     // setListInteractions({
     //   upvoteslength: post?.interactionInfo?.listUpvotes?.length,
     //   downvoteslength: post?.interactionInfo?.listDownvotes?.length,
@@ -91,6 +94,11 @@ function FullPost({ post }) {
   );
 
   const handleUpvoteClick = async (id) => {
+    if (!user) {
+      message.info("You need to log in to upvote this post!");
+      return;
+    }
+
     if (myInteractions?.upvote) {
       await unvotePost(id)
         .then((res) => {
@@ -118,6 +126,11 @@ function FullPost({ post }) {
   };
 
   const handleDownvoteClick = async (id) => {
+    if (!user) {
+      message.info("You need to log in to downvote this post!");
+      return;
+    }
+
     if (myInteractions?.downvote) {
       await unvotePost(id)
         .then((res) => {
@@ -145,6 +158,9 @@ function FullPost({ post }) {
   };
 
   const fetchMyInteractions = () => {
+    if (!user)
+      return;
+
     getMyInteractions(post?._id)
       .then((res) => {
         setMyInteractions(res.data);
@@ -155,9 +171,8 @@ function FullPost({ post }) {
       });
   };
 
-  const [user] = useLocalStorage("user");
 
-  const handleMore = () => {};
+  const handleMore = () => { };
 
   //#region menu more
 
@@ -381,9 +396,8 @@ function FullPost({ post }) {
         <Row className="mb-1">
           {post?.hashtags?.map((item, i) => (
             <Tooltip
-              title={`Mentioned ${item?.count} time${
-                item?.count > 1 ? "s" : ""
-              }`}
+              title={`Mentioned ${item?.count} time${item?.count > 1 ? "s" : ""
+                }`}
             >
               <Tag key={i} className="mb-2 tag">
                 {item.name}
@@ -421,17 +435,15 @@ function FullPost({ post }) {
                 </Text>
                 <Tooltip title="Upvote">
                   <ArrowUpOutlined
-                    className={`clickable icon ${
-                      myInteractions?.upvote ? "green" : "black"
-                    }`}
+                    className={`clickable icon ${myInteractions?.upvote ? "green" : "black"
+                      }`}
                     onClick={() => handleUpvoteClick(post._id)}
                   />
                 </Tooltip>
                 <Tooltip title="Downvote">
                   <ArrowDownOutlined
-                    className={`clickable icon ${
-                      myInteractions?.downvote ? "green" : "black"
-                    }`}
+                    className={`clickable icon ${myInteractions?.downvote ? "green" : "black"
+                      }`}
                     onClick={() => handleDownvoteClick(post._id)}
                   />
                 </Tooltip>

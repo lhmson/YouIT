@@ -5,6 +5,7 @@ import Post from "../models/post.js";
 import Group from "../models/group.js";
 import { isPostVisibleByUser } from "../businessLogics/post.js";
 import { asyncFilter } from "../utils/asyncFilter.js";
+import { extractToken } from "../businessLogics/auth.js";
 
 // GET search/user
 export const getSearchUsers = async (req, res) => {
@@ -28,9 +29,10 @@ export const getSearchUsers = async (req, res) => {
 export const getSearchPosts = async (req, res) => {
   // auth
   let { q } = req.query ?? "";
-  if (!req.userId) {
-    return res.json({ message: "Unauthenticated" });
-  }
+
+  const token = req.headers.authorization?.split(" ")?.[1];
+  const userId = token ? extractToken(token).userId : null;
+
   if (!q) return res.status(200).json([]);
   try {
     const posts = await Post.find({})
@@ -48,7 +50,7 @@ export const getSearchPosts = async (req, res) => {
     asyncFilter(posts, async (post) => {
       // console.log(post.title, await isPostVisibleByUser(post, req.userId));
       return (
-        (await isPostVisibleByUser(post, req.userId)) &&
+        (await isPostVisibleByUser(post, userId)) &&
         post?.title?.toLowerCase().includes(q.toLowerCase())
       );
     }).then((data) => res.status(200).json(data));
