@@ -161,8 +161,8 @@ const WorkAndEducationPane = () => {
         </Row>
         <Row style={styles.headingView}>
           <WorkEduRow
-            heading="College"
-            addingText="Add a college"
+            heading="Education"
+            addingText="Add an education"
             editable={isMyProfile}
             onTextChange={(index, value) => changeSchoolName(index, value)}
             onSubTextChange={(index, value) => changeMoreInfo(index, value)}

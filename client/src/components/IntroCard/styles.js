@@ -27,7 +27,7 @@ const styles = {
   backgroundheader: {
     background: "white",
     // width: 350,
-    minHeight: 300,
+    // minHeight: 300,
     marginTop: 24,
     padding: 8,
   },
