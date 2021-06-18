@@ -66,7 +66,16 @@ function SpecificPostPage(props) {
         setPost(res.data);
       })
       .catch((err) => {
-        if (err.response?.status === 404) history.push("/error404");
+        switch (err.response?.status) {
+          case 404:
+            history.push("/error404");
+            break;
+          case 403:
+            history.push("/error403");
+            break;
+          default:
+            history.push("/error404");
+        }
       });
   };
 

@@ -1,6 +1,5 @@
 import React from "react";
-import { Button, Row, Col, Divider, Form, Typography, Input, Card } from "antd";
-import { Avatar, Image, Tag, message } from "antd";
+import { Button, Typography, Avatar, Tag, message } from "antd";
 import styles from "./styles.js";
 import { Link, useHistory, useLocation } from "react-router-dom";
 import { useMobile } from "../../utils/responsiveQuery.js";

@@ -122,7 +122,7 @@ function GroupFunctionButtons() {
       return (
         <Button
           className="green-button"
-          style={styles.button}
+          style={(styles.button, { textAlign: "center" })}
           onClick={cancelJoinRequest}
         >
           Cancel Request
