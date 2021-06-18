@@ -75,8 +75,12 @@ function ReportUserPage() {
       width: "70%",
       content: (
         <div>
-        {listReports.map((report) => 
-          <ReportUserCard contentReport={report.content} nameReportedBy={report.nameUserReport}></ReportUserCard>)}
+          {listReports.map((report) => (
+            <ReportUserCard
+              contentReport={report.content}
+              nameReportedBy={report.nameUserReport}
+            ></ReportUserCard>
+          ))}
         </div>
       ),
       onOk() {},
@@ -136,7 +140,7 @@ function ReportUserPage() {
             }, // double click row
           };
         }}
-        style={{ width: "800%" }}
+        style={{ width: "80%" }}
         rowSelection={rowSelection}
         columns={columns}
         dataSource={data}
@@ -174,7 +178,11 @@ function ReportUserPage() {
     return (
       <div
         className="row"
-        style={{ justifyContent: "flex-end", alignItems: "center" }}
+        style={{
+          justifyContent: "flex-end",
+          alignItems: "center",
+          width: "80%",
+        }}
       >
         <Button
           onClick={deleteAllReportsUser}
@@ -202,7 +210,6 @@ function ReportUserPage() {
             color: "white",
             fontWeight: 500,
             width: 150,
-            marginRight: 64,
           }}
         >
           Ban Users

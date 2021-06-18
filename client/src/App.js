@@ -125,7 +125,7 @@ function App() {
               {isAdmin() ? <AdminDashboardPage /> : <Redirect to="/admin" />}
             </PrivateRoute>
             <Route exact path="/statistics" component={StatisticsPage} />
-            <Route exact path="/reports/user" component={ReportUserPage} />
+            <Route exact path="/admin/user" component={ReportUserPage} />
             <Route>
               <ErrorPage code="404" />
             </Route>
