@@ -1,8 +1,7 @@
-import React, { useContext, useState, useEffect, useRef, useMemo } from "react";
+import React, { useContext, useState, useEffect, useRef } from "react";
 import { GroupContext } from "../../../pages/GroupPage/GroupPage.js";
 import MemberCard from "./MemberCard/MemberCard.js";
 import * as api from "../../../api/group";
-import * as apiSearch from "../../../api/search";
 import { useMobile } from "../../../utils/responsiveQuery.js";
 import { Input } from "antd";
 import { SearchOutlined } from "@ant-design/icons";

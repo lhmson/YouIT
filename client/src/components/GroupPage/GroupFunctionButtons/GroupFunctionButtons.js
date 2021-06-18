@@ -45,12 +45,16 @@ function GroupFunctionButtons() {
   };
 
   const handleInvite = (listInvitedFriends) => {
-    apiGroup
-      .inviteFriends(group?._id, listInvitedFriends)
-      .then((res) => {
-        message.success("Invitation sent!");
-      })
-      .catch((error) => message.success("pow" + error.message));
+    if (listInvitedFriends.length === 0) message.error("Not selected yet ");
+    else
+      apiGroup
+        .inviteFriends(group?._id, listInvitedFriends)
+        .then((res) => {
+          message.success("Invitation sent!");
+        })
+        .catch((error) => message.error(error.message));
+
+    setVisibleAdd(false);
   };
 
   const handleDeleteGroup = (groupId) => {

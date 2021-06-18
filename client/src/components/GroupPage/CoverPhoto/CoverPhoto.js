@@ -16,6 +16,8 @@ function CoverPhoto() {
     setBackground(
       group?.backgroundUrl ?? "https://vnn-imgs-f.vgcloud.vn/2020/09/07/15/.jpg"
     );
+
+    console.log("thy dang iu", group?.backgroundUrl);
   }, [group]);
 
   const hiddenBackgroundInput = useRef(null);
