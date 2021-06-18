@@ -38,7 +38,7 @@ import {
 import { Link, useHistory } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { deletePost } from "../../../redux/actions/posts";
-import MarkdownRenderer from "../MarkdownRenderer/MarkdownRenderer";
+import MarkdownRenderer from "../../Markdown/MarkdownRenderer/MarkdownRenderer";
 
 const { Title, Text, Paragraph } = Typography;
 const { confirm } = Modal;

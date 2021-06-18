@@ -68,16 +68,12 @@ function CreatePostForm({
 
   const setEditingPostToFields = (post) => {
     setPostTitle(post?.title ?? "");
+    setPostContentOverview(post?.content?.overview ?? "");
     setPostContentText(post?.content?.text ?? "");
     setPostContentPinnedUrl(post?.content?.pinnedUrl ?? "");
     setPostPrivacy(post?.privacy ?? "");
 
     setListHashtagNames(post?.hashtags?.map((tag) => tag?.name));
-
-    if (post?.groupPostInfo) {
-      // setPostSpace(post?.groupPostInfo?.groupId?.name);
-      // setSelectedGroup(post?.groupPostInfo?.groupId);
-    }
   };
 
   const wrapPostData = () => {

@@ -1,5 +1,4 @@
 import React from "react";
-import styles from "./styles.js";
 import createPostStyle from "../styles.js"
 import { Input } from "antd";
 import * as constants from '../constant.js'
@@ -12,7 +11,7 @@ function CreatePostTitleInput({ title, setTitle }) {
   return (
     <div>
       <Input
-        placeholder="// Title"
+        placeholder="/* Title */"
         value={title}
         onChange={handleTextChange}
         style={createPostStyle.editorFont}
