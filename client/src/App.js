@@ -41,7 +41,6 @@ import { BACKEND_URL } from "./constants/config.js";
 
 const loggedIn = () => {
   const user = JSON.parse(localStorage.getItem("user"));
-  console.log("user local storage", user);
   return user;
 };
 

@@ -226,29 +226,16 @@ function SpecificPostPage(props) {
                 {/* test anchor link for comment but not work */}
                 <div style={{ margin: -20, marginTop: 0 }}>
                   {comments?.map((c, i) =>
-                    focusedCommentIndex > -1 && i === 0 ? (
-                      <div key={i}>
-                        <Comment
-                          comment={c}
-                          onReply={handleReplyComment}
-                          onEdit={handleEditComment}
-                          onDelete={handleDeleteComment}
-                          onCopyCommentLink={handleCopyCommentLink}
-                          isFocus={true}
-                        />
-                      </div>
-                    ) : (
-                      <div key={i}>
-                        <Comment
-                          comment={c}
-                          onReply={handleReplyComment}
-                          onEdit={handleEditComment}
-                          onDelete={handleDeleteComment}
-                          onCopyCommentLink={handleCopyCommentLink}
-                          isFocus={false}
-                        />
-                      </div>
-                    )
+                    <div key={i}>
+                      <Comment
+                        comment={c}
+                        onReply={handleReplyComment}
+                        onEdit={handleEditComment}
+                        onDelete={handleDeleteComment}
+                        onCopyCommentLink={handleCopyCommentLink}
+                        isFocus={focusedCommentIndex > -1 && i === 0}
+                      />
+                    </div>
                   )}
                 </div>
               </Card>

@@ -30,6 +30,7 @@ import {
 } from "../../api/comment";
 import { useHistory } from "react-router-dom";
 import { useDispatch } from "react-redux";
+import MarkdownRenderer from "../Markdown/MarkdownRenderer/MarkdownRenderer";
 
 const { Text, Paragraph } = Typography;
 const { confirm } = Modal;
@@ -150,10 +151,10 @@ function Comment({
   };
 
   const toggleReply = () => {
-    setIsReply(1 - isReply);
-    console.log("comment", comment);
+    setIsReply(prev => !prev);
+    // console.log("comment", comment);
   };
-  const handleSubmit = (newComment) => {
+  const handleReply = (newComment) => {
     onReply(comment?._id, newComment);
     setIsReply(false);
   };
@@ -199,9 +200,19 @@ function Comment({
       />
     );
   };
+
+  const commentUpdated = (newComment, oldComment) => {
+    if (newComment?.content !== oldComment?.content)
+      return true;
+
+    return false;
+  }
+
   const handleEdit = (newComment) => {
     setIsEdit(false);
-    onEdit(comment?._id, newComment);
+
+    if (commentUpdated(newComment, comment))
+      onEdit(comment?._id, newComment);
   };
   const handleDiscardReply = () => {
     setIsReply(false);
@@ -316,9 +327,14 @@ function Comment({
                   </Text>
                 )}
               </Row>
-              <Paragraph style={{ color: COLOR.gray, marginBottom: 0 }}>
+              {/* <Paragraph style={{ color: COLOR.gray, marginBottom: 0 }}>
                 {comment?.quotedCommentId?.content}
-              </Paragraph>
+              </Paragraph> */}
+              <MarkdownRenderer
+                text={comment?.quotedCommentId?.content}
+                enableDoubleClickFullScreen
+              />
+
               {/* <br />
           <a className="clickable green bold" href="#" target="_blank" strong>
             See full comment
@@ -327,7 +343,11 @@ function Comment({
           ) : null}
           <div className="mb-2">
             <div>
-              <Paragraph className="">{comment?.content}</Paragraph>
+              {/* <Paragraph className="">{comment?.content}</Paragraph> */}
+              <MarkdownRenderer
+                text={comment?.content}
+                enableDoubleClickFullScreen
+              />
             </div>
             {ellipsis !== "full" && <div className="bottom-fade"></div>}
           </div>
@@ -340,17 +360,15 @@ function Comment({
                   </Text>
                   <Tooltip title="Upvote">
                     <ArrowUpOutlined
-                      className={`clickable icon ${
-                        myInteractions?.upvote ? "green" : "black"
-                      }`}
+                      className={`clickable icon ${myInteractions?.upvote ? "green" : "black"
+                        }`}
                       onClick={() => handleUpvoteClick(comment._id)}
                     />
                   </Tooltip>
                   <Tooltip title="Downvote">
                     <ArrowDownOutlined
-                      className={`clickable icon ${
-                        myInteractions?.downvote ? "green" : "black"
-                      }`}
+                      className={`clickable icon ${myInteractions?.downvote ? "green" : "black"
+                        }`}
                       onClick={() => handleDownvoteClick(comment._id)}
                     />
                   </Tooltip>
@@ -376,7 +394,7 @@ function Comment({
           </Row>
           {isReply ? (
             <CommentForm
-              onSubmit={handleSubmit}
+              onSubmit={handleReply}
               label={`Replying to ${comment?.userId?.name}'s comment`}
               onDiscard={handleDiscardReply}
             />

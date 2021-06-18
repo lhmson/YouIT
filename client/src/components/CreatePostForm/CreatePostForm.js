@@ -78,11 +78,11 @@ function CreatePostForm({
 
   const wrapPostData = () => {
     const result = {
-      title: postTitle,
+      title: postTitle?.trim?.(),
       content: {
-        overview: postContentOverview,
-        text: postContentText,
-        pinnedUrl: postContentPinnedUrl,
+        overview: postContentOverview?.trim?.(),
+        text: postContentText?.trim?.(),
+        pinnedUrl: postContentPinnedUrl?.trim?.(),
       },
       privacy: postPrivacy,
       hashtagNames: listHashtagNames,

@@ -4,9 +4,9 @@ import "easymde/dist/easymde.min.css";
 import hljs from "highlight.js"
 
 /**
- * @param {{style: React.CSSProperties, text: string, setText, placeholder: string}} param0 
+ * @param {{style: React.CSSProperties, text: string, setText, placeholder: string, maxHeight: number}} param0 
  */
-function MarkdownEditor({ text, setText, style, placeholder }) {
+function MarkdownEditor({ text, setText, style, placeholder, maxHeight }) {
   /**
    * @type {EasyMDE.Options}
    */
@@ -31,6 +31,7 @@ function MarkdownEditor({ text, setText, style, placeholder }) {
         'side-by-side', 'preview', 'fullscreen', '|',
         'redo', 'undo', 'guide',
       ],
+      maxHeight,
     };
   }, [])
 
