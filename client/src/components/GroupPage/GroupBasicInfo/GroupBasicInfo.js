@@ -18,7 +18,6 @@ function GroupBasicInfo() {
           justifyContent: "space-between",
         }}
       >
-        <Text style={{ fontSize: 40, fontWeight: "bold" }}>{group?.name}</Text>
         <Text
           style={{ fontSize: 16, marginBottom: 16 }}
         >{`${group?.privacy} Group`}</Text>

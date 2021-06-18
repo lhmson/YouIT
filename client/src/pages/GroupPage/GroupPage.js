@@ -1,5 +1,5 @@
 import React, { createContext, useEffect, useState } from "react";
-import { Layout, Row, Modal, message, Menu, Typography } from "antd";
+import { Layout, Row, Modal, message, Menu, Typography, Col } from "antd";
 import {
   AdminGroupSidebar,
   CoverPhoto,
@@ -188,16 +188,21 @@ function GroupPage(props) {
                 }}
               >
                 <CoverPhoto />
-                <Row
-                  style={{
-                    display: "flex",
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                  }}
-                >
-                  <GroupBasicInfo />
-                  <GroupFunctionButtons />
-                </Row>
+                <Col>
+                  <Text style={{ fontSize: 40, fontWeight: "bold" }}>
+                    {group?.name}
+                  </Text>
+                  <Row
+                    style={{
+                      display: "flex",
+                      flexDirection: "row",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <GroupBasicInfo />
+                    <GroupFunctionButtons />
+                  </Row>
+                </Col>
                 <Row style={{ justifyContent: "space-between" }}>
                   <GroupMenu />
                 </Row>
