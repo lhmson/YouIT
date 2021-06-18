@@ -74,23 +74,48 @@ export const getAllReportUserRequests = async (req, res) => {
     const users = await User.find();
 
     let pendingReports = [];
-    for (let i = 0; i < users.length; i++) {
-      for (let j = 0; j < requests.length; j++)
-        if (requests[j].itemId.equals(users[i]._id)) {
-          const countGroups = await countJoinedGroup(userId);
-          const countReports = await countReport(userId);
-          const infoUser = {
-            name: users[i].name,
-            _id: users[i]._id,
-            numberOfGroups: countGroups,
-            numberOfReports: countReports,
-          };
-          pendingReports.push(infoUser);
-          break;
-        }
-    }
+    for (let i = 0; i < users.length; i++)
+      if (!users[i].isReported) {
+        const countGroups = await countJoinedGroup(users[i]._id);
+        const countReports = await countReport(users[i]._id);
+        const infoUser = {
+          name: users[i].name,
+          _id: users[i]._id,
+          numberOfGroups: countGroups,
+          numberOfReports: countReports,
+        };
+        pendingReports.push(infoUser);
+      }
 
     return res.status(httpStatusCodes.ok).json(pendingReports);
+  } catch (error) {
+    return res
+      .status(httpStatusCodes.internalServerError)
+      .json({ message: error.message });
+  }
+};
+
+export const getAllReportsOfUser = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const requests = await Report.find({
+      status: "pending",
+      kind: "user",
+      itemId: userId,
+    });
+
+    const listReports = [];
+    for (let i = 0; i < requests.length; i++) {
+      const nameUser = (await User.findById(requests[i].userReportId)).name;
+      console.log("name", nameUser);
+      const info = {
+        content: requests[i].content,
+        nameUserReport: nameUser,
+      };
+      listReports.push(info);
+    }
+
+    return res.status(httpStatusCodes.ok).json(listReports);
   } catch (error) {
     return res
       .status(httpStatusCodes.internalServerError)

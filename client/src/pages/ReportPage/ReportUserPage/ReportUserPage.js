@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useMemo } from "react";
-import { Layout, Typography, Table, Button, message } from "antd";
+import { Layout, Typography, Table, Button, message, Modal } from "antd";
 import styles from "./styles.js";
 import Navbar from "../../../components/Navbar/Navbar";
 import ReportUserCard from "../../../components/ReportUserCard/ReportUserCard";
@@ -68,7 +68,20 @@ function ReportUserPage() {
       _id: listReports[i]._id,
     });
   }
-
+  function info(name, listReports) {
+    Modal.info({
+      title: `List Reports of ${name}`,
+      footer: null,
+      width: "70%",
+      content: (
+        <div>
+        {listReports.map((report) => 
+          <ReportUserCard contentReport={report.content} nameReportedBy={report.nameUserReport}></ReportUserCard>)}
+        </div>
+      ),
+      onOk() {},
+    });
+  }
   const TableReportUser = () => {
     const rowSelection = {
       selectedRowKeys: selectedRowkeys,
@@ -112,7 +125,14 @@ function ReportUserPage() {
         onRow={(record, rowIndex) => {
           return {
             onDoubleClick: (event) => {
-              console.log("alo");
+              api
+                .fetchAllReportOfAnUser(data[rowIndex]._id)
+                .then((res) => {
+                  info(data[rowIndex].name, res.data);
+                })
+                .catch((e) => {
+                  console.log(e);
+                });
             }, // double click row
           };
         }}
@@ -150,6 +170,7 @@ function ReportUserPage() {
       message.success("Delete reports successfully");
       setUpdate(!update);
     };
+
     return (
       <div
         className="row"
@@ -160,8 +181,8 @@ function ReportUserPage() {
           className="mb-2"
           type="primary"
           style={{
-            background: "red",
-            borderColor: "red",
+            background: "#27AE60",
+            borderColor: "#27AE60",
             color: "white",
             fontWeight: 500,
             width: 150,
@@ -176,15 +197,15 @@ function ReportUserPage() {
           className="mb-2"
           type="primary"
           style={{
-            background: "#27AE60",
-            borderColor: "#27AE60",
+            background: "red",
+            borderColor: "red",
             color: "white",
             fontWeight: 500,
             width: 150,
             marginRight: 64,
           }}
         >
-          Accept Reports
+          Ban Users
         </Button>
       </div>
     );
