@@ -25,6 +25,11 @@ body {
   cursor: pointer;
 }
 
+.boldhover:hover {
+  font-weight: bold;
+  cursor: pointer;
+}
+
 .bold {
   font-weight: bold;
 }
