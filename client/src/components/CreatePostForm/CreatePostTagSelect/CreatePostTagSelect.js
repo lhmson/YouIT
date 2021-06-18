@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchHashtags } from "../../../redux/actions/hashtag.js";
+import createPostStyle from "../styles.js"
 
 import { Select } from "antd";
 const { Option } = Select;
@@ -28,11 +29,12 @@ function CreatePostTagSelect({ onChange, defaultTags }) {
         value={defaultTags}
         placeholder="# Hashtags"
         onChange={onChange}
-        style={{ width: "100%" }}
+        style={{ width: "100%", ...createPostStyle.editorFont }}
       >
         {listHashtags.map((tag, i) =>
           <Option
             key={tag?.name ?? i}
+            style={createPostStyle.editorFont}
           >
             {tag?.name}
           </Option>)}

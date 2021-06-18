@@ -1,6 +1,7 @@
 import React from "react";
 import styles from "./styles.js";
 import { Input } from "antd";
+import createPostStyle from "../styles.js"
 
 function CreatePostContentPinnedUrlInput({ contentPinnedUrl, setContentPinnedUrl }) {
   const handleTextChange = (value) => {
@@ -10,9 +11,10 @@ function CreatePostContentPinnedUrlInput({ contentPinnedUrl, setContentPinnedUrl
   return (
     <div>
       <Input
-        placeholder="Attached URL"
+        placeholder="// Attached URL"
         value={contentPinnedUrl}
         onChange={handleTextChange}
+        style={createPostStyle.editorFont}
       />
     </div>
   );

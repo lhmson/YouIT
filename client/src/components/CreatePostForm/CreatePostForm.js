@@ -4,10 +4,11 @@ import CreatePostPrivacySelect from "./CreatePostPrivacySelect/CreatePostPrivacy
 import CreatePostSpaceAutoComplete from "./CreatePostSpaceAutoComplete/CreatePostSpaceAutoComplete.js";
 import CreatePostTagSelect from "./CreatePostTagSelect/CreatePostTagSelect.js";
 import CreatePostTitleInput from "./CreatePostTitleInput/CreatePostTitleInput.js";
+import CreatePostContentPinnedUrlInput from "./CreatePostContentPinnedUrlInput/CreatePostContentPinnedUrlInput.js";
+import CreatePostOverviewInput from "./CreatePostOverviewInput/CreatePostOverviewInput.js";
 import * as api from "../../api/post.js";
 import { useHistory } from "react-router";
 import PostEditor from "./PostEditor/PostEditor.js";
-import CreatePostContentPinnedUrlInput from "./CreatePostContentPinnedUrlInput/CreatePostContentPinnedUrlInput.js";
 import { useLocalStorage } from "../../hooks/useLocalStorage.js";
 import { Prompt } from "react-router-dom";
 import { isURL } from "../../utils/isUrl.js";
@@ -21,6 +22,7 @@ function CreatePostForm({
   const [postTitle, setPostTitle] = useState("");
   const [postContentText, setPostContentText] = useState("");
   const [postContentPinnedUrl, setPostContentPinnedUrl] = useState(pinnedUrl);
+  const [postContentOverview, setPostContentOverview] = useState("");
   const [postSpace, setPostSpace] = useState(""); // just text
   const [selectedGroup, setSelectedGroup] = useState(null); // actual group
   const [postPrivacy, setPostPrivacy] = useState("");
@@ -82,6 +84,7 @@ function CreatePostForm({
     const result = {
       title: postTitle,
       content: {
+        overview: postContentOverview,
         text: postContentText,
         pinnedUrl: postContentPinnedUrl,
       },
@@ -107,9 +110,10 @@ function CreatePostForm({
 
     if (!post) return errorResult("Something when wrong.");
     if (!post.title) return errorResult("A post must have a title.");
+    if (!post.content?.overview) return errorResult("A post must have an overview.");
     if (!post.content?.text && !post.content?.pinnedUrl)
       return errorResult("A post must have some content.");
-    if (post.content.text.length <= 15) {
+    if (post.content.text.length <= 15 && !post.content?.pinnedUrl) {
       return errorResult("Your post is too short, at least 15 characters");
     }
     if (post?.content?.pinnedUrl && !isURL(post?.content?.pinnedUrl))
@@ -200,7 +204,6 @@ function CreatePostForm({
           />
         </div>
 
-        {/* May us have a common button component to call here? */}
         <div className="col-2">
           <Button
             className="green-button"
@@ -214,6 +217,16 @@ function CreatePostForm({
         {/* <div className="col-1">
           <Button onClick={unSubNotification}>stop notif</Button>
         </div> */}
+      </div>
+
+
+      <div className="d-flex justify-content-start py-2">
+        <div className="col-12">
+          <CreatePostOverviewInput
+            overview={postContentOverview}
+            setOverview={setPostContentOverview}
+          />
+        </div>
       </div>
 
       <div className="d-flex justify-content-start py-2">
