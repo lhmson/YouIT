@@ -7,12 +7,7 @@ const styles = {
     marginBottom: 16,
     flex: 1,
     borderRadius: 30,
-    evaluation: 14,
-    borderWidth: 50,
-    shadowColor: "red",
-    shadowOffset: { height: 50, width: 20 },
-    shadowOpacity: 0.9,
-    shadowRadius: 0.9,
+    evaluation: 80,
   },
   tag: {
     color: "#219653",
@@ -26,7 +21,7 @@ const styles = {
     color: "#27AE60",
   },
   textUser: {
-    fontweight: 800,
+    fontweight: 700,
     fontSize: 20,
   },
 

@@ -80,7 +80,7 @@ app.use("/friend", friendRouter);
 app.use("/conversation", conversationRouter);
 // app.use("/groupPendingMember", groupPendingMemberRouter);
 app.use("/hashtag", hashtagRouter);
-app.use("/reportUser", reportUserRouter);
+app.use("/report", reportUserRouter);
 
 const PORT = process.env.PORT || 5000;
 

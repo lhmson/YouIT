@@ -193,26 +193,28 @@ function FeedPost({ post, setCurrentId }) {
 
   const handleUpvoteClick = async (id) => {
     if (myInteractions?.upvote) {
-      await unvotePost(id)
+      unvotePost(id)
         .then((res) => {
-          fetchMyInteractions();
-          dispatchInteractions({ type: "unupvote" });
+          fetchMyInteractions().then(() =>
+            dispatchInteractions({ type: "unupvote" })
+          );
         })
         .catch((error) => {
-          message.error("Something goes wrong with post upvote");
+          message.error("Something goes wrong with post unvote");
           console.log(error);
         });
     } else {
-      await upvotePost(id)
+      upvotePost(id)
         .then((res) => {
           if (myInteractions?.downvote) {
             dispatchInteractions({ type: "undownvote" });
           }
-          fetchMyInteractions();
-          dispatchInteractions({ type: "upvote" });
+          fetchMyInteractions().then(() =>
+            dispatchInteractions({ type: "upvote" })
+          );
         })
         .catch((error) => {
-          message.error("Something goes wrong with post unvote");
+          message.error("Something goes wrong with post upvote");
           console.log(error);
         });
     }
@@ -220,38 +222,45 @@ function FeedPost({ post, setCurrentId }) {
 
   const handleDownvoteClick = async (id) => {
     if (myInteractions?.downvote) {
-      await unvotePost(id)
+      unvotePost(id)
         .then((res) => {
-          fetchMyInteractions();
-          dispatchInteractions({ type: "undownvote" });
+          fetchMyInteractions().then(() =>
+            dispatchInteractions({ type: "undownvote" })
+          );
         })
         .catch((error) => {
-          message.error("Something goes wrong with post downvote");
+          message.error("Something goes wrong with post unvote");
           console.log(error);
         });
     } else {
-      await downvotePost(id)
+      downvotePost(id)
         .then((res) => {
           if (myInteractions?.upvote) {
             dispatchInteractions({ type: "unupvote" });
           }
-          fetchMyInteractions();
-          dispatchInteractions({ type: "downvote" });
+          fetchMyInteractions().then(() =>
+            dispatchInteractions({ type: "downvote" })
+          );
         })
         .catch((error) => {
-          message.error("Something goes wrong with post unvote");
+          message.error("Something goes wrong with post downvote");
           console.log(error);
         });
     }
   };
 
   const fetchMyInteractions = () => {
-    getMyInteractions(post._id)
-      .then((res) => setMyInteractions(res.data))
+    const interactions = getMyInteractions(post._id)
+      .then((res) => {
+        setMyInteractions(res.data);
+        console.log(res.data);
+        return res.data;
+      })
       .catch((error) => {
         message.error("Something goes wrong with post interactions");
         console.log(error);
       });
+    return interactions;
   };
 
   //#endregion

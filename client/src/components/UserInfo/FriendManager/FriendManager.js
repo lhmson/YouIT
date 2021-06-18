@@ -1,8 +1,8 @@
 import React, { useRef } from "react";
-import FriendMangementPage from "../../../pages/FriendMangementPage/FriendMangementPage";
+import FriendManagementPage from "../../../pages/FriendManagementPage/FriendManagementPage";
 
 const FriendManager = () => {
-  return <FriendMangementPage></FriendMangementPage>;
+  return <FriendManagementPage></FriendManagementPage>;
 };
 
 export default FriendManager;
