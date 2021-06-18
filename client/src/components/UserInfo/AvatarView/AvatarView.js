@@ -71,6 +71,8 @@ const AvatarView = () => {
           </Button>
           <input
             type="file"
+            name="myImage"
+            accept="image/png, image/gif, image/jpeg"
             ref={hiddenBackgroundFileInput}
             style={{ display: "none" }}
             onChange={handleBackgroundChange}

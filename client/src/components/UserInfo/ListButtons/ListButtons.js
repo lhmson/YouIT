@@ -233,18 +233,21 @@ const ListButtons = () => {
   };
 
   const ReportButton = () => {
-    return (
-      <Button
-        className="green-button"
-        style={{ ...styles.button, backgroundColor: "red", color: "white" }}
-        onClick={() => {
-          setIsModalReport(true);
-          console.log("hello");
-        }}
-      >
-        Report
-      </Button>
-    );
+    if (!isMyProfile) {
+      return (
+        <Button
+          className="green-button"
+          style={{ ...styles.button, backgroundColor: "red", color: "white" }}
+          onClick={() => {
+            setIsModalReport(true);
+            console.log("hello");
+          }}
+        >
+          Report
+        </Button>
+      );
+    }
+    return <></>;
   };
 
   const ModalReport = () => {

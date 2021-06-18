@@ -166,7 +166,7 @@ export const addFriend = async (req, res) => {
       friendRequest?.userConfirmId,
       friendRequest?.userSendRequestId
     );
-    console.log(relationship);
+    // console.log(relationship);
     if (relationship == "Friend")
       return res
         .status(httpStatusCodes.badContent)
@@ -200,7 +200,10 @@ export const addFriend = async (req, res) => {
       kind: "AcceptFriend_AcceptedFriend",
     });
 
-    return res.status(httpStatusCodes.ok).json(acceptedUser);
+    const acceptedUserObj = acceptedUser.toObject();
+    delete acceptedUserObj.password;
+
+    return res.status(httpStatusCodes.ok).json(acceptedUserObj);
   } catch (error) {
     console.log(error);
     res
