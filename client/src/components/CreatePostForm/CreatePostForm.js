@@ -78,11 +78,11 @@ function CreatePostForm({
 
   const wrapPostData = () => {
     const result = {
-      title: postTitle,
+      title: postTitle?.trim?.(),
       content: {
-        overview: postContentOverview,
-        text: postContentText,
-        pinnedUrl: postContentPinnedUrl,
+        overview: postContentOverview?.trim?.(),
+        text: postContentText?.trim?.(),
+        pinnedUrl: postContentPinnedUrl?.trim?.(),
       },
       privacy: postPrivacy,
       hashtagNames: listHashtagNames,
@@ -106,7 +106,8 @@ function CreatePostForm({
 
     if (!post) return errorResult("Something when wrong.");
     if (!post.title) return errorResult("A post must have a title.");
-    if (!post.content?.overview) return errorResult("A post must have an overview.");
+    if (!post.content?.overview)
+      return errorResult("A post must have an overview.");
     if (!post.content?.text && !post.content?.pinnedUrl)
       return errorResult("A post must have some content.");
     if (post.content.text.length <= 10 && !post.content?.pinnedUrl) {
@@ -214,7 +215,6 @@ function CreatePostForm({
           <Button onClick={unSubNotification}>stop notif</Button>
         </div> */}
       </div>
-
 
       <div className="d-flex justify-content-start py-2">
         <div className="col-12">

@@ -43,7 +43,6 @@ import { getUser } from "./redux/actions/user.js";
 
 const loggedIn = () => {
   const user = JSON.parse(localStorage.getItem("user"));
-  console.log("user local storage", user);
   return user;
 };
 

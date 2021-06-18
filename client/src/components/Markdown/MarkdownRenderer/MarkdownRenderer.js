@@ -43,6 +43,7 @@ function MarkdownRenderer({ text, enableDoubleClickFullScreen = true }) {
         allowAtxHeaderWithoutSpace: true,
         strikethrough: true,
       },
+      previewImagesInEditor: true,
       toolbar: false,
       status: false,
       scrollbarStyle: "native",
@@ -50,6 +51,7 @@ function MarkdownRenderer({ text, enableDoubleClickFullScreen = true }) {
         togglePreview: "",
         toggleSideBySide: "",
       },
+      maxHeight: "1px",
     }
   }, [])
 

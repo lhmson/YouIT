@@ -29,6 +29,11 @@ export const commentSchema = mongoose.Schema(
       required: true,
       default: defaultInteractionInfoValue,
     },
+    contentUpdatedAt: {
+      type: Date,
+      required: true,
+      default: new Date(),
+    },
   },
   {
     timestamps: true,

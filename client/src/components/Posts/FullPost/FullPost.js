@@ -43,6 +43,7 @@ import { deletePost } from "../../../redux/actions/posts";
 import MarkdownRenderer from "../../Markdown/MarkdownRenderer/MarkdownRenderer";
 import { ReactTinyLink } from "react-tiny-link";
 import { FRONTEND_URL } from "../../../constants/config";
+import moment from "moment";
 
 const { Title, Text, Paragraph } = Typography;
 const { confirm } = Modal;
@@ -70,9 +71,11 @@ function FullPost({ post }) {
   const [listInteractions, setListInteractions] = useState({});
   // const [post, setPost] = useState(null);
 
+  const [user] = useLocalStorage("user");
+
   useEffect(() => {
     // setPost(props.post);
-    fetchMyInteractions();
+    if (post) fetchMyInteractions();
     // setListInteractions({
     //   upvoteslength: post?.interactionInfo?.listUpvotes?.length,
     //   downvoteslength: post?.interactionInfo?.listDownvotes?.length,
@@ -91,6 +94,11 @@ function FullPost({ post }) {
   );
 
   const handleUpvoteClick = async (id) => {
+    if (!user) {
+      message.info("You need to log in to upvote this post!");
+      return;
+    }
+
     if (myInteractions?.upvote) {
       await unvotePost(id)
         .then((res) => {
@@ -118,6 +126,11 @@ function FullPost({ post }) {
   };
 
   const handleDownvoteClick = async (id) => {
+    if (!user) {
+      message.info("You need to log in to downvote this post!");
+      return;
+    }
+
     if (myInteractions?.downvote) {
       await unvotePost(id)
         .then((res) => {
@@ -145,6 +158,8 @@ function FullPost({ post }) {
   };
 
   const fetchMyInteractions = () => {
+    if (!user) return;
+
     getMyInteractions(post?._id)
       .then((res) => {
         setMyInteractions(res.data);
@@ -154,8 +169,6 @@ function FullPost({ post }) {
         console.log(error, post);
       });
   };
-
-  const [user] = useLocalStorage("user");
 
   const handleMore = () => {};
 
@@ -354,11 +367,9 @@ function FullPost({ post }) {
               </div>
             </Tooltip>
             <div className="mr-4">
-              <Tooltip
-                title={`Created ${post?.createdAt?.toString().slice(0, 10)}`}
-              >
+              <Tooltip title={`Created ${moment(post?.createdAt).fromNow()}`}>
                 <Text className="clickable" underline type="secondary">
-                  Last edited {post?.contentUpdatedAt?.toString().slice(0, 10)}
+                  {`Last edited ${moment(post?.contentUpdatedAt).fromNow()}`}
                 </Text>
               </Tooltip>
             </div>

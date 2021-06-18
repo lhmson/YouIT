@@ -1,7 +1,8 @@
 import { Form, Input, Button, Select, Row, Space, Typography } from "antd";
-import { useCallback, useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useState } from "react";
 import RequireLogin from "../RequireLogin/RequireLogin";
+import { MarkdownEditor } from "../"
+
 const { Text } = Typography;
 const { TextArea } = Input;
 
@@ -12,9 +13,9 @@ const loggedIn = () => {
   return user?.result?.name;
 };
 
-function CommentForm({ onSubmit, label, onDiscard, initContent }) {
-  const [inputComment, setInputComment] = useState(null);
-  const [errors, setErrors] = useState({});
+function CommentForm({ onSubmit, label, onDiscard, initContent = "" }) {
+  const [inputComment, setInputComment] = useState({ content: initContent ?? "" });
+  // const [errors, setErrors] = useState({});
   const [form] = Form.useForm();
 
   // const validate = useCallback(() => {
@@ -35,7 +36,6 @@ function CommentForm({ onSubmit, label, onDiscard, initContent }) {
   };
 
   const handleFinish = () => {
-    if (!inputComment) onSubmit({ content: initContent });
     onSubmit(inputComment);
     onReset();
   };
@@ -53,20 +53,30 @@ function CommentForm({ onSubmit, label, onDiscard, initContent }) {
           <Form.Item
             name="userComment"
             label={label}
-            rules={[
-              {
-                required: true,
-                whitespace: true,
-                message: "Please write something.",
-              },
-            ]}
-            initialValue={initContent}
+          // doesn't work, why? idk. idc.
+          // rules={[
+          //   {
+          //     required: true,
+          //     whitespace: true,
+          //     message: "Please write something.",
+          //   },
+          // ]}
+          // initialValue={initContent}
           >
-            <TextArea
+            {/* <TextArea
               style={{ height: 200 }}
               onChange={(e) => setInputComment({ content: e.target.value })}
               value={inputComment}
               autoSize={{ minRows: 3, maxRows: 15 }}
+            /> */}
+            <MarkdownEditor
+              text={inputComment?.content}
+              setText={(text) =>
+                setInputComment(prev => ({ ...prev, content: text }))
+              }
+              placeholder="// What do you think?"
+              // style={{ height: 200 }}
+              maxHeight={"150px"}
             />
           </Form.Item>
 
