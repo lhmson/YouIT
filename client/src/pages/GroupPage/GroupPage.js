@@ -79,16 +79,6 @@ function GroupPage(props) {
     return isModerator;
   };
 
-  useEffect(() => {
-    async function fetchGroupInfo() {
-      const { data } = await api.fetchAGroup(id);
-      setGroup(data);
-    }
-    fetchGroupInfo();
-    isJoinedGroup();
-    //console.log(group);
-  }, []);
-
   const handleLeaveGroup = async (groupId, userId) => {
     api
       .leaveGroup(groupId, userId)
