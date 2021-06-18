@@ -21,6 +21,7 @@ import "./styles.css";
 import { useLocalStorage } from "../../hooks/useLocalStorage.js";
 import SettingView from "../../components/GroupPage/SettingView/SettingView.js";
 import Loading from "../../components/Loading/Loading";
+import { isOwner } from "../../utils/user.js";
 
 const { Content } = Layout;
 const { Text } = Typography;
@@ -38,15 +39,15 @@ function GroupPage(props) {
   const history = useHistory();
   const [user, setUser] = useLocalStorage("user");
 
-  const isOwner = (user) => {
-    let isOwner = false;
-    group?.listMembers.forEach((member) => {
-      if (member?.userId === user?.result?._id) {
-        if (member?.role === "Owner") isOwner = true;
-      }
-    });
-    return isOwner;
-  };
+  // const isOwner = (user) => {
+  //   let isOwner = false;
+  //   group?.listMembers.forEach((member) => {
+  //     if (member?.userId === user?.result?._id) {
+  //       if (member?.role === "Owner") isOwner = true;
+  //     }
+  //   });
+  //   return isOwner;
+  // };
 
   const isAdmin = (user) => {
     let isAdmin = false;
@@ -87,7 +88,7 @@ function GroupPage(props) {
   // check authorization for route
   useEffect(() => {
     if (
-      (!isOwner(user) && menu === "setting") ||
+      (!isOwner(user, group) && menu === "setting") ||
       (!isAdmin(user) && menu === "member_requests") ||
       (!isModerator(user) && menu === "review_posts")
     ) {

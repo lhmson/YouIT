@@ -2,6 +2,8 @@ import express from "express";
 import Group from "../models/group.js";
 import User from "../models/user.js";
 import {
+  checkRoleHasPermissionOfRole,
+  getMemberRoleInGroup,
   isMemberOfGroup,
   isPendingMemberOfGroup,
 } from "../businessLogics/group.js";
@@ -473,6 +475,15 @@ export const updateGroup = async (req, res) => {
   if (!userId) return res.json({ message: "Unauthenticated" });
 
   try {
+    const userRole = updatedGroup?.listMembers?.find?.(
+      (member) => member?.userId == userId
+    )?.role;
+
+    if (!checkRoleHasPermissionOfRole(userRole, "Owner"))
+      return res
+        .status(httpStatusCodes.forbidden)
+        .json({ message: "Not have permission" });
+
     await Group.findByIdAndUpdate(updatedGroup?._id, updatedGroup, {
       new: true,
     }).then((result) => res.status(httpStatusCodes.ok).json(result));
