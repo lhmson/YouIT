@@ -9,11 +9,14 @@ export const editComment = (commentId, newComment) =>
   API.put(`/comment/${commentId}`, newComment);
 export const deleteComment = (commentId) => API.delete(`/comment/${commentId}`);
 
-export const upvoteComment = (id) => API.put(`/comment/${id}/upvote`);
+export const upvoteComment = (id, postId) =>
+  API.put(`/comment/${id}/${postId}/upvote`);
 
-export const unvoteComment = (id) => API.put(`/comment/${id}/unvote`);
+export const unvoteComment = (id, postId) =>
+  API.put(`/comment/${id}/${postId}/unvote`);
 
-export const downvoteComment = (id) => API.put(`/comment/${id}/downvote`);
+export const downvoteComment = (id, postId) =>
+  API.put(`/comment/${id}/${postId}/downvote`);
 
 export const getMyCommentInteractions = (id) =>
   API.get(`/comment/${id}/myInteractions`);

@@ -31,6 +31,7 @@ import {
 import { useHistory } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import MarkdownRenderer from "../Markdown/MarkdownRenderer/MarkdownRenderer";
+import moment from "moment";
 
 const { Text, Paragraph } = Typography;
 const { confirm } = Modal;
@@ -57,6 +58,7 @@ function Comment({
   onDelete,
   onCopyCommentLink,
   isFocus,
+  postId,
 }) {
   const dispatch = useDispatch();
   const history = useHistory();
@@ -85,39 +87,30 @@ function Comment({
     // });
   }, [comment]);
 
-  const fetchMyInteractions = () => {
-    getMyCommentInteractions(comment._id)
-      .then((res) => {
-        setMyInteractions(res.data);
-      })
-      .catch((error) => {
-        // message.error("Something goes wrong with comment interactions");
-        console.log("uwuwuuw", error, comment);
-      });
-  };
-
   const handleUpvoteClick = async (id) => {
     if (myInteractions?.upvote) {
-      await unvoteComment(id)
+      unvoteComment(id, postId)
         .then((res) => {
-          fetchMyInteractions();
-          dispatchInteractions({ type: "unupvote" });
+          fetchMyInteractions().then(() =>
+            dispatchInteractions({ type: "unupvote" })
+          );
         })
         .catch((error) => {
-          // message.error("Something goes wrong with comment upvote");
+          message.error("Something goes wrong with comment unvote");
           console.log(error);
         });
     } else {
-      await upvoteComment(id)
+      upvoteComment(id, postId)
         .then((res) => {
           if (myInteractions?.downvote) {
             dispatchInteractions({ type: "undownvote" });
           }
-          fetchMyInteractions();
-          dispatchInteractions({ type: "upvote" });
+          fetchMyInteractions().then(() =>
+            dispatchInteractions({ type: "upvote" })
+          );
         })
         .catch((error) => {
-          // message.error("Something goes wrong with comment unvote");
+          message.error("Something goes wrong with comment upvote");
           console.log(error);
         });
     }
@@ -125,33 +118,48 @@ function Comment({
 
   const handleDownvoteClick = async (id) => {
     if (myInteractions?.downvote) {
-      await unvoteComment(id)
+      unvoteComment(id, postId)
         .then((res) => {
-          fetchMyInteractions();
-          dispatchInteractions({ type: "undownvote" });
+          fetchMyInteractions().then(() =>
+            dispatchInteractions({ type: "undownvote" })
+          );
         })
         .catch((error) => {
-          // message.error("Something goes wrong with comment downvote");
+          message.error("Something goes wrong with comment unvote");
           console.log(error);
         });
     } else {
-      await downvoteComment(id)
+      downvoteComment(id, postId)
         .then((res) => {
           if (myInteractions?.upvote) {
             dispatchInteractions({ type: "unupvote" });
           }
-          fetchMyInteractions();
-          dispatchInteractions({ type: "downvote" });
+          fetchMyInteractions().then(() =>
+            dispatchInteractions({ type: "downvote" })
+          );
         })
         .catch((error) => {
-          // message.error("Something goes wrong with comment unvote");
+          message.error("Something goes wrong with comment downvote");
           console.log(error);
         });
     }
   };
 
+  const fetchMyInteractions = () => {
+    const interactions = getMyCommentInteractions(comment._id)
+      .then((res) => {
+        setMyInteractions(res.data);
+        return res.data;
+      })
+      .catch((error) => {
+        message.error("Something goes wrong with comment interactions");
+        console.log(error);
+      });
+    return interactions;
+  };
+
   const toggleReply = () => {
-    setIsReply(prev => !prev);
+    setIsReply((prev) => !prev);
     // console.log("comment", comment);
   };
   const handleReply = (newComment) => {
@@ -202,17 +210,15 @@ function Comment({
   };
 
   const commentUpdated = (newComment, oldComment) => {
-    if (newComment?.content !== oldComment?.content)
-      return true;
+    if (newComment?.content !== oldComment?.content) return true;
 
     return false;
-  }
+  };
 
   const handleEdit = (newComment) => {
     setIsEdit(false);
 
-    if (commentUpdated(newComment, comment))
-      onEdit(comment?._id, newComment);
+    if (commentUpdated(newComment, comment)) onEdit(comment?._id, newComment);
   };
   const handleDiscardReply = () => {
     setIsReply(false);
@@ -284,7 +290,7 @@ function Comment({
         <Row className="justify-content-end align-items-center pb-3">
           <div className="mr-4">
             <Text className="clickable" underline type="secondary">
-              Last edited {comment?.updatedAt.toString().slice(0, 10)}
+              {`Last edited ${moment(comment?.contentUpdatedAt).fromNow()}`}
             </Text>
           </div>
           {isCommentOwner() && (
@@ -320,10 +326,9 @@ function Comment({
                 )}
                 {comment?.quotedCommentId === null ? null : (
                   <Text className="clickable" underline type="secondary">
-                    Last edited{" "}
-                    {comment?.quotedCommentId?.updatedAt
-                      ?.toString()
-                      .slice(0, 10)}
+                    {`Last edited ${moment(
+                      comment?.quotedCommentId?.contentUpdatedAt
+                    ).fromNow()}`}
                   </Text>
                 )}
               </Row>
@@ -360,15 +365,17 @@ function Comment({
                   </Text>
                   <Tooltip title="Upvote">
                     <ArrowUpOutlined
-                      className={`clickable icon ${myInteractions?.upvote ? "green" : "black"
-                        }`}
+                      className={`clickable icon ${
+                        myInteractions?.upvote ? "green" : "black"
+                      }`}
                       onClick={() => handleUpvoteClick(comment._id)}
                     />
                   </Tooltip>
                   <Tooltip title="Downvote">
                     <ArrowDownOutlined
-                      className={`clickable icon ${myInteractions?.downvote ? "green" : "black"
-                        }`}
+                      className={`clickable icon ${
+                        myInteractions?.downvote ? "green" : "black"
+                      }`}
                       onClick={() => handleDownvoteClick(comment._id)}
                     />
                   </Tooltip>

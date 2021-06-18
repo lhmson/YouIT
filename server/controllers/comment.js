@@ -21,7 +21,7 @@ export const createComment = async (req, res) => {
   if (!mongoose.Types.ObjectId.isValid(postId)) {
     return res.status(400).send(`Id ${postId} is invalid.`);
   }
-  const comment = new Comment(req.body);
+  const comment = new Comment({ ...req.body, contentUpdatedAt: Date.now() });
   comment.userId = req.userId;
 
   const user = await User.findById(req.userId);
@@ -41,7 +41,7 @@ export const createComment = async (req, res) => {
         await post.save();
 
         post?.interactionInfo?.listUsersFollowing?.forEach((followerId) => {
-          isPostVisibleByUser(post, followerId).then(visible => {
+          isPostVisibleByUser(post, followerId).then((visible) => {
             if (visible) {
               if (!followerId.equals(req.userId)) {
                 sendNotificationUser({
@@ -57,8 +57,7 @@ export const createComment = async (req, res) => {
           });
         });
 
-
-        post.inter
+        post.inter;
 
         res.status(201).json(post);
       })
@@ -179,6 +178,7 @@ export const editComment = async (req, res) => {
       id,
       {
         content: req.body.content,
+        contentUpdatedAt: Date.now(),
       },
       { new: true }
     )

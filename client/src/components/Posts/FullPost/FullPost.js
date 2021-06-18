@@ -42,6 +42,7 @@ import { useDispatch } from "react-redux";
 import { deletePost } from "../../../redux/actions/posts";
 import MarkdownRenderer from "../../Markdown/MarkdownRenderer/MarkdownRenderer";
 import { ReactTinyLink } from "react-tiny-link";
+import moment from "moment";
 
 const { Title, Text, Paragraph } = Typography;
 const { confirm } = Modal;
@@ -360,11 +361,9 @@ function FullPost({ post }) {
               </div>
             </Tooltip>
             <div className="mr-4">
-              <Tooltip
-                title={`Created ${post?.createdAt?.toString().slice(0, 10)}`}
-              >
+              <Tooltip title={`Created ${moment(post?.createdAt).fromNow()}`}>
                 <Text className="clickable" underline type="secondary">
-                  Last edited {post?.contentUpdatedAt?.toString().slice(0, 10)}
+                  {`Last edited ${moment(post?.contentUpdatedAt).fromNow()}`}
                 </Text>
               </Tooltip>
             </div>
