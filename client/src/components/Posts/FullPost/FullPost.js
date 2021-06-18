@@ -27,6 +27,7 @@ import {
 import { MdPublic } from "react-icons/md";
 import { GiThreeFriends } from "react-icons/gi";
 import { IoPerson } from "react-icons/io5";
+import ShareButton from "../ShareButton";
 import styles from "./styles";
 import { useLocalStorage } from "../../../hooks/useLocalStorage";
 import {
@@ -37,6 +38,7 @@ import {
 } from "../../../api/post";
 import { Link, useHistory } from "react-router-dom";
 import { useDispatch } from "react-redux";
+
 import { deletePost } from "../../../redux/actions/posts";
 import MarkdownRenderer from "../MarkdownRenderer/MarkdownRenderer";
 
@@ -153,7 +155,7 @@ function FullPost({ post }) {
 
   const [user] = useLocalStorage("user");
 
-  const handleMore = () => { };
+  const handleMore = () => {};
 
   //#region menu more
 
@@ -378,7 +380,11 @@ function FullPost({ post }) {
         </Row>
         <Row className="mb-1">
           {post?.hashtags?.map((item, i) => (
-            <Tooltip title={`Mentioned ${item?.count} time${item?.count > 1 ? "s" : ""}`}>
+            <Tooltip
+              title={`Mentioned ${item?.count} time${
+                item?.count > 1 ? "s" : ""
+              }`}
+            >
               <Tag key={i} className="mb-2 tag">
                 {item.name}
               </Tag>
@@ -401,15 +407,17 @@ function FullPost({ post }) {
                 </Text>
                 <Tooltip title="Upvote">
                   <ArrowUpOutlined
-                    className={`clickable icon ${myInteractions?.upvote ? "green" : "black"
-                      }`}
+                    className={`clickable icon ${
+                      myInteractions?.upvote ? "green" : "black"
+                    }`}
                     onClick={() => handleUpvoteClick(post._id)}
                   />
                 </Tooltip>
                 <Tooltip title="Downvote">
                   <ArrowDownOutlined
-                    className={`clickable icon ${myInteractions?.downvote ? "green" : "black"
-                      }`}
+                    className={`clickable icon ${
+                      myInteractions?.downvote ? "green" : "black"
+                    }`}
                     onClick={() => handleDownvoteClick(post._id)}
                   />
                 </Tooltip>
@@ -421,14 +429,14 @@ function FullPost({ post }) {
           </Row>
           <Row>
             <Space size="large">
-              <LinkOutlined
-                className="clickable icon"
-                onClick={() => copyLink(post._id)}
-              />
-              <ShareAltOutlined
-                className="clickable icon"
-                onClick={() => handleSharePost(post._id)}
-              />
+              <Tooltip title="Copy link">
+                <LinkOutlined
+                  className="clickable icon"
+                  onClick={() => copyLink(post._id)}
+                />
+              </Tooltip>
+
+              <ShareButton post={post} />
             </Space>
           </Row>
         </Row>

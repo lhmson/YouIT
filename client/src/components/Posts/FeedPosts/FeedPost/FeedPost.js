@@ -45,7 +45,7 @@ import { deletePost } from "../../../../redux/actions/posts";
 import { HashLink } from "react-router-hash-link";
 import { useLocalStorage } from "../../../../hooks/useLocalStorage";
 import { limitNameLength } from "../../../../utils/limitNameLength";
-import ShareButton from "./ShareButton";
+import ShareButton from "../../ShareButton";
 import { BACKEND_URL, FRONTEND_URL } from "../../../../constants/config";
 
 const { Title, Text, Paragraph } = Typography;
@@ -253,7 +253,6 @@ function FeedPost({ post, setCurrentId }) {
     const interactions = getMyInteractions(post._id)
       .then((res) => {
         setMyInteractions(res.data);
-        console.log(res.data);
         return res.data;
       })
       .catch((error) => {

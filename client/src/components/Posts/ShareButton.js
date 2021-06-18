@@ -22,7 +22,7 @@ import {
   RedditIcon,
   EmailIcon,
 } from "react-share";
-import logo from "../../../../assets/lightlogo.png";
+import logo from "../../assets/lightlogo.png";
 
 function ShareButton({ post }) {
   const history = useHistory();
