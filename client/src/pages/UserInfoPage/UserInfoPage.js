@@ -27,7 +27,7 @@ function UserInfoPage() {
   const history = useHistory();
 
   useEffect(() => {
-    dispatch(getUser(id));
+    dispatch(getUser(id, history));
     // setTimeout(() => {
     //   if (!user) history.push("/error404");
     // }, 2000);
