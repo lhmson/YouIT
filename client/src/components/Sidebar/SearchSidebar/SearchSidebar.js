@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Layout, Menu, Avatar } from "antd";
+import { Layout, Menu, Typography } from "antd";
 import {
   TeamOutlined,
   LaptopOutlined,
@@ -8,11 +8,10 @@ import {
 } from "@ant-design/icons";
 import styles from "./styles.js";
 
+const { Text } = Typography;
 const { Sider } = Layout;
 
 function SearchSidebar(props) {
-  const [user] = useState(JSON.parse(localStorage.getItem("user")));
-
   useEffect(() => {}, []);
 
   return (
@@ -37,23 +36,9 @@ function SearchSidebar(props) {
         }}
       >
         {/* <SubMenu key="sub1" title="subnav 1"> */}
-        <Menu.Item
-          key="username"
-          style={{ ...styles.item, fontWeight: 700, fontSize: 20 }}
-          disabled={true}
-          icon={
-            <Avatar
-              alt={user?.result?.name}
-              src={
-                "https://icons-for-free.com/iconfiles/png/512/look+magnifying+glass+search+icon-1320196720531471752.png"
-              }
-            >
-              {user?.result?.name.charAt(0)}
-            </Avatar>
-          }
-        >
+        <Text className="container" style={styles.item}>
           Search Result
-        </Menu.Item>
+        </Text>
         <Menu.Item
           key="all"
           onClick={() => props.setModeSearch("All")}

@@ -6,12 +6,13 @@ import { useSelector } from "react-redux";
 const { Title, Text } = Typography;
 
 const CreateGroupNameAdmin = () => {
-  const [user] = useLocalStorage("user");
+  const user = useSelector((state) => state.user);
+  // const [user] = useLocalStorage("user");
   // const user = useSelector((state) => state.user);
-  const displayName = user?.result?.name ?? "";
+  const displayName = user?.name ?? "";
 
   const avatarUrl =
-    user?.result?.avatarUrl ??
+    user?.avatarUrl ??
     "https://pbs.twimg.com/profile_images/1247161286518964226/m92qVTIT_400x400.jpg";
 
   return (
@@ -21,12 +22,12 @@ const CreateGroupNameAdmin = () => {
           className="ml-1 clickable"
           size={70}
           src={avatarUrl}
-          alt={user?.result?.name}
+          alt={user?.name}
         />
         <div className="d-inline-flex flex-column ml-3 break-word">
           <Row className="align-items-center">
             <Space size={4}>
-              <Link to={`/userinfo/${user?.result?._id}`} target="_blank">
+              <Link to={`/userinfo/${user?._id}`} target="_blank">
                 <Text
                   className="clickable"
                   strong

@@ -42,6 +42,7 @@ import { useDispatch } from "react-redux";
 import { deletePost } from "../../../redux/actions/posts";
 import MarkdownRenderer from "../../Markdown/MarkdownRenderer/MarkdownRenderer";
 import { ReactTinyLink } from "react-tiny-link";
+import { FRONTEND_URL } from "../../../constants/config";
 
 const { Title, Text, Paragraph } = Typography;
 const { confirm } = Modal;
@@ -263,19 +264,12 @@ function FullPost({ post }) {
 
   const copyLink = (id) => {
     navigator.clipboard
-      .writeText(`${window.location.origin}/post/${id}`) // change to deployment link later
+      .writeText(`${FRONTEND_URL}/post/${id}`) // change to deployment link later
       .then(() => message.success("Link copied to clipboard"))
       .catch((error) => {
         message.error("Something goes wrong copying link");
         console.log(id);
       });
-  };
-
-  const handleSharePost = (id) => {
-    history.push({
-      pathname: "/post/create",
-      state: { pinnedUrl: `${window.location.origin}/post/${id}` },
-    });
   };
 
   const groupId = post?.groupPostInfo?.groupId;

@@ -41,6 +41,7 @@ const AvatarView = () => {
     const { data } = await apiUser.editImage(image);
     setAvatar(data);
     console.log(data);
+    window.location.reload();
   };
 
   const handleBackgroundChange = async (e) => {
@@ -53,6 +54,7 @@ const AvatarView = () => {
     };
     const { data } = await apiUser.editImage(image);
     setBackgroundImage(data);
+    window.location.reload();
   };
 
   const EditImageButton = () => {

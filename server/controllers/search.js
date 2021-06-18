@@ -17,7 +17,7 @@ export const getSearchUsers = async (req, res) => {
   try {
     const currentUser = await (
       await User.find({})
-    ).filter((user) => user.name.toLowerCase().includes(q.toLowerCase()));
+    ).filter((user) => user?.name?.toLowerCase().includes(q.toLowerCase()));
     res.status(200).json(currentUser);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -44,7 +44,7 @@ export const getSearchPosts = async (req, res) => {
         path: `hashtags`,
         model: `Hashtag`,
         select: "name count",
-      })
+      });
     asyncFilter(posts, async (post) => {
       // console.log(post.title, await isPostVisibleByUser(post, req.userId));
       return (

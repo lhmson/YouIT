@@ -23,11 +23,12 @@ import {
   EmailIcon,
 } from "react-share";
 import logo from "../../assets/lightlogo.png";
+import { FRONTEND_URL } from "../../constants/config";
 
 function ShareButton({ post }) {
   const history = useHistory();
 
-  const shareUrl = "https://github.com/kunal-mandalia/LevelUp";
+  const shareUrl = `${FRONTEND_URL}/post/${post._id}`;
 
   function openShare(post) {
     Modal.info({
@@ -36,7 +37,6 @@ function ShareButton({ post }) {
         <div className="row justify-content-around align-items-center">
           <div onClick={() => console.log(window.location)}>
             <FacebookShareButton
-              // url={`${window.location.origin}/post/${post._id}`}
               url={shareUrl}
               quote={post?.title}
               hashtag="YouIT"
@@ -45,10 +45,7 @@ function ShareButton({ post }) {
             </FacebookShareButton>
 
             <div>
-              <FacebookShareCount
-                // url={`${window.location.origin}/post/${post._id}`}
-                url={shareUrl}
-              >
+              <FacebookShareCount url={shareUrl}>
                 {(count) => count}
               </FacebookShareCount>
             </div>
@@ -135,7 +132,7 @@ function ShareButton({ post }) {
     Modal.destroyAll();
     history.push({
       pathname: `post/create`,
-      state: { pinnedUrl: `${window.location.origin}/post/${id}` },
+      state: { pinnedUrl: `${FRONTEND_URL}/post/${id}` },
     });
   };
 

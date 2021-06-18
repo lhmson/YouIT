@@ -72,9 +72,11 @@ function AdminGroupSidebar(props) {
           fontSize: "1rem",
         }}
       >
-        <Text className="container" style={styles.item}>
-          Admin Tools
-        </Text>
+        {isModerator() && (
+          <Text className="container" style={styles.item}>
+            Admin Tools
+          </Text>
+        )}
         <Menu.Item
           key="main"
           style={styles.item}
@@ -85,7 +87,7 @@ function AdminGroupSidebar(props) {
             history.push(`/group/${group?._id}/main`);
           }}
         >
-          Your Group
+          Main
         </Menu.Item>
         {isAdmin(user) ? (
           <Menu.Item

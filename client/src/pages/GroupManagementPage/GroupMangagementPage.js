@@ -48,17 +48,17 @@ function GroupManagementPage() {
       .catch((e) => {
         console.log(e);
       });
-  }, [user,update]);
+  }, [user, update]);
 
   const numberTotalGroup = listGroup.length;
 
   let listFilter = listGroup.filter((user) =>
-    user.name.toLowerCase().includes(txtSearch.toLowerCase())
+    user?.name?.toLowerCase().includes(txtSearch?.toLowerCase())
   );
 
   if (mode === "Pending") {
     listFilter = listPending.filter((user) =>
-      user.name.toLowerCase().includes(txtSearch.toLowerCase())
+      user?.name?.toLowerCase().includes(txtSearch?.toLowerCase())
     );
   }
 
@@ -72,8 +72,8 @@ function GroupManagementPage() {
             description={group.description}
             totalMembers={group.listMembers?.length}
             joined={mode === "Groups"}
-            update = {update}
-            setUpdate = {setUpdate}
+            update={update}
+            setUpdate={setUpdate}
           ></GroupJoinedCard>
         );
       }),

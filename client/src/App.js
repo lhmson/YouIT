@@ -38,6 +38,8 @@ import ActivationPage from "./pages/ActivationPage/ActivationPage.js";
 import AdminDashboardPage from "./pages/SystemAdmin/AdminDashboardPage/AdminDashboardPage.js";
 import { FriendsStatusProvider } from "./context/FriendsStatusContext.js";
 import { BACKEND_URL } from "./constants/config.js";
+import { useDispatch } from "react-redux";
+import { getUser } from "./redux/actions/user.js";
 
 const loggedIn = () => {
   const user = JSON.parse(localStorage.getItem("user"));
@@ -52,6 +54,13 @@ const isAdmin = () => {
 function App() {
   const [token, setToken] = useToken();
   const [user] = useLocalStorage("user");
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    //console.log("start fetching user");
+    dispatch(getUser(user?.result?._id));
+  }, []);
 
   return (
     <div className={styles.App}>

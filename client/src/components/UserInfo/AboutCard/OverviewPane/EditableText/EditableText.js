@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-import { Button, Cascader, Input, Layout, Row, Typography } from "antd";
+import { Button, Input, Layout, Row, Typography } from "antd";
 
 import { OverviewRow } from "../../index.js";
 import { AiOutlineEdit } from "react-icons/all";
@@ -55,7 +55,7 @@ function EditableText({
           style={styles.input}
           defaultValue={text}
           onChange={(value) => onChange(value)}
-        ></Input>
+        />
         <Row style={{ justifyContent: "flex-end" }}>
           <Button style={styles.button} onClick={handleCancel}>
             Cancel
