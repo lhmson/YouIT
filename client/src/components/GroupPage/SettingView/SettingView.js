@@ -79,7 +79,7 @@ const SettingView = () => {
 
   // thieu edit topic, nho render len ben about luon
   return (
-    <div style={styles.settingView}>
+    <div style={{ ...styles.settingView, alignItems: "center" }}>
       <div className="break-word">
         <EditableText
           firstIcon={<GrGroup style={styles.icon} />}

@@ -10,6 +10,7 @@ const styles = {
   mainArea: {
     minHeight: "100vh",
     marginTop: 16,
+
     // marginLeft: 128,
     // marginRight: 128,
   },

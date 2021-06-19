@@ -122,18 +122,18 @@ function GroupPage(props) {
                   </Text>
                   <Row
                     style={{
-                      display: "flex",
+                      // display: "flex",
                       flexDirection: "row",
-                      justifyContent: "space-between",
+                      // justifyContent: "space-between",
                     }}
                   >
-                    <GroupBasicInfo />
+                    <div style={{ flex: 1 }}>
+                      <GroupBasicInfo />
+                    </div>
                     <GroupFunctionButtons />
                   </Row>
                 </Col>
-                <Row style={{ justifyContent: "space-between" }}>
-                  <GroupMenu />
-                </Row>
+                <GroupMenu />
               </Content>
             </Layout>
             <Layout>

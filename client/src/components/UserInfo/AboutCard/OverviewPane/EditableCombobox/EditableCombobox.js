@@ -44,32 +44,46 @@ function EditableCombobox({
 
   if (isEditing) {
     return (
-      <Layout style={styles.whiteBackground}>
-        <Text style={styles.text}>{placeholder}</Text>
-        <Select
-          style={styles.cascader}
-          defaultValue={text}
-          onChange={(value) => onChange(value)}
+      <div
+        className="row"
+        style={{ alignSelf: "center", justifyContent: "center" }}
+      >
+        <div
+          style={{
+            ...styles.whiteBackground,
+            maxWidth: 1100,
+            flex: 1,
+          }}
         >
-          {options.map((option, index) => (
-            <Option key={index} value={option}>
-              {option}
-            </Option>
-          ))}
-        </Select>
-        <Row style={{ justifyContent: "flex-end" }}>
-          <Button style={styles.button} onClick={handleCancel}>
-            Cancel
-          </Button>
-          <Button
-            className="green-button"
-            style={styles.button}
-            onClick={handleSaving}
-          >
-            Save
-          </Button>
-        </Row>
-      </Layout>
+          <Text style={styles.text}>{placeholder}</Text>
+
+          <Row style={{ justifyContent: "flex-end" }}>
+            <Select
+              style={{ ...styles.cascader, flex: 1 }}
+              defaultValue={text}
+              onChange={(value) => onChange(value)}
+            >
+              {options.map((option, index) => (
+                <Option key={index} value={option}>
+                  {option}
+                </Option>
+              ))}
+            </Select>
+          </Row>
+          <Row style={{ justifyContent: "flex-end" }}>
+            <Button style={styles.button} onClick={handleCancel}>
+              Cancel
+            </Button>
+            <Button
+              className="green-button"
+              style={styles.button}
+              onClick={handleSaving}
+            >
+              Save
+            </Button>
+          </Row>
+        </div>
+      </div>
     );
   }
   // text voi subText o day lay tu user trong local storage

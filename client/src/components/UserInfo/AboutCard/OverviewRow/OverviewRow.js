@@ -18,13 +18,13 @@ const OverviewRow = (props) => {
         >
           <Row
             style={{
-              display: "flex",
+              // display: "flex",
               alignItems: "center",
-              width: "90%",
+              // width: "90%",
             }}
           >
             {props.firstIcon}
-            <div style={{ width: "90%" }}>
+            <div>
               <Text style={{ fontSize: 16, fontWeight: 400 }}>
                 {props.text}
               </Text>

@@ -382,8 +382,9 @@ function FeedPost({ post, setCurrentId }) {
         <Row className="mb-1">
           {post?.hashtags?.map((item, i) => (
             <Tooltip
-              title={`Mentioned ${item?.count} time${item?.count > 1 ? "s" : ""
-                }`}
+              title={`Mentioned ${item?.count} time${
+                item?.count > 1 ? "s" : ""
+              }`}
             >
               <Tag key={i} className="mb-2 tag">
                 {item.name}
@@ -422,15 +423,17 @@ function FeedPost({ post, setCurrentId }) {
                 </Text>
                 <Tooltip title="Upvote">
                   <ArrowUpOutlined
-                    className={`clickable icon ${myInteractions?.upvote ? "green" : "black"
-                      }`}
+                    className={`clickable icon ${
+                      myInteractions?.upvote ? "green" : "black"
+                    }`}
                     onClick={() => handleUpvoteClick(post._id)}
                   />
                 </Tooltip>
                 <Tooltip title="Downvote">
                   <ArrowDownOutlined
-                    className={`clickable icon ${myInteractions?.downvote ? "green" : "black"
-                      }`}
+                    className={`clickable icon ${
+                      myInteractions?.downvote ? "green" : "black"
+                    }`}
                     onClick={() => handleDownvoteClick(post._id)}
                   />
                 </Tooltip>

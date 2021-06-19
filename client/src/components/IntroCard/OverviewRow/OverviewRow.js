@@ -9,9 +9,9 @@ const OverviewRow = (props) => {
   return (
     <>
       <div className="container" style={styles.whiteBackground}>
-        <div className="row">
-          <div className="col-md-2">{props.firstIcon}</div>
-          <div className="col-md-10"> {props.text}</div>
+        <div className="row" style={{ marginLeft: 0 }}>
+          <div className="mr-2">{props.firstIcon}</div>
+          <div> {props.text}</div>
         </div>
 
         {/* <div className="row" style={{ alignItems: "center" }}>

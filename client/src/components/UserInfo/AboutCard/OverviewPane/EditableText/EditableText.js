@@ -48,27 +48,38 @@ function EditableText({
 
   if (isEditing) {
     return (
-      <Layout style={styles.whiteBackground}>
-        <Text style={styles.text}>{placeholder}</Text>
-        <Input
-          placeholder={placeholder}
-          style={styles.input}
-          defaultValue={text}
-          onChange={(value) => onChange(value)}
-        ></Input>
-        <Row style={{ justifyContent: "flex-end" }}>
-          <Button style={styles.button} onClick={handleCancel}>
-            Cancel
-          </Button>
-          <Button
-            className="green-button"
-            style={styles.button}
-            onClick={handleSaving}
-          >
-            Save
-          </Button>
-        </Row>
-      </Layout>
+      <div
+        className="row"
+        style={{ alignSelf: "center", justifyContent: "center" }}
+      >
+        <div
+          style={{
+            ...styles.whiteBackground,
+            maxWidth: 1100,
+            flex: 1,
+          }}
+        >
+          <Text style={styles.text}>{placeholder}</Text>
+          <Input
+            placeholder={placeholder}
+            style={styles.input}
+            defaultValue={text}
+            onChange={(value) => onChange(value)}
+          ></Input>
+          <Row style={{ justifyContent: "flex-end" }}>
+            <Button style={styles.button} onClick={handleCancel}>
+              Cancel
+            </Button>
+            <Button
+              className="green-button"
+              style={styles.button}
+              onClick={handleSaving}
+            >
+              Save
+            </Button>
+          </Row>
+        </div>
+      </div>
     );
   }
   // text voi subText o day lay tu user trong local storage
