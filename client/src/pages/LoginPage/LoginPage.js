@@ -13,7 +13,8 @@ import {
 
 import { ReactComponent as ReactLogo } from "../../assets/login-bro.svg";
 import logo from "../../assets/lightlogo.png";
-import { GrFacebook } from "react-icons/gr";
+import { GoogleLogin } from "react-google-login";
+import { GrGoogle, GrFacebook } from "react-icons/gr";
 import { SiGithub } from "react-icons/si";
 import { signin } from "../../redux/actions/auth";
 import { useDispatch } from "react-redux";
@@ -22,6 +23,8 @@ import COLOR from "../../constants/colors";
 import { useToken } from "../../context/TokenContext";
 import { useLocalStorage } from "../../hooks/useLocalStorage";
 import { resendVerificationMail } from "../../api/auth";
+import { AUTH } from "../../redux/actionTypes";
+import * as apiAuth from "../../api/auth";
 
 const { Title, Text } = Typography;
 
@@ -69,6 +72,41 @@ function LoginPage() {
       message.error(err.errors[0]);
     });
   };
+
+  //#region google sign in
+
+  const googleSuccess = async (res) => {
+    console.log("google signin", res);
+    const result = res?.profileObj;
+    const token = res?.tokenId;
+
+    try {
+      //TODO: handle google sign in with Nghia, for browser token bla bla
+      // dispatch({ type: AUTH, data: { result, token, setUser } });
+
+      history.push("/");
+      window.location.reload();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const googleError = (error) => {
+    // message.error("Google Sign In was unsuccessful. Try again later");
+    console.log("error google login", error);
+  };
+
+  //#endregion
+
+  //#region github
+  const handleLoginGithub = () => {
+    apiAuth.signinWithGithub().then((res) => {
+      alert("hey");
+      console.log("github signin", res.data);
+    });
+  };
+
+  //#endregion
 
   return (
     <div
@@ -165,10 +203,34 @@ function LoginPage() {
                   <Text>Or login with</Text>
                 </div>
                 <Row>
-                  <Col span={12} style={{ paddingRight: 8 }}>
+                  <Col xs={24} style={{ padding: 4 }}>
+                    <GoogleLogin
+                      clientId="870911963949-uhovihqpkloivbqnk2c5vgchedih3ej5.apps.googleusercontent.com"
+                      render={(renderProps) => (
+                        <Button
+                          className="google-container"
+                          // htmlType="submit"
+                          icon={
+                            <GrGoogle
+                              style={{ marginBottom: 2.5, marginRight: 12 }}
+                            />
+                          }
+                          onClick={renderProps.onClick}
+                          // disabled={renderProps.disabled}
+                          style={{ width: "100%" }}
+                        >
+                          Google
+                        </Button>
+                      )}
+                      onSuccess={googleSuccess}
+                      onFailure={googleError}
+                      cookiePolicy="single_host_origin"
+                    />
+                  </Col>
+                  {/* <Col xs={24} lg={8} style={{ padding: 4 }}>
                     <Button
                       className="facebook-container"
-                      htmlType="submit"
+                      // htmlType="submit"
                       icon={
                         <GrFacebook
                           style={{ marginBottom: 2.5, marginRight: 12 }}
@@ -179,20 +241,21 @@ function LoginPage() {
                       Facebook
                     </Button>
                   </Col>
-                  <Col span={12} style={{ paddingLeft: 8 }}>
+                  <Col xs={24} lg={8} style={{ padding: 4 }}>
                     <Button
                       className="github-container"
-                      htmlType="submit"
+                      // htmlType="submit"
                       icon={
                         <SiGithub
                           style={{ marginBottom: 2.5, marginRight: 12 }}
                         />
                       }
+                      onClick={() => handleLoginGithub()}
                       style={{ width: "100%" }}
                     >
                       Github
                     </Button>
-                  </Col>
+                  </Col> */}
                 </Row>
               </Form>
             </div>

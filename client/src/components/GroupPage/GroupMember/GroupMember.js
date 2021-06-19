@@ -1,8 +1,7 @@
-import React, { useContext, useState, useEffect, useRef, useMemo } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { GroupContext } from "../../../pages/GroupPage/GroupPage.js";
 import MemberCard from "./MemberCard/MemberCard.js";
 import * as api from "../../../api/group";
-import { useLocalStorage } from "../../../hooks/useLocalStorage";
 import { useMobile } from "../../../utils/responsiveQuery.js";
 
 function GroupMember() {

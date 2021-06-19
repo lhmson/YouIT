@@ -1,9 +1,8 @@
 import React, { useEffect } from "react";
 import { Avatar, Typography, Row, Space } from "antd";
 import { Link } from "react-router-dom";
-import { useLocalStorage } from "../../../hooks/useLocalStorage.js";
 import { useSelector } from "react-redux";
-const { Title, Text } = Typography;
+const { Text } = Typography;
 
 const CreateGroupNameAdmin = () => {
   const user = useSelector((state) => state.user);

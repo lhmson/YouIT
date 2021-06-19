@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Layout, Button, Typography } from "antd";
 import styles from "./styles.js";
 
@@ -7,10 +7,10 @@ import Navbar from "../../components/Navbar/Navbar";
 import { Link } from "react-router-dom";
 import { useLocalStorage } from "../../hooks/useLocalStorage.js";
 import HorizontalScroll from "react-scroll-horizontal";
+import AOS from "aos";
+import "aos/dist/aos.css";
 
 const { Title, Text } = Typography;
-
-const { Content } = Layout;
 
 const BigTag = () => {
   return (
@@ -23,6 +23,13 @@ const BigTag = () => {
 const pagePadding = 148;
 function HomePage() {
   const [user] = useLocalStorage("user");
+
+  useEffect(() => {
+    AOS.init({
+      duration: 2000,
+    });
+  }, []);
+
   return (
     <>
       <Layout>
@@ -85,12 +92,12 @@ function HomePage() {
               marginRight: pagePadding * 2,
             }}
           >
-            <div>
+            <div data-aos="zoom-in">
               <div className="pink" style={{ height: 400 }} />
             </div>
             <div style={{ height: 24 }} />
 
-            <div style={{ textAlign: "center" }}>
+            <div data-aos="fade-up" style={{ textAlign: "center" }}>
               <Text strong style={{ fontSize: 40 }}>
                 Something 1
               </Text>
@@ -102,7 +109,9 @@ function HomePage() {
               </Text>
             </div>
           </div>
+
           <div
+            data-aos="fade-right"
             className="row"
             style={{
               alignItems: "center",
@@ -125,7 +134,11 @@ function HomePage() {
                 nisi ut aliquip ex ea commodo consequat."
               </Text>
             </div>
-            <div className="col-md-6" style={{ textAlign: "left" }}>
+            <div
+              data-aos="flip-left"
+              className="col-md-6"
+              style={{ textAlign: "left" }}
+            >
               <div className="pink" style={{ height: 400 }} />
             </div>
           </div>
@@ -138,12 +151,16 @@ function HomePage() {
               marginBottom: 100,
             }}
           >
-            <div className="col-md-6">
+            <div data-aos="flip-right" className="col-md-6">
               <div className="pink" style={{ height: 400 }} />
             </div>
-            <div className="col-md-6" style={{ textAlign: "left" }}>
+            <div
+              data-aos="fade-left"
+              className="col-md-6"
+              style={{ textAlign: "left" }}
+            >
               <Text strong style={{ fontSize: 40 }}>
-                Something 2
+                Something 3
               </Text>
               <br />
               <div style={{ height: 16 }} />
@@ -191,6 +208,7 @@ function HomePage() {
             }}
           >
             <div
+              data-aos="zoom-in-up"
               style={{
                 height: 400,
                 marginBottom: 32,

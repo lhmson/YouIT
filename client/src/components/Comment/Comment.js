@@ -28,13 +28,11 @@ import {
   unvoteComment,
   getMyCommentInteractions,
 } from "../../api/comment";
-import { useHistory } from "react-router-dom";
-import { useDispatch } from "react-redux";
 import MarkdownRenderer from "../Markdown/MarkdownRenderer/MarkdownRenderer";
 import moment from "moment";
 import { useLocalStorage } from "../../hooks/useLocalStorage";
 
-const { Text, Paragraph } = Typography;
+const { Text } = Typography;
 const { confirm } = Modal;
 
 const allInteractionReducer = (state, action) => {
@@ -61,8 +59,6 @@ function Comment({
   isFocus,
   postId,
 }) {
-  const dispatch = useDispatch();
-  const history = useHistory();
   const [myInteractions, setMyInteractions] = useState({});
   const [isReply, setIsReply] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
@@ -159,8 +155,7 @@ function Comment({
   };
 
   const fetchMyInteractions = () => {
-    if (!user)
-      return;
+    if (!user) return;
 
     const interactions = getMyCommentInteractions(comment._id)
       .then((res) => {
@@ -381,15 +376,17 @@ function Comment({
                   </Text>
                   <Tooltip title="Upvote">
                     <ArrowUpOutlined
-                      className={`clickable icon ${myInteractions?.upvote ? "green" : "black"
-                        }`}
+                      className={`clickable icon ${
+                        myInteractions?.upvote ? "green" : "black"
+                      }`}
                       onClick={() => handleUpvoteClick(comment._id)}
                     />
                   </Tooltip>
                   <Tooltip title="Downvote">
                     <ArrowDownOutlined
-                      className={`clickable icon ${myInteractions?.downvote ? "green" : "black"
-                        }`}
+                      className={`clickable icon ${
+                        myInteractions?.downvote ? "green" : "black"
+                      }`}
                       onClick={() => handleDownvoteClick(comment._id)}
                     />
                   </Tooltip>

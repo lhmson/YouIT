@@ -12,7 +12,6 @@ import {
   UserResultSearchPage,
   AboutPage,
   GroupPage,
-  GroupAboutPage,
   CreateGroupPage,
   LoginPage,
   RegisterPage,
