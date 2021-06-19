@@ -35,6 +35,7 @@ import {
   unvotePost,
   downvotePost,
   getMyInteractions,
+  followPost,
 } from "../../../api/post";
 import { Link, useHistory } from "react-router-dom";
 import { useDispatch } from "react-redux";
@@ -159,6 +160,10 @@ function FullPost({ post }) {
 
   const handleMore = () => {};
 
+  const handleFollowPost = (id) => {
+    followPost(id).then((res) => message.success("Follow post successfully"));
+  };
+
   //#region menu more
 
   const showConfirmDeletePost = (id) => {
@@ -222,7 +227,7 @@ function FullPost({ post }) {
           </Menu.Item>
         </>
       ) : (
-        <Menu.Item key="follow">
+        <Menu.Item key="follow" onClick={() => handleFollowPost(post._id)}>
           <Row align="middle">
             <BellOutlined className="mr-2" />
             <Text>Follow post</Text>
@@ -323,13 +328,15 @@ function FullPost({ post }) {
             <div className="d-inline-flex flex-column ml-3 break-word">
               <Row style={{ alignItems: "center" }}>
                 <Space size={4}>
-                  <Text
-                    className="clickable"
-                    strong
-                    style={{ fontSize: "1.2rem" }}
-                  >
-                    {post?.userId?.name}
-                  </Text>
+                  <Link to={`/userinfo/${post?.userId._id}`} target="_blank">
+                    <Text
+                      className="clickable"
+                      strong
+                      style={{ fontSize: "1.2rem" }}
+                    >
+                      {post?.userId?.name}
+                    </Text>
+                  </Link>
                   {groupId && (
                     <>
                       <CaretRightOutlined

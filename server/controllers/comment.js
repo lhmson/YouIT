@@ -40,6 +40,17 @@ export const createComment = async (req, res) => {
         post.comments.push(comment._id);
         await post.save();
 
+        if (!post.userId?.equals(req.userId)) {
+          sendNotificationUser({
+            userId: post.userId,
+            kind: "CommentToPost_PostOwner",
+            content: {
+              description: `${user.name} has just commented on your post "${post.title}".`,
+            },
+            link: `/post/${post?._id}/${comment._id}`,
+          });
+        }
+
         post?.interactionInfo?.listUsersFollowing?.forEach((followerId) => {
           isPostVisibleByUser(post, followerId).then((visible) => {
             if (visible) {
