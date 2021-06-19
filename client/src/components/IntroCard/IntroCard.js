@@ -26,8 +26,7 @@ const IntroCard = () => {
   const user = useSelector((state) => state.user);
 
   const dateOfBirth = moment(user?.userInfo?.dateOfBirth).format("DD/MM/YYYY");
-  const address = user?.userInfo?.address ?? "Viet Nam";
-  const workLocation = user?.userInfo?.workLocation ?? "Viet Nam";
+  const address = user?.userInfo?.address;
   const gender = user?.userInfo?.gender;
   // educations la array, coi lai
   const educations = user?.userInfo?.educations;
@@ -43,7 +42,7 @@ const IntroCard = () => {
   }
 
   if (!user) return <Loading />;
-
+  console.log(address);
   return (
     <Layout style={styles.backgroundheader}>
       <Row className="container">
@@ -62,19 +61,24 @@ const IntroCard = () => {
             text={`${education?.moreInfo} at ${education?.schoolName}`}
           />
         )}
-        <OverviewRow
-          firstIcon={<IoHome style={styles.icon} />}
-          text={address}
-        />
-        <OverviewRow
-          firstIcon={<MdLocationOn style={styles.icon} />}
-          text={workLocation}
-        />
-        <OverviewRow firstIcon={<FaMale style={styles.icon} />} text={gender} />
-        <OverviewRow
-          firstIcon={<FaBirthdayCake style={styles.icon} />}
-          text={dateOfBirth}
-        />
+        {address && (
+          <OverviewRow
+            firstIcon={<IoHome style={styles.icon} />}
+            text={address}
+          />
+        )}
+        {gender && (
+          <OverviewRow
+            firstIcon={<FaMale style={styles.icon} />}
+            text={gender}
+          />
+        )}
+        {dateOfBirth && (
+          <OverviewRow
+            firstIcon={<FaBirthdayCake style={styles.icon} />}
+            text={dateOfBirth}
+          />
+        )}
       </div>
 
       <Row style={{ width: "100%", justifyContent: "center" }}>

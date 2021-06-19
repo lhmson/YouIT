@@ -9,20 +9,29 @@ const OverviewRow = (props) => {
   return (
     <>
       <div className="container" style={{ marginBottom: 32 }}>
-        <Row style={{ alignItems: "center", justifyContent: "space-between" }}>
-          <div
-            className="row"
-            style={{ display: "flex", alignItems: "center" }}
+        <Row
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+          <Row
+            style={{
+              display: "flex",
+              alignItems: "center",
+              width: "90%",
+            }}
           >
             {props.firstIcon}
-            <div>
+            <div style={{ width: "90%" }}>
               <Text style={{ fontSize: 16, fontWeight: 400 }}>
                 {props.text}
               </Text>
               <br />
               <Text style={{ fontSize: 14 }}>{props.subText}</Text>
             </div>
-          </div>
+          </Row>
           {props.lastIcon}
         </Row>
       </div>
