@@ -112,6 +112,20 @@ export const createGroup = async (req, res) => {
     // newGroup.listMembers.push(groupOwner);
     newGroup.listMembers = [groupOwner, ...newGroup?.listMembers];
     await newGroup.save();
+
+    const groupOwnerData = await User.findById(req.userId);
+    newGroup.listMembers.forEach(member => {
+      if (!member.userId.equals(req.userId))
+        sendNotificationUser({
+          userId: member.userId,
+          kind: "NewGroup_InitialMembers",
+          content: {
+            description: `You has been added to a new group "${newGroup?.name}" by ${groupOwnerData?.name}.`,
+          },
+          link: `/group/${newGroup._id}/main`,
+        });
+    })
+
     res.status(httpStatusCodes.created).json(newGroup);
   } catch (error) {
     res
@@ -170,7 +184,10 @@ export const inviteFriends = async (req, res) => {
     const user = await User.findById(userId);
     const group = await Group.findById(groupId);
 
-    // error 404...
+    if (!group)
+      return res
+        .status(httpStatusCodes.notFound)
+        .send("Group not found")
 
     if (listUsersToInvite) {
       listUsersToInvite.forEach((invitedId) => {
@@ -383,7 +400,7 @@ export const leaveGroup = async (req, res) => {
     if (
       group.listMembers.length > 1 &&
       group.listMembers.find((member) => member.userId.equals(userId)).role ===
-        "Owner"
+      "Owner"
     )
       return res
         .status(httpStatusCodes.badContent)

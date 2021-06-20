@@ -4,11 +4,11 @@ export const isLoginUser = (user) => {
 };
 
 export const isOwner = (user, group) => {
-  let isOwner = false;
+  let result = false;
   group?.listMembers.forEach((member) => {
     if (member?.userId === user?.result?._id) {
-      if (member?.role === "Owner") isOwner = true;
+      if (member?.role === "Owner") result = true;
     }
   });
-  return isOwner;
+  return result;
 };
