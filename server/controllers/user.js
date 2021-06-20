@@ -8,6 +8,7 @@ import sendVerificationMail from "../utils/sendVerificationMail.js";
 import { cuteIO, usersStatusManager } from "../index.js";
 import { httpStatusCodes } from "../utils/httpStatusCode.js";
 import moment from "moment";
+import { fetchGitHubUser, getAccessToken } from "../businessLogics/auth.js";
 
 const JWT_KEY = "youit";
 
@@ -61,8 +62,8 @@ export const signup = async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 12);
 
     const newInfo = {
-      firstName: firstName,
-      lastName: lastName,
+      // firstName: firstName,
+      // lastName: lastName,
       gender: gender,
       dateOfBirth: dob,
     };
@@ -311,4 +312,106 @@ export const countNewUsers = async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
+};
+
+export const signinWithGithub = async (req, res) => {
+  const redirect_uri = "http://localhost:5000/user/login/github/callback";
+  // console.log("yes");
+  res.redirect(
+    `https://cors-anywhere.herokuapp.com/https://github.com/login/oauth/authorize?client_id=${process.env.GITHUB_CLIENT_ID}&redirect_uri=${redirect_uri}`
+  );
+};
+
+export const redirectGithubCallback = async (req, res) => {
+  // console.log("code");
+  const code = req.query.code;
+  console.log({
+    code,
+    client_id: process.env.GITHUB_CLIENT_ID,
+    client_secret: process.env.GITHUB_CLIENT_SECRET,
+  });
+  const access_token = await getAccessToken({
+    code,
+    client_id: process.env.GITHUB_CLIENT_ID,
+    client_secret: process.env.GITHUB_CLIENT_SECRET,
+  });
+
+  const userGithub = await fetchGitHubUser(access_token);
+
+  if (!userGithub) {
+    return res.status(401).json({ message: "Invalid credentials" });
+  }
+
+  console.log(userGithub);
+
+  try {
+    const user = await User.findOne({ email: userGithub.email });
+
+    // user exists
+    if (user) {
+      try {
+        if (!user.activated) {
+          User.findByIdAndUpdate(
+            user._id,
+            {
+              activated: true,
+            },
+            { new: true }
+          ).then((result) => res.status(200).json(result));
+
+          // return res.status(401).json({ message: "Unactivated", result: user });
+        }
+
+        const token = jwt.sign({ email: user.email, id: user._id }, JWT_KEY, {
+          // expiresIn: "24h",
+        });
+
+        //TODO: get from body, browserId with Nghia
+        // if (browserId) {
+        //   cuteIO.sendToBrowser(browserId, "System-SignedIn", {});
+        // }
+
+        return res.status(201).json({ result: user, token });
+      } catch (err) {
+        return res
+          .status(500)
+          .json({ message: "Something went wrong with this user" });
+      }
+    } else {
+      // user new login
+      const hashedPassword = await bcrypt.hash("password", 12);
+
+      const result = await User.create({
+        email: userGithub.email,
+        password: hashedPassword,
+        name: userGithub.name,
+        activated: true,
+      });
+
+      const token = jwt.sign({ email: result.email, id: result._id }, JWT_KEY, {
+        expiresIn: "24h",
+      });
+
+      //TODO: get from body, browserId with Nghia
+      // if (browserId) {
+      //   cuteIO.sendToBrowser(browserId, "System-SignedIn", {});
+      // }
+
+      // sendVerificationMail(email);
+
+      res.status(201).json({ result, token });
+    }
+  } catch (error) {
+    res.status(500).json({ message: "Something went wrong" });
+
+    console.log(error);
+  }
+
+  // if (user) {
+  //   req.session.access_token = access_token;
+  //   req.session.githubId = user.id;
+  //   res.redirect("/admin");
+  // } else {
+  //   res.send("Login did not succeed!");
+  // }
 };

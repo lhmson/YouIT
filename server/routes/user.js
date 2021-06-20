@@ -11,20 +11,25 @@ import {
   setUserStatus,
   getUserStatus,
   countNewUsers,
+  redirectGithubCallback,
+  signinWithGithub,
 } from "../controllers/user.js";
 import auth from "../middleware/auth.js";
 
 const router = express.Router();
 
 router.get("/newUsers/:range/:timeString", countNewUsers);
+router.get("/password/check/:password", auth, checkPassword);
+router.get("/login/github", signinWithGithub);
+router.get("/login/github/callback", redirectGithubCallback);
 
 router.post("/signin", signin);
 router.post("/signup", signup);
-router.put("/password/change", auth, changePassword);
-router.get("/password/check/:password", auth, checkPassword);
-router.put("/verify/:token", verifyToken);
 router.post("/resend", resendVerificationMail);
 router.post("/signout", signout);
+
+router.put("/password/change", auth, changePassword);
+router.put("/verify/:token", verifyToken);
 
 // user status APIs
 router.get("/list/friendsStatus", auth, getFriendsStatus);

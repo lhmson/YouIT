@@ -22,6 +22,7 @@ import {
 } from "../businessLogics/group.js";
 import moment from "moment";
 import { handleCreateHashtag, handleDeleteHashtags } from "../businessLogics/hashtag.js";
+import { extractToken } from "../businessLogics/auth.js";
 
 //#region CRUD
 // GET post/list/all
@@ -39,7 +40,9 @@ export const getPosts = async (req, res) => {
 
 // GET post/:id
 export const getAPost = async (req, res) => {
-  const { userId } = req;
+  const token = req.headers.authorization?.split(" ")?.[1];
+  const userId = token ? extractToken(token).userId : null;
+
   const { id } = req.params;
 
   try {
@@ -169,7 +172,7 @@ export const createPost = async (req, res) => {
               content: {
                 description: `A new post "${newPost?.title}" has been uploaded to your group "${group.name}". Click here to review it.`,
               },
-              link: `/post/${newPost?._id}`,
+              link: `/group/${group?._id}/review_posts`,
             });
         });
       }
@@ -264,7 +267,7 @@ export const updatePost = async (req, res) => {
                 content: {
                   description: `The post "${res?.title}" in your group "${group.name}" has been updated. Click here to review it.`,
                 },
-                link: `/post/${res?._id}`,
+                link: `/group/${group?._id}/review_posts`,
               });
           });
         }
@@ -469,7 +472,8 @@ export const unfollowPost = handleUpdateInteraction([
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 export const getPostsPagination = async (req, res) => {
-  const { userId } = req;
+  const token = req.headers.authorization?.split(" ")?.[1];
+  const userId = token ? extractToken(token).userId : null;
 
   //get _page and _limit params from url
   // joinedGroupOnly: cut out the posts of group of which this user is not a member

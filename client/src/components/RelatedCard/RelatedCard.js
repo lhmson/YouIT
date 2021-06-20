@@ -27,9 +27,16 @@ function RelatedCard(props) {
             </Col>
 
             <Col span={20} align="start" justify="center">
-              <Tooltip title={limitNameLength(p.title, 96)} placement="left">
-                <Link to={`/post/${p._id}`} className="clickable dark-green">
-                  {limitNameLength(p.title, 42)}
+              <Tooltip
+                className="break-word"
+                title={limitNameLength(p.title, 150)}
+                placement="left"
+              >
+                <Link
+                  to={`/post/${p._id}`}
+                  className="clickable dark-green break-word"
+                >
+                  {limitNameLength(p.title, 90)}
                 </Link>
               </Tooltip>
             </Col>

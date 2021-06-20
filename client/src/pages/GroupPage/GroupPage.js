@@ -1,5 +1,5 @@
 import React, { createContext, useEffect, useState } from "react";
-import { Layout, Row } from "antd";
+import { Layout, Row, Modal, message, Menu, Typography, Col } from "antd";
 import {
   AdminGroupSidebar,
   CoverPhoto,
@@ -20,11 +20,15 @@ import styles from "./styles.js";
 import "./styles.css";
 import { useLocalStorage } from "../../hooks/useLocalStorage.js";
 import SettingView from "../../components/GroupPage/SettingView/SettingView.js";
+import Loading from "../../components/Loading/Loading";
+import { isOwner } from "../../utils/user.js";
 
 const { Content } = Layout;
+const { Text } = Typography;
+
 export const GroupContext = createContext({
   group: {},
-  setGroup: () => {},
+  setGroup: () => { },
 });
 
 function GroupPage(props) {
@@ -35,15 +39,15 @@ function GroupPage(props) {
   const history = useHistory();
   const [user, setUser] = useLocalStorage("user");
 
-  const isOwner = (user) => {
-    let isOwner = false;
-    group?.listMembers.forEach((member) => {
-      if (member?.userId === user?.result?._id) {
-        if (member?.role === "Owner") isOwner = true;
-      }
-    });
-    return isOwner;
-  };
+  // const isOwner = (user) => {
+  //   let isOwner = false;
+  //   group?.listMembers.forEach((member) => {
+  //     if (member?.userId === user?.result?._id) {
+  //       if (member?.role === "Owner") isOwner = true;
+  //     }
+  //   });
+  //   return isOwner;
+  // };
 
   const isAdmin = (user) => {
     let isAdmin = false;
@@ -79,18 +83,80 @@ function GroupPage(props) {
     }
     fetchGroupInfo();
     //console.log(group);
-  }, []);
+  }, [id]);
 
   // check authorization for route
   useEffect(() => {
     if (
-      (!isOwner(user) && menu === "setting") ||
+      (!isOwner(user, group) && menu === "setting") ||
       (!isAdmin(user) && menu === "member_requests") ||
       (!isModerator(user) && menu === "review_posts")
     ) {
       // history.push(`/group/${group?._id}/main`);
     }
   }, [menu]);
+
+  // if (!group) return <Loading />;
+  const SelectedGroupMenu = () => {
+    switch (menu) {
+      case "member_requests":
+        return <MemberRequestsResult />;
+      case "review_posts":
+        return <PostRequestsResult />;
+      case "setting":
+        return <SettingView />;
+      default:
+        return (
+          <div>
+            <Layout style={styles.avatarView}>
+              <Content
+                className="container"
+                style={{
+                  padding: 8,
+                }}
+              >
+                <CoverPhoto />
+                <Col>
+                  <Text style={{ fontSize: 40, fontWeight: "bold" }}>
+                    {group?.name}
+                  </Text>
+                  <Row
+                    style={{
+                      // display: "flex",
+                      flexDirection: "row",
+                      // justifyContent: "space-between",
+                    }}
+                  >
+                    <div style={{ flex: 1 }}>
+                      <GroupBasicInfo />
+                    </div>
+                    <GroupFunctionButtons />
+                  </Row>
+                </Col>
+                <GroupMenu />
+              </Content>
+            </Layout>
+            <Layout>
+              <Content>
+                <Layout className="container">
+                  {location.pathname === `/group/${group?._id}/main` ? (
+                    <FeedPosts
+                      limitPagination={5}
+                      space="group"
+                      groupId={group?._id}
+                    />
+                  ) : location.pathname === `/group/${group?._id}/about` ? (
+                    <GroupAboutCard />
+                  ) : (
+                    <GroupMember />
+                  )}
+                </Layout>
+              </Content>
+            </Layout>
+          </div>
+        );
+    }
+  };
 
   return (
     <GroupContext.Provider value={valueContext}>
@@ -101,64 +167,14 @@ function GroupPage(props) {
             <AdminGroupSidebar
               className="sidebar"
               selectMenu={menu}
-              // setModeSearch={setModeSearch}
+            // setModeSearch={setModeSearch}
             />
             <div
               className="mainContent"
               id="scrollableDiv"
               style={{ minWidth: "87vw" }}
             >
-              {menu === "member_requests" ? (
-                <MemberRequestsResult />
-              ) : menu === "review_posts" ? (
-                <PostRequestsResult />
-              ) : menu === "setting" ? (
-                <SettingView />
-              ) : (
-                <div>
-                  <Layout style={styles.avatarView}>
-                    <Content
-                      className="container"
-                      style={{
-                        padding: 8,
-                      }}
-                    >
-                      <CoverPhoto />
-                      <Row
-                        style={{
-                          display: "flex",
-                          flexDirection: "row",
-                          justifyContent: "space-between",
-                        }}
-                      >
-                        <GroupBasicInfo />
-                        <GroupFunctionButtons />
-                      </Row>
-                      <Row style={{ justifyContent: "space-between" }}>
-                        <GroupMenu />
-                      </Row>
-                    </Content>
-                  </Layout>
-                  <Layout>
-                    <Content>
-                      <Layout className="container">
-                        {location.pathname === `/group/${group?._id}/main` ? (
-                          <FeedPosts
-                            limitPagination={5}
-                            space="group"
-                            groupId={group?._id}
-                          />
-                        ) : location.pathname ===
-                          `/group/${group?._id}/about` ? (
-                          <GroupAboutCard />
-                        ) : (
-                          <GroupMember />
-                        )}
-                      </Layout>
-                    </Content>
-                  </Layout>
-                </div>
-              )}
+              {group ? <SelectedGroupMenu /> : <Loading />}
             </div>
           </div>
         </Layout>

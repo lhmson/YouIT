@@ -2,12 +2,15 @@ import express from "express";
 import Group from "../models/group.js";
 import User from "../models/user.js";
 import {
+  checkRoleHasPermissionOfRole,
+  getMemberRoleInGroup,
   isMemberOfGroup,
   isPendingMemberOfGroup,
 } from "../businessLogics/group.js";
 import { httpStatusCodes } from "../utils/httpStatusCode.js";
 import { sendNotificationUser } from "../businessLogics/notification.js";
 import moment from "moment";
+import Post from "../models/post.js";
 
 /**
  * @param {express.Request<ParamsDictionary, any, any, QueryString.ParsedQs, Record<string, any>>} req
@@ -109,6 +112,20 @@ export const createGroup = async (req, res) => {
     // newGroup.listMembers.push(groupOwner);
     newGroup.listMembers = [groupOwner, ...newGroup?.listMembers];
     await newGroup.save();
+
+    const groupOwnerData = await User.findById(req.userId);
+    newGroup.listMembers.forEach(member => {
+      if (!member.userId.equals(req.userId))
+        sendNotificationUser({
+          userId: member.userId,
+          kind: "NewGroup_InitialMembers",
+          content: {
+            description: `You have been added to a new group "${newGroup?.name}" by ${groupOwnerData?.name}.`,
+          },
+          link: `/group/${newGroup._id}/main`,
+        });
+    })
+
     res.status(httpStatusCodes.created).json(newGroup);
   } catch (error) {
     res
@@ -143,6 +160,16 @@ export const addGroupMember = async (req, res) => {
     // group.listPendingMembers = newPendingMembers;
 
     await group.save();
+
+    sendNotificationUser({
+      userId: memberId,
+      kind: "NewMember_NewMember",
+      content: {
+        description: `Your request to join group "${group?.name}" has been approved!`,
+      },
+      link: `/group/${group._id}/main`,
+    });
+
     return res.status(httpStatusCodes.ok).json(group);
   } catch (error) {
     return res
@@ -167,7 +194,10 @@ export const inviteFriends = async (req, res) => {
     const user = await User.findById(userId);
     const group = await Group.findById(groupId);
 
-    // error 404...
+    if (!group)
+      return res
+        .status(httpStatusCodes.notFound)
+        .send("Group not found")
 
     if (listUsersToInvite) {
       listUsersToInvite.forEach((invitedId) => {
@@ -195,6 +225,12 @@ export const addGroupPendingMember = async (req, res) => {
   const pendingMember = { userId: memberId };
 
   try {
+    const newMember = await User.findById(memberId);
+    if (!newMember)
+      return res
+        .status(httpStatusCodes.notFound)
+        .json("User not exists")
+
     const group = await Group.findById(groupId);
     if (!group) {
       return res
@@ -220,6 +256,20 @@ export const addGroupPendingMember = async (req, res) => {
 
     group.listPendingMembers.push(pendingMember);
     await group.save();
+
+    // send noti to group admins
+    group?.listMembers?.forEach(member => {
+      if (checkRoleHasPermissionOfRole(member?.role, "Admin"))
+        sendNotificationUser({
+          userId: member.userId,
+          kind: "NewPendingMember_GroupAdmins",
+          content: {
+            description: `User ${newMember?.name} wants to join your group "${group?.name}". Click here to review member requests.`,
+          },
+          link: `/group/${group._id}/member_requests`,
+        });
+    })
+
     return res.status(httpStatusCodes.ok).json(group);
   } catch (error) {
     return res
@@ -380,7 +430,7 @@ export const leaveGroup = async (req, res) => {
     if (
       group.listMembers.length > 1 &&
       group.listMembers.find((member) => member.userId.equals(userId)).role ===
-        "Owner"
+      "Owner"
     )
       return res
         .status(httpStatusCodes.badContent)
@@ -422,7 +472,7 @@ export const leaveGroup = async (req, res) => {
 export const setGroupMemberRole = async (req, res) => {
   const { groupId, memberId } = req.params;
   const { newRole } = req.body;
-  console.log(newRole);
+  // console.log(newRole);
   const { userGroupRole } = req;
 
   const group = await Group.findById(groupId);
@@ -449,8 +499,21 @@ export const setGroupMemberRole = async (req, res) => {
 
     group.listMembers.forEach(async (member) => {
       if (member.userId.equals(memberId)) {
+        const oldRole = member.role;
         member.role = newRole;
         await group.save();
+
+        // only send notification if the member have a higher role
+        if (checkRoleHasPermissionOfRole(newRole, oldRole))
+          sendNotificationUser({
+            userId: member.userId,
+            kind: "SetGroupMemberRole_SetMember",
+            content: {
+              description: `You have been promoted as ${newRole === "Admin" ? "an" : "a"} ${newRole} of group "${group?.name}".`,
+            },
+            link: `/group/${group._id}/main`,
+          });
+
         return res.status(httpStatusCodes.ok).json(group);
       }
     });
@@ -473,6 +536,15 @@ export const updateGroup = async (req, res) => {
   if (!userId) return res.json({ message: "Unauthenticated" });
 
   try {
+    const userRole = updatedGroup?.listMembers?.find?.(
+      (member) => member?.userId == userId
+    )?.role;
+
+    if (!checkRoleHasPermissionOfRole(userRole, "Owner"))
+      return res
+        .status(httpStatusCodes.forbidden)
+        .json({ message: "Not have permission" });
+
     await Group.findByIdAndUpdate(updatedGroup?._id, updatedGroup, {
       new: true,
     }).then((result) => res.status(httpStatusCodes.ok).json(result));
@@ -536,5 +608,97 @@ export const countGroups = async (req, res) => {
     res.status(200).json({ labels, publicGroups, privateGroups });
   } catch (error) {
     res.status(500).json({ message: error.message });
+  }
+};
+
+/**
+ * @param {express.Request<ParamsDictionary, any, any, QueryString.ParsedQs, Record<string, any>>} req
+ * @param {express.Response<any, Record<string, any>, number>} res
+ * @param {express.NextFunction} next
+ */
+export const countPostsOfGroup = async (req, res) => {
+  const { groupId } = req.params;
+
+  const group = Group.findById(groupId);
+  if (!group)
+    return res.status(httpStatusCodes.notFound).json("Group not found");
+
+  try {
+    const posts = await Post.find();
+
+    let count = 0;
+    posts.forEach((post) => {
+      const groupPostId = post?.groupPostInfo?.groupId;
+      const groupStatus = post?.groupPostInfo?.status;
+      if (groupPostId === groupId && groupStatus !== "Pending") count++;
+    });
+
+    return res.status(httpStatusCodes.ok).json(count);
+  } catch (error) {
+    return res
+      .status(httpStatusCodes.internalServerError)
+      .json({ message: error.message });
+  }
+};
+
+/**
+ * @param {express.Request<ParamsDictionary, any, any, QueryString.ParsedQs, Record<string, any>>} req
+ * @param {express.Response<any, Record<string, any>, number>} res
+ * @param {express.NextFunction} next
+ */
+export const countMembersOfGroup = async (req, res) => {
+  const { groupId } = req.params;
+
+  try {
+    const group = Group.findById(groupId);
+    if (!group)
+      return res.status(httpStatusCodes.notFound).json("Group not found");
+
+    const members = group?.listMembers?.length;
+    return res.status(httpStatusCodes.ok).json(members);
+  } catch (error) {
+    return res
+      .status(httpStatusCodes.internalServerError)
+      .json({ message: error.message });
+  }
+};
+
+/**
+ * @param {express.Request<ParamsDictionary, any, any, QueryString.ParsedQs, Record<string, any>>} req
+ * @param {express.Response<any, Record<string, any>, number>} res
+ * @param {express.NextFunction} next
+ */
+export const getAllGroupsForReport = async (req, res) => {
+  try {
+    const groups = await Group.find();
+
+    let groupsForReport = [];
+
+    for (var group of groups) {
+      const members = group?.listMembers?.length;
+
+      const posts = await Post.find();
+      let countPost = 0;
+      posts.forEach((post) => {
+        const groupPostId = post?.groupPostInfo?.groupId;
+        const groupStatus = post?.groupPostInfo?.status;
+        if (groupPostId === groupId && groupStatus !== "Pending") countPost++;
+      });
+
+      const groupReport = {
+        _id: group?._id,
+        name: group?.name,
+        members: members,
+        posts: countPost,
+        reports: 0,
+      };
+      groupsForReport.push(groupReport);
+    }
+
+    return res.status(httpStatusCodes.ok).json(groupsForReport);
+  } catch (error) {
+    return res
+      .status(httpStatusCodes.internalServerError)
+      .json({ message: error.message });
   }
 };

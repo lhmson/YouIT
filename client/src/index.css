@@ -25,6 +25,11 @@ body {
   cursor: pointer;
 }
 
+.boldhover:hover {
+  font-weight: bold;
+  cursor: pointer;
+}
+
 .bold {
   font-weight: bold;
 }
@@ -217,6 +222,24 @@ input:-webkit-autofill:active {
   background-color: rgba(43, 49, 55, 0.15);
   border-color: rgb(43, 49, 55);
   color: rgb(43, 49, 55);
+}
+
+.google-container {
+  background-color: rgb(57, 114, 254);
+  border-color: rgb(57, 114, 254);
+  color: white;
+}
+
+.google-container:hover {
+  background-color: rgba(57, 114, 254, 0.15);
+  border-color: rgb(57, 114, 254);
+  color: rgb(57, 114, 254);
+}
+
+.google-container:focus {
+  background-color: rgba(57, 114, 254, 0.15);
+  border-color: rgb(57, 114, 254);
+  color: rgb(57, 114, 254);
 }
 
 .ellipsis {

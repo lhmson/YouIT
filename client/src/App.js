@@ -12,18 +12,19 @@ import {
   UserResultSearchPage,
   AboutPage,
   GroupPage,
-  GroupAboutPage,
   CreateGroupPage,
   LoginPage,
   RegisterPage,
   ErrorPage,
   HomePage,
   MessagePage,
-  FriendMangementPage,
+  FriendManagementPage,
   MutualFriendPage,
   GroupManagementPage,
   AuthAdminPage,
   StatisticsPage,
+  ReportUserPage,
+  ReportGroupPage,
 } from "./pages/index";
 
 import { CuteClientIOProvider } from "./socket/CuteClientIOProvider.js";
@@ -37,10 +38,11 @@ import ActivationPage from "./pages/ActivationPage/ActivationPage.js";
 import AdminDashboardPage from "./pages/SystemAdmin/AdminDashboardPage/AdminDashboardPage.js";
 import { FriendsStatusProvider } from "./context/FriendsStatusContext.js";
 import { BACKEND_URL } from "./constants/config.js";
+import { useDispatch } from "react-redux";
+import { getUser } from "./redux/actions/user.js";
 
 const loggedIn = () => {
   const user = JSON.parse(localStorage.getItem("user"));
-  console.log("user local storage", user);
   return user;
 };
 
@@ -51,6 +53,13 @@ const isAdmin = () => {
 function App() {
   const [token, setToken] = useToken();
   const [user] = useLocalStorage("user");
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    //console.log("start fetching user");
+    dispatch(getUser(user?.result?._id));
+  }, []);
 
   return (
     <div className={styles.App}>
@@ -90,7 +99,7 @@ function App() {
             <PrivateRoute
               exact
               path="/friends"
-              component={FriendMangementPage}
+              component={FriendManagementPage}
             />
             <PrivateRoute
               exact
@@ -124,6 +133,8 @@ function App() {
               {isAdmin() ? <AdminDashboardPage /> : <Redirect to="/admin" />}
             </PrivateRoute>
             <Route exact path="/statistics" component={StatisticsPage} />
+            <Route exact path="/admin/user" component={ReportUserPage} />
+            <Route path="/admin/group" component={ReportGroupPage} />
             <Route exact path="/error403">
               <ErrorPage code="403" />
             </Route>

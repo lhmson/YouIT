@@ -34,8 +34,8 @@ function AboutCard() {
       <div className="container" style={styles.whiteBackground}>
         <div className="row">
           <div
-            className="col-2"
             style={{
+              paddingLeft: 24,
               display: "flex",
               justifyContent: "center",
             }}
@@ -54,10 +54,10 @@ function AboutCard() {
         <div style={styles.sider}>
           <div className="row">
             <div
-              className="col-4"
+              // className="col-4"
               style={{ flexDirection: "row", display: "flex" }}
             >
-              <Sider width="95%">
+              <Sider width="95%" breakpoint="lg" collapsedWidth="0">
                 <Menu
                   mode="inline"
                   style={{
@@ -102,7 +102,7 @@ function AboutCard() {
                 }}
               />
             </div>
-            <div className="col-8">{CustomPane()}</div>
+            <div style={{ flex: 1 }}>{CustomPane()}</div>
           </div>
         </div>
       </div>

@@ -1,19 +1,31 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import styles from "./styles.js";
 import { Layout, Typography, Menu, message, Form, Input, Button } from "antd";
 
 import Navbar from "../../components/Navbar/Navbar";
 
 import COLOR from "../../constants/colors.js";
-import { useHistory } from "react-router-dom";
 import { Content } from "antd/lib/layout/layout";
 import Sider from "antd/lib/layout/Sider";
 import EditableText from "../../components/UserInfo/AboutCard/OverviewPane/EditableText/EditableText.js";
 import * as authAPI from "../../api/auth";
+import { useDispatch, useSelector } from "react-redux";
+import { updateUser } from "../../redux/actions/user.js";
 
-const { Title, Text } = Typography;
+const { Text } = Typography;
 
 const GeneralTab = () => {
+  const user = useSelector((state) => state.user);
+  const [name, setName] = useState(user?.name);
+
+  const dispatch = useDispatch();
+
+  const saveName = () => {
+    const updatedUser = { ...user, name };
+    //console.log(updatedUser);
+    dispatch(updateUser(updatedUser));
+  };
+
   return (
     <div className="bg-white p-4">
       <h3>General</h3>
@@ -36,14 +48,14 @@ const GeneralTab = () => {
                 Email
               </Text>
             }
-            text="hau@gmail.com"
+            text={user?.email}
             placeholder="Email"
-            // onChange={(value) => setAddress(value.target.value)}
+            // onChange={(value) => setEmail(value.target.value)}
             // onSave={saveAddress}
             setPreviousState={() => {
               // setAddress(user?.userInfo?.address ?? "VietNam");
             }}
-            editable={true}
+            editable={false}
           />
         </div>
         <div
@@ -61,15 +73,15 @@ const GeneralTab = () => {
                 style={{ fontSize: 16, width: 150, color: COLOR.gray }}
                 strong
               >
-                First name
+                Name
               </Text>
             }
-            text="Ngo"
-            placeholder="First name"
-            // onChange={(value) => setAddress(value.target.value)}
-            // onSave={saveAddress}
+            text={user?.name}
+            placeholder="Name"
+            onChange={(value) => setName(value.target.value)}
+            onSave={saveName}
             setPreviousState={() => {
-              // setAddress(user?.userInfo?.address ?? "VietNam");
+              setName(user?.name ?? "");
             }}
             editable={true}
           />
@@ -82,26 +94,6 @@ const GeneralTab = () => {
             marginBottom: 14,
           }}
         />
-        <div style={{ marginLeft: 12 }}>
-          <EditableText
-            firstIcon={
-              <Text
-                style={{ fontSize: 16, width: 150, color: COLOR.gray }}
-                strong
-              >
-                Last name
-              </Text>
-            }
-            text="Hau"
-            placeholder="Last name"
-            // onChange={(value) => setAddress(value.target.value)}
-            // onSave={saveAddress}
-            setPreviousState={() => {
-              // setAddress(user?.userInfo?.address ?? "VietNam");
-            }}
-            editable={true}
-          />
-        </div>
       </div>
     </div>
   );
@@ -179,7 +171,7 @@ const SecurityTab = () => {
         <Form.Item name="currentPassword">
           <Input.Password
             name="currentPassword"
-            autocomplete="newpassword"
+            autoComplete="newpassword"
             placeholder="Current password"
             onChange={handleChange}
           />
@@ -206,7 +198,7 @@ const SecurityTab = () => {
         >
           <Input.Password
             name="newPassword"
-            autocomplete="newpassword"
+            autoComplete="newpassword"
             placeholder="New password"
             onChange={handleChange}
           />
@@ -231,7 +223,7 @@ const SecurityTab = () => {
           ]}
         >
           <Input.Password
-            autocomplete="newpassword"
+            autoComplete="newpassword"
             placeholder="Confirm password"
             suffix={null}
           />
@@ -243,7 +235,7 @@ const SecurityTab = () => {
             className="green-button"
             htmlType="submit"
           >
-            Create account
+            Confirm
           </Button>
         </Form.Item>
       </Form>
@@ -261,7 +253,7 @@ const SettingsTabs = [
 ];
 
 const SettingsPage = () => {
-  const [currentTab, setCurrentTab] = useState("1");
+  const [currentTab, setCurrentTab] = useState("0");
   const handleSelectTab = (e) => {
     console.log("ekey", e.key);
     setCurrentTab(e.key);

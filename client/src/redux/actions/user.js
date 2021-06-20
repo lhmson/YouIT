@@ -9,11 +9,14 @@ import {
 } from "../actionTypes";
 import * as api from "../../api/user_info";
 
-export const getUser = (uid) => async (dispatch) => {
+export const getUser = (uid, history) => async (dispatch) => {
   try {
-    const { data } = await api.fetchUserInfo(uid);
-    //console.log("data ", data);
-    dispatch({ type: FETCH_USER, payload: data });
+    await api
+      .fetchUserInfo(uid)
+      .then((res) => dispatch({ type: FETCH_USER, payload: res.data }))
+      .catch((error) => {
+        if (error.response?.status === 404) history.push("/error404");
+      });
   } catch (error) {
     console.log(error);
   }

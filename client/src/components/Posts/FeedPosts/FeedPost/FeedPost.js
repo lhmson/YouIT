@@ -16,7 +16,6 @@ import {
   ArrowUpOutlined,
   ArrowDownOutlined,
   LinkOutlined,
-  ShareAltOutlined,
   CaretRightOutlined,
   EditFilled,
   DeleteFilled,
@@ -45,7 +44,7 @@ import { deletePost } from "../../../../redux/actions/posts";
 import { HashLink } from "react-router-hash-link";
 import { useLocalStorage } from "../../../../hooks/useLocalStorage";
 import { limitNameLength } from "../../../../utils/limitNameLength";
-import ShareButton from "./ShareButton";
+import ShareButton from "../../ShareButton";
 import { BACKEND_URL, FRONTEND_URL } from "../../../../constants/config";
 
 const { Title, Text, Paragraph } = Typography;
@@ -192,73 +191,94 @@ function FeedPost({ post, setCurrentId }) {
   }, []);
 
   const handleUpvoteClick = async (id) => {
+    if (!user) {
+      message.info("You need to log in to upvote this post!");
+      return;
+    }
+
     if (myInteractions?.upvote) {
-      await unvotePost(id)
+      unvotePost(id)
         .then((res) => {
-          fetchMyInteractions();
-          dispatchInteractions({ type: "unupvote" });
+          fetchMyInteractions().then(() =>
+            dispatchInteractions({ type: "unupvote" })
+          );
         })
         .catch((error) => {
-          message.error("Something goes wrong with post upvote");
+          message.error("Something goes wrong with post unvote");
           console.log(error);
         });
     } else {
-      await upvotePost(id)
+      upvotePost(id)
         .then((res) => {
           if (myInteractions?.downvote) {
             dispatchInteractions({ type: "undownvote" });
           }
-          fetchMyInteractions();
-          dispatchInteractions({ type: "upvote" });
+          fetchMyInteractions().then(() =>
+            dispatchInteractions({ type: "upvote" })
+          );
         })
         .catch((error) => {
-          message.error("Something goes wrong with post unvote");
+          message.error("Something goes wrong with post upvote");
           console.log(error);
         });
     }
   };
 
   const handleDownvoteClick = async (id) => {
+    if (!user) {
+      message.info("You need to log in to downvote this post!");
+      return;
+    }
+
     if (myInteractions?.downvote) {
-      await unvotePost(id)
+      unvotePost(id)
         .then((res) => {
-          fetchMyInteractions();
-          dispatchInteractions({ type: "undownvote" });
+          fetchMyInteractions().then(() =>
+            dispatchInteractions({ type: "undownvote" })
+          );
         })
         .catch((error) => {
-          message.error("Something goes wrong with post downvote");
+          message.error("Something goes wrong with post unvote");
           console.log(error);
         });
     } else {
-      await downvotePost(id)
+      downvotePost(id)
         .then((res) => {
           if (myInteractions?.upvote) {
             dispatchInteractions({ type: "unupvote" });
           }
-          fetchMyInteractions();
-          dispatchInteractions({ type: "downvote" });
+          fetchMyInteractions().then(() =>
+            dispatchInteractions({ type: "downvote" })
+          );
         })
         .catch((error) => {
-          message.error("Something goes wrong with post unvote");
+          message.error("Something goes wrong with post downvote");
           console.log(error);
         });
     }
   };
 
   const fetchMyInteractions = () => {
-    getMyInteractions(post._id)
-      .then((res) => setMyInteractions(res.data))
+    if (!user)
+      return;
+
+    const interactions = getMyInteractions(post._id)
+      .then((res) => {
+        setMyInteractions(res.data);
+        return res.data;
+      })
       .catch((error) => {
         message.error("Something goes wrong with post interactions");
         console.log(error);
       });
+    return interactions;
   };
 
   //#endregion
 
   const copyLink = (id) => {
     navigator.clipboard
-      .writeText(`${window.location.origin}/post/${id}`) // change to deployment link later
+      .writeText(`${FRONTEND_URL}/post/${id}`) // change to deployment link later
       .then(() => message.success("Link copied to clipboard"))
       .catch((error) => {
         message.error("Something goes wrong copying link");
@@ -387,16 +407,8 @@ function FeedPost({ post, setCurrentId }) {
         <div className="break-word">
           <Title level={2}>{post?.title}</Title>
           <div className="pb-2">
-            {/* <Paragraph>
-              Some word Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-              sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-              Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris
-              nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in
-              reprehenderit in voluptate velit esse cillum dolore eu fugiat
-              nulla pariatur. Excepteur sint occaecat cupidatat non proident,
-              sunt in culpa qui officia deserunt mollit anim id est laborum.
-            </Paragraph> */}
-            <Paragraph>{limitNameLength(post?.content?.text, 500)}</Paragraph>
+            <Paragraph>{post?.content?.overview}</Paragraph>
+
             {post?.content?.pinnedUrl && (
               <Row className="justify-content-center">
                 <ReactTinyLink

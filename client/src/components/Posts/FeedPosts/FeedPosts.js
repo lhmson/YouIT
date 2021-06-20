@@ -21,6 +21,7 @@ function FeedPosts({
   space,
   ownerId,
   groupId,
+  hasMarginLeft,
 }) {
   // const posts = useSelector((state) => state.posts);
   const [posts, setPosts] = useState([]);
@@ -95,7 +96,13 @@ function FeedPosts({
               </p>
             }
           >
-            <Row style={styles.postsBox}>
+            <Row
+              style={
+                hasMarginLeft
+                  ? { ...styles.postsBox, padding: "24px 24px 0" }
+                  : styles.postsBox
+              }
+            >
               {posts?.map((post) => (
                 <FeedPost
                   key={post._id}

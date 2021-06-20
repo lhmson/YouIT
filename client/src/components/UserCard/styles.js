@@ -3,9 +3,16 @@ import COLOR from "../../constants/colors";
 const styles = {
   card: {
     background: "white",
-    padding: 16,
+    padding: 20,
     marginBottom: 16,
     flex: 1,
+    borderRadius: 30,
+    evaluation: 14,
+    borderWidth: 50,
+    shadowColor: "red",
+    shadowOffset: { height: 50, width: 20 },
+    shadowOpacity: 0.9,
+    shadowRadius: 0.9,
   },
   tag: {
     color: "#219653",
@@ -19,7 +26,7 @@ const styles = {
     color: "#27AE60",
   },
   textUser: {
-    fontweight: 700,
+    fontweight: 800,
     fontSize: 20,
   },
 

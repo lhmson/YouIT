@@ -16,9 +16,9 @@ const router = express.Router();
 router.get("/:id/myInteractions/", auth, getMyCommentInteractions);
 
 router.put("/:id", auth, editComment);
-router.put("/:id/unvote", auth, unvoteComment);
-router.put("/:id/upvote", auth, upvoteComment);
-router.put("/:id/downvote", auth, downvoteComment);
+router.put("/:id/:postId/unvote", auth, unvoteComment);
+router.put("/:id/:postId/upvote", auth, upvoteComment);
+router.put("/:id/:postId/downvote", auth, downvoteComment);
 
 router.delete("/:id", auth, deleteComment);
 

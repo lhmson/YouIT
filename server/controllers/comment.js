@@ -21,7 +21,7 @@ export const createComment = async (req, res) => {
   if (!mongoose.Types.ObjectId.isValid(postId)) {
     return res.status(400).send(`Id ${postId} is invalid.`);
   }
-  const comment = new Comment(req.body);
+  const comment = new Comment({ ...req.body, contentUpdatedAt: Date.now() });
   comment.userId = req.userId;
 
   const user = await User.findById(req.userId);
@@ -40,8 +40,19 @@ export const createComment = async (req, res) => {
         post.comments.push(comment._id);
         await post.save();
 
+        if (!post.userId?.equals(req.userId)) {
+          sendNotificationUser({
+            userId: post.userId,
+            kind: "CommentToPost_PostOwner",
+            content: {
+              description: `${user.name} has just commented on your post "${post.title}".`,
+            },
+            link: `/post/${post?._id}/${comment._id}`,
+          });
+        }
+
         post?.interactionInfo?.listUsersFollowing?.forEach((followerId) => {
-          isPostVisibleByUser(post, followerId).then(visible => {
+          isPostVisibleByUser(post, followerId).then((visible) => {
             if (visible) {
               if (!followerId.equals(req.userId)) {
                 sendNotificationUser({
@@ -57,8 +68,7 @@ export const createComment = async (req, res) => {
           });
         });
 
-
-        post.inter
+        post.inter;
 
         res.status(201).json(post);
       })
@@ -90,7 +100,7 @@ export const replyComment = async (req, res) => {
       .catch((error) => {
         res.status(404).json({ message: error.message });
       });
-  } catch (error) {}
+  } catch (error) { }
 };
 
 export const getComments = async (req, res) => {
@@ -179,6 +189,7 @@ export const editComment = async (req, res) => {
       id,
       {
         content: req.body.content,
+        contentUpdatedAt: Date.now(),
       },
       { new: true }
     )
@@ -228,7 +239,7 @@ export const getMyCommentInteractions = async (req, res) => {
     let filterJson = undefined;
     try {
       filterJson = JSON.parse(filter);
-    } catch {}
+    } catch { }
 
     const interactions = await getInteractionOfAUser(id, userId, filterJson);
     return res.status(httpStatusCodes.ok).json(interactions);
@@ -274,21 +285,17 @@ const handleUpdateCommentInteraction = (actions) => async (req, res) => {
         case "add":
           newComment = addInteraction(newComment, userId, a.interactionType);
 
-          // Test socket.io
           if (a.interactionType === "upvote") {
-            // cuteIO.sendToUser(
-            //   newPost.userId.toString(),
-            //   "UpvotePost_PostOwner",
-            //   { upvoter: userId, post: newPost }
-            // );
-            sendNotificationUser({
-              userId: newComment.userId.toString(),
-              kind: "UpvotePost_PostOwner",
-              content: {
-                description: `${user?.name} has upvoted your comment.`,
-              },
-              link: `/post/${postId}/${newComment._id}`,
-            });
+            if (!newComment.userId.equals(userId)) {
+              sendNotificationUser({
+                userId: newComment.userId.toString(),
+                kind: "UpvotePost_PostOwner",
+                content: {
+                  description: `${user?.name} has upvoted your comment.`,
+                },
+                link: `/post/${postId}/${newComment._id}`,
+              });
+            }
           }
 
           break;

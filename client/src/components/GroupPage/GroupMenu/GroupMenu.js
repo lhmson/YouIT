@@ -41,33 +41,32 @@ function GroupMenu() {
           marginLeft: 16,
           marginRight: 32,
           marginTop: 32,
+          marginBottom: 24,
           justifyContent: "space-between",
         }}
       >
-        <div style={{ marginBottom: 32, maxWidth: "50vw" }}>
-          <Menu
-            onClick={handleClick}
-            selectedKeys={[selectedMenu]}
-            mode="horizontal"
-          >
-            <Menu.Item key="groupPost">
-              <Link to={`/group/${group?._id}/main`} style={styles.linkView}>
-                Group Post
-              </Link>
-            </Menu.Item>
+        <Menu
+          onClick={handleClick}
+          selectedKeys={[selectedMenu]}
+          mode="horizontal"
+        >
+          <Menu.Item key="groupPost">
+            <Link to={`/group/${group?._id}/main`} style={styles.linkView}>
+              Group Post
+            </Link>
+          </Menu.Item>
 
-            <Menu.Item key="about">
-              <Link to={`/group/${group?._id}/about`} style={styles.linkView}>
-                About
-              </Link>
-            </Menu.Item>
-            <Menu.Item key="members">
-              <Link to={`/group/${group?._id}/members`} style={styles.linkView}>
-                Members
-              </Link>
-            </Menu.Item>
-          </Menu>
-        </div>
+          <Menu.Item key="about">
+            <Link to={`/group/${group?._id}/about`} style={styles.linkView}>
+              About
+            </Link>
+          </Menu.Item>
+          <Menu.Item key="members">
+            <Link to={`/group/${group?._id}/members`} style={styles.linkView}>
+              Members
+            </Link>
+          </Menu.Item>
+        </Menu>
       </Row>
     </>
   );

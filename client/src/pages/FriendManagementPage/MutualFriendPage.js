@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, useMemo } from "react";
+import { useParams } from "react-router";
 import { Layout, Typography, Input } from "antd";
 import styles from "./styles.js";
 
@@ -7,7 +8,6 @@ import Navbar from "../../components/Navbar/Navbar";
 import { useDispatch } from "react-redux";
 import { Button } from "antd";
 import FriendCard from "../../components/FriendCard/FriendCard";
-import UserRequestCard from "../../components/FriendCard/UserRequestCard";
 import COLOR from "../../constants/colors";
 import * as api from "../../api/friend";
 import { useLocalStorage } from "../../hooks/useLocalStorage";
@@ -17,75 +17,44 @@ import { SearchOutlined } from "@ant-design/icons";
 const { Content } = Layout;
 const { Title, Text } = Typography;
 
-function FriendMangementPage() {
+function MutualFriendPage({ props }) {
+  let { id } = useParams();
+  console.log("id", id);
   const [user, setUser] = useLocalStorage("user");
   const inputRef = useRef();
   const [listFriend, setListFriend] = useState([]);
   const [listRequest, setListRequest] = useState([]);
   const [txtSearch, setTxtSearch] = useState("");
   const [mode, setMode] = useState("Friends");
-  const [updateData, setUpdateData] = useState(false);
 
   useEffect(() => {
-    console.log("User", user);
     api
-      .fetchListMyFriends(user?.result?._id)
+      .fetchListMutualFriends(user?.result?._id, id)
       .then((res) => {
-        console.log(res.data);
         if (res.data instanceof Array) setListFriend(res.data);
         else setListFriend([]);
       })
       .catch((e) => {
         console.log(e);
       });
-  }, [user, updateData]);
-
-  useEffect(() => {
-    api
-      .fetchListRequestFriends(user?.result?._id)
-      .then((res) => {
-        console.log("Lala", res.data);
-        if (res.data instanceof Array) setListRequest(res.data);
-        else setListRequest([]);
-      })
-      .catch((e) => {
-        console.log(e);
-      });
-  }, [user, updateData]);
+  }, [id]);
 
   const numberTotalFriend = listFriend.length;
 
   let listFilter = listFriend.filter((user) =>
-    user.name.toLowerCase().includes(txtSearch.toLowerCase())
+    user?.name?.toLowerCase().includes(txtSearch?.toLowerCase())
   );
-
-  if (mode === "Requests") {
-    listFilter = listRequest.filter((user) =>
-      user.name.toLowerCase().includes(txtSearch.toLowerCase())
-    );
-  }
 
   const listUserCard = useMemo(
     () =>
       listFilter?.map((user, i) => {
-        if (mode === "Friends")
-          return (
-            <FriendCard
-              _id={user._id}
-              name={user.name}
-              relationship="Add Friend"
-            ></FriendCard>
-          );
-        else
-          return (
-            <UserRequestCard
-              _id={user._id}
-              name={user.name}
-              relationship="Add Friend"
-              setUpdateData={setUpdateData}
-              updateData={updateData}
-            ></UserRequestCard>
-          );
+        return (
+          <FriendCard
+            _id={user._id}
+            name={user.name}
+            relationship="Add Friend"
+          ></FriendCard>
+        );
       }),
     [listFilter]
   );
@@ -110,34 +79,17 @@ function FriendMangementPage() {
               >
                 <div className="row" style={{ paddingTop: 16 }}>
                   <div
-                    className="col-3"
+                    className="col-4"
                     style={{
                       display: "flex",
                       justifyContent: "center",
                     }}
                   >
-                    <Title>Friends</Title>
-                  </div>
-                  <div className="offset-5 col-2">
-                    <Button
-                      onClick={() => setMode("Requests")}
-                      type="primary"
-                      style={{
-                        background: COLOR.green,
-                        borderColor: COLOR.green,
-                        color: "white",
-                        fontWeight: 500,
-                        display: "flex",
-                        justifyContent: "center",
-                      }}
-                    >
-                      Requests ({listRequest.length})
-                    </Button>
+                    <Title>Muatual Friends</Title>
                   </div>
 
-                  <div className="col-2">
+                  <div className="col-2 offset-5">
                     <Button
-                      onClick={() => setMode("Friends")}
                       type="primary"
                       style={{
                         background: "#27AE60",
@@ -148,7 +100,7 @@ function FriendMangementPage() {
                         justifyContent: "center",
                       }}
                     >
-                      Friends ({numberTotalFriend})
+                      Total ({numberTotalFriend})
                     </Button>
                   </div>
                 </div>
@@ -180,9 +132,7 @@ function FriendMangementPage() {
                   />
                 </div>
 
-                <div className="row" style={{ padding: 32 }}>
-                  {listUserCard}
-                </div>
+                <div className="row">{listUserCard}</div>
               </div>
             </Content>
           </Layout>
@@ -192,4 +142,4 @@ function FriendMangementPage() {
   );
 }
 
-export default FriendMangementPage;
+export default MutualFriendPage;

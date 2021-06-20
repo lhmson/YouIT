@@ -184,6 +184,9 @@ export const isPostUpdated = (oldPost, updatedPost) => {
   if (oldPost.content.pinnedUrl !== updatedPost.content.pinnedUrl) {
     return true;
   }
+  if (oldPost.content.overview !== updatedPost.content.overview) {
+    return true;
+  }
   if (oldPost.privacy !== updatedPost.privacy) {
     return true;
   }

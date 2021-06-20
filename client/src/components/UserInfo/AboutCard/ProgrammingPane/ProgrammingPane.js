@@ -104,7 +104,7 @@ function ProgrammingPane() {
   };
 
   return (
-    <Layout style={{ background: "white" }}>
+    <Layout style={{ background: "white", marginLeft: 24 }}>
       <Row>{TagItems()}</Row>
       <Row style={{ display: "inline-block", marginTop: 8 }}>
         {isLogin ? InputView() : <></>}

@@ -215,22 +215,24 @@ function GroupFunctionButtons() {
 
   return (
     <>
-      <Row
+      <div
+        className="row mr-2"
         style={{
-          display: "flex",
-          flexDirection: "row",
+          // flexDirection: "row",
           justifyContent: "flex-end",
           alignItems: "center",
-          width: "50%",
+
+          // width: "50%",
         }}
       >
         {isJoinedGroup() ? (
           <div
+            className="row"
             style={{
-              display: "flex",
-              flexDirection: "row",
+              // display: "flex",
+              // flexDirection: "row",
               justifyContent: "flex-end",
-              width: "100%",
+              // width: "100%",
             }}
           >
             <Button
@@ -266,6 +268,7 @@ function GroupFunctionButtons() {
               onVisibleChange={handleVisibleChange}
             >
               <Button
+                style={styles.button}
                 className="d-flex justify-content-center align-items-center green-button mr-3"
                 icon={<PlusCircleOutlined />}
               >
@@ -300,7 +303,7 @@ function GroupFunctionButtons() {
         ) : (
           JoinGroupButton()
         )}
-      </Row>
+      </div>
     </>
   );
 }

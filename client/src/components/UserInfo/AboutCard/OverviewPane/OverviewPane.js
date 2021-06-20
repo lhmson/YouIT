@@ -14,6 +14,7 @@ import { isLoginUser } from "../../../../utils/user.js";
 
 const OverviewPane = () => {
   const user = useSelector((state) => state.user);
+  console.log("user", user);
   const dispatch = useDispatch();
 
   const isMyProfile = isLoginUser(user);

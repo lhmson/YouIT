@@ -96,7 +96,7 @@ function PostRequests(props) {
       <div className="break-word">
         <Title level={2}>{post?.title}</Title>
         <div className="pb-2">
-          <Paragraph>{limitNameLength(post?.content?.text, 500)}</Paragraph>
+          <Paragraph>{post?.content?.overview}</Paragraph>
           <Link to={`/post/${post._id}`} target="_blank">
             <Text className="clickable bold">Click here to read more</Text>
           </Link>

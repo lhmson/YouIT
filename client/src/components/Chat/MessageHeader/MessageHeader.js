@@ -1,11 +1,12 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Tooltip, Popover, Button, Input, Select, message } from "antd";
+import { Tooltip, Popover, Button, Input, Select, message, Modal } from "antd";
 
 import {
   SearchOutlined,
   DeleteOutlined,
   EyeOutlined,
   EditOutlined,
+  ExclamationCircleOutlined,
 } from "@ant-design/icons";
 
 import "../styles.css";
@@ -183,14 +184,23 @@ function MessageHeader({ setOpenSidebar, currentId, listSeenMembers }) {
 
   const handleDeleteConversation = () => {
     // Need a yes/no prompt
-    apiConversation
-      .deleteConversation(currentId)
-      .then((res) => {
-        message.success("Conversation deleted!");
-      })
-      .catch(() => {
-        message.error("Something went wrong!");
-      });
+    Modal.confirm({
+      title: "Do you want to delete this conversation?",
+      icon: <ExclamationCircleOutlined />,
+      content: "You cannot undo this action",
+      onOk() {
+        apiConversation
+          .deleteConversation(currentId)
+          .then((res) => {
+            message.success("Conversation deleted!");
+          })
+          .catch(() => {
+            message.error("Something went wrong!");
+          });
+      },
+      onCancel() {
+      },
+    })
   };
 
   return (

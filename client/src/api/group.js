@@ -11,6 +11,7 @@ export const getListMembers = (id) => API.get(`/group/${id}/members`);
 export const getListPendingMembers = (groupId) =>
   API.get(`/group/${groupId}/pendingMembers`);
 export const fetchUserPendingGroups = () => API.get(`/group/list/pendingByMe`);
+export const fetchGroupsForReport = () => API.get("/group/reports");
 
 export const inviteFriends = (groupId, listUsersToInvite) =>
   API.post(`/group/${groupId}/inviteToGroup`, { listUsersToInvite });

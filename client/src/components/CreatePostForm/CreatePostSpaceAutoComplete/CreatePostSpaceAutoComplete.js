@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { AutoComplete } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchUserJoinedGroups } from "../../../redux/actions/group.js";
+import createPostStyle from "../styles.js"
 
 function CreatePostSpaceAutoComplete({
   postSpace,
@@ -62,7 +63,8 @@ function CreatePostSpaceAutoComplete({
       <AutoComplete
         className={isValid() ? "green" : "red"}
         options={options}
-        style={{ width: "100%" }}
+        dropdownStyle={createPostStyle.editorFont}
+        style={{ width: "100%", ...createPostStyle.editorFont }}
         placeholder="My wall"
         filterOption={filterGroupsPredicate}
         value={postSpace}

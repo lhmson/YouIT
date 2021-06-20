@@ -5,19 +5,17 @@ import styles from "./styles.js";
 import { GroupContext } from "../../../pages/GroupPage/GroupPage.js";
 import { convertFileToBase64 } from "../../../utils/image.js";
 import * as apiGroup from "../../../api/group";
+import { isOwner } from "../../../utils/user.js";
+import { useLocalStorage } from "../../../hooks/useLocalStorage.js";
 
 function CoverPhoto() {
   const { group } = useContext(GroupContext);
-  const [background, setBackground] = useState(
-    group?.backgroundUrl ?? "https://vnn-imgs-f.vgcloud.vn/2020/09/07/15/.jpg"
-  );
+  const [user, setUser] = useLocalStorage("user");
+
+  const [background, setBackground] = useState(group?.backgroundUrl);
 
   useEffect(() => {
-    setBackground(
-      group?.backgroundUrl ?? "https://vnn-imgs-f.vgcloud.vn/2020/09/07/15/.jpg"
-    );
-
-    console.log("thy dang iu", group?.backgroundUrl);
+    setBackground(group?.backgroundUrl);
   }, [group]);
 
   const hiddenBackgroundInput = useRef(null);
@@ -54,21 +52,25 @@ function CoverPhoto() {
             display: "block",
           }}
         ></Image>
-        <div>
-          <Button
-            className="green-button"
-            style={styles.editImageBtn}
-            onClick={() => hiddenBackgroundInput.current.click()}
-          >
-            Edit cover photo
-          </Button>
-          <input
-            type="file"
-            ref={hiddenBackgroundInput}
-            style={{ display: "none" }}
-            onChange={handleBackgroundChange}
-          ></input>
-        </div>
+        {isOwner(user, group) ? (
+          <div>
+            <Button
+              className="green-button"
+              style={styles.editImageBtn}
+              onClick={() => hiddenBackgroundInput.current.click()}
+            >
+              Edit cover photo
+            </Button>
+            <input
+              type="file"
+              ref={hiddenBackgroundInput}
+              style={{ display: "none" }}
+              onChange={handleBackgroundChange}
+            ></input>
+          </div>
+        ) : (
+          <></>
+        )}
       </Layout>
     </div>
   );

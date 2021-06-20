@@ -28,10 +28,11 @@ import {
   unvoteComment,
   getMyCommentInteractions,
 } from "../../api/comment";
-import { useHistory } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import MarkdownRenderer from "../Markdown/MarkdownRenderer/MarkdownRenderer";
+import moment from "moment";
+import { useLocalStorage } from "../../hooks/useLocalStorage";
 
-const { Text, Paragraph } = Typography;
+const { Text } = Typography;
 const { confirm } = Modal;
 
 const allInteractionReducer = (state, action) => {
@@ -56,13 +57,14 @@ function Comment({
   onDelete,
   onCopyCommentLink,
   isFocus,
+  postId,
 }) {
-  const dispatch = useDispatch();
-  const history = useHistory();
   const [myInteractions, setMyInteractions] = useState({});
   const [isReply, setIsReply] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
   const [ellipsis, setEllipsis] = useState("full");
+
+  const [user] = useLocalStorage("user");
 
   const [allInteractions, dispatchInteractions] = useReducer(
     allInteractionReducer,
@@ -84,76 +86,94 @@ function Comment({
     // });
   }, [comment]);
 
-  const fetchMyInteractions = () => {
-    getMyCommentInteractions(comment._id)
-      .then((res) => {
-        setMyInteractions(res.data);
-      })
-      .catch((error) => {
-        // message.error("Something goes wrong with comment interactions");
-        console.log("uwuwuuw", error, comment);
-      });
-  };
-
   const handleUpvoteClick = async (id) => {
+    if (!user) {
+      message.info("You need to log in to upvote this comment!");
+      return;
+    }
+
     if (myInteractions?.upvote) {
-      await unvoteComment(id)
+      unvoteComment(id, postId)
         .then((res) => {
-          fetchMyInteractions();
-          dispatchInteractions({ type: "unupvote" });
+          fetchMyInteractions().then(() =>
+            dispatchInteractions({ type: "unupvote" })
+          );
         })
         .catch((error) => {
-          // message.error("Something goes wrong with comment upvote");
+          message.error("Something goes wrong with comment unvote");
           console.log(error);
         });
     } else {
-      await upvoteComment(id)
+      upvoteComment(id, postId)
         .then((res) => {
           if (myInteractions?.downvote) {
             dispatchInteractions({ type: "undownvote" });
           }
-          fetchMyInteractions();
-          dispatchInteractions({ type: "upvote" });
+          fetchMyInteractions().then(() =>
+            dispatchInteractions({ type: "upvote" })
+          );
         })
         .catch((error) => {
-          // message.error("Something goes wrong with comment unvote");
+          message.error("Something goes wrong with comment upvote");
           console.log(error);
         });
     }
   };
 
   const handleDownvoteClick = async (id) => {
+    if (!user) {
+      message.info("You need to log in to downvote this comment!");
+      return;
+    }
+
     if (myInteractions?.downvote) {
-      await unvoteComment(id)
+      unvoteComment(id, postId)
         .then((res) => {
-          fetchMyInteractions();
-          dispatchInteractions({ type: "undownvote" });
+          fetchMyInteractions().then(() =>
+            dispatchInteractions({ type: "undownvote" })
+          );
         })
         .catch((error) => {
-          // message.error("Something goes wrong with comment downvote");
+          message.error("Something goes wrong with comment unvote");
           console.log(error);
         });
     } else {
-      await downvoteComment(id)
+      downvoteComment(id, postId)
         .then((res) => {
           if (myInteractions?.upvote) {
             dispatchInteractions({ type: "unupvote" });
           }
-          fetchMyInteractions();
-          dispatchInteractions({ type: "downvote" });
+          fetchMyInteractions().then(() =>
+            dispatchInteractions({ type: "downvote" })
+          );
         })
         .catch((error) => {
-          // message.error("Something goes wrong with comment unvote");
+          message.error("Something goes wrong with comment downvote");
           console.log(error);
         });
     }
   };
 
-  const toggleReply = () => {
-    setIsReply(1 - isReply);
-    console.log("comment", comment);
+  const fetchMyInteractions = () => {
+    if (!user) return;
+
+    const interactions = getMyCommentInteractions(comment._id)
+      .then((res) => {
+        setMyInteractions(res.data);
+        return res.data;
+      })
+      .catch((error) => {
+        message.error("Something goes wrong with comment interactions");
+        console.log(error);
+      });
+    return interactions;
   };
-  const handleSubmit = (newComment) => {
+
+  const toggleReply = () => {
+    setIsReply((prev) => !prev);
+    // console.log("comment", comment);
+  };
+  const handleReply = (newComment) => {
     onReply(comment?._id, newComment);
     setIsReply(false);
   };
@@ -199,9 +219,17 @@ function Comment({
       />
     );
   };
+
+  const commentUpdated = (newComment, oldComment) => {
+    if (newComment?.content !== oldComment?.content) return true;
+
+    return false;
+  };
+
   const handleEdit = (newComment) => {
     setIsEdit(false);
-    onEdit(comment?._id, newComment);
+
+    if (commentUpdated(newComment, comment)) onEdit(comment?._id, newComment);
   };
   const handleDiscardReply = () => {
     setIsReply(false);
@@ -273,7 +301,7 @@ function Comment({
         <Row className="justify-content-end align-items-center pb-3">
           <div className="mr-4">
             <Text className="clickable" underline type="secondary">
-              Last edited {comment?.updatedAt.toString().slice(0, 10)}
+              {`Last edited ${moment(comment?.contentUpdatedAt).fromNow()}`}
             </Text>
           </div>
           {isCommentOwner() && (
@@ -309,16 +337,20 @@ function Comment({
                 )}
                 {comment?.quotedCommentId === null ? null : (
                   <Text className="clickable" underline type="secondary">
-                    Last edited{" "}
-                    {comment?.quotedCommentId?.updatedAt
-                      ?.toString()
-                      .slice(0, 10)}
+                    {`Last edited ${moment(
+                      comment?.quotedCommentId?.contentUpdatedAt
+                    ).fromNow()}`}
                   </Text>
                 )}
               </Row>
-              <Paragraph style={{ color: COLOR.gray, marginBottom: 0 }}>
+              {/* <Paragraph style={{ color: COLOR.gray, marginBottom: 0 }}>
                 {comment?.quotedCommentId?.content}
-              </Paragraph>
+              </Paragraph> */}
+              <MarkdownRenderer
+                text={comment?.quotedCommentId?.content}
+                enableDoubleClickFullScreen
+              />
+
               {/* <br />
           <a className="clickable green bold" href="#" target="_blank" strong>
             See full comment
@@ -327,7 +359,11 @@ function Comment({
           ) : null}
           <div className="mb-2">
             <div>
-              <Paragraph className="">{comment?.content}</Paragraph>
+              {/* <Paragraph className="">{comment?.content}</Paragraph> */}
+              <MarkdownRenderer
+                text={comment?.content}
+                enableDoubleClickFullScreen
+              />
             </div>
             {ellipsis !== "full" && <div className="bottom-fade"></div>}
           </div>
@@ -376,7 +412,7 @@ function Comment({
           </Row>
           {isReply ? (
             <CommentForm
-              onSubmit={handleSubmit}
+              onSubmit={handleReply}
               label={`Replying to ${comment?.userId?.name}'s comment`}
               onDiscard={handleDiscardReply}
             />

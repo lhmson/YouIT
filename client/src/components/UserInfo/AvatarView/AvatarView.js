@@ -9,6 +9,7 @@ import { useSelector } from "react-redux";
 import { isLoginUser } from "../../../utils/user.js";
 import * as apiUser from "../../../api/user_info";
 import { convertFileToBase64 } from "../../../utils/image.js";
+import Loading from "../../Loading/Loading";
 
 const { Title } = Typography;
 
@@ -17,9 +18,7 @@ const AvatarView = () => {
   const isMyProfile = isLoginUser(user);
 
   const [avatar, setAvatar] = useState(user?.avatarUrl);
-  const [backgroundImage, setBackgroundImage] = useState(
-    user?.backgroundUrl ?? "https://vnn-imgs-f.vgcloud.vn/2020/09/07/15/.jpg"
-  );
+  const [backgroundImage, setBackgroundImage] = useState(user?.backgroundUrl);
 
   const displayName = user?.name ?? "";
 
@@ -28,9 +27,7 @@ const AvatarView = () => {
 
   useEffect(() => {
     setAvatar(user?.avatarUrl);
-    setBackgroundImage(
-      user?.backgroundUrl ?? "https://vnn-imgs-f.vgcloud.vn/2020/09/07/15/.jpg"
-    );
+    setBackgroundImage(user?.backgroundUrl);
   }, [user]);
 
   const handleAvatarChange = async (e) => {
@@ -44,6 +41,7 @@ const AvatarView = () => {
     const { data } = await apiUser.editImage(image);
     setAvatar(data);
     console.log(data);
+    window.location.reload();
   };
 
   const handleBackgroundChange = async (e) => {
@@ -56,6 +54,7 @@ const AvatarView = () => {
     };
     const { data } = await apiUser.editImage(image);
     setBackgroundImage(data);
+    window.location.reload();
   };
 
   const EditImageButton = () => {
@@ -67,7 +66,7 @@ const AvatarView = () => {
             style={styles.editImageBtn}
             onClick={() => hiddenBackgroundFileInput.current.click()}
           >
-            Edit image
+            Edit
           </Button>
           <input
             type="file"
@@ -105,6 +104,8 @@ const AvatarView = () => {
     }
     return <></>;
   };
+
+  if (!user) return <Loading />;
 
   return (
     <div style={{ position: "relative", height: "50vh" }}>

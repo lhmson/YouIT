@@ -42,7 +42,8 @@ import GroupFunctionButtons from "./GroupPage/GroupFunctionButtons/GroupFunction
 import GroupMember from "./GroupPage/GroupMember/GroupMember";
 import ChatSidebar from "./Chat/ChatSidebar/ChatSidebar";
 
-import MarkdownRenderer from "./Posts/MarkdownRenderer/MarkdownRenderer";
+import MarkdownRenderer from "./Markdown/MarkdownRenderer/MarkdownRenderer";
+import MarkdownEditor from "./Markdown/MarkdownEditor/MarkdownEditor";
 
 export {
   SignInForm,
@@ -81,4 +82,5 @@ export {
   GroupFunctionButtons,
   GroupMember,
   MarkdownRenderer,
+  MarkdownEditor
 };

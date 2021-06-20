@@ -27,6 +27,7 @@ import {
 import { MdPublic } from "react-icons/md";
 import { GiThreeFriends } from "react-icons/gi";
 import { IoPerson } from "react-icons/io5";
+import ShareButton from "../ShareButton";
 import styles from "./styles";
 import { useLocalStorage } from "../../../hooks/useLocalStorage";
 import {
@@ -34,11 +35,16 @@ import {
   unvotePost,
   downvotePost,
   getMyInteractions,
+  followPost,
 } from "../../../api/post";
 import { Link, useHistory } from "react-router-dom";
 import { useDispatch } from "react-redux";
+
 import { deletePost } from "../../../redux/actions/posts";
-import MarkdownRenderer from "../MarkdownRenderer/MarkdownRenderer";
+import MarkdownRenderer from "../../Markdown/MarkdownRenderer/MarkdownRenderer";
+import { ReactTinyLink } from "react-tiny-link";
+import { FRONTEND_URL } from "../../../constants/config";
+import moment from "moment";
 
 const { Title, Text, Paragraph } = Typography;
 const { confirm } = Modal;
@@ -66,9 +72,11 @@ function FullPost({ post }) {
   const [listInteractions, setListInteractions] = useState({});
   // const [post, setPost] = useState(null);
 
+  const [user] = useLocalStorage("user");
+
   useEffect(() => {
     // setPost(props.post);
-    fetchMyInteractions();
+    if (post) fetchMyInteractions();
     // setListInteractions({
     //   upvoteslength: post?.interactionInfo?.listUpvotes?.length,
     //   downvoteslength: post?.interactionInfo?.listDownvotes?.length,
@@ -87,6 +95,11 @@ function FullPost({ post }) {
   );
 
   const handleUpvoteClick = async (id) => {
+    if (!user) {
+      message.info("You need to log in to upvote this post!");
+      return;
+    }
+
     if (myInteractions?.upvote) {
       await unvotePost(id)
         .then((res) => {
@@ -114,6 +127,11 @@ function FullPost({ post }) {
   };
 
   const handleDownvoteClick = async (id) => {
+    if (!user) {
+      message.info("You need to log in to downvote this post!");
+      return;
+    }
+
     if (myInteractions?.downvote) {
       await unvotePost(id)
         .then((res) => {
@@ -141,6 +159,8 @@ function FullPost({ post }) {
   };
 
   const fetchMyInteractions = () => {
+    if (!user) return;
+
     getMyInteractions(post?._id)
       .then((res) => {
         setMyInteractions(res.data);
@@ -151,9 +171,11 @@ function FullPost({ post }) {
       });
   };
 
-  const [user] = useLocalStorage("user");
+  const handleMore = () => {};
 
-  const handleMore = () => { };
+  const handleFollowPost = (id) => {
+    followPost(id).then((res) => message.success("Follow post successfully"));
+  };
 
   //#region menu more
 
@@ -218,7 +240,7 @@ function FullPost({ post }) {
           </Menu.Item>
         </>
       ) : (
-        <Menu.Item key="follow">
+        <Menu.Item key="follow" onClick={() => handleFollowPost(post._id)}>
           <Row align="middle">
             <BellOutlined className="mr-2" />
             <Text>Follow post</Text>
@@ -260,19 +282,12 @@ function FullPost({ post }) {
 
   const copyLink = (id) => {
     navigator.clipboard
-      .writeText(`${window.location.origin}/post/${id}`) // change to deployment link later
+      .writeText(`${FRONTEND_URL}/post/${id}`) // change to deployment link later
       .then(() => message.success("Link copied to clipboard"))
       .catch((error) => {
         message.error("Something goes wrong copying link");
         console.log(id);
       });
-  };
-
-  const handleSharePost = (id) => {
-    history.push({
-      pathname: "/post/create",
-      state: { pinnedUrl: `${window.location.origin}/post/${id}` },
-    });
   };
 
   const groupId = post?.groupPostInfo?.groupId;
@@ -319,13 +334,15 @@ function FullPost({ post }) {
             <div className="d-inline-flex flex-column ml-3 break-word">
               <Row style={{ alignItems: "center" }}>
                 <Space size={4}>
-                  <Text
-                    className="clickable"
-                    strong
-                    style={{ fontSize: "1.2rem" }}
-                  >
-                    {post?.userId?.name}
-                  </Text>
+                  <Link to={`/userinfo/${post?.userId._id}`} target="_blank">
+                    <Text
+                      className="clickable"
+                      strong
+                      style={{ fontSize: "1.2rem" }}
+                    >
+                      {post?.userId?.name}
+                    </Text>
+                  </Link>
                   {groupId && (
                     <>
                       <CaretRightOutlined
@@ -357,11 +374,9 @@ function FullPost({ post }) {
               </div>
             </Tooltip>
             <div className="mr-4">
-              <Tooltip
-                title={`Created ${post?.createdAt?.toString().slice(0, 10)}`}
-              >
+              <Tooltip title={`Created ${moment(post?.createdAt).fromNow()}`}>
                 <Text className="clickable" underline type="secondary">
-                  Last edited {post?.contentUpdatedAt?.toString().slice(0, 10)}
+                  {`Last edited ${moment(post?.contentUpdatedAt).fromNow()}`}
                 </Text>
               </Tooltip>
             </div>
@@ -378,7 +393,11 @@ function FullPost({ post }) {
         </Row>
         <Row className="mb-1">
           {post?.hashtags?.map((item, i) => (
-            <Tooltip title={`Mentioned ${item?.count} time${item?.count > 1 ? "s" : ""}`}>
+            <Tooltip
+              title={`Mentioned ${item?.count} time${
+                item?.count > 1 ? "s" : ""
+              }`}
+            >
               <Tag key={i} className="mb-2 tag">
                 {item.name}
               </Tag>
@@ -387,9 +406,23 @@ function FullPost({ post }) {
         </Row>
         <div className="break-word">
           <Title level={2}>{post?.title}</Title>
+
           <div className="pb-2">
-            {/* <Paragraph>{post?.content?.text}</Paragraph> */}
+            <Paragraph>{post?.content?.overview}</Paragraph>
+
             <MarkdownRenderer text={post?.content?.text} />
+
+            {post?.content?.pinnedUrl && (
+              <Row className="justify-content-center">
+                <ReactTinyLink
+                  cardSize="small"
+                  showGraphic={true}
+                  maxLine={2}
+                  minLine={1}
+                  url={post?.content?.pinnedUrl}
+                />
+              </Row>
+            )}
           </div>
         </div>
         <Row className="justify-content-between mb-4">
@@ -401,15 +434,17 @@ function FullPost({ post }) {
                 </Text>
                 <Tooltip title="Upvote">
                   <ArrowUpOutlined
-                    className={`clickable icon ${myInteractions?.upvote ? "green" : "black"
-                      }`}
+                    className={`clickable icon ${
+                      myInteractions?.upvote ? "green" : "black"
+                    }`}
                     onClick={() => handleUpvoteClick(post._id)}
                   />
                 </Tooltip>
                 <Tooltip title="Downvote">
                   <ArrowDownOutlined
-                    className={`clickable icon ${myInteractions?.downvote ? "green" : "black"
-                      }`}
+                    className={`clickable icon ${
+                      myInteractions?.downvote ? "green" : "black"
+                    }`}
                     onClick={() => handleDownvoteClick(post._id)}
                   />
                 </Tooltip>
@@ -421,14 +456,14 @@ function FullPost({ post }) {
           </Row>
           <Row>
             <Space size="large">
-              <LinkOutlined
-                className="clickable icon"
-                onClick={() => copyLink(post._id)}
-              />
-              <ShareAltOutlined
-                className="clickable icon"
-                onClick={() => handleSharePost(post._id)}
-              />
+              <Tooltip title="Copy link">
+                <LinkOutlined
+                  className="clickable icon"
+                  onClick={() => copyLink(post._id)}
+                />
+              </Tooltip>
+
+              <ShareButton post={post} />
             </Space>
           </Row>
         </Row>
