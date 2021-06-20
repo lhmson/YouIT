@@ -91,13 +91,13 @@ function ChatSidebar({
       setListShown(res.data);
 
       // if there's no longer a conversation with current id, refresh!
-      if (
-        currentId &&
-        !res.data?.some((conversation) => conversation._id === currentId)
-      )
-        message.warn("You're no longer in this conversation!", 1, () =>
-          window.location.reload()
-        );
+      // if (
+      //   currentId &&
+      //   !res.data?.some((conversation) => conversation._id === currentId)
+      // )
+      //   message.warn("You are no longer in this conversation!", 1, () =>
+      //     window.location.reload()
+      //   );
       // if (!currentId && res.data?.length > 0) // buggy, don't use
       // updateCurrentId(res?.data?.[0]?._id);
       // return res.data;
@@ -304,9 +304,8 @@ function ChatSidebar({
               listShown.map((item, i) => (
                 <div key={item?._id} onClick={() => updateCurrentId(item?._id)}>
                   <div
-                    className={`conversation ${
-                      item?._id === currentId && "active"
-                    }`}
+                    className={`conversation ${item?._id === currentId && "active"
+                      }`}
                   >
                     <Badge
                       dot
