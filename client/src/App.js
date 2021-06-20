@@ -24,6 +24,7 @@ import {
   AuthAdminPage,
   StatisticsPage,
   ReportUserPage,
+  ReportGroupPage,
 } from "./pages/index";
 
 import { CuteClientIOProvider } from "./socket/CuteClientIOProvider.js";
@@ -133,6 +134,7 @@ function App() {
             </PrivateRoute>
             <Route exact path="/statistics" component={StatisticsPage} />
             <Route exact path="/admin/user" component={ReportUserPage} />
+            <Route path="/admin/group" component={ReportGroupPage} />
             <Route exact path="/error403">
               <ErrorPage code="403" />
             </Route>

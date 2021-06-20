@@ -10,6 +10,7 @@ import {
 import { httpStatusCodes } from "../utils/httpStatusCode.js";
 import { sendNotificationUser } from "../businessLogics/notification.js";
 import moment from "moment";
+import Post from "../models/post.js";
 
 /**
  * @param {express.Request<ParamsDictionary, any, any, QueryString.ParsedQs, Record<string, any>>} req
@@ -547,5 +548,97 @@ export const countGroups = async (req, res) => {
     res.status(200).json({ labels, publicGroups, privateGroups });
   } catch (error) {
     res.status(500).json({ message: error.message });
+  }
+};
+
+/**
+ * @param {express.Request<ParamsDictionary, any, any, QueryString.ParsedQs, Record<string, any>>} req
+ * @param {express.Response<any, Record<string, any>, number>} res
+ * @param {express.NextFunction} next
+ */
+export const countPostsOfGroup = async (req, res) => {
+  const { groupId } = req.params;
+
+  const group = Group.findById(groupId);
+  if (!group)
+    return res.status(httpStatusCodes.notFound).json("Group not found");
+
+  try {
+    const posts = await Post.find();
+
+    let count = 0;
+    posts.forEach((post) => {
+      const groupPostId = post?.groupPostInfo?.groupId;
+      const groupStatus = post?.groupPostInfo?.status;
+      if (groupPostId === groupId && groupStatus !== "Pending") count++;
+    });
+
+    return res.status(httpStatusCodes.ok).json(count);
+  } catch (error) {
+    return res
+      .status(httpStatusCodes.internalServerError)
+      .json({ message: error.message });
+  }
+};
+
+/**
+ * @param {express.Request<ParamsDictionary, any, any, QueryString.ParsedQs, Record<string, any>>} req
+ * @param {express.Response<any, Record<string, any>, number>} res
+ * @param {express.NextFunction} next
+ */
+export const countMembersOfGroup = async (req, res) => {
+  const { groupId } = req.params;
+
+  try {
+    const group = Group.findById(groupId);
+    if (!group)
+      return res.status(httpStatusCodes.notFound).json("Group not found");
+
+    const members = group?.listMembers?.length;
+    return res.status(httpStatusCodes.ok).json(members);
+  } catch (error) {
+    return res
+      .status(httpStatusCodes.internalServerError)
+      .json({ message: error.message });
+  }
+};
+
+/**
+ * @param {express.Request<ParamsDictionary, any, any, QueryString.ParsedQs, Record<string, any>>} req
+ * @param {express.Response<any, Record<string, any>, number>} res
+ * @param {express.NextFunction} next
+ */
+export const getAllGroupsForReport = async (req, res) => {
+  try {
+    const groups = await Group.find();
+
+    let groupsForReport = [];
+
+    for (var group of groups) {
+      const members = group?.listMembers?.length;
+
+      const posts = await Post.find();
+      let countPost = 0;
+      posts.forEach((post) => {
+        const groupPostId = post?.groupPostInfo?.groupId;
+        const groupStatus = post?.groupPostInfo?.status;
+        if (groupPostId === groupId && groupStatus !== "Pending") countPost++;
+      });
+
+      const groupReport = {
+        _id: group?._id,
+        name: group?.name,
+        members: members,
+        posts: countPost,
+        reports: 0,
+      };
+      groupsForReport.push(groupReport);
+    }
+
+    return res.status(httpStatusCodes.ok).json(groupsForReport);
+  } catch (error) {
+    return res
+      .status(httpStatusCodes.internalServerError)
+      .json({ message: error.message });
   }
 };
