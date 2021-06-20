@@ -1,9 +1,9 @@
 import mongoose from "mongoose";
 
 export const defaultUserInfoValue = {
-  firstName: "default",
-  lastName: "default",
-  dateOfBirth: new Date(),
+  // firstName: "default",
+  // lastName: "default",
+  // dateOfBirth: new Date(),
   gender: "Male",
 };
 
@@ -25,10 +25,10 @@ const educationSchema = mongoose.Schema(
 
 export const userInfoSchema = mongoose.Schema(
   {
-    firstName: { type: String, required: true },
-    lastName: { type: String, required: true },
-    dateOfBirth: { type: Date, required: true },
-    gender: { type: String, required: true },
+    // firstName: { type: String, required: true },
+    // lastName: { type: String, required: true },
+    dateOfBirth: { type: Date },
+    gender: { type: String },
     phone: { type: String },
     workLocation: { type: String },
     address: { type: String },

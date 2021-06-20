@@ -28,12 +28,11 @@ import {
   unvoteComment,
   getMyCommentInteractions,
 } from "../../api/comment";
-import { useHistory } from "react-router-dom";
-import { useDispatch } from "react-redux";
 import MarkdownRenderer from "../Markdown/MarkdownRenderer/MarkdownRenderer";
 import moment from "moment";
+import { useLocalStorage } from "../../hooks/useLocalStorage";
 
-const { Text, Paragraph } = Typography;
+const { Text } = Typography;
 const { confirm } = Modal;
 
 const allInteractionReducer = (state, action) => {
@@ -60,12 +59,12 @@ function Comment({
   isFocus,
   postId,
 }) {
-  const dispatch = useDispatch();
-  const history = useHistory();
   const [myInteractions, setMyInteractions] = useState({});
   const [isReply, setIsReply] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
   const [ellipsis, setEllipsis] = useState("full");
+
+  const [user] = useLocalStorage("user");
 
   const [allInteractions, dispatchInteractions] = useReducer(
     allInteractionReducer,
@@ -88,6 +87,11 @@ function Comment({
   }, [comment]);
 
   const handleUpvoteClick = async (id) => {
+    if (!user) {
+      message.info("You need to log in to upvote this comment!");
+      return;
+    }
+
     if (myInteractions?.upvote) {
       unvoteComment(id, postId)
         .then((res) => {
@@ -117,6 +121,11 @@ function Comment({
   };
 
   const handleDownvoteClick = async (id) => {
+    if (!user) {
+      message.info("You need to log in to downvote this comment!");
+      return;
+    }
+
     if (myInteractions?.downvote) {
       unvoteComment(id, postId)
         .then((res) => {
@@ -146,6 +155,8 @@ function Comment({
   };
 
   const fetchMyInteractions = () => {
+    if (!user) return;
+
     const interactions = getMyCommentInteractions(comment._id)
       .then((res) => {
         setMyInteractions(res.data);

@@ -56,12 +56,12 @@ function FriendManagementPage() {
   const numberTotalFriend = listFriend.length;
 
   let listFilter = listFriend.filter((user) =>
-    user.name.toLowerCase().includes(txtSearch.toLowerCase())
+    user?.name?.toLowerCase().includes(txtSearch?.toLowerCase())
   );
 
   if (mode === "Requests") {
     listFilter = listRequest.filter((user) =>
-      user.name.toLowerCase().includes(txtSearch.toLowerCase())
+      user?.name?.toLowerCase().includes(txtSearch?.toLowerCase())
     );
   }
 

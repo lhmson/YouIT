@@ -43,6 +43,7 @@ import { useDispatch } from "react-redux";
 import { deletePost } from "../../../redux/actions/posts";
 import MarkdownRenderer from "../../Markdown/MarkdownRenderer/MarkdownRenderer";
 import { ReactTinyLink } from "react-tiny-link";
+import { FRONTEND_URL } from "../../../constants/config";
 import moment from "moment";
 
 const { Title, Text, Paragraph } = Typography;
@@ -71,9 +72,11 @@ function FullPost({ post }) {
   const [listInteractions, setListInteractions] = useState({});
   // const [post, setPost] = useState(null);
 
+  const [user] = useLocalStorage("user");
+
   useEffect(() => {
     // setPost(props.post);
-    fetchMyInteractions();
+    if (post) fetchMyInteractions();
     // setListInteractions({
     //   upvoteslength: post?.interactionInfo?.listUpvotes?.length,
     //   downvoteslength: post?.interactionInfo?.listDownvotes?.length,
@@ -92,6 +95,11 @@ function FullPost({ post }) {
   );
 
   const handleUpvoteClick = async (id) => {
+    if (!user) {
+      message.info("You need to log in to upvote this post!");
+      return;
+    }
+
     if (myInteractions?.upvote) {
       await unvotePost(id)
         .then((res) => {
@@ -119,6 +127,11 @@ function FullPost({ post }) {
   };
 
   const handleDownvoteClick = async (id) => {
+    if (!user) {
+      message.info("You need to log in to downvote this post!");
+      return;
+    }
+
     if (myInteractions?.downvote) {
       await unvotePost(id)
         .then((res) => {
@@ -146,6 +159,8 @@ function FullPost({ post }) {
   };
 
   const fetchMyInteractions = () => {
+    if (!user) return;
+
     getMyInteractions(post?._id)
       .then((res) => {
         setMyInteractions(res.data);
@@ -155,8 +170,6 @@ function FullPost({ post }) {
         console.log(error, post);
       });
   };
-
-  const [user] = useLocalStorage("user");
 
   const handleMore = () => {};
 
@@ -269,19 +282,12 @@ function FullPost({ post }) {
 
   const copyLink = (id) => {
     navigator.clipboard
-      .writeText(`${window.location.origin}/post/${id}`) // change to deployment link later
+      .writeText(`${FRONTEND_URL}/post/${id}`) // change to deployment link later
       .then(() => message.success("Link copied to clipboard"))
       .catch((error) => {
         message.error("Something goes wrong copying link");
         console.log(id);
       });
-  };
-
-  const handleSharePost = (id) => {
-    history.push({
-      pathname: "/post/create",
-      state: { pinnedUrl: `${window.location.origin}/post/${id}` },
-    });
   };
 
   const groupId = post?.groupPostInfo?.groupId;

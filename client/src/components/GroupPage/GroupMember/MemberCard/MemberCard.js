@@ -59,7 +59,7 @@ function MemberCard(props) {
 
   useEffect(() => {
     group?.listMembers.forEach((member) => {
-      if (member?.userId == user?.result?._id) setRoleUser(member?.role);
+      if (member?.userId === user?.result?._id) setRoleUser(member?.role);
     });
   }, []);
 

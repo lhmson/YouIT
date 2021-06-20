@@ -16,7 +16,6 @@ import {
   ArrowUpOutlined,
   ArrowDownOutlined,
   LinkOutlined,
-  ShareAltOutlined,
   CaretRightOutlined,
   EditFilled,
   DeleteFilled,
@@ -192,6 +191,11 @@ function FeedPost({ post, setCurrentId }) {
   }, []);
 
   const handleUpvoteClick = async (id) => {
+    if (!user) {
+      message.info("You need to log in to upvote this post!");
+      return;
+    }
+
     if (myInteractions?.upvote) {
       unvotePost(id)
         .then((res) => {
@@ -221,6 +225,11 @@ function FeedPost({ post, setCurrentId }) {
   };
 
   const handleDownvoteClick = async (id) => {
+    if (!user) {
+      message.info("You need to log in to downvote this post!");
+      return;
+    }
+
     if (myInteractions?.downvote) {
       unvotePost(id)
         .then((res) => {
@@ -250,6 +259,9 @@ function FeedPost({ post, setCurrentId }) {
   };
 
   const fetchMyInteractions = () => {
+    if (!user)
+      return;
+
     const interactions = getMyInteractions(post._id)
       .then((res) => {
         setMyInteractions(res.data);
@@ -266,7 +278,7 @@ function FeedPost({ post, setCurrentId }) {
 
   const copyLink = (id) => {
     navigator.clipboard
-      .writeText(`${window.location.origin}/post/${id}`) // change to deployment link later
+      .writeText(`${FRONTEND_URL}/post/${id}`) // change to deployment link later
       .then(() => message.success("Link copied to clipboard"))
       .catch((error) => {
         message.error("Something goes wrong copying link");

@@ -224,6 +224,24 @@ input:-webkit-autofill:active {
   color: rgb(43, 49, 55);
 }
 
+.google-container {
+  background-color: rgb(57, 114, 254);
+  border-color: rgb(57, 114, 254);
+  color: white;
+}
+
+.google-container:hover {
+  background-color: rgba(57, 114, 254, 0.15);
+  border-color: rgb(57, 114, 254);
+  color: rgb(57, 114, 254);
+}
+
+.google-container:focus {
+  background-color: rgba(57, 114, 254, 0.15);
+  border-color: rgb(57, 114, 254);
+  color: rgb(57, 114, 254);
+}
+
 .ellipsis {
   height: 175px;
   overflow: hidden;

@@ -1,9 +1,7 @@
-import React, { useState, useEffect, useMemo } from "react";
-import { Button, Typography, List, message } from "antd";
-import { Avatar, Image } from "antd";
+import React, { useState } from "react";
+import { Typography, message } from "antd";
+import { Avatar } from "antd";
 import styles from "./styles.js";
-import { useLocalStorage } from "../../hooks/useLocalStorage";
-import { useDispatch } from "react-redux";
 
 const { Text } = Typography;
 

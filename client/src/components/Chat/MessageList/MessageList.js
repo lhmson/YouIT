@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { Button, Tooltip, Typography } from "antd";
+import { Button, Tooltip, Typography, Modal } from "antd";
 import "../styles.css";
 import { useLocalStorage } from "../../../hooks/useLocalStorage";
 import { useMessage } from "../../../hooks/useMessage";
 import moment from "moment";
 
-import { DeleteOutlined } from "@ant-design/icons";
+import { DeleteOutlined, ExclamationCircleOutlined } from "@ant-design/icons";
 
 import * as apiConversation from "../../../api/conversation";
 
@@ -100,7 +100,16 @@ function ConversationList({ currentId, listSeenMembers, setListSeenMembers }) {
 
   /** send delete request */
   const handleDeleteMessage = (messageId) => {
-    apiConversation.deleteMessage(currentId, messageId);
+    Modal.confirm({
+      title: "Do you want to delete this message?",
+      icon: <ExclamationCircleOutlined />,
+      content: "You cannot undo this action",
+      onOk() {
+        apiConversation.deleteMessage(currentId, messageId);
+      },
+      onCancel() {
+      },
+    })
   };
 
   /** handle when receive delete request */

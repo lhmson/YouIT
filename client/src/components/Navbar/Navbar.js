@@ -55,8 +55,8 @@ const { Header } = Layout;
 const { Text } = Typography;
 
 function Navbar({ selectedMenu, setTxtSearch, txtInitSearch }) {
-  // const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")));
-  const [user, setUser] = useLocalStorage("user");
+  const user = useSelector((state) => state.user);
+  // const [user, setUser] = useLocalStorage("user");
   const [token, setToken] = useToken();
   const inputRef = useRef();
 
@@ -104,7 +104,7 @@ function Navbar({ selectedMenu, setTxtSearch, txtInitSearch }) {
       },
       key,
       duration: 3,
-      placement: "bottomLeft",
+      placement: "bottomRight",
       btn,
     });
   };
@@ -211,7 +211,7 @@ function Navbar({ selectedMenu, setTxtSearch, txtInitSearch }) {
           <Tooltip
             title={
               <div className="text-center">
-                <div>{user?.result?.name}</div>
+                <div>{user?.name}</div>
                 <Dropdown
                   overlay={menuStatus}
                   trigger={["click"]}
@@ -222,7 +222,7 @@ function Navbar({ selectedMenu, setTxtSearch, txtInitSearch }) {
                       className="icon"
                       style={{
                         color: renderStatus(
-                          friendsStatusManager.getStatus(user?.result?._id)
+                          friendsStatusManager.getStatus(user?._id)
                         ),
                       }}
                     />
@@ -234,11 +234,11 @@ function Navbar({ selectedMenu, setTxtSearch, txtInitSearch }) {
           >
             <Avatar
               size="large"
-              alt={user?.result?.name}
-              src={user?.result?.avatarUrl}
-              onClick={() => history.push(`/userinfo/${user?.result._id}`)}
+              alt={user?.name}
+              src={user?.avatarUrl}
+              onClick={() => history.push(`/userinfo/${user?._id}`)}
             >
-              {user?.result?.name}
+              {user?.name}
             </Avatar>
           </Tooltip>
         </Menu.Item>
@@ -297,7 +297,7 @@ function Navbar({ selectedMenu, setTxtSearch, txtInitSearch }) {
       <Menu.Item key="createGroup" onClick={() => handleCreateGroup()}>
         <Row align="middle">
           <PicLeftOutlined className="mr-lg-2" />
-          <Text>Create group</Text>
+          <Text>Add group</Text>
         </Row>
       </Menu.Item>
       {/* <Dropdown

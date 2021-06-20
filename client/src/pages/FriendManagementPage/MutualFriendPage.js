@@ -42,23 +42,22 @@ function MutualFriendPage({ props }) {
   const numberTotalFriend = listFriend.length;
 
   let listFilter = listFriend.filter((user) =>
-    user.name.toLowerCase().includes(txtSearch.toLowerCase())
+    user?.name?.toLowerCase().includes(txtSearch?.toLowerCase())
   );
 
   const listUserCard = useMemo(
     () =>
       listFilter?.map((user, i) => {
-          return (
-            <FriendCard
-              _id={user._id}
-              name={user.name}
-              relationship="Add Friend"
-            ></FriendCard>
-          );
+        return (
+          <FriendCard
+            _id={user._id}
+            name={user.name}
+            relationship="Add Friend"
+          ></FriendCard>
+        );
       }),
     [listFilter]
   );
-
 
   const handleSearch = () => {
     setTxtSearch(inputRef.current.state.value);
@@ -133,9 +132,7 @@ function MutualFriendPage({ props }) {
                   />
                 </div>
 
-                <div className="row">
-                 {listUserCard}
-                </div>
+                <div className="row">{listUserCard}</div>
               </div>
             </Content>
           </Layout>

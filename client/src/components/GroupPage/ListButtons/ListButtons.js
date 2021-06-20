@@ -37,8 +37,11 @@ const ListButtons = () => {
     setSelectedMenu(defaultSelectedKey);
   }, [defaultSelectedKey]);
 
-  useEffect(async () => {
-    setMatchingFriendRequest(await getMatchFriendRequest());
+  useEffect(() => {
+    async function updateMatchingFriendRequest() {
+      setMatchingFriendRequest(await getMatchFriendRequest());
+    }
+    updateMatchingFriendRequest();
   }, [user]);
 
   const handleClick = (e) => {

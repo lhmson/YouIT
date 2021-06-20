@@ -21,7 +21,7 @@ const userSchema = mongoose.Schema(
 
     userInfo: {
       type: userInfoSchema,
-      required: true,
+      // required: true,
       default: defaultUserInfoValue,
     },
 

@@ -10,7 +10,7 @@ import auth from "../middleware/auth.js";
 const router = express.Router();
 
 router.get("/user", auth, getSearchUsers);
-router.get("/post", auth, getSearchPosts);
+router.get("/post", getSearchPosts);
 router.get("/group", auth, getSearchGroups);
 
 export default router;

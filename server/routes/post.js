@@ -34,8 +34,8 @@ import auth from "../middleware/auth.js";
 const router = express.Router();
 
 // router.get("/", getPosts);
-router.get("/", auth, getPostsPagination);
-router.get("/:id", auth, getAPost);
+router.get("/", getPostsPagination);
+router.get("/:id", getAPost);
 router.get("/:id/others", getOtherPosts);
 router.get("/:id/comment", getComments);
 router.get("/:id/commentsNumber", getCommentsNumber);
