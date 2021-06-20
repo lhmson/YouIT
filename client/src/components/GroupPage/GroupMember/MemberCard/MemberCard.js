@@ -59,7 +59,7 @@ function MemberCard(props) {
 
   useEffect(() => {
     group?.listMembers.forEach((member) => {
-      if (member?.userId == user?.result?._id) setRoleUser(member?.role);
+      if (member?.userId === user?.result?._id) setRoleUser(member?.role);
     });
   }, []);
 
@@ -248,7 +248,7 @@ function MemberCard(props) {
               src="https://vtv1.mediacdn.vn/thumb_w/650/2020/10/20/blackpink-lisa-mac-160316252527410005928.jpg"
             />
 
-            <div className="col-8" style={{ alignSelf: "center" }}>
+            <div className="ml-3 break-word">
               <Link to={`/userinfo/${_id}`}>
                 <Text style={styles.textUser}>{name ?? "Lalisa Manobal"}</Text>
               </Link>

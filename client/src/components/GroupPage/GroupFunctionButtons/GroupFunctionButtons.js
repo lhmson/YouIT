@@ -164,7 +164,7 @@ function GroupFunctionButtons() {
       .catch((error) => message.success(error.message));
   };
 
-  const showDeleteConfirm = (id) => {
+  const showLeaveConfirm = (id) => {
     confirm({
       title: "Are you sure leave this group?",
       icon: <ExclamationCircleOutlined />,
@@ -174,6 +174,38 @@ function GroupFunctionButtons() {
       cancelText: "No",
       onOk() {
         handleDeleteGroup(id);
+      },
+      onCancel() {
+        console.log("Cancel");
+      },
+    });
+  };
+
+  const showDeleteConfirm = (id) => {
+    confirm({
+      title: "Are you sure delete this group?",
+      icon: <ExclamationCircleOutlined />,
+      okText: "Yes",
+      okType: "danger",
+      cancelText: "No",
+      onOk() {
+        handleDeleteGroup(id);
+      },
+      onCancel() {
+        console.log("Cancel");
+      },
+    });
+  };
+
+  const showMemberLeaveConfirm = (groupId, userId) => {
+    confirm({
+      title: "Are you sure leave this group?",
+      icon: <ExclamationCircleOutlined />,
+      okText: "Yes",
+      okType: "danger",
+      cancelText: "No",
+      onOk() {
+        handleLeaveGroup(groupId, userId);
       },
       onCancel() {
         console.log("Cancel");
@@ -245,8 +277,8 @@ function GroupFunctionButtons() {
               style={styles.button}
               onClick={() => {
                 isOwner(user)
-                  ? showDeleteConfirm(group?._id)
-                  : handleLeaveGroup(group?._id, user?._id);
+                  ? showLeaveConfirm(group?._id)
+                  : showMemberLeaveConfirm(group?._id, user?._id);
               }}
             >
               Leave Group
@@ -256,7 +288,7 @@ function GroupFunctionButtons() {
                 className="green-button"
                 style={styles.button}
                 onClick={() => {
-                  handleDeleteGroup(group?._id);
+                  showDeleteConfirm(group?._id);
                 }}
               >
                 Delete
