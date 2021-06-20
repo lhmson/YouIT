@@ -120,7 +120,7 @@ export const createGroup = async (req, res) => {
           userId: member.userId,
           kind: "NewGroup_InitialMembers",
           content: {
-            description: `You has been added to a new group "${newGroup?.name}" by ${groupOwnerData?.name}.`,
+            description: `You have been added to a new group "${newGroup?.name}" by ${groupOwnerData?.name}.`,
           },
           link: `/group/${newGroup._id}/main`,
         });
@@ -160,6 +160,16 @@ export const addGroupMember = async (req, res) => {
     // group.listPendingMembers = newPendingMembers;
 
     await group.save();
+
+    sendNotificationUser({
+      userId: memberId,
+      kind: "NewMember_NewMember",
+      content: {
+        description: `Your request to join group "${group?.name}" has been approved!`,
+      },
+      link: `/group/${group._id}/main`,
+    });
+
     return res.status(httpStatusCodes.ok).json(group);
   } catch (error) {
     return res
@@ -215,6 +225,12 @@ export const addGroupPendingMember = async (req, res) => {
   const pendingMember = { userId: memberId };
 
   try {
+    const newMember = await User.findById(memberId);
+    if (!newMember)
+      return res
+        .status(httpStatusCodes.notFound)
+        .json("User not exists")
+
     const group = await Group.findById(groupId);
     if (!group) {
       return res
@@ -240,6 +256,20 @@ export const addGroupPendingMember = async (req, res) => {
 
     group.listPendingMembers.push(pendingMember);
     await group.save();
+
+    // send noti to group admins
+    group?.listMembers?.forEach(member => {
+      if (checkRoleHasPermissionOfRole(member?.role, "Admin"))
+        sendNotificationUser({
+          userId: member.userId,
+          kind: "NewPendingMember_GroupAdmins",
+          content: {
+            description: `User ${newMember?.name} wants to join your group "${group?.name}". Click here to review member requests.`,
+          },
+          link: `/group/${group._id}/member_requests`,
+        });
+    })
+
     return res.status(httpStatusCodes.ok).json(group);
   } catch (error) {
     return res
@@ -442,7 +472,7 @@ export const leaveGroup = async (req, res) => {
 export const setGroupMemberRole = async (req, res) => {
   const { groupId, memberId } = req.params;
   const { newRole } = req.body;
-  console.log(newRole);
+  // console.log(newRole);
   const { userGroupRole } = req;
 
   const group = await Group.findById(groupId);
@@ -471,6 +501,16 @@ export const setGroupMemberRole = async (req, res) => {
       if (member.userId.equals(memberId)) {
         member.role = newRole;
         await group.save();
+
+        sendNotificationUser({
+          userId: member.userId,
+          kind: "SetGroupMemberRole_SetMember",
+          content: {
+            description: `You have been set as ${newRole === "Admin" ? "an" : "a"} ${newRole} of group "${group?.name}".`,
+          },
+          link: `/group/${group._id}/main`,
+        });
+
         return res.status(httpStatusCodes.ok).json(group);
       }
     });
