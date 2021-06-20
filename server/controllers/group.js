@@ -499,17 +499,20 @@ export const setGroupMemberRole = async (req, res) => {
 
     group.listMembers.forEach(async (member) => {
       if (member.userId.equals(memberId)) {
+        const oldRole = member.role;
         member.role = newRole;
         await group.save();
 
-        sendNotificationUser({
-          userId: member.userId,
-          kind: "SetGroupMemberRole_SetMember",
-          content: {
-            description: `You have been set as ${newRole === "Admin" ? "an" : "a"} ${newRole} of group "${group?.name}".`,
-          },
-          link: `/group/${group._id}/main`,
-        });
+        // only send notification if the member have a higher role
+        if (checkRoleHasPermissionOfRole(newRole, oldRole))
+          sendNotificationUser({
+            userId: member.userId,
+            kind: "SetGroupMemberRole_SetMember",
+            content: {
+              description: `You have been promoted as ${newRole === "Admin" ? "an" : "a"} ${newRole} of group "${group?.name}".`,
+            },
+            link: `/group/${group._id}/main`,
+          });
 
         return res.status(httpStatusCodes.ok).json(group);
       }
