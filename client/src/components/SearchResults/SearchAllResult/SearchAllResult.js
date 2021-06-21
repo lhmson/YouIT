@@ -24,16 +24,6 @@ const SearchAllResult = ({ txtSearch }) => {
     setLoading1(false);
     setLoading2(false);
     setLoading3(false);
-    // api1
-    //   .fetchListMyFriends("60a142289080334c3c2e69ea")
-    //   .then((res) => {
-    //     console.log("bạn bè", res.data);
-    //     setLoading1(true);
-    //   })
-    //   .catch((e) => {
-    //     console.log(e);
-    //   });
-    // /// fetch data search post
     api
       .fetchSearchPost(txtSearch)
       .then((res) => {
@@ -48,7 +38,6 @@ const SearchAllResult = ({ txtSearch }) => {
     api
       .fetchSearchGroup(txtSearch)
       .then((res) => {
-        console.log("ao", res.data);
         if (res.data instanceof Array) setListGroup(res.data);
         else setListGroup([]);
         setLoading2(true);
