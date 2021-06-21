@@ -72,7 +72,7 @@ function Navbar({ selectedMenu, setTxtSearch, txtInitSearch }) {
 
   //#region notification handle
 
-  const notifications = useSelector((state) => state.notifications);
+  const unseenNotifications = useSelector((state) => state.notifications);
 
   const handleClickNotificationItem = (url, notificationId) => {
     dispatch(setSeenNotification(notificationId, "true"));
@@ -169,12 +169,12 @@ function Navbar({ selectedMenu, setTxtSearch, txtInitSearch }) {
           <Dropdown
             overlay={NotificationList({
               handleClickNotificationItem,
-              notifications,
+              unseenNotifications,
             })}
             trigger={["click"]}
             placement="bottomRight"
           >
-            <Badge count={notifications.length} showZero>
+            <Badge count={unseenNotifications.length} showZero>
               <Tooltip title="Notifications" placement="bottom">
                 <BellFilled
                   className="clickable"

@@ -13,28 +13,31 @@ import {
 const { Text } = Typography;
 const { TabPane } = Tabs;
 
-function NotificationList({ handleClickNotificationItem, notifications }) {
-  const [allNoti, setAllNoti] = useState([]);
-  const [unseenNoti, setUnseenNoti] = useState([]);
+function NotificationList({
+  handleClickNotificationItem,
+  unseenNotifications,
+}) {
+  // const [allNoti, setAllNoti] = useState([]);
+  // const [unseenNoti, setUnseenNoti] = useState([]);
   const [seenNoti, setSeenNoti] = useState([]);
   const [isUpdate, setIsUpdate] = useState(false);
 
   const dispatch = useDispatch();
 
   const handleFetchNoti = () => {
-    api.fetchAllNotifications().then((res) => {
-      setAllNoti(res.data);
-    });
+    // api.fetchAllNotifications().then((res) => {
+    //   setAllNoti(res.data);
+    // });
     api.fetchSeenNotifications().then((res) => {
       setSeenNoti(res.data);
     });
-    api.fetchUnseenNotifications().then((res) => {
-      setUnseenNoti(res.data);
-    });
+    // api.fetchUnseenNotifications().then((res) => {
+    //   setUnseenNoti(res.data);
+    // });
   };
 
   const handleMarkAll = () => {
-    unseenNoti.forEach((item) => {
+    unseenNotifications?.forEach((item) => {
       dispatch(setSeenNotification(item._id, "true"));
     });
     dispatch(refreshNotifications());
@@ -44,13 +47,19 @@ function NotificationList({ handleClickNotificationItem, notifications }) {
 
   useEffect(() => {
     handleFetchNoti();
-    setIsUpdate(false);
+  }, []);
+
+  useEffect(() => {
+    if (isUpdate) {
+      handleFetchNoti();
+      setIsUpdate(false);
+    }
   }, [isUpdate]);
 
   const NotiList = ({ noti }) => {
     return (
       <>
-        {allNoti.length === 0 ? (
+        {noti?.length === 0 ? (
           <div key="no-data-all" className="whitegreen-button">
             <div className="justify-content-center align-items-center p-2 w-100">
               No data to show
@@ -103,14 +112,14 @@ function NotificationList({ handleClickNotificationItem, notifications }) {
         <div>
           <Tabs defaultActiveKey="1" size="small" style={{ marginBottom: 32 }}>
             <TabPane tab="Unseen" key="1">
-              <NotiList noti={unseenNoti} />
+              <NotiList noti={unseenNotifications} />
             </TabPane>
             <TabPane tab="Seen" key="2">
               <NotiList noti={seenNoti} />
             </TabPane>
-            <TabPane tab="All" key="3">
+            {/* <TabPane tab="All" key="3">
               <NotiList noti={allNoti} />
-            </TabPane>
+            </TabPane> */}
           </Tabs>
           <Button className="green-button" onClick={handleMarkAll}>
             Mark all as read
@@ -125,7 +134,7 @@ function NotificationList({ handleClickNotificationItem, notifications }) {
 
   return (
     <Menu>
-      {notifications.length === 0 ? (
+      {unseenNotifications?.length === 0 ? (
         <Menu.Item key="no-data" className="whitegreen-button">
           <div className="justify-content-center align-items-center p-2 w-100">
             No data to show
@@ -133,7 +142,7 @@ function NotificationList({ handleClickNotificationItem, notifications }) {
         </Menu.Item>
       ) : (
         <>
-          {notifications?.slice(0, 5).map((item, i) => (
+          {unseenNotifications?.slice(0, 5).map((item, i) => (
             <Menu.Item
               key={item._id}
               className="whitegreen-button"
