@@ -3,7 +3,15 @@ import * as api from "../../api/auth";
 import { message } from "antd";
 
 export const signin =
-  (formData, router, setLocalStorageUser, oldToken, setToken, setResend) =>
+  (
+    formData,
+    router,
+    setLocalStorageUser,
+    oldToken,
+    setToken,
+    setResend,
+    setDisableLogin
+  ) =>
   async (dispatch) => {
     try {
       console.log("signin");
@@ -23,32 +31,42 @@ export const signin =
       const data = error.response?.data;
       if (code === 401 || code === 404) {
         if (data.message === "Unactivated") {
+          setDisableLogin(true);
           setResend(true);
           message.success("Please check your email to verify.");
-        } else message.error("Wrong username or password.");
-      } else if (code === 500) message.error("Something went wrong.");
+        } else {
+          setDisableLogin(false);
+          message.error("Wrong username or password.");
+        }
+      } else {
+        setDisableLogin(false);
+        message.error("Something went wrong.");
+      }
     }
   };
 
-export const signup = (formData, setResend) => async (dispatch) => {
-  try {
-    console.log("signup");
-    await api.signUp(formData);
-    // dispatch({ type: AUTH, data });
-    setResend(true);
-    message.success("Please check your email to verify.");
-  } catch (error) {
-    var errorMessage;
-    switch (error.response?.status) {
-      case 409:
-        errorMessage = "User already exists.";
-        break;
-      default:
-        errorMessage = "Something went wrong.";
+export const signup =
+  (formData, setResend, setDisableReg) => async (dispatch) => {
+    try {
+      console.log("signup");
+      await api.signUp(formData);
+      // dispatch({ type: AUTH, data });
+      setResend(true);
+      message.success("Please check your email to verify.");
+    } catch (error) {
+      var errorMessage;
+      switch (error.response?.status) {
+        case 409:
+          errorMessage = "User already exists.";
+          setDisableReg(false);
+          break;
+        default:
+          errorMessage = "Something went wrong.";
+          setDisableReg(false);
+      }
+      message.error(errorMessage);
     }
-    message.error(errorMessage);
-  }
-};
+  };
 
 export const signout = (browserId) => async (dispatch) => {
   api.signOut(browserId);
