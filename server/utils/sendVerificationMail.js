@@ -18,7 +18,7 @@ export const sendVerificationMail = async (email) => {
   const mailContent = `
   <h1>Hi, ${user.name}!</h1>
   <h4>To complete the process, please verify your email address by simply clicking the link below or pasting it into your browser:</h4>
-  <p>https://youit-social-network.netlify.app/activate/${token}</p>
+  <p>${process.env.FRONTEND_URL}/activate/${token}</p>
   <p>The above activation link expires in 30 minutes.</p>
   <h3>YouIT Team</p>
   `;

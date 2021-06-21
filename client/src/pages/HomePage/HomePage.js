@@ -10,13 +10,14 @@ import HorizontalScroll from "react-scroll-horizontal";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import "./styles.css";
+import * as apiHashtag from "../../api/hashtag";
 
 const { Title, Text } = Typography;
 
-const BigTag = () => {
+const BigTag = ({ title }) => {
   return (
     <Text className="boldhover" style={{ fontSize: 40, marginRight: 32 }}>
-      javascript
+      {title}
     </Text>
   );
 };
@@ -24,11 +25,22 @@ const BigTag = () => {
 const pagePadding = 148;
 function HomePage() {
   const [user] = useLocalStorage("user");
+  const [hashtags, setHashtags] = useState([]);
 
   useEffect(() => {
     AOS.init({
       duration: 2000,
     });
+  }, []);
+
+  useEffect(() => {
+    apiHashtag
+      .fetchHashtagsTop(8)
+      .then((res) => setHashtags(res.data))
+      .catch((error) => {
+        alert("Cannot get hashtags of system");
+        console.log("Error when getting top hashtags", error);
+      });
   }, []);
 
   useEffect(() => {
@@ -194,18 +206,9 @@ function HomePage() {
             }}
           >
             <HorizontalScroll>
-              <BigTag />
-              <BigTag />
-              <BigTag />
-              <BigTag />
-              <BigTag />
-              <BigTag />
-              <BigTag />
-              <BigTag />
-              <BigTag />
-              <BigTag />
-              <BigTag />
-              <BigTag />
+              {hashtags.map((item) => (
+                <BigTag title={item.name} />
+              ))}
             </HorizontalScroll>
           </div>
 

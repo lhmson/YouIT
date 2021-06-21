@@ -5,12 +5,14 @@ import {
   getAHashtag,
   getAllHashtags,
   getUserProgrammingHashtags,
+  getTopHashtags,
 } from "../controllers/hashtag.js";
 import auth from "../middleware/auth.js";
 
 const router = express.Router();
 
 router.get("/list/all", getAllHashtags);
+router.get("/list/top", getTopHashtags);
 router.get("/:id", getAHashtag);
 router.get("/:userId/programmingHashtags", auth, getUserProgrammingHashtags);
 
