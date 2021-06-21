@@ -9,6 +9,7 @@ import { useLocalStorage } from "../../hooks/useLocalStorage.js";
 import HorizontalScroll from "react-scroll-horizontal";
 import AOS from "aos";
 import "aos/dist/aos.css";
+import "./styles.css";
 
 const { Title, Text } = Typography;
 
@@ -54,14 +55,12 @@ function HomePage() {
     <>
       <Layout>
         <Navbar />
-        <div style={{ marginTop: 128, padding: 24, alignItems: "center" }}>
+        <div
+          className="main"
+          style={{ marginTop: 128, padding: 24, alignItems: "center" }}
+        >
           <div className="row" style={{ marginBottom: 100 }}>
-            <div
-              className="col-md-6 align-items-center justify-content-center"
-              style={{
-                paddingLeft: pagePadding,
-              }}
-            >
+            <div className="col-lg-6 align-items-center justify-content-center">
               <Text
                 style={{
                   fontSize: 60,
@@ -85,7 +84,7 @@ function HomePage() {
                 nisi ut aliquip ex ea commodo consequat."
               </Text>
               <br />
-              <div className="row ml-1 mt-5">
+              <div className="row ml-1 mt-5 mb-5">
                 <Button className="green-button mr-4" size="large">
                   Interview preparation
                 </Button>
@@ -95,11 +94,10 @@ function HomePage() {
               </div>
             </div>
             <div
-              className="col-md-6"
+              className="col-lg-6"
               style={{
                 alignItems: "stretch",
                 justifyContent: "stretch",
-                paddingRight: pagePadding,
               }}
             >
               <div className="pink" style={{ flex: 1, height: 480 }} />
@@ -108,12 +106,10 @@ function HomePage() {
           <div
             style={{
               marginBottom: 100,
-              marginLeft: pagePadding * 2,
-              marginRight: pagePadding * 2,
             }}
           >
             <div data-aos="zoom-in">
-              <div className="pink" style={{ height: 400 }} />
+              <div className="pink" style={{ height: 350 }} />
             </div>
             <div style={{ height: 24 }} />
 
@@ -135,12 +131,10 @@ function HomePage() {
             className="row"
             style={{
               alignItems: "center",
-              paddingLeft: pagePadding - 16,
-              paddingRight: pagePadding - 16,
               marginBottom: 100,
             }}
           >
-            <div className="col-md-6" style={{ textAlign: "left" }}>
+            <div className="col-lg-6 mb-4" style={{ textAlign: "left" }}>
               <Text strong style={{ fontSize: 40 }}>
                 Something 2
               </Text>
@@ -156,7 +150,7 @@ function HomePage() {
             </div>
             <div
               data-aos="flip-left"
-              className="col-md-6"
+              className="col-lg-6"
               style={{ textAlign: "left" }}
             >
               <div className="pink" style={{ height: 400 }} />
@@ -166,17 +160,15 @@ function HomePage() {
             className="row"
             style={{
               alignItems: "center",
-              paddingLeft: pagePadding - 16,
-              paddingRight: pagePadding - 16,
               marginBottom: 100,
             }}
           >
-            <div data-aos="flip-right" className="col-md-6">
+            <div data-aos="flip-right" className="col-lg-6 mb-4">
               <div className="pink" style={{ height: 400 }} />
             </div>
             <div
               data-aos="fade-left"
-              className="col-md-6"
+              className="col-lg-6"
               style={{ textAlign: "left" }}
             >
               <Text strong style={{ fontSize: 40 }}>
@@ -198,8 +190,6 @@ function HomePage() {
             style={{
               flex: 1,
               height: 68,
-              marginLeft: pagePadding * 2 - 16,
-              marginRight: pagePadding * 2 - 16,
               marginBottom: 50,
             }}
           >
@@ -222,8 +212,6 @@ function HomePage() {
           <div
             style={{
               height: 68,
-              marginLeft: pagePadding * 2 - 16,
-              marginRight: pagePadding * 2 - 16,
               textAlign: "center",
             }}
           >
