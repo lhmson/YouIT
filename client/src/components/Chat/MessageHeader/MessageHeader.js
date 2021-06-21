@@ -52,6 +52,12 @@ function MessageHeader({ setOpenSidebar, currentId, listSeenMembers }) {
       }
     });
 
+    messageHandle.onConversationDeleted((msg) => {
+      if (msg.res.conversationId === currentId) {
+        handleConversationDeleted();
+      }
+    })
+
     return messageHandle.cleanUpAll;
   }, [currentId]);
 
@@ -71,6 +77,13 @@ function MessageHeader({ setOpenSidebar, currentId, listSeenMembers }) {
       return friendsStatusManager.cleanUpAll;
     }
   }, [currentId]);
+
+  const handleConversationDeleted = () => {
+    // if there's no longer a conversation with current id, refresh!
+    message.warn("You are no longer in this conversation!", 2, () =>
+      window.location.reload()
+    );
+  }
 
   const handleLoadConversationData = () => {
     if (!currentId) return;
@@ -183,20 +196,27 @@ function MessageHeader({ setOpenSidebar, currentId, listSeenMembers }) {
   };
 
   const handleDeleteConversation = () => {
-    // Need a yes/no prompt
     Modal.confirm({
       title: "Do you want to delete this conversation?",
       icon: <ExclamationCircleOutlined />,
       content: "You cannot undo this action",
       onOk() {
-        apiConversation
-          .deleteConversation(currentId)
-          .then((res) => {
-            message.success("Conversation deleted!");
-          })
-          .catch(() => {
-            message.error("Something went wrong!");
-          });
+        const key = `delete_conversation_${currentId}`;
+        message.loading({ content: "Deleting conversation...", key });
+        apiConversation.deleteConversation(currentId)
+          .then(() =>
+            message.success({
+              content: "Conversation deleted.",
+              key, duration: 1,
+              onClose: () => window.location.reload()
+            })
+          )
+          .catch(() =>
+            message.error({
+              content: "Something went wrong.",
+              key, duration: 1
+            })
+          );
       },
       onCancel() {
       },

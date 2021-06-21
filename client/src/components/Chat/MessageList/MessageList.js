@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Button, Tooltip, Typography, Modal } from "antd";
+import { Button, Tooltip, Typography, Modal, message } from "antd";
 import "../styles.css";
 import { useLocalStorage } from "../../../hooks/useLocalStorage";
 import { useMessage } from "../../../hooks/useMessage";
@@ -105,7 +105,15 @@ function ConversationList({ currentId, listSeenMembers, setListSeenMembers }) {
       icon: <ExclamationCircleOutlined />,
       content: "You cannot undo this action",
       onOk() {
-        apiConversation.deleteMessage(currentId, messageId);
+        const key = `delete_message_${messageId}`;
+        message.loading({ content: "Deleting message...", key });
+        apiConversation.deleteMessage(currentId, messageId)
+          .then(() =>
+            message.success({ content: "Message deleted.", key, duration: 1 })
+          )
+          .catch(() =>
+            message.error({ content: "Something went wrong.", key, duration: 1 })
+          );
       },
       onCancel() {
       },
