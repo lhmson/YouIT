@@ -4,6 +4,8 @@ import MemberRequests from "../../../components/MemberRequests/MemberRequests";
 import * as api from "../../../api/group";
 import COLOR from "../../../constants/colors";
 import { Typography, Row } from "antd";
+import { useHistory } from "react-router-dom";
+import { Loading } from "../../../components";
 import styles from "./styles.js";
 
 const { Text } = Typography;
@@ -11,8 +13,9 @@ const { Text } = Typography;
 function MemberRequestsResult(props) {
   const { group } = useContext(GroupContext);
   const [listMembersRequest, setListMembersRequest] = useState([]);
-  // const [user] = useLocalStorage("user");
-  // const { listPendingMembers } = group;
+  const user = JSON.parse(localStorage.getItem("user"))?.result;
+  const history = useHistory();
+
   useEffect(() => {
     api
       .getListPendingMembers(group?._id)
@@ -24,6 +27,10 @@ function MemberRequestsResult(props) {
         console.log(e);
       });
   }, [group]);
+
+  useEffect(() => {
+    if (!isAdmin()) history.push(`/group/${group?._id}/main`);
+  }, []);
 
   const listMembersRequestCard = () =>
     listMembersRequest?.map((user, i) => (
@@ -41,6 +48,20 @@ function MemberRequestsResult(props) {
     </div>
   );
 
+  const isAdmin = () => {
+    let isJoined = false;
+    group?.listMembers.forEach((member) => {
+      if (
+        member?.userId === user?._id &&
+        (member?.role === "Member" || member?.role === "Owner")
+      ) {
+        isJoined = true;
+      }
+    });
+
+    return isJoined;
+  };
+
   return (
     <div
       style={{
@@ -56,9 +77,15 @@ function MemberRequestsResult(props) {
           }}
         >
           <div className="col-10 offset-1">
-            {listMembersRequest.length === 0
-              ? noRequestPending()
-              : listMembersRequestCard()}
+            {listMembersRequest.length ? (
+              <div className="text-center">
+                <Loading />
+              </div>
+            ) : listMembersRequest.length === 0 ? (
+              noRequestPending()
+            ) : (
+              listMembersRequestCard()
+            )}
           </div>
         </div>
       </div>

@@ -1,16 +1,19 @@
 import React, { useContext, useState, useEffect } from "react";
-import { AiOutlineAntDesign } from "react-icons/ai";
 import * as api from "../../../api/post";
 import PostRequests from "../../../components/PostRequests/PostRequests";
 import COLOR from "../../../constants/colors";
 import { GroupContext } from "../../GroupPage/GroupPage";
 import { Typography, Row } from "antd";
+import { useHistory } from "react-router-dom";
+import { Loading } from "../../../components";
 import styles from "./styles.js";
 
 const { Text } = Typography;
 function PostRequestsResult() {
   const { group } = useContext(GroupContext);
   const [listPostRequest, setListPostRequest] = useState([]);
+  const user = JSON.parse(localStorage.getItem("user"))?.result;
+  const history = useHistory();
 
   useEffect(() => {
     api
@@ -24,6 +27,10 @@ function PostRequestsResult() {
       });
   }, [group]);
 
+  useEffect(() => {
+    if (!isModerator()) history.push(`/group/${group?._id}/main`);
+  }, []);
+
   const listPostRequestCard = () =>
     listPostRequest?.map((post, i) => (
       <PostRequests post={post}></PostRequests>
@@ -36,6 +43,18 @@ function PostRequestsResult() {
       </Row>
     </div>
   );
+
+  const isModerator = () => {
+    let isJoined = false;
+    group?.listMembers.forEach((member) => {
+      if (member?.userId === user?._id && member?.role !== "Member") {
+        isJoined = true;
+      }
+    });
+
+    return isJoined;
+  };
+
   return (
     <div
       style={{
@@ -51,9 +70,15 @@ function PostRequestsResult() {
           }}
         >
           <div className="col-10 offset-1">
-            {listPostRequest.length === 0
-              ? noRequestPending()
-              : listPostRequestCard()}
+            {listPostRequest.length ? (
+              <div className="text-center">
+                <Loading />
+              </div>
+            ) : listPostRequest.length === 0 ? (
+              noRequestPending()
+            ) : (
+              listPostRequestCard()
+            )}
           </div>
         </div>
       </div>

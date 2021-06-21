@@ -5,6 +5,7 @@ import * as api from "../../../api/group";
 import { useMobile } from "../../../utils/responsiveQuery.js";
 import { Input } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
+import Loading from "../../../components/Loading/Loading";
 import COLOR from "../../../constants/colors.js";
 
 function GroupMember() {
@@ -38,6 +39,7 @@ function GroupMember() {
         name={user.userId.name}
         role={user.role}
         relationship="Add Friend"
+        avatarUrl={user.userId.avatarUrl}
       ></MemberCard>
     ));
 
@@ -91,17 +93,26 @@ function GroupMember() {
           defaultValue={""}
         />
       </div>
-      <div
-        className="row"
-        style={{
-          paddingTop: 16,
-          marginTop: 30,
-        }}
-      >
+      <div>
         {isJoinedGroup() || isPublicGroup() ? (
-          <div className={`${!isMobile && "col-12"}`}>{listMembersCard()}</div>
+          // <div className={`${!isMobile && "col-12"}`}>{listMembersCard()}</div>
+          !listMembers.length ? (
+            <div className="text-center">
+              <Loading />
+            </div>
+          ) : (
+            <div
+              style={{
+                paddingTop: 16,
+                marginTop: 30,
+              }}
+              className={`${!isMobile && "col-12"}`}
+            >
+              {listMembersCard()}
+            </div>
+          )
         ) : (
-          ""
+          <></>
         )}
       </div>
     </div>
