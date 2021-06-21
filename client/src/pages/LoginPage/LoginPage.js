@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import {
   Card,
   Button,
@@ -41,8 +41,13 @@ function LoginPage() {
   const dispatch = useDispatch();
   const history = useHistory();
   const [resend, setResend] = useState(false);
+  const disableLogin = useRef(false);
 
   const [token, setToken] = useToken();
+
+  const setDisableLogin = (b) => {
+    disableLogin.current = b;
+  };
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -50,17 +55,22 @@ function LoginPage() {
   };
 
   const handleFinish = async (values) => {
-    const browserId = JSON.parse(localStorage.getItem("browser"))?.id;
-    dispatch(
-      signin(
-        { ...form, browserId },
-        history,
-        setUser,
-        token,
-        setToken,
-        setResend
-      )
-    );
+    if (disableLogin.current === false) {
+      console.log("handle login");
+      setDisableLogin(true);
+      const browserId = JSON.parse(localStorage.getItem("browser"))?.id;
+      dispatch(
+        signin(
+          { ...form, browserId },
+          history,
+          setUser,
+          token,
+          setToken,
+          setResend,
+          setDisableLogin
+        )
+      );
+    }
   };
 
   const handleResend = async () => {

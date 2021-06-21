@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Button, Typography, List } from "antd";
-import { Avatar, Tag, Popover, message } from "antd";
+import { Avatar, Tag, Popover, message,   Tooltip, } from "antd";
 import styles from "./styles.js";
 import { Link } from "react-router-dom";
 import * as api from "../../api/friend";
@@ -22,6 +22,10 @@ import {
   removeSendingFriendRequest,
 } from "../../api/user_info.js";
 
+import {
+  fetchProgrammingHashtags,
+} from "../../api/hashtag"
+
 import { useDispatch } from "react-redux";
 import { useMobile } from "../../utils/responsiveQuery.js";
 
@@ -38,6 +42,7 @@ function UserCard(props) {
     props.relationship ?? "Add Friend"
   );
   const [listMutual, setListMutual] = useState([]);
+  const [listHashTags, setListHashTags] = useState([]);
 
   const isMobile = useMobile();
 
@@ -168,6 +173,16 @@ function UserCard(props) {
       });
   }, []);
 
+  useEffect(() => {
+    fetchProgrammingHashtags(_id)
+      .then((res) => {
+        if (res.data) setListHashTags(res.data);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  }, []);
+
   const popupListMutualFriend = (data) => {
     return (
       <>
@@ -252,10 +267,21 @@ function UserCard(props) {
         </div>
         <div className="row mt-4">
           <div className="ml-4">
-            <Tag className="tag">C#</Tag>
+            {/* <Tag className="tag">C#</Tag>
             <Tag className="tag">Javascript</Tag>
             <Tag className="tag">Unity 3D</Tag>
-            <Text style={{ ...styles.text, fontWeight: 600 }}>+ 15 Posts</Text>
+            <Text style={{ ...styles.text, fontWeight: 600 }}>+ 15 Posts</Text> */}
+            {listHashTags?.map((item, i) => (
+            <Tooltip
+              title={`Mentioned ${item?.count} time${
+                item?.count > 1 ? "s" : ""
+              }`}
+            >
+              <Tag key={i} className="mb-2 tag">
+                {item.name}
+              </Tag>
+            </Tooltip>
+          ))}
           </div>
         </div>
       </div>

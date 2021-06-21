@@ -124,14 +124,14 @@ function GroupCard({
             </div>
           </div>
         </div>
-        <div className="row mt-4">
+        {/* <div className="row mt-4">
           <div className="ml-4">
             <Tag className="tag">#Talkshow</Tag>
             <Tag className="tag">#KPOP</Tag>
             <Tag className="tag">#Film</Tag>
             <Text style={{ ...styles.text, fontWeight: 600 }}>+ 15 Posts</Text>
           </div>
-        </div>
+        </div> */}
       </div>
     </>
   );

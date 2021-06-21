@@ -1,6 +1,9 @@
 import express from "express";
 import mongoose from "mongoose";
-import { handleCreateHashtag, handleDeleteHashtag } from "../businessLogics/hashtag.js";
+import {
+  handleCreateHashtag,
+  handleDeleteHashtag,
+} from "../businessLogics/hashtag.js";
 import Hashtag from "../models/hashtag.js";
 import User from "../models/user.js";
 import { httpStatusCodes } from "../utils/httpStatusCode.js";
@@ -33,7 +36,8 @@ export const createHashtag = async (req, res) => {
       res.status(createResult.errorCode);
 
       switch (createResult.errorCode) {
-        case httpStatusCodes.internalServerError: return res.json({ message: "Unknown error" });
+        case httpStatusCodes.internalServerError:
+          return res.json({ message: "Unknown error" });
       }
     }
   } catch (error) {
@@ -51,6 +55,24 @@ export const createHashtag = async (req, res) => {
 export const getAllHashtags = async (req, res) => {
   try {
     const hashtags = await Hashtag.find();
+    return res.status(httpStatusCodes.ok).json(hashtags);
+  } catch (error) {
+    res
+      .status(httpStatusCodes.internalServerError)
+      .json({ message: error.message });
+  }
+};
+
+/**
+ * @param {express.Request<ParamsDictionary, any, any, QueryString.ParsedQs, Record<string, any>>} req
+ * @param {express.Response<any, Record<string, any>, number>} res
+ * @param {express.NextFunction} next
+ */
+export const getTopHashtags = async (req, res) => {
+  const { number } = req.query;
+  const _number = parseInt(number);
+  try {
+    const hashtags = await Hashtag.find().sort({ count: -1 }).limit(_number);
     return res.status(httpStatusCodes.ok).json(hashtags);
   } catch (error) {
     res
@@ -96,7 +118,8 @@ export const deleteHashtag = async (req, res) => {
       res.status(delResult.errorCode);
 
       switch (delResult.errorCode) {
-        case httpStatusCodes.notFound: return res.json({ message: "Hashtag not found" });
+        case httpStatusCodes.notFound:
+          return res.json({ message: "Hashtag not found" });
       }
     }
 

@@ -1,9 +1,7 @@
-import React, { useEffect, useState } from "react";
-import { Button, Typography, Col, Image } from "antd";
-import { Link } from "react-router-dom";
-const { Title, Text, Paragraph } = Typography;
+import React from "react";
+import { Typography, Col, Image } from "antd";
 
-const buttonSize = 150;
+const { Title, Text } = Typography;
 
 function LoadingSearch() {
   return (
@@ -13,7 +11,7 @@ function LoadingSearch() {
     >
       <Col align="center" style={{ paddingBottom: 32 }}>
         <Image
-          src="https://i.pinimg.com/originals/fa/87/77/fa87774590186b287a5338d7c87afc0c.gif"
+          src="https://i.pinimg.com/originals/e6/14/50/e6145004c6448bbc9c4601a6413d3c45.gif"
           width={300}
         />
         <Title level={3}>Loading</Title>

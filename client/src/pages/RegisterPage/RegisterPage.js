@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import {
   Card,
   Button,
@@ -43,6 +43,11 @@ function RegisterPage() {
   const [form, setForm] = useState(initialState);
   const dispatch = useDispatch();
   const [resend, setResend] = useState(false);
+  const disableReg = useRef(false);
+
+  const setDisableReg = (b) => {
+    disableReg.current = b;
+  };
 
   const handleChange = (e) => {
     setForm({ ...form, [e?.target.name]: e?.target.value });
@@ -66,15 +71,19 @@ function RegisterPage() {
   };
 
   const handleFinish = (values) => {
-    const data = {
-      email: form.newEmail,
-      password: form.newPassword,
-      firstName: form.firstName,
-      lastName: form.lastName,
-      gender: form.gender,
-      dob: form.dob,
-    };
-    dispatch(signup(data, setResend));
+    if (disableReg.current === false) {
+      console.log("fuckfuck");
+      const data = {
+        email: form.newEmail,
+        password: form.newPassword,
+        firstName: form.firstName,
+        lastName: form.lastName,
+        gender: form.gender,
+        dob: form.dob,
+      };
+      setDisableReg(true);
+      dispatch(signup(data, setResend, setDisableReg));
+    }
   };
 
   const handleResend = () => {
