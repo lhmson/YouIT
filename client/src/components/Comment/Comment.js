@@ -268,6 +268,17 @@ function Comment({
     return user?.result?._id.toString() === comment.userId._id;
   };
 
+  const renderUserInfo = () => {
+    const userInfo = comment?.userId?.userInfo;
+    const education = userInfo?.educations?.[userInfo.educations?.length - 1];
+    const work = userInfo?.works?.[userInfo.works?.length - 1];
+    const educationInfo = education
+      ? `${education?.moreInfo} at ${education?.schoolName}`
+      : null;
+    const workInfo = work ? `${work?.position} at ${work?.location}` : null;
+    return workInfo || educationInfo;
+  };
+
   return (
     <div
       className={isFocus ? "bg-green-smoke pt-4" : ""}
@@ -295,7 +306,7 @@ function Comment({
                 </Text>
               </Space>
             </Row>
-            <Text>Fullstack Developer</Text>
+            <Text>{renderUserInfo()}</Text>
           </div>
         </Row>
         <Row className="justify-content-end align-items-center pb-3">
