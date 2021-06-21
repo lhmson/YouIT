@@ -2,10 +2,10 @@ import COLOR from "../../../constants/colors";
 
 const styles = {
   whiteBackground: {
-    marginBottom: 32,
+    marginBottom: 16,
     marginLeft: 10,
-    height: 10,
   },
+
   icon: {
     marginRight: 16,
     fontSize: 24,

@@ -16,6 +16,7 @@ import { Layout, Button } from "antd";
 import { Link } from "react-router-dom";
 import moment from "moment";
 import Loading from "../Loading/Loading";
+import { limitNameLength } from "../../utils/limitNameLength.js";
 
 const { Header, Footer, Sider, Content } = Layout;
 
@@ -44,6 +45,8 @@ const IntroCard = () => {
 
   if (!user) return <Loading />;
   console.log(address);
+
+  const maxTextLength = 200;
   return (
     <Layout style={styles.backgroundheader}>
       <Row className="container">
@@ -53,19 +56,25 @@ const IntroCard = () => {
         {work && (
           <OverviewRow
             firstIcon={<MdWork style={styles.icon} />}
-            text={`${work?.position} at ${work?.location}`}
+            text={limitNameLength(
+              `${work?.position} at ${work?.location}`,
+              maxTextLength
+            )}
           />
         )}
         {education && (
           <OverviewRow
             firstIcon={<IoSchoolSharp style={styles.icon} />}
-            text={`${education?.moreInfo} at ${education?.schoolName}`}
+            text={limitNameLength(
+              `${education?.moreInfo} at ${education?.schoolName}`,
+              maxTextLength
+            )}
           />
         )}
         {address && (
           <OverviewRow
             firstIcon={<IoHome style={styles.icon} />}
-            text={address}
+            text={limitNameLength(address, maxTextLength)}
           />
         )}
         {gender && (
