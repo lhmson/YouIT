@@ -24,7 +24,7 @@ export const signin =
       // forceGetNewLocalStorageToken(oldToken, setToken);
 
       // router.push("/");
-      window.location.reload();
+      // window.location.reload();
       message.success("Login successfully!");
     } catch (error) {
       const code = error.response?.status;

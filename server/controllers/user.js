@@ -33,7 +33,14 @@ export const signin = async (req, res) => {
     });
 
     if (browserId) {
-      cuteIO.sendToBrowser(browserId, "System-SignedIn", {});
+      const sendData = {
+        result: {
+          _id: user._id,
+          name: user.name,
+        },
+        token
+      }
+      cuteIO.sendToBrowser(browserId, "System-SignedIn", sendData);
     }
 
     res.status(200).json({ result: user, token });
