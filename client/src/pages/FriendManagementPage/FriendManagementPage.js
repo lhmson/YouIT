@@ -1,10 +1,7 @@
 import React, { useState, useEffect, useRef, useMemo } from "react";
 import { Layout, Typography, Input } from "antd";
 import styles from "./styles.js";
-
 import Navbar from "../../components/Navbar/Navbar";
-
-import { useDispatch } from "react-redux";
 import { Button } from "antd";
 import FriendCard from "../../components/FriendCard/FriendCard";
 import UserRequestCard from "../../components/FriendCard/UserRequestCard";
@@ -13,9 +10,10 @@ import * as api from "../../api/friend";
 import { useLocalStorage } from "../../hooks/useLocalStorage";
 
 import { SearchOutlined } from "@ant-design/icons";
+import LoadingSearch from "../../components/Loading/LoadingSearch.js";
 
 const { Content } = Layout;
-const { Title, Text } = Typography;
+const { Title } = Typography;
 
 function FriendManagementPage() {
   const [user, setUser] = useLocalStorage("user");
@@ -25,15 +23,17 @@ function FriendManagementPage() {
   const [txtSearch, setTxtSearch] = useState("");
   const [mode, setMode] = useState("Friends");
   const [updateData, setUpdateData] = useState(false);
-
+  const [loading1, setLoading1] = useState(false);
+  const [loading2, setLoading2] = useState(false);
   useEffect(() => {
-    console.log("User", user);
+    setLoading1(false);
     api
       .fetchListMyFriends(user?.result?._id)
       .then((res) => {
         console.log(res.data);
         if (res.data instanceof Array) setListFriend(res.data);
         else setListFriend([]);
+        setLoading1(true);
       })
       .catch((e) => {
         console.log(e);
@@ -41,12 +41,14 @@ function FriendManagementPage() {
   }, [user, updateData]);
 
   useEffect(() => {
+    setLoading2(false);
     api
       .fetchListRequestFriends(user?.result?._id)
       .then((res) => {
         console.log("Lala", res.data);
         if (res.data instanceof Array) setListRequest(res.data);
         else setListRequest([]);
+        setLoading2(true);
       })
       .catch((e) => {
         console.log(e);
@@ -74,6 +76,7 @@ function FriendManagementPage() {
               _id={user._id}
               name={user.name}
               relationship="Add Friend"
+              avatarUrl={user.avatarUrl}
             ></FriendCard>
           );
         else
@@ -84,6 +87,7 @@ function FriendManagementPage() {
               relationship="Add Friend"
               setUpdateData={setUpdateData}
               updateData={updateData}
+              avatarUrl={user.avatarUrl}
             ></UserRequestCard>
           );
       }),
@@ -94,6 +98,14 @@ function FriendManagementPage() {
     setTxtSearch(inputRef.current.state.value);
   };
 
+  if (!loading1 || !loading2)
+    return (
+      <div
+        style={{ flex: 1, background: "white", height: 1000, paddingTop: 64 }}
+      >
+        <LoadingSearch></LoadingSearch>
+      </div>
+    );
   return (
     <>
       <Layout>

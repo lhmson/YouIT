@@ -16,6 +16,7 @@ function GroupJoinedCard({
   joined,
   update,
   setUpdate,
+  backgroundUrl,
 }) {
   const [user, setUser] = useLocalStorage("user");
   const history = useHistory();
@@ -47,10 +48,7 @@ function GroupJoinedCard({
               minWidth: 500,
             }}
           >
-            <Avatar
-              size={72}
-              src="https://i.pinimg.com/564x/03/d5/62/03d5624fae645eccaa74315f6ed49c03.jpg"
-            />
+            <Avatar size={72} src={backgroundUrl} />
 
             <div className="col-8" style={{ alignSelf: "center" }}>
               <Link to={`/group/${_id}/main`}>
@@ -98,14 +96,14 @@ function GroupJoinedCard({
             </div>
           </div>
         </div>
-        <div className="row mt-4">
+        {/* <div className="row mt-4">
           <div className="ml-4">
             <Tag className="tag">#Talkshow</Tag>
             <Tag className="tag">#KPOP</Tag>
             <Tag className="tag">#Film</Tag>
             <Text style={{ ...styles.text, fontWeight: 600 }}>+ 15 Posts</Text>
           </div>
-        </div>
+        </div> */}
       </div>
     </>
   );

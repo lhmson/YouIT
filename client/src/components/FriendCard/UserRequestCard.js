@@ -1,42 +1,38 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { Button, Typography, List, message } from "antd";
-import { Avatar, Tag, Popover } from "antd";
+import { Avatar, Tag, Popover, Tooltip } from "antd";
 import styles from "../UserCard/styles.js";
 import { Link, useHistory, useLocation } from "react-router-dom";
 import * as api from "../../api/friend";
 import { useLocalStorage } from "../../hooks/useLocalStorage";
 import {
-  createFriendRequest,
   deleteFriendRequest,
   fetchAllFriendRequests,
 } from "../../api/friendRequest";
 import {
-  addFriendRequest,
   removeFriendRequest,
 } from "../../redux/actions/user";
 import {
   addFriend,
-  addSendingFriendRequest,
   removeReceivingFriendRequest,
   removeSendingFriendRequest,
 } from "../../api/user_info.js";
+import { fetchProgrammingHashtags } from "../../api/hashtag";
+import { useDispatch } from "react-redux";
 
-import { useDispatch, useSelector } from "react-redux";
-
-const { Title, Text } = Typography;
+const {Text } = Typography;
 
 function UserRequestCard(props) {
   const dispatch = useDispatch();
   const [user, setUser] = useLocalStorage("user");
   const { name } = props;
   const { _id } = props;
+  const { avatarUrl } = props;
   const { updateData, setUpdateData } = props;
   const [numberMutual, setNumberMutual] = useState(0);
-  const [txtButton, setTxtButton] = useState(
-    props.relationship ?? "Add Friend"
-  );
   const [listMutual, setListMutual] = useState([]);
   const [matchingFriendRequest, setMatchingFriendRequest] = useState(null);
+  const [listHashTags, setListHashTags] = useState([]);
 
   const getMatchFriendRequest = async () => {
     const listFriendRequests = (await fetchAllFriendRequests()).data;
@@ -101,17 +97,6 @@ function UserRequestCard(props) {
 
   useEffect(() => {
     api
-      .checkFriends(user?.result?._id, _id)
-      .then((res) => {
-        if (res.data) setTxtButton("Friends");
-      })
-      .catch((e) => {
-        console.log(e);
-      });
-  }, []);
-
-  useEffect(() => {
-    api
       .fetchListMutualFriends(user?.result?._id, _id)
       .then((res) => {
         if (res.data && res.data instanceof Array) {
@@ -127,6 +112,15 @@ function UserRequestCard(props) {
       });
   }, []);
 
+  useEffect(() => {
+    fetchProgrammingHashtags(_id)
+      .then((res) => {
+        if (res.data) setListHashTags(res.data);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  }, []);
   const popupListMutualFriend = (data) => {
     return (
       <>
@@ -161,7 +155,7 @@ function UserRequestCard(props) {
           >
             <Avatar
               size={72}
-              src="https://vtv1.mediacdn.vn/thumb_w/650/2020/10/20/blackpink-lisa-mac-160316252527410005928.jpg"
+              src={avatarUrl}
             />
 
             <div className="col-8" style={{ alignSelf: "center" }}>
@@ -233,10 +227,17 @@ function UserRequestCard(props) {
         </div>
         <div className="row mt-4">
           <div className="ml-4">
-            <Tag className="tag">C#</Tag>
-            <Tag className="tag">Javascript</Tag>
-            <Tag className="tag">Unity 3D</Tag>
-            <Text style={{ ...styles.text, fontWeight: 600 }}>+ 15 Posts</Text>
+            {listHashTags?.map((item, i) => (
+              <Tooltip
+                title={`Mentioned ${item?.count} time${
+                  item?.count > 1 ? "s" : ""
+                }`}
+              >
+                <Tag key={i} className="mb-2 tag">
+                  {item.name}
+                </Tag>
+              </Tooltip>
+            ))}
           </div>
         </div>
       </div>

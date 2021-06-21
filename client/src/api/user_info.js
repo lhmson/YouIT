@@ -6,23 +6,23 @@ export const updateUserInfo = (updatedInfo) =>
   API.put(`/userInfo`, updatedInfo);
 export const addReceivingFriendRequest = (friendRequest) =>
   API.put(
-    `/userInfo/${friendRequest.userConfirmId}/receiveFriendRequest/add`,
+    `/userInfo/${friendRequest?.userConfirmId}/receiveFriendRequest/add`,
     friendRequest
   );
 export const addSendingFriendRequest = (friendRequest) =>
   API.put(
-    `/userInfo/${friendRequest.userSendRequestId}/sendFriendRequest/add`,
+    `/userInfo/${friendRequest?.userSendRequestId}/sendFriendRequest/add`,
     friendRequest
   );
 
 export const removeReceivingFriendRequest = (friendRequest) =>
   API.put(
-    `/userInfo/${friendRequest.userConfirmId}/receiveFriendRequest/remove`,
+    `/userInfo/${friendRequest?.userConfirmId}/receiveFriendRequest/remove`,
     friendRequest
   );
 export const removeSendingFriendRequest = (friendRequest) =>
   API.put(
-    `/userInfo/${friendRequest.userSendRequestId}/sendFriendRequest/remove`,
+    `/userInfo/${friendRequest?.userSendRequestId}/sendFriendRequest/remove`,
     friendRequest
   );
 export const addFriend = (friendRequest) =>

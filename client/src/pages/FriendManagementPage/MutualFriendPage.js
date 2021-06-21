@@ -5,34 +5,32 @@ import styles from "./styles.js";
 
 import Navbar from "../../components/Navbar/Navbar";
 
-import { useDispatch } from "react-redux";
-import { Button } from "antd";
 import FriendCard from "../../components/FriendCard/FriendCard";
 import COLOR from "../../constants/colors";
 import * as api from "../../api/friend";
 import { useLocalStorage } from "../../hooks/useLocalStorage";
-
+import LoadingSearch from "../../components/Loading/LoadingSearch.js";
 import { SearchOutlined } from "@ant-design/icons";
+import NoMutualFriends from "../../components/Loading/NoMutualFriends.js";
 
 const { Content } = Layout;
-const { Title, Text } = Typography;
+const { Title } = Typography;
 
 function MutualFriendPage({ props }) {
   let { id } = useParams();
-  console.log("id", id);
   const [user, setUser] = useLocalStorage("user");
   const inputRef = useRef();
   const [listFriend, setListFriend] = useState([]);
-  const [listRequest, setListRequest] = useState([]);
   const [txtSearch, setTxtSearch] = useState("");
-  const [mode, setMode] = useState("Friends");
-
+  const [loading, setLoading] = useState(false);
   useEffect(() => {
+    setLoading(false);
     api
       .fetchListMutualFriends(user?.result?._id, id)
       .then((res) => {
         if (res.data instanceof Array) setListFriend(res.data);
         else setListFriend([]);
+        setLoading(true);
       })
       .catch((e) => {
         console.log(e);
@@ -53,6 +51,7 @@ function MutualFriendPage({ props }) {
             _id={user._id}
             name={user.name}
             relationship="Add Friend"
+            avatarUrl={user.avatarUrl}
           ></FriendCard>
         );
       }),
@@ -63,13 +62,23 @@ function MutualFriendPage({ props }) {
     setTxtSearch(inputRef.current.state.value);
   };
 
+  if (!loading)
+    return (
+      <div
+        style={{ flex: 1, background: "white", height: 1000, paddingTop: 64 }}
+      >
+        <LoadingSearch></LoadingSearch>
+      </div>
+    );
   return (
     <>
       <Layout>
         <Navbar />
         <Layout>
           <Layout style={styles.mainArea}>
-            <Content>
+            <Content
+              style={{ background: numberTotalFriend === 0 ? "white" : "" }}
+            >
               <div
                 className="col-8 offset-2 "
                 style={{
@@ -85,23 +94,10 @@ function MutualFriendPage({ props }) {
                       justifyContent: "center",
                     }}
                   >
-                    <Title>Mutual Friends</Title>
-                  </div>
-
-                  <div className="col-2 offset-5">
-                    <Button
-                      type="primary"
-                      style={{
-                        background: "#27AE60",
-                        borderColor: "#27AE60",
-                        color: "white",
-                        fontWeight: 500,
-                        display: "flex",
-                        justifyContent: "center",
-                      }}
-                    >
-                      Total ({numberTotalFriend})
-                    </Button>
+                    <Title>
+                      ({numberTotalFriend}) Mutual Friend
+                      {numberTotalFriend >= 2 ? "s" : ""}
+                    </Title>
                   </div>
                 </div>
 
@@ -132,7 +128,19 @@ function MutualFriendPage({ props }) {
                   />
                 </div>
 
-                <div className="row">{listUserCard}</div>
+                <div
+                  className="row"
+                  style={{
+                    padding: 16,
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  {listUserCard}
+                  {numberTotalFriend === 0 ? (
+                    <NoMutualFriends></NoMutualFriends>
+                  ) : null}
+                </div>
               </div>
             </Content>
           </Layout>

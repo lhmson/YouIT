@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Button, Typography, List } from "antd";
-import { Avatar, Tag, Popover, message } from "antd";
+import { Avatar, Tag, Popover, message, Tooltip } from "antd";
 import styles from "./styles.js";
 import { Link } from "react-router-dom";
 import * as api from "../../api/friend";
@@ -22,6 +22,8 @@ import {
   removeSendingFriendRequest,
 } from "../../api/user_info.js";
 
+import { fetchProgrammingHashtags } from "../../api/hashtag";
+
 import { useDispatch } from "react-redux";
 import { useMobile } from "../../utils/responsiveQuery.js";
 
@@ -32,11 +34,13 @@ function UserCard(props) {
   const [user, setUser] = useLocalStorage("user");
   const { name } = props;
   const { _id } = props;
+  const { avatarUrl } = props;
   const [numberMutual, setNumberMutual] = useState(0);
   const [txtButton, setTxtButton] = useState(
     props.relationship ?? "Add Friend"
   );
   const [listMutual, setListMutual] = useState([]);
+  const [listHashTags, setListHashTags] = useState([]);
 
   const isMobile = useMobile();
 
@@ -76,12 +80,33 @@ function UserCard(props) {
   };
 
   const changeStateButton = async () => {
+    const key = "updatable";
     if (txtButton === "Add Friend") {
-      message.success("You sended request successfully");
+      const openMessage = () => {
+        message.loading({ content: "Sending request...", key });
+        setTimeout(() => {
+          message.success({
+            content: "You sended request successfully!",
+            key,
+            duration: 2,
+          });
+        }, 3000);
+      };
+      openMessage();
       await handleAddingFriend(_id, user?.result?._id);
       setTxtButton("Cancel Request");
     } else if (txtButton === "Cancel Request") {
-      message.success("You cancel request successfully");
+      const openMessage = () => {
+        message.loading({ content: "Sending request...", key });
+        setTimeout(() => {
+          message.success({
+            content: "You cancel request successfully!",
+            key,
+            duration: 2,
+          });
+        }, 3000);
+      };
+      openMessage();
       await cancelFriendRequest(await getMatchFriendRequest());
       setTxtButton("Add Friend");
     } else if (txtButton === "Waiting you accept") {
@@ -146,6 +171,16 @@ function UserCard(props) {
       });
   }, []);
 
+  useEffect(() => {
+    fetchProgrammingHashtags(_id)
+      .then((res) => {
+        if (res.data) setListHashTags(res.data);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  }, []);
+
   const popupListMutualFriend = (data) => {
     return (
       <>
@@ -182,10 +217,7 @@ function UserCard(props) {
             }}
           >
             <div>
-              <Avatar
-                size={72}
-                src="https://vtv1.mediacdn.vn/thumb_w/650/2020/10/20/blackpink-lisa-mac-160316252527410005928.jpg"
-              />
+              <Avatar size={72} src={avatarUrl} />
             </div>
 
             <div className="ml-3 break-word">
@@ -233,10 +265,21 @@ function UserCard(props) {
         </div>
         <div className="row mt-4">
           <div className="ml-4">
-            <Tag className="tag">C#</Tag>
+            {/* <Tag className="tag">C#</Tag>
             <Tag className="tag">Javascript</Tag>
             <Tag className="tag">Unity 3D</Tag>
-            <Text style={{ ...styles.text, fontWeight: 600 }}>+ 15 Posts</Text>
+            <Text style={{ ...styles.text, fontWeight: 600 }}>+ 15 Posts</Text> */}
+            {listHashTags?.map((item, i) => (
+              <Tooltip
+                title={`Mentioned ${item?.count} time${
+                  item?.count > 1 ? "s" : ""
+                }`}
+              >
+                <Tag key={i} className="mb-2 tag">
+                  {item.name}
+                </Tag>
+              </Tooltip>
+            ))}
           </div>
         </div>
       </div>

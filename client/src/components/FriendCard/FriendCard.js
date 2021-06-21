@@ -1,27 +1,30 @@
 import React, { useState, useEffect } from "react";
 import { Button, Typography } from "antd";
-import { Avatar, Tag, Popover, List } from "antd";
+import { Avatar, Tag, Popover, List, Tooltip } from "antd";
 import styles from "./styles.js";
 import { Link } from "react-router-dom";
 import { useLocalStorage } from "../../hooks/useLocalStorage";
 import * as api from "../../api/friend";
+import { useMobile } from "../../utils/responsiveQuery.js";
+import { fetchProgrammingHashtags } from "../../api/hashtag";
 
-const { Text } = Typography;
+const { Text, Title } = Typography;
 
 function FriendCard(props) {
   const [user, setUser] = useLocalStorage("user");
-  const [listMutual, setListMutual] = useState([]);
-  const [numberMutual, setNumberMutual] = useState(0);
   const { name } = props;
-  const [txtButton, setTxtButton] = React.useState("Message");
   const { _id } = props;
+  const { avatarUrl } = props;
+  const [numberMutual, setNumberMutual] = useState(0);
+  const [listMutual, setListMutual] = useState([]);
+  const [listHashTags, setListHashTags] = useState([]);
+
+  const isMobile = useMobile();
 
   useEffect(() => {
     api
       .fetchCountMutualFriends(user?.result?._id, _id)
       .then((res) => {
-        console.log("List mutual friends");
-        console.log(res.data);
         if (res.data) setNumberMutual(res.data);
       })
       .catch((e) => {
@@ -40,6 +43,16 @@ function FriendCard(props) {
           setListMutual(tempList);
           console.log(tempList);
         }
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  }, []);
+
+  useEffect(() => {
+    fetchProgrammingHashtags(_id)
+      .then((res) => {
+        if (res.data) setListHashTags(res.data);
       })
       .catch((e) => {
         console.log(e);
@@ -70,38 +83,31 @@ function FriendCard(props) {
   return (
     <>
       <div style={styles.card}>
-        <div className="row ml-2" style={{ justifyContent: "space-between" }}>
+        <div
+          className={`${!isMobile && "row"} m-2`}
+          style={{ justifyContent: "space-between" }}
+        >
           <div
             style={{
               display: "flex",
-              justifyContent: "center",
-              minWidth: 600,
+              flexDirection: "row",
+              // minWidth: 600,
             }}
           >
-            <Avatar
-              size={72}
-              src="https://vtv1.mediacdn.vn/thumb_w/650/2020/10/20/blackpink-lisa-mac-160316252527410005928.jpg"
-            />
+            <div>
+              <Avatar size={72} src={avatarUrl} />
+            </div>
 
-            <div className="col-8" style={{ alignSelf: "center" }}>
+            <div className="ml-3 break-word">
               <Link to={`/userinfo/${_id}`}>
-                <Text style={styles.textUser}>{name ?? "Lalisa Manobal"}</Text>
+                <Title style={styles.textUser}>{name ?? "Anonymous"}</Title>
               </Link>
-              <div style={{ marginTop: 0 }}></div>
+
               <Text>React Native Developer</Text>
             </div>
-            <div
-              style={{
-                marginLeft: 0,
-                justifyContent: "center",
-                flex: 1,
-                display: "flex",
-              }}
-            ></div>
           </div>
 
           <div
-            className="mr-3"
             style={{
               justifyContent: "flex-end",
               alignItems: "flex-end",
@@ -119,7 +125,7 @@ function FriendCard(props) {
                   fontWeight: 500,
                 }}
               >
-                {txtButton}
+                message
               </Button>
             </Link>
             <div>
@@ -140,10 +146,17 @@ function FriendCard(props) {
         </div>
         <div className="row mt-4">
           <div className="ml-4">
-            <Tag className="tag">C#</Tag>
-            <Tag className="tag">Javascript</Tag>
-            <Tag className="tag">Unity 3D</Tag>
-            <Text style={{ ...styles.text, fontWeight: 600 }}>+ 15 Posts</Text>
+            {listHashTags?.map((item, i) => (
+              <Tooltip
+                title={`Mentioned ${item?.count} time${
+                  item?.count > 1 ? "s" : ""
+                }`}
+              >
+                <Tag key={i} className="mb-2 tag">
+                  {item.name}
+                </Tag>
+              </Tooltip>
+            ))}
           </div>
         </div>
       </div>
