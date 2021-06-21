@@ -4,14 +4,17 @@ import * as api from "../../../api/search";
 import NoDataSearch from "../../../components/NoDataSearch/NoDataSearch";
 import { useMobile } from "../../../utils/responsiveQuery";
 import { useLocalStorage } from "../../../hooks/useLocalStorage";
+import LoadingSearch from "../../../components/Loading/LoadingSearch.js";
 
 const SearchGroupResult = ({ txtSearch }) => {
   const [listGroup, setListGroup] = useState([]);
   const [user, setUser] = useLocalStorage("user");
+  const [loading, setLoading] = useState(false);
 
   const isMobile = useMobile();
 
   useEffect(() => {
+    setLoading(false);
     api
       .fetchSearchGroup(txtSearch)
       .then((res) => {
@@ -19,6 +22,7 @@ const SearchGroupResult = ({ txtSearch }) => {
         console.log(res.data);
         if (res.data instanceof Array) setListGroup(res.data);
         else setListGroup([]);
+        setLoading(true);
       })
       .catch((e) => {
         console.log(e);
@@ -53,6 +57,22 @@ const SearchGroupResult = ({ txtSearch }) => {
       }),
     [listGroup]
   );
+
+  if (!loading)
+    return (
+      <div
+        className="row justify-content-center"
+        style={{
+          paddingTop: 16,
+          paddingLeft: 32,
+          paddingRight: 32,
+        }}
+      >
+        <div className={`${!isMobile && "col-12"}`}>
+          <LoadingSearch></LoadingSearch>
+        </div>
+      </div>
+    );
 
   return (
     // <div className="col-12">

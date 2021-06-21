@@ -1,12 +1,8 @@
-import React, { useEffect, useState } from "react";
-import { Button, Typography, Col, Layout } from "antd";
-import styles from "./styles";
-import { Link } from "react-router-dom";
-import { Navbar } from "../../components";
+import React, { useEffect } from "react";
+import { Typography } from "antd";
 import UsersStatistics from "../../components/Chart/UserStatistics";
 import PostStatistics from "../../components/Chart/PostStatistics";
 import GroupStatistics from "../../components/Chart/GroupStatistics";
-const { Title } = Typography;
 
 export const StatisticsPage = ({}) => {
   return (

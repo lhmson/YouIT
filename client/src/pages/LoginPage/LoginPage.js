@@ -25,7 +25,7 @@ import { useLocalStorage } from "../../hooks/useLocalStorage";
 import { resendVerificationMail } from "../../api/auth";
 import { AUTH } from "../../redux/actionTypes";
 import * as apiAuth from "../../api/auth";
-import { GITHUB_CLIENT_ID } from "../../constants/config";
+import { BACKEND_URL, GITHUB_CLIENT_ID } from "../../constants/config";
 
 const { Title, Text } = Typography;
 
@@ -111,7 +111,7 @@ function LoginPage() {
 
   //#region github
   const handleLoginGithub = () => {
-    const redirect_uri = "http://localhost:5000/user/login/github/callback";
+    const redirect_uri = `${BACKEND_URL}/user/login/github/callback`;
     const browserId = JSON.parse(localStorage.getItem("browser"))?.id;
     window.location.replace(
       `https://github.com/login/oauth/authorize?client_id=${GITHUB_CLIENT_ID}&redirect_uri=${redirect_uri}&browserId=${browserId}`

@@ -63,7 +63,7 @@ function App() {
         setCurrentUser(res.data);
       });
     }
-    console.log("user", currentUser);
+    // console.log("user", currentUser);
   }, [user]);
 
   return (
