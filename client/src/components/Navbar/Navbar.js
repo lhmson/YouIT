@@ -50,13 +50,14 @@ import { useMessage } from "../../hooks/useMessage";
 import { renderStatus, statusList } from "../../utils/userStatus";
 import { setMyStatus } from "../../api/userStatus";
 import { useFriendsStatus } from "../../context/FriendsStatusContext";
+import { useCurrentUser } from "../../context/CurrentUserContext";
 
 const { Header } = Layout;
 const { Text } = Typography;
 
 function Navbar({ selectedMenu, setTxtSearch, txtInitSearch }) {
-  const user = useSelector((state) => state.user);
-  // const [user, setUser] = useLocalStorage("user");
+  const [user, setUser] = useLocalStorage("user");
+  const [currentUser] = useCurrentUser();
   const [token, setToken] = useToken();
   const inputRef = useRef();
 
@@ -211,7 +212,7 @@ function Navbar({ selectedMenu, setTxtSearch, txtInitSearch }) {
           <Tooltip
             title={
               <div className="text-center">
-                <div>{user?.name}</div>
+                <div>{currentUser?.name}</div>
                 <Dropdown
                   overlay={menuStatus}
                   trigger={["click"]}
@@ -222,7 +223,7 @@ function Navbar({ selectedMenu, setTxtSearch, txtInitSearch }) {
                       className="icon"
                       style={{
                         color: renderStatus(
-                          friendsStatusManager.getStatus(user?._id)
+                          friendsStatusManager.getStatus(currentUser?._id)
                         ),
                       }}
                     />
@@ -234,11 +235,11 @@ function Navbar({ selectedMenu, setTxtSearch, txtInitSearch }) {
           >
             <Avatar
               size="large"
-              alt={user?.name}
-              src={user?.avatarUrl}
-              onClick={() => history.push(`/userinfo/${user?._id}`)}
+              alt={currentUser?.name}
+              src={currentUser?.avatarUrl}
+              onClick={() => history.push(`/userinfo/${currentUser?._id}`)}
             >
-              {user?.name}
+              {currentUser?.name}
             </Avatar>
           </Tooltip>
         </Menu.Item>

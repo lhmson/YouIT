@@ -1,17 +1,17 @@
 import React, { useEffect } from "react";
 import { Avatar, Typography, Row, Space } from "antd";
 import { Link } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useCurrentUser } from "../../../context/CurrentUserContext";
 const { Text } = Typography;
 
 const CreateGroupNameAdmin = () => {
-  const user = useSelector((state) => state.user);
+  //TODO: should get from a redux or context user
   // const [user] = useLocalStorage("user");
-  // const user = useSelector((state) => state.user);
-  const displayName = user?.name ?? "";
+  const [currentUser] = useCurrentUser();
+  const displayName = currentUser?.name ?? "";
 
   const avatarUrl =
-    user?.avatarUrl ??
+    currentUser?.avatarUrl ??
     "https://pbs.twimg.com/profile_images/1247161286518964226/m92qVTIT_400x400.jpg";
 
   return (
@@ -21,12 +21,12 @@ const CreateGroupNameAdmin = () => {
           className="ml-1 clickable"
           size={70}
           src={avatarUrl}
-          alt={user?.name}
+          alt={currentUser?.name}
         />
         <div className="d-inline-flex flex-column ml-3 break-word">
           <Row className="align-items-center">
             <Space size={4}>
-              <Link to={`/userinfo/${user?._id}`} target="_blank">
+              <Link to={`/userinfo/${currentUser?._id}`} target="_blank">
                 <Text
                   className="clickable"
                   strong

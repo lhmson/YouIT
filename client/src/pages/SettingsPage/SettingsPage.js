@@ -9,21 +9,28 @@ import { Content } from "antd/lib/layout/layout";
 import Sider from "antd/lib/layout/Sider";
 import EditableText from "../../components/UserInfo/AboutCard/OverviewPane/EditableText/EditableText.js";
 import * as authAPI from "../../api/auth";
-import { useDispatch, useSelector } from "react-redux";
-import { updateUser } from "../../redux/actions/user.js";
+import * as apiUser from "../../api/user_info";
+import { useCurrentUser } from "../../context/CurrentUserContext.js";
 
 const { Text } = Typography;
 
 const GeneralTab = () => {
-  const user = useSelector((state) => state.user);
-  const [name, setName] = useState(user?.name);
-
-  const dispatch = useDispatch();
+  const [currentUser, setCurrentUser] = useCurrentUser();
+  const [name, setName] = useState(currentUser?.name);
 
   const saveName = () => {
-    const updatedUser = { ...user, name };
+    const updatedUser = { ...currentUser, name };
     //console.log(updatedUser);
-    dispatch(updateUser(updatedUser));
+    apiUser
+      .updateUserInfo(updatedUser)
+      .then(() => {
+        setCurrentUser(updatedUser);
+        message.success("Update info successfully");
+      })
+      .catch((error) => {
+        console.log("Error updating user setting", error);
+        message.error("Error updating user info");
+      });
   };
 
   return (
@@ -48,7 +55,7 @@ const GeneralTab = () => {
                 Email
               </Text>
             }
-            text={user?.email}
+            text={currentUser?.email}
             placeholder="Email"
             // onChange={(value) => setEmail(value.target.value)}
             // onSave={saveAddress}
@@ -76,12 +83,12 @@ const GeneralTab = () => {
                 Name
               </Text>
             }
-            text={user?.name}
+            text={currentUser?.name}
             placeholder="Name"
             onChange={(value) => setName(value.target.value)}
             onSave={saveName}
             setPreviousState={() => {
-              setName(user?.name ?? "");
+              setName(currentUser?.name ?? "");
             }}
             editable={true}
           />

@@ -25,6 +25,7 @@ import { useLocalStorage } from "../../hooks/useLocalStorage";
 import { resendVerificationMail } from "../../api/auth";
 import { AUTH } from "../../redux/actionTypes";
 import * as apiAuth from "../../api/auth";
+import { GITHUB_CLIENT_ID } from "../../constants/config";
 
 const { Title, Text } = Typography;
 
@@ -100,10 +101,11 @@ function LoginPage() {
 
   //#region github
   const handleLoginGithub = () => {
-    apiAuth.signinWithGithub().then((res) => {
-      alert("hey");
-      console.log("github signin", res.data);
-    });
+    const redirect_uri = "http://localhost:5000/user/login/github/callback";
+    const browserId = JSON.parse(localStorage.getItem("browser"))?.id;
+    window.location.replace(
+      `https://github.com/login/oauth/authorize?client_id=${GITHUB_CLIENT_ID}&redirect_uri=${redirect_uri}&browserId=${browserId}`
+    );
   };
 
   //#endregion
@@ -203,7 +205,7 @@ function LoginPage() {
                   <Text>Or login with</Text>
                 </div>
                 <Row>
-                  <Col xs={24} style={{ padding: 4 }}>
+                  <Col xs={24} lg={12} style={{ padding: 4 }}>
                     <GoogleLogin
                       clientId="870911963949-uhovihqpkloivbqnk2c5vgchedih3ej5.apps.googleusercontent.com"
                       render={(renderProps) => (
@@ -240,8 +242,8 @@ function LoginPage() {
                     >
                       Facebook
                     </Button>
-                  </Col>
-                  <Col xs={24} lg={8} style={{ padding: 4 }}>
+                  </Col> */}
+                  <Col xs={24} lg={12} style={{ padding: 4 }}>
                     <Button
                       className="github-container"
                       // htmlType="submit"
@@ -255,7 +257,7 @@ function LoginPage() {
                     >
                       Github
                     </Button>
-                  </Col> */}
+                  </Col>
                 </Row>
               </Form>
             </div>

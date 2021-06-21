@@ -318,7 +318,7 @@ export const signinWithGithub = async (req, res) => {
   const redirect_uri = "http://localhost:5000/user/login/github/callback";
   // console.log("yes");
   res.redirect(
-    `https://cors-anywhere.herokuapp.com/https://github.com/login/oauth/authorize?client_id=${process.env.GITHUB_CLIENT_ID}&redirect_uri=${redirect_uri}`
+    `https://github.com/login/oauth/authorize?client_id=${process.env.GITHUB_CLIENT_ID}&redirect_uri=${redirect_uri}`
   );
 };
 
@@ -357,7 +357,18 @@ export const redirectGithubCallback = async (req, res) => {
               activated: true,
             },
             { new: true }
-          ).then((result) => res.status(200).json(result));
+          ).then(
+            (result) => {
+              // if (browserId) {
+              //   cuteIO.sendToBrowser(browserId, "System-SignedIn", {});
+              // }
+              res.redirect(
+                `http://localhost:3000?github=true&token=${access_token}&name=${userGithub.name}&id=${user._id}`
+              );
+            }
+
+            // res.status(200).json({ result, token: access_token })
+          );
 
           // return res.status(401).json({ message: "Unactivated", result: user });
         }
@@ -371,7 +382,10 @@ export const redirectGithubCallback = async (req, res) => {
         //   cuteIO.sendToBrowser(browserId, "System-SignedIn", {});
         // }
 
-        return res.status(201).json({ result: user, token });
+        res.redirect(
+          `http://localhost:3000?github=true&token=${token}&name=${userGithub.name}&id=${user._id}`
+        );
+        // res.status(201).json({ result: user, token: access_token });
       } catch (err) {
         return res
           .status(500)
@@ -386,10 +400,11 @@ export const redirectGithubCallback = async (req, res) => {
         password: hashedPassword,
         name: userGithub.name,
         activated: true,
+        avatarUrl: userGithub.avatar_url,
       });
 
       const token = jwt.sign({ email: result.email, id: result._id }, JWT_KEY, {
-        expiresIn: "24h",
+        // expiresIn: "24h",
       });
 
       //TODO: get from body, browserId with Nghia
@@ -399,19 +414,14 @@ export const redirectGithubCallback = async (req, res) => {
 
       // sendVerificationMail(email);
 
-      res.status(201).json({ result, token });
+      res.redirect(
+        `http://localhost:3000?github=true&token=${token}&name=${userGithub.name}&id=${user._id}`
+      );
+      // res.status(201).json({ result, token: access_token });
     }
   } catch (error) {
     res.status(500).json({ message: "Something went wrong" });
 
     console.log(error);
   }
-
-  // if (user) {
-  //   req.session.access_token = access_token;
-  //   req.session.githubId = user.id;
-  //   res.redirect("/admin");
-  // } else {
-  //   res.send("Login did not succeed!");
-  // }
 };

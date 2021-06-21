@@ -11,6 +11,7 @@ import { fetchAllFriendRequests } from "../../../api/friendRequest";
 
 const ListButtons = () => {
   const dispatch = useDispatch();
+  //TODO: bug prone like user avatar when get from this so-called user redux
   const user = useSelector((state) => state.user);
   const loginUser = JSON.parse(localStorage.getItem("user"))?.result;
   const isMyProfile = isLoginUser(user);
@@ -19,6 +20,7 @@ const ListButtons = () => {
 
   const getDefaultSelectedItem = () => {
     switch (location.pathname) {
+      //TODO: what groupinfo means, find no page related, why list button in group page folder
       case `/groupinfo/${user?._id}`:
         return "post";
       case `/groupinfo/${user?._id}/about`:

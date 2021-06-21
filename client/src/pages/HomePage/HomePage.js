@@ -30,6 +30,26 @@ function HomePage() {
     });
   }, []);
 
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const github = urlParams.get("github");
+    if (github === "true") {
+      const token = urlParams.get("token");
+      const name = urlParams.get("name");
+      const _id = urlParams.get("id");
+      localStorage.setItem(
+        "user",
+        JSON.stringify({
+          token,
+          result: {
+            name,
+            _id,
+          },
+        })
+      );
+    }
+  }, []);
+
   return (
     <>
       <Layout>

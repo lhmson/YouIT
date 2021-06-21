@@ -23,6 +23,7 @@ const { Header, Footer, Sider, Content } = Layout;
 //   const [selectedItem, setSelectedItem] = useState("1");
 const { Text } = Typography;
 const IntroCard = () => {
+  //TODO: bug prone like user avatar when get from this so-called user redux
   const user = useSelector((state) => state.user);
 
   const dateOfBirth = moment(user?.userInfo?.dateOfBirth).format("DD/MM/YYYY");

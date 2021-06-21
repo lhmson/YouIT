@@ -39,6 +39,8 @@ import { FriendsStatusProvider } from "./context/FriendsStatusContext.js";
 import { BACKEND_URL } from "./constants/config.js";
 import { useDispatch } from "react-redux";
 import { getUser } from "./redux/actions/user.js";
+import * as apiUser from "./api/user_info";
+import { useCurrentUser } from "./context/CurrentUserContext.js";
 
 const loggedIn = () => {
   const user = JSON.parse(localStorage.getItem("user"));
@@ -52,13 +54,16 @@ const isAdmin = () => {
 function App() {
   const [token, setToken] = useToken();
   const [user] = useLocalStorage("user");
-
-  const dispatch = useDispatch();
+  const [currentUser, setCurrentUser] = useCurrentUser();
 
   useEffect(() => {
-    //console.log("start fetching user");
-    dispatch(getUser(user?.result?._id));
-  }, []);
+    if (user) {
+      apiUser.fetchUserInfo(user?.result?._id).then((res) => {
+        setCurrentUser(res.data);
+      });
+    }
+    console.log("user", currentUser);
+  }, [user]);
 
   return (
     <div className={styles.App}>
