@@ -50,7 +50,12 @@ function EditableText({
     return (
       <div
         className="row"
-        style={{ alignSelf: "center", justifyContent: "center" }}
+        style={{
+          alignSelf: "center",
+          justifyContent: "center",
+          marginRight: 30,
+          marginLeft: 30,
+        }}
       >
         <div
           style={{
