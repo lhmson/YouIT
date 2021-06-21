@@ -26,13 +26,34 @@ function GroupCard({ nameGroup, _id, description, totalMembers, status }) {
   };
 
   const changeStateButton = async () => {
+    const key = "updatable";
     if (txtButton === "Join") {
+      const openMessage = () => {
+        message.loading({ content: "Sending request...", key });
+        setTimeout(() => {
+          message.success({
+            content: `You submited join request to ${nameGroup} group`,
+            key,
+            duration: 2,
+          });
+        }, 2000);
+      };
+      openMessage();
       await joinGroup();
-      message.success(`You submited join request to ${nameGroup} group`);
       setTxtButton("Cancel Request");
     } else {
+      const openMessage = () => {
+        message.loading({ content: "Sending request...", key });
+        setTimeout(() => {
+          message.success({
+            content: `You cancel join request to ${nameGroup} group`,
+            key,
+            duration: 2,
+          });
+        }, 2000);
+      };
+      openMessage();
       await cancelJoinGroup();
-      message.success(`You cancel join request to ${nameGroup} group`);
       setTxtButton("Join");
     }
   };

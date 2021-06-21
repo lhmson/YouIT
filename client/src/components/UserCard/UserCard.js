@@ -76,12 +76,33 @@ function UserCard(props) {
   };
 
   const changeStateButton = async () => {
+    const key = "updatable";
     if (txtButton === "Add Friend") {
-      message.success("You sended request successfully");
+      const openMessage = () => {
+        message.loading({ content: "Sending request...", key });
+        setTimeout(() => {
+          message.success({
+            content: "You sended request successfully!",
+            key,
+            duration: 2,
+          });
+        }, 3000);
+      };
+      openMessage();
       await handleAddingFriend(_id, user?.result?._id);
       setTxtButton("Cancel Request");
     } else if (txtButton === "Cancel Request") {
-      message.success("You cancel request successfully");
+      const openMessage = () => {
+        message.loading({ content: "Sending request...", key });
+        setTimeout(() => {
+          message.success({
+            content: "You cancel request successfully!",
+            key,
+            duration: 2,
+          });
+        }, 3000);
+      };
+      openMessage();
       await cancelFriendRequest(await getMatchFriendRequest());
       setTxtButton("Add Friend");
     } else if (txtButton === "Waiting you accept") {
