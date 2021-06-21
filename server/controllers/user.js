@@ -315,7 +315,8 @@ export const countNewUsers = async (req, res) => {
 };
 
 export const signinWithGithub = async (req, res) => {
-  const redirect_uri = "http://localhost:5000/user/login/github/callback";
+  const redirect_uri =
+    "https://youit-social-network.herokuapp.com/user/login/github/callback";
   // console.log("yes");
   res.redirect(
     `https://github.com/login/oauth/authorize?client_id=${process.env.GITHUB_CLIENT_ID}&redirect_uri=${redirect_uri}`
@@ -363,7 +364,7 @@ export const redirectGithubCallback = async (req, res) => {
               //   cuteIO.sendToBrowser(browserId, "System-SignedIn", {});
               // }
               res.redirect(
-                `http://localhost:3000?github=true&token=${access_token}&name=${userGithub.name}&id=${user._id}`
+                `https://youit-social-network.netlify.app?github=true&token=${access_token}&name=${userGithub.name}&id=${user._id}`
               );
             }
 
@@ -383,7 +384,7 @@ export const redirectGithubCallback = async (req, res) => {
         // }
 
         res.redirect(
-          `http://localhost:3000?github=true&token=${token}&name=${userGithub.name}&id=${user._id}`
+          `https://youit-social-network.netlify.app?github=true&token=${token}&name=${userGithub.name}&id=${user._id}`
         );
         // res.status(201).json({ result: user, token: access_token });
       } catch (err) {
@@ -415,7 +416,7 @@ export const redirectGithubCallback = async (req, res) => {
       // sendVerificationMail(email);
 
       res.redirect(
-        `http://localhost:3000?github=true&token=${token}&name=${userGithub.name}&id=${user._id}`
+        `https://youit-social-network.netlify.app?github=true&token=${token}&name=${userGithub.name}&id=${user._id}`
       );
       // res.status(201).json({ result, token: access_token });
     }
