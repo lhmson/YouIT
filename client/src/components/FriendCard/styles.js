@@ -4,7 +4,9 @@ const styles = {
   card: {
     background: "white",
     padding: 16,
-    flex: 1,
+    width: "100%",
+    marginBottom: 16,
+    borderRadius: 20,
   },
   tag: {
     color: "#219653",

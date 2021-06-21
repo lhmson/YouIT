@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Button, Typography, List } from "antd";
-import { Avatar, Tag, Popover, message,   Tooltip, } from "antd";
+import { Avatar, Tag, Popover, message, Tooltip } from "antd";
 import styles from "./styles.js";
 import { Link } from "react-router-dom";
 import * as api from "../../api/friend";
@@ -22,9 +22,7 @@ import {
   removeSendingFriendRequest,
 } from "../../api/user_info.js";
 
-import {
-  fetchProgrammingHashtags,
-} from "../../api/hashtag"
+import { fetchProgrammingHashtags } from "../../api/hashtag";
 
 import { useDispatch } from "react-redux";
 import { useMobile } from "../../utils/responsiveQuery.js";
@@ -272,16 +270,16 @@ function UserCard(props) {
             <Tag className="tag">Unity 3D</Tag>
             <Text style={{ ...styles.text, fontWeight: 600 }}>+ 15 Posts</Text> */}
             {listHashTags?.map((item, i) => (
-            <Tooltip
-              title={`Mentioned ${item?.count} time${
-                item?.count > 1 ? "s" : ""
-              }`}
-            >
-              <Tag key={i} className="mb-2 tag">
-                {item.name}
-              </Tag>
-            </Tooltip>
-          ))}
+              <Tooltip
+                title={`Mentioned ${item?.count} time${
+                  item?.count > 1 ? "s" : ""
+                }`}
+              >
+                <Tag key={i} className="mb-2 tag">
+                  {item.name}
+                </Tag>
+              </Tooltip>
+            ))}
           </div>
         </div>
       </div>
