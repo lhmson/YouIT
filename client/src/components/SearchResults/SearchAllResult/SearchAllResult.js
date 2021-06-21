@@ -48,6 +48,7 @@ const SearchAllResult = ({ txtSearch }) => {
     api
       .fetchSearchGroup(txtSearch)
       .then((res) => {
+        console.log("ao", res.data);
         if (res.data instanceof Array) setListGroup(res.data);
         else setListGroup([]);
         setLoading2(true);
@@ -101,6 +102,7 @@ const SearchAllResult = ({ txtSearch }) => {
             description={group.description}
             totalMembers={group.listMembers?.length}
             status={status}
+            backgroundUrl={group.backgroundUrl}
           ></GroupCard>
         );
       }),
@@ -116,6 +118,7 @@ const SearchAllResult = ({ txtSearch }) => {
             _id={user._id}
             name={user.name}
             relationship="Add Friend"
+            avatarUrl={user.avatarUrl}
           ></UserCard>
         );
       }),

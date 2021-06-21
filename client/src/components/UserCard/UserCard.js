@@ -32,6 +32,7 @@ function UserCard(props) {
   const [user, setUser] = useLocalStorage("user");
   const { name } = props;
   const { _id } = props;
+  const { avatarUrl } = props;
   const [numberMutual, setNumberMutual] = useState(0);
   const [txtButton, setTxtButton] = useState(
     props.relationship ?? "Add Friend"
@@ -203,10 +204,7 @@ function UserCard(props) {
             }}
           >
             <div>
-              <Avatar
-                size={72}
-                src="https://vtv1.mediacdn.vn/thumb_w/650/2020/10/20/blackpink-lisa-mac-160316252527410005928.jpg"
-              />
+              <Avatar size={72} src={avatarUrl} />
             </div>
 
             <div className="ml-3 break-word">
