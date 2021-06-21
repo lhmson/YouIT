@@ -10,7 +10,7 @@ const OverviewRow = (props) => {
     <>
       <div className="container" style={styles.whiteBackground}>
         <div className="row" style={{ marginLeft: 0 }}>
-          <div className="mr-2">{props.firstIcon}</div>
+          <div className="mr-2 mb-2">{props.firstIcon}</div>
           <div> {props.text}</div>
         </div>
 
