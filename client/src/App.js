@@ -121,7 +121,7 @@ function App() {
             <Route exact path="/group/:id">
               <Redirect to="/group/:id/main" />
             </Route>
-            <Route exact path="/settings" component={SettingsPage} />
+            <PrivateRoute exact path="/settings" component={SettingsPage} />
             <Route exact path="/activate/:token" component={ActivationPage} />
             <PrivateRoute exact path="/message" component={MessagePage} />
             {/* <Route path="/group/:id/about" component={GroupPage} />
@@ -136,8 +136,8 @@ function App() {
             <PrivateRoute exact path="/admin/dashboard">
               {isAdmin() ? <AdminDashboardPage /> : <Redirect to="/admin" />}
             </PrivateRoute>
+            <PrivateRoute exact path="/admin/user" component={ReportUserPage} />
             <Route exact path="/statistics" component={StatisticsPage} />
-            <Route exact path="/admin/user" component={ReportUserPage} />
             <Route exact path="/error403">
               <ErrorPage code="403" />
             </Route>

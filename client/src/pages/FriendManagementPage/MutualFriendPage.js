@@ -85,7 +85,7 @@ function MutualFriendPage({ props }) {
                       justifyContent: "center",
                     }}
                   >
-                    <Title>Muatual Friends</Title>
+                    <Title>Mutual Friends</Title>
                   </div>
 
                   <div className="col-2 offset-5">
