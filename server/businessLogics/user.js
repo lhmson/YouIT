@@ -71,21 +71,47 @@ export const isValidUser = async (userId) => {
 };
 
 /**
- * @param {CuteServerIO} cuteIO 
+ * @param {CuteServerIO} cuteIO
  * @returns {(userId: string, newStatus: string) => any}
  */
-export const notifyUserStatusToFriendsFunc = (cuteIO) => (userId, newStatus) => {
-  User.findById(userId).then(user => {
-    if (!user)
-      return;
+export const notifyUserStatusToFriendsFunc =
+  (cuteIO) => (userId, newStatus) => {
+    User.findById(userId).then((user) => {
+      if (!user) return;
 
-    const { listFriends } = user;
-    if (listFriends)
-      listFriends.forEach(friendId => {
-        cuteIO.sendToUser(friendId, "System-updateStatusUser", { userId, newStatus });
-      })
+      const { listFriends } = user;
+      if (listFriends)
+        listFriends.forEach((friendId) => {
+          cuteIO.sendToUser(friendId, "System-updateStatusUser", {
+            userId,
+            newStatus,
+          });
+        });
 
-    // send to self
-    cuteIO.sendToUser(userId, "System-updateStatusUser", { userId, newStatus })
-  })
-}
+      // send to self
+      cuteIO.sendToUser(userId, "System-updateStatusUser", {
+        userId,
+        newStatus,
+      });
+    });
+  };
+
+export const haveMatchingFriendRequest = async (userId1, userId2) => {
+  try {
+    const friendRequests = await FriendRequest.find();
+    if (!friendRequests) return false;
+
+    for (var request of friendRequests) {
+      const listUserId = [
+        request?.userConfirmId.toString(),
+        request?.userSendRequestId.toString(),
+      ];
+      if (listUserId.includes(userId1) && listUserId.includes(userId2))
+        return true;
+    }
+
+    return false;
+  } catch (error) {
+    console.log("haveMatchingFriendRequest error", error);
+  }
+};
