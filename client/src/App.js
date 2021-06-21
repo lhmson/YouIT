@@ -24,6 +24,7 @@ import {
   AuthAdminPage,
   StatisticsPage,
   ReportUserPage,
+  ReportGroupPage,
 } from "./pages/index";
 
 import { CuteClientIOProvider } from "./socket/CuteClientIOProvider.js";
@@ -137,7 +138,12 @@ function App() {
               {isAdmin() ? <AdminDashboardPage /> : <Redirect to="/admin" />}
             </PrivateRoute>
             <PrivateRoute exact path="/admin/user" component={ReportUserPage} />
-            <Route exact path="/statistics" component={StatisticsPage} />
+            <PrivateRoute
+              exact
+              path="/admin/group"
+              component={ReportGroupPage}
+            />
+            <PrivateRoute exact path="/statistics" component={StatisticsPage} />
             <Route exact path="/error403">
               <ErrorPage code="403" />
             </Route>

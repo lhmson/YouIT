@@ -172,7 +172,7 @@ export const createPost = async (req, res) => {
               content: {
                 description: `A new post "${newPost?.title}" has been uploaded to your group "${group.name}". Click here to review it.`,
               },
-              link: `/post/${newPost?._id}`,
+              link: `/group/${group?._id}/review_posts`,
             });
         });
       }
@@ -267,7 +267,7 @@ export const updatePost = async (req, res) => {
                 content: {
                   description: `The post "${res?.title}" in your group "${group.name}" has been updated. Click here to review it.`,
                 },
-                link: `/post/${res?._id}`,
+                link: `/group/${group?._id}/review_posts`,
               });
           });
         }

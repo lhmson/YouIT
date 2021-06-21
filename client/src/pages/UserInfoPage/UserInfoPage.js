@@ -27,8 +27,7 @@ function UserInfoPage() {
   const history = useHistory();
 
   useEffect(() => {
-    console.log("navigate user");
-    dispatch(getUser(id));
+    dispatch(getUser(id, history));
     // setTimeout(() => {
     //   if (!user) history.push("/error404");
     // }, 2000);
@@ -37,8 +36,6 @@ function UserInfoPage() {
   useEffect(() => {
     if (!user || user?._id != id) return <Loading />;
   }, [user]);
-  console.log(user?._id);
-  console.log(id);
   if (!user || user?._id != id) return <Loading />;
 
   return (
@@ -59,16 +56,16 @@ function UserInfoPage() {
         <Layout style={styles.mainArea}>
           <Content className="container">
             <Row>
-              <Col span={8}>
+              <div className="col-md-4">
                 <IntroCard />
-              </Col>
-              <Col span={16}>
+              </div>
+              <div className="col-md-8">
                 <FeedPosts
                   space="user_profile"
                   limitPagination={5}
                   ownerId={id}
                 />
-              </Col>
+              </div>
             </Row>
           </Content>
         </Layout>

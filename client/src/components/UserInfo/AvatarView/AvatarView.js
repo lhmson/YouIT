@@ -66,7 +66,7 @@ const AvatarView = () => {
             style={styles.editImageBtn}
             onClick={() => hiddenBackgroundFileInput.current.click()}
           >
-            Edit image
+            Edit
           </Button>
           <input
             type="file"

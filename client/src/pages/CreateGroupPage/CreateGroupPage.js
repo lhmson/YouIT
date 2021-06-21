@@ -21,7 +21,7 @@ import CreateGroupDescription from "../../components/CreateGroup/CreateGroupDesc
 import CreateGroupMembers from "../../components/CreateGroup/CreateGroupMembers/CreateGroupMembers";
 import { IoMdLock } from "react-icons/all";
 import CreateGroupNameAdmin from "../../components/CreateGroup/CreateGroupNameAdmin/CreateGroupNameAdmin.js";
-
+import { convertFileToBase64 } from "../../utils/image.js";
 import styles from "./styles.js";
 
 const { Title, Text } = Typography;
@@ -45,6 +45,9 @@ function CreateGroupPage() {
   const [groupPrivacy, setGroupPrivacy] = useState("Public");
   const [groupTopic, setGroupTopic] = useState("General");
   const [groupMembers, setGroupMembers] = useState();
+  const [groupCover, setGroupCover] = useState(
+    "https://vnn-imgs-f.vgcloud.vn/2020/09/07/15/.jpg"
+  );
   const history = useHistory();
 
   const Data = () => {
@@ -54,6 +57,7 @@ function CreateGroupPage() {
       privacy: groupPrivacy,
       topic: groupTopic,
       listMembers: groupMembers,
+      backgroundUrl: groupCover,
     };
     return result;
   };
@@ -66,7 +70,7 @@ function CreateGroupPage() {
     setGroupTopic(selectedItems);
   };
 
-  const handleCreateGroupButtonClick = () => {
+  const handleCreateGroupButtonClick = async () => {
     const newGroup = Data();
     createGroup(newGroup)
       .then((res) => history.push(`/group/${res.data._id}/main`))
@@ -75,30 +79,13 @@ function CreateGroupPage() {
       });
   };
 
-  const [background, setBackground] = useState(
-    "https://vnn-imgs-f.vgcloud.vn/2020/09/07/15/.jpg"
-  );
-
   const hiddenBackgroundInput = useRef(null);
 
-  // const handleBackgroundChange = async (e) => {
-  //   const fileUploaded = e.target.files[0];
-  //   const base64 = await convertFileToBase64(fileUploaded);
-
-  //   const updatedGroup = {
-  //     ...group,
-  //     backgroundUrl: base64,
-  //   };
-  //   const { data } = await apiGroup.updateGroup(updatedGroup);
-  //   console.log(data);
-  //   setBackground(data.backgroundUrl);
-  // };
-
-  // const handleFinishFailed = (errorInfo) => {
-  //   errorInfo.errorFields.map((err) => {
-  //     message.error(err.errors[0]);
-  //   });
-  // };
+  const handleBackgroundChange = async (e) => {
+    const fileUploaded = e.target.files[0];
+    const base64 = await convertFileToBase64(fileUploaded);
+    setGroupCover(base64);
+  };
 
   const privacyDescription =
     "Anyone can see who's in the group and what they post.";
@@ -249,7 +236,7 @@ function CreateGroupPage() {
                       }}
                     >
                       <Image
-                        src={background}
+                        src={groupCover}
                         style={{
                           maxHeight: "40vh",
                           width: "100%",
@@ -270,7 +257,7 @@ function CreateGroupPage() {
                           type="file"
                           ref={hiddenBackgroundInput}
                           style={{ display: "none" }}
-                          // onChange={handleBackgroundChange}
+                          onChange={handleBackgroundChange}
                         ></input>
                       </div>
                     </Layout>

@@ -18,11 +18,11 @@ function FeedPage() {
           <div className="feed-container">
             <FeedSidebar className="sidebar" />
             <div
-              className="mainContent"
+              className="mainContent "
               id="scrollableDiv"
               style={{ minWidth: "86vw" }}
             >
-              <FeedPosts space="news_feed" />
+              <FeedPosts space="news_feed" hasMarginLeft />
             </div>
           </div>
         </Layout>

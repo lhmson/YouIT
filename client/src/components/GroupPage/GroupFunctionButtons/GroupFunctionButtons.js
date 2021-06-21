@@ -45,12 +45,16 @@ function GroupFunctionButtons() {
   };
 
   const handleInvite = (listInvitedFriends) => {
-    apiGroup
-      .inviteFriends(group?._id, listInvitedFriends)
-      .then((res) => {
-        message.success("Invitation sent!");
-      })
-      .catch((error) => message.success("pow" + error.message));
+    if (listInvitedFriends.length === 0) message.error("Not selected yet ");
+    else
+      apiGroup
+        .inviteFriends(group?._id, listInvitedFriends)
+        .then((res) => {
+          message.success("Invitation sent!");
+        })
+        .catch((error) => message.error(error.message));
+
+    setVisibleAdd(false);
   };
 
   const handleDeleteGroup = (groupId) => {
@@ -160,7 +164,7 @@ function GroupFunctionButtons() {
       .catch((error) => message.success(error.message));
   };
 
-  const showDeleteConfirm = (id) => {
+  const showLeaveConfirm = (id) => {
     confirm({
       title: "Are you sure leave this group?",
       icon: <ExclamationCircleOutlined />,
@@ -177,24 +181,58 @@ function GroupFunctionButtons() {
     });
   };
 
+  const showDeleteConfirm = (id) => {
+    confirm({
+      title: "Are you sure delete this group?",
+      icon: <ExclamationCircleOutlined />,
+      okText: "Yes",
+      okType: "danger",
+      cancelText: "No",
+      onOk() {
+        handleDeleteGroup(id);
+      },
+      onCancel() {
+        console.log("Cancel");
+      },
+    });
+  };
+
+  const showMemberLeaveConfirm = (groupId, userId) => {
+    confirm({
+      title: "Are you sure leave this group?",
+      icon: <ExclamationCircleOutlined />,
+      okText: "Yes",
+      okType: "danger",
+      cancelText: "No",
+      onOk() {
+        handleLeaveGroup(groupId, userId);
+      },
+      onCancel() {
+        console.log("Cancel");
+      },
+    });
+  };
+
   return (
     <>
-      <Row
+      <div
+        className="row mr-2"
         style={{
-          display: "flex",
-          flexDirection: "row",
+          // flexDirection: "row",
           justifyContent: "flex-end",
           alignItems: "center",
-          width: "50%",
+
+          // width: "50%",
         }}
       >
         {isJoinedGroup() ? (
           <div
+            className="row"
             style={{
-              display: "flex",
-              flexDirection: "row",
+              // display: "flex",
+              // flexDirection: "row",
               justifyContent: "flex-end",
-              width: "100%",
+              // width: "100%",
             }}
           >
             <Button
@@ -230,6 +268,7 @@ function GroupFunctionButtons() {
               onVisibleChange={handleVisibleChange}
             >
               <Button
+                style={styles.button}
                 className="d-flex justify-content-center align-items-center green-button mr-3"
                 icon={<PlusCircleOutlined />}
               >
@@ -241,8 +280,8 @@ function GroupFunctionButtons() {
               style={styles.button}
               onClick={() => {
                 isOwner(user)
-                  ? showDeleteConfirm(group?._id)
-                  : handleLeaveGroup(group?._id, user?._id);
+                  ? showLeaveConfirm(group?._id)
+                  : showMemberLeaveConfirm(group?._id, user?._id);
               }}
             >
               Leave Group
@@ -252,7 +291,7 @@ function GroupFunctionButtons() {
                 className="green-button"
                 style={styles.button}
                 onClick={() => {
-                  handleDeleteGroup(group?._id);
+                  showDeleteConfirm(group?._id);
                 }}
               >
                 Delete
@@ -264,7 +303,7 @@ function GroupFunctionButtons() {
         ) : (
           JoinGroupButton()
         )}
-      </Row>
+      </div>
     </>
   );
 }
