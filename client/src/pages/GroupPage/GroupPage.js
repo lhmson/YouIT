@@ -28,7 +28,7 @@ const { Text } = Typography;
 
 export const GroupContext = createContext({
   group: {},
-  setGroup: () => { },
+  setGroup: () => {},
 });
 
 function GroupPage(props) {
@@ -167,7 +167,7 @@ function GroupPage(props) {
             <AdminGroupSidebar
               className="sidebar"
               selectMenu={menu}
-            // setModeSearch={setModeSearch}
+              // setModeSearch={setModeSearch}
             />
             <div
               className="mainContent"

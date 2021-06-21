@@ -91,7 +91,7 @@ function MemberRequests(props) {
               <Text>Fullstack Developer</Text>
             </div>
           </Row>
-          <Row className="justify-content-end align-items-center pb-3">
+          <Row className="align-items-center">
             <div className="mr-4">
               {/* <Text className="clickable" underline type="secondary">
                 Created {createdAt.toString().slice(0, 10)}
@@ -136,8 +136,8 @@ function MemberRequests(props) {
           </div>
         </div>
 
-        <div className="row" style={{ marginTop: 10, marginLeft: 0 }}>
-          <div className="col-10" style={{ marginTop: 10 }}>
+        <div className="col-md-8" style={{ marginTop: 10, marginLeft: 0 }}>
+          <div className="row" style={{ marginTop: 10 }}>
             {work && (
               <OverviewRow
                 firstIcon={<MdWork style={styles.icon} />}
@@ -152,15 +152,15 @@ function MemberRequests(props) {
             )}
             <OverviewRow
               firstIcon={<IoHome style={styles.icon} />}
-              text={`live in ${address}`}
+              text={`${address}`}
             />
             <OverviewRow
               firstIcon={<MdLocationOn style={styles.icon} />}
-              text={`working in ${workLocation}`}
+              text={`${workLocation}`}
             />
             <OverviewRow
               firstIcon={<FaBirthdayCake style={styles.icon} />}
-              text={`Birthday: ${dateOfBirth}`}
+              text={`${dateOfBirth}`}
             />
           </div>
         </div>

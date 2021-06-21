@@ -4,13 +4,18 @@ import MemberRequests from "../../../components/MemberRequests/MemberRequests";
 import * as api from "../../../api/group";
 import COLOR from "../../../constants/colors";
 import { Typography, Row } from "antd";
+import { useHistory } from "react-router-dom";
 import styles from "./styles.js";
+import { GiConsoleController } from "react-icons/gi";
 
 const { Text } = Typography;
 
 function MemberRequestsResult(props) {
   const { group } = useContext(GroupContext);
   const [listMembersRequest, setListMembersRequest] = useState([]);
+  const user = JSON.parse(localStorage.getItem("user"))?.result;
+
+  const history = useHistory();
   // const [user] = useLocalStorage("user");
   // const { listPendingMembers } = group;
   useEffect(() => {
@@ -24,6 +29,10 @@ function MemberRequestsResult(props) {
         console.log(e);
       });
   }, [group]);
+
+  useEffect(() => {
+    if (isJoinedGroup) history.push(`/group/${group?._id}/main`);
+  }, []);
 
   const listMembersRequestCard = () =>
     listMembersRequest?.map((user, i) => (
@@ -41,7 +50,20 @@ function MemberRequestsResult(props) {
     </div>
   );
 
-  return (
+  const isJoinedGroup = () => {
+    let isJoined = false;
+    console.log("vooooooooo");
+    group?.listMembers.forEach((member) => {
+      if (member?.userId === user?._id && member?.role !== "Member") {
+        isJoined = true;
+      }
+    });
+
+    if (isJoined) console.log("thyyyy");
+    return isJoined;
+  };
+
+  return isJoinedGroup ? (
     <div
       style={{
         background: COLOR.whiteSmoke,
@@ -63,6 +85,8 @@ function MemberRequestsResult(props) {
         </div>
       </div>
     </div>
+  ) : (
+    ""
   );
 }
 

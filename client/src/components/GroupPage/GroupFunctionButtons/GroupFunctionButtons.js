@@ -1,4 +1,4 @@
-import { Button, message, Row, Select, Popover, Modal } from "antd";
+import { Button, message, Select, Popover, Modal } from "antd";
 import React, { useState, useEffect, useContext, useMemo } from "react";
 import styles from "./styles.js";
 import {
@@ -114,7 +114,7 @@ function GroupFunctionButtons() {
     let isOwner = false;
     group?.listMembers.forEach((member) => {
       if (member?.userId === user?._id) {
-        if (member?.role !== "Member") isOwner = true;
+        if (member?.role === "Owner") isOwner = true;
       }
     });
     return isOwner;

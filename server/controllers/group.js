@@ -114,7 +114,7 @@ export const createGroup = async (req, res) => {
     await newGroup.save();
 
     const groupOwnerData = await User.findById(req.userId);
-    newGroup.listMembers.forEach(member => {
+    newGroup.listMembers.forEach((member) => {
       if (!member.userId.equals(req.userId))
         sendNotificationUser({
           userId: member.userId,
@@ -124,7 +124,7 @@ export const createGroup = async (req, res) => {
           },
           link: `/group/${newGroup._id}/main`,
         });
-    })
+    });
 
     res.status(httpStatusCodes.created).json(newGroup);
   } catch (error) {
@@ -195,9 +195,7 @@ export const inviteFriends = async (req, res) => {
     const group = await Group.findById(groupId);
 
     if (!group)
-      return res
-        .status(httpStatusCodes.notFound)
-        .send("Group not found")
+      return res.status(httpStatusCodes.notFound).send("Group not found");
 
     if (listUsersToInvite) {
       listUsersToInvite.forEach((invitedId) => {
@@ -227,9 +225,7 @@ export const addGroupPendingMember = async (req, res) => {
   try {
     const newMember = await User.findById(memberId);
     if (!newMember)
-      return res
-        .status(httpStatusCodes.notFound)
-        .json("User not exists")
+      return res.status(httpStatusCodes.notFound).json("User not exists");
 
     const group = await Group.findById(groupId);
     if (!group) {
@@ -258,7 +254,7 @@ export const addGroupPendingMember = async (req, res) => {
     await group.save();
 
     // send noti to group admins
-    group?.listMembers?.forEach(member => {
+    group?.listMembers?.forEach((member) => {
       if (checkRoleHasPermissionOfRole(member?.role, "Admin"))
         sendNotificationUser({
           userId: member.userId,
@@ -268,7 +264,7 @@ export const addGroupPendingMember = async (req, res) => {
           },
           link: `/group/${group._id}/member_requests`,
         });
-    })
+    });
 
     return res.status(httpStatusCodes.ok).json(group);
   } catch (error) {
@@ -430,7 +426,7 @@ export const leaveGroup = async (req, res) => {
     if (
       group.listMembers.length > 1 &&
       group.listMembers.find((member) => member.userId.equals(userId)).role ===
-      "Owner"
+        "Owner"
     )
       return res
         .status(httpStatusCodes.badContent)
@@ -509,7 +505,9 @@ export const setGroupMemberRole = async (req, res) => {
             userId: member.userId,
             kind: "SetGroupMemberRole_SetMember",
             content: {
-              description: `You have been promoted as ${newRole === "Admin" ? "an" : "a"} ${newRole} of group "${group?.name}".`,
+              description: `You have been promoted as ${
+                newRole === "Admin" ? "an" : "a"
+              } ${newRole} of group "${group?.name}".`,
             },
             link: `/group/${group._id}/main`,
           });
