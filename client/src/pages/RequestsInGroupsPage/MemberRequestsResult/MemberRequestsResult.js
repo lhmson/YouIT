@@ -5,6 +5,7 @@ import * as api from "../../../api/group";
 import COLOR from "../../../constants/colors";
 import { Typography, Row } from "antd";
 import { useHistory } from "react-router-dom";
+import { Loading } from "../../../components";
 import styles from "./styles.js";
 
 const { Text } = Typography;
@@ -76,9 +77,15 @@ function MemberRequestsResult(props) {
           }}
         >
           <div className="col-10 offset-1">
-            {listMembersRequest.length === 0
-              ? noRequestPending()
-              : listMembersRequestCard()}
+            {listMembersRequest.length ? (
+              <div className="text-center">
+                <Loading />
+              </div>
+            ) : listMembersRequest.length === 0 ? (
+              noRequestPending()
+            ) : (
+              listMembersRequestCard()
+            )}
           </div>
         </div>
       </div>

@@ -2,13 +2,8 @@ import { Select } from "antd";
 import React, { useState, useEffect, useMemo } from "react";
 import { useLocalStorage } from "../../../hooks/useLocalStorage.js";
 import * as api from "../../../api/friend";
-import styles from "./styles.js";
 
 const { Option } = Select;
-
-function handleChange(value) {
-  console.log(`Selected: ${value}`);
-}
 
 function CreateGroupMembers({ onChange }) {
   const [user, setUser] = useLocalStorage("user");

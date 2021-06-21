@@ -5,6 +5,7 @@ import COLOR from "../../../constants/colors";
 import { GroupContext } from "../../GroupPage/GroupPage";
 import { Typography, Row } from "antd";
 import { useHistory } from "react-router-dom";
+import { Loading } from "../../../components";
 import styles from "./styles.js";
 
 const { Text } = Typography;
@@ -69,9 +70,15 @@ function PostRequestsResult() {
           }}
         >
           <div className="col-10 offset-1">
-            {listPostRequest.length === 0
-              ? noRequestPending()
-              : listPostRequestCard()}
+            {listPostRequest.length ? (
+              <div className="text-center">
+                <Loading />
+              </div>
+            ) : listPostRequest.length === 0 ? (
+              noRequestPending()
+            ) : (
+              listPostRequestCard()
+            )}
           </div>
         </div>
       </div>

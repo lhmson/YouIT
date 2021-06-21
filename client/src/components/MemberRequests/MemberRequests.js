@@ -136,7 +136,7 @@ function MemberRequests(props) {
           </div>
         </div>
 
-        <div className="col-md-8" style={{ marginTop: 10, marginLeft: 0 }}>
+        <div className="col-md-8" style={{ marginTop: 30, marginLeft: 0 }}>
           <div className="row" style={{ marginTop: 10 }}>
             {work && (
               <OverviewRow

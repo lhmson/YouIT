@@ -8,7 +8,14 @@ import { useLocalStorage } from "../../hooks/useLocalStorage";
 
 const { Title, Text } = Typography;
 
-function GroupCard({ nameGroup, _id, description, totalMembers, status }) {
+function GroupCard({
+  nameGroup,
+  _id,
+  description,
+  totalMembers,
+  status,
+  backgroundUrl,
+}) {
   const [txtButton, setTxtButton] = React.useState(status);
   const [user, setUser] = useLocalStorage("user");
 
@@ -26,13 +33,34 @@ function GroupCard({ nameGroup, _id, description, totalMembers, status }) {
   };
 
   const changeStateButton = async () => {
+    const key = "updatable";
     if (txtButton === "Join") {
+      const openMessage = () => {
+        message.loading({ content: "Sending request...", key });
+        setTimeout(() => {
+          message.success({
+            content: `You submited join request to ${nameGroup} group`,
+            key,
+            duration: 2,
+          });
+        }, 2000);
+      };
+      openMessage();
       await joinGroup();
-      message.success(`You submited join request to ${nameGroup} group`);
       setTxtButton("Cancel Request");
     } else {
+      const openMessage = () => {
+        message.loading({ content: "Sending request...", key });
+        setTimeout(() => {
+          message.success({
+            content: `You cancel join request to ${nameGroup} group`,
+            key,
+            duration: 2,
+          });
+        }, 2000);
+      };
+      openMessage();
       await cancelJoinGroup();
-      message.success(`You cancel join request to ${nameGroup} group`);
       setTxtButton("Join");
     }
   };
@@ -51,10 +79,7 @@ function GroupCard({ nameGroup, _id, description, totalMembers, status }) {
               // minWidth: 600,
             }}
           >
-            <Avatar
-              size={72}
-              src="https://i.pinimg.com/564x/03/d5/62/03d5624fae645eccaa74315f6ed49c03.jpg"
-            />
+            <Avatar size={72} src={backgroundUrl} />
 
             <div className="ml-3 break-word">
               <div className="break-word">

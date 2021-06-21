@@ -32,6 +32,7 @@ function UserCard(props) {
   const [user, setUser] = useLocalStorage("user");
   const { name } = props;
   const { _id } = props;
+  const { avatarUrl } = props;
   const [numberMutual, setNumberMutual] = useState(0);
   const [txtButton, setTxtButton] = useState(
     props.relationship ?? "Add Friend"
@@ -76,12 +77,33 @@ function UserCard(props) {
   };
 
   const changeStateButton = async () => {
+    const key = "updatable";
     if (txtButton === "Add Friend") {
-      message.success("You sended request successfully");
+      const openMessage = () => {
+        message.loading({ content: "Sending request...", key });
+        setTimeout(() => {
+          message.success({
+            content: "You sended request successfully!",
+            key,
+            duration: 2,
+          });
+        }, 3000);
+      };
+      openMessage();
       await handleAddingFriend(_id, user?.result?._id);
       setTxtButton("Cancel Request");
     } else if (txtButton === "Cancel Request") {
-      message.success("You cancel request successfully");
+      const openMessage = () => {
+        message.loading({ content: "Sending request...", key });
+        setTimeout(() => {
+          message.success({
+            content: "You cancel request successfully!",
+            key,
+            duration: 2,
+          });
+        }, 3000);
+      };
+      openMessage();
       await cancelFriendRequest(await getMatchFriendRequest());
       setTxtButton("Add Friend");
     } else if (txtButton === "Waiting you accept") {
@@ -182,10 +204,7 @@ function UserCard(props) {
             }}
           >
             <div>
-              <Avatar
-                size={72}
-                src="https://vtv1.mediacdn.vn/thumb_w/650/2020/10/20/blackpink-lisa-mac-160316252527410005928.jpg"
-              />
+              <Avatar size={72} src={avatarUrl} />
             </div>
 
             <div className="ml-3 break-word">
