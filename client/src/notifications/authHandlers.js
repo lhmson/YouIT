@@ -17,6 +17,17 @@ export const handleSignInOutBrowser = (cuteIO) => {
 
   // force this tab to reload if the user has signed in to this browser
   cuteIO.onReceive("System-SignedIn", (msg) => {
+    localStorage.setItem("user",
+      JSON.stringify({
+        token: msg?.token,
+        result: {
+          name: msg?.result?.name,
+          _id: msg?.result?._id,
+          // avatarUrl: action?.data.result.avatarUrl,
+        },
+      })
+    );
+
     window.location.reload();
   });
 };
