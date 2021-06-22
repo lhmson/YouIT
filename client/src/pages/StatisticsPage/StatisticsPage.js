@@ -4,7 +4,7 @@ import UsersStatistics from "../../components/Chart/UserStatistics";
 import PostStatistics from "../../components/Chart/PostStatistics";
 import GroupStatistics from "../../components/Chart/GroupStatistics";
 
-export const StatisticsPage = ({}) => {
+export const StatisticsPage = () => {
   return (
     <div className="p-5">
       <div className="row">

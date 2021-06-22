@@ -78,6 +78,7 @@ function GroupManagementPage() {
             _id={group._id}
             nameGroup={group.name}
             description={group.description}
+            topic={group.topic}
             totalMembers={group.listMembers?.length}
             joined={mode === "Groups"}
             update={update}

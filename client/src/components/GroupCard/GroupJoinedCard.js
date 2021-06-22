@@ -12,6 +12,7 @@ function GroupJoinedCard({
   nameGroup,
   _id,
   description,
+  topic,
   totalMembers,
   joined,
   update,
@@ -42,20 +43,34 @@ function GroupJoinedCard({
       <div style={styles.card}>
         <div className="row ml-2" style={{ justifyContent: "space-between" }}>
           <div
+            className="col-10"
             style={{
               display: "flex",
               justifyContent: "center",
               minWidth: 500,
+              // backgroundColor: "yellow",
             }}
           >
-            <Avatar size={72} src={backgroundUrl} />
+            <div style={{ width: 72, height: 72 }}>
+              <Avatar size={72} src={backgroundUrl} />
+            </div>
 
-            <div className="col-8" style={{ alignSelf: "center" }}>
-              <Link to={`/group/${_id}/main`}>
-                <Text style={styles.textUser}>{nameGroup ?? "Name Group"}</Text>
-              </Link>
-              <div style={{ marginTop: 0 }}></div>
-              <Text>{description ?? "Blackpink in your area"}</Text>
+            <div className="mx-2" style={{ alignSelf: "center" }}>
+              <div className="break-word">
+                <Link to={`/group/${_id}/main`}>
+                  <Text style={styles.textUser}>
+                    {nameGroup ?? "Name Group"}
+                  </Text>
+                </Link>
+              </div>
+
+              <div className="break-word">
+                <Text>{description ?? "Information Technology Community"}</Text>
+              </div>
+
+              <div className="break-word">
+                <Text strong>{`#${topic ?? "General"}`}</Text>
+              </div>
             </div>
             <div
               style={{
@@ -69,10 +84,12 @@ function GroupJoinedCard({
 
           <div
             className="mr-3"
-            style={{
-              justifyContent: "flex-end",
-              alignItems: "flex-end",
-            }}
+            style={
+              {
+                // justifyContent: "flex-end",
+                // alignItems: "flex-end",
+              }
+            }
           >
             <Button
               onClick={onPressButton}
@@ -96,14 +113,6 @@ function GroupJoinedCard({
             </div>
           </div>
         </div>
-        {/* <div className="row mt-4">
-          <div className="ml-4">
-            <Tag className="tag">#Talkshow</Tag>
-            <Tag className="tag">#KPOP</Tag>
-            <Tag className="tag">#Film</Tag>
-            <Text style={{ ...styles.text, fontWeight: 600 }}>+ 15 Posts</Text>
-          </div>
-        </div> */}
       </div>
     </>
   );

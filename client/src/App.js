@@ -23,8 +23,8 @@ import {
   GroupManagementPage,
   AuthAdminPage,
   StatisticsPage,
-  ReportUserPage,
-  ReportGroupPage,
+  UserAdminManagement,
+  GroupAdminManagement,
 } from "./pages/index";
 
 import { CuteClientIOProvider } from "./socket/CuteClientIOProvider.js";
@@ -123,7 +123,6 @@ function App() {
               component={MutualFriendPage}
             />
             <Route exact path="/groups" component={GroupManagementPage} />
-            <Route path="/demoSocketIO" component={DemoSocket} />
             <PrivateRoute
               exact
               path="/group/create"
@@ -145,16 +144,23 @@ function App() {
                 <AuthAdminPage />
               )}
             </PrivateRoute>
-            <PrivateRoute exact path="/admin/dashboard">
-              {isAdmin() ? <AdminDashboardPage /> : <Redirect to="/admin" />}
-            </PrivateRoute>
-            <PrivateRoute exact path="/admin/user" component={ReportUserPage} />
+            <PrivateRoute
+              exact
+              path="/admin/:menu"
+              component={AdminDashboardPage}
+            />
+            {/* <PrivateRoute
+              exact
+              path="/admin/user"
+              component={UserAdminManagement}
+            />
             <PrivateRoute
               exact
               path="/admin/group"
-              component={ReportGroupPage}
-            />
-            <PrivateRoute exact path="/statistics" component={StatisticsPage} />
+              component={GroupAdminManagement}
+            /> */}
+            {/* <PrivateRoute exact path="/statistics" component={StatisticsPage} /> */}
+            <Route path="/demoSocketIO" component={DemoSocket} />
             <Route exact path="/error403">
               <ErrorPage code="403" />
             </Route>

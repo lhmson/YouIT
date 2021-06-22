@@ -1,17 +1,15 @@
-import React, { useState, useEffect, useRef, useMemo } from "react";
-import { Layout, Typography, Table, Button, message, Modal } from "antd";
+import React, { useState, useEffect } from "react";
+import { Layout, Typography, Table, Button, message } from "antd";
 import styles from "./styles.js";
 import Navbar from "../../../components/Navbar/Navbar";
 import ReportUserCard from "../../../components/ReportUserCard/ReportUserCard";
-import COLOR from "../../../constants/colors";
-import { useLocalStorage } from "../../../hooks/useLocalStorage";
-import * as api from "../../../api/report";
 import * as apiGroup from "../../../api/group";
+import { limitNameLength } from "../../../utils/limitNameLength.js";
 
 const { Content } = Layout;
 const { Title, Text } = Typography;
 
-function ReportGroupPage() {
+function GroupAdminManagement() {
   const [selectedRowkeys, setSelectedRowkeys] = useState([]);
   const [listReports, setListReports] = useState([]);
   // const [update, setUpdate] = useState(false);
@@ -31,8 +29,8 @@ function ReportGroupPage() {
 
   const columns = [
     {
-      title: "STT",
-      dataIndex: "stt",
+      title: "ID",
+      dataIndex: "id",
       width: "20%",
     },
     {
@@ -61,8 +59,8 @@ function ReportGroupPage() {
   for (let i = 0; i < listReports.length; i++) {
     data.push({
       key: i,
-      stt: i + 1,
-      name: listReports[i].name,
+      id: i + 1,
+      name: limitNameLength(listReports[i].name, 40),
       reports: listReports[i].reports,
       members: listReports[i].members,
       posts: listReports[i].posts,
@@ -172,49 +170,44 @@ function ReportGroupPage() {
 
   return (
     <>
-      <Layout>
-        <Navbar />
-        <Layout>
-          <Layout style={styles.mainArea}>
-            <Content>
-              <div
-                className="row"
-                style={{
-                  padding: 32,
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <TableReportUser></TableReportUser>
-              </div>
-              {/* <ButtonFooter></ButtonFooter> */}
-              <div
-                className="row"
-                style={{
-                  justifyContent: "flex-end",
-                  alignItems: "center",
-                  width: "90%",
-                }}
-              >
-                <Button
-                  className="green-button"
-                  onClick={deleteSelectedGroups}
-                  type="primary"
-                  style={{
-                    color: "white",
-                    fontWeight: 500,
-                    width: 120,
-                  }}
-                >
-                  Delete
-                </Button>
-              </div>
-            </Content>
-          </Layout>
-        </Layout>
+      <Layout style={styles.mainArea}>
+        <Content>
+          <div
+            className="row"
+            style={{
+              padding: 32,
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <TableReportUser></TableReportUser>
+          </div>
+          {/* <ButtonFooter></ButtonFooter> */}
+          <div
+            className="row"
+            style={{
+              justifyContent: "flex-end",
+              alignItems: "center",
+              width: "90%",
+            }}
+          >
+            <Button
+              className="green-button"
+              onClick={deleteSelectedGroups}
+              type="primary"
+              style={{
+                color: "white",
+                fontWeight: 500,
+                width: 120,
+              }}
+            >
+              Delete
+            </Button>
+          </div>
+        </Content>
       </Layout>
     </>
   );
 }
 
-export default ReportGroupPage;
+export default GroupAdminManagement;

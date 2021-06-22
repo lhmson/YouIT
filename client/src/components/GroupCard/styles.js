@@ -15,11 +15,11 @@ const styles = {
     marginRight: 8,
   },
   text: {
-    fontweight: 300,
+    fontWeight: 300,
     color: "#27AE60",
   },
   textUser: {
-    fontweight: 700,
+    fontWeight: 700,
     fontSize: 18,
   },
 
