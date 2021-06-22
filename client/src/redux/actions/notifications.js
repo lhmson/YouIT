@@ -7,23 +7,23 @@ import {
 
 import * as api from "../../api/notification";
 
-// export const getUserNotifications = () => async (dispatch) => {
-//   try {
-//     const { data } = await api.fetchAllNotifications();
-//     dispatch({ type: FETCH_USER_NOTIFICATIONS, payload: data });
-//   } catch (error) {
-//     console.log(error);
-//   }
-// };
-
-export const getUserUnseenNotifications = () => async (dispatch) => {
+export const getUserNotifications = () => async (dispatch) => {
   try {
-    const { data } = await api.fetchUnseenNotifications();
+    const { data } = await api.fetchAllNotifications();
     dispatch({ type: FETCH_USER_NOTIFICATIONS, payload: data });
   } catch (error) {
     console.log(error);
   }
 };
+
+// export const getUserUnseenNotifications = () => async (dispatch) => {
+//   try {
+//     const { data } = await api.fetchUnseenNotifications();
+//     dispatch({ type: FETCH_USER_NOTIFICATIONS, payload: data });
+//   } catch (error) {
+//     console.log(error);
+//   }
+// };
 
 export const addUserNotifications = (data) => async (dispatch) => {
   try {
@@ -34,14 +34,16 @@ export const addUserNotifications = (data) => async (dispatch) => {
   }
 };
 
-export const setSeenNotification = (id, seen) => async (dispatch) => {
-  try {
-    const { data } = await api.setSeenNotifications(id, seen);
-    dispatch({ type: SET_SEEN_NOTIFICATION, payload: data });
-  } catch (error) {
-    console.log(error);
-  }
-};
+export const setSeenNotification =
+  (id, seen, history, url) => async (dispatch) => {
+    try {
+      const { data } = await api.setSeenNotifications(id, seen);
+      dispatch({ type: SET_SEEN_NOTIFICATION, payload: data });
+      if (history && url) history.push(url);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
 export const refreshNotifications = () => async (dispatch) => {
   try {

@@ -3,8 +3,7 @@ import { Layout } from "antd";
 import styles from "./styles.js";
 import { useLocalStorage } from "../../../hooks/useLocalStorage.js";
 
-import { fetchUserJoinedGroups } from "../../../redux/actions/group";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 
 import SystemAdminMenu from "./SystemAdminMenu/SystemAdminMenu.js";
 
@@ -14,12 +13,6 @@ function SystemAdminSidebar() {
   const [user] = useLocalStorage("user");
   // const [visible, setVisible] = useState(false);
   const dispatch = useDispatch();
-
-  useEffect(() => {
-    dispatch(fetchUserJoinedGroups());
-  }, []);
-
-  const groups = useSelector((state) => state.groups);
 
   return (
     <div>
@@ -33,7 +26,7 @@ function SystemAdminSidebar() {
           ...styles.fixedSider,
         }}
       >
-        <SystemAdminMenu user={user} groups={groups} />
+        <SystemAdminMenu user={user} />
       </Sider>
     </div>
   );

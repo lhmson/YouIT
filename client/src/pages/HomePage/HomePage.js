@@ -207,7 +207,7 @@ function HomePage() {
           >
             <HorizontalScroll>
               {hashtags.map((item) => (
-                <BigTag title={item.name} />
+                <BigTag key={item._id} title={item.name} />
               ))}
             </HorizontalScroll>
           </div>

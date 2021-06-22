@@ -12,7 +12,7 @@ import { Link } from "react-router-dom";
 
 const { SubMenu } = Menu;
 
-function SystemAdminMenu({ user, groups }) {
+function SystemAdminMenu({ user }) {
   return (
     <Menu
       mode="inline"

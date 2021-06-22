@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useMemo, useState } from "react";
 import { Link, useHistory, useLocation } from "react-router-dom";
 import {
   Layout,
@@ -41,8 +41,8 @@ import { useCuteClientIO } from "../../socket/CuteClientIOProvider";
 import {
   addUserNotifications,
   refreshNotifications,
-  getUserUnseenNotifications,
   setSeenNotification,
+  getUserNotifications,
 } from "../../redux/actions/notifications";
 import * as apiConversation from "../../api/conversation";
 import NotificationList from "./NotificationList/NotificationList";
@@ -72,17 +72,22 @@ function Navbar({ selectedMenu, setTxtSearch, txtInitSearch }) {
 
   //#region notification handle
 
-  const unseenNotifications = useSelector((state) => state.notifications);
+  const notifications = useSelector((state) => state.notifications);
+  const unseenNotifications = useMemo(
+    () => notifications?.filter((item) => !item.seen),
+    [notifications]
+  );
 
   const handleClickNotificationItem = (url, notificationId) => {
-    dispatch(setSeenNotification(notificationId, "true"));
-    history.push(url);
-    setTimeout(location.reload); // fix bug push not route
+    dispatch(setSeenNotification(notificationId, "true", history, url));
+
+    // window.location.reload();
+    // setTimeout(location.reload); // fix bug push not route
   };
 
   useEffect(() => {
     if (user) {
-      dispatch(getUserUnseenNotifications());
+      dispatch(getUserNotifications());
     }
   }, [user, dispatch]);
 
@@ -169,7 +174,7 @@ function Navbar({ selectedMenu, setTxtSearch, txtInitSearch }) {
           <Dropdown
             overlay={NotificationList({
               handleClickNotificationItem,
-              unseenNotifications,
+              notifications,
             })}
             trigger={["click"]}
             placement="bottomRight"

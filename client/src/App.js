@@ -41,7 +41,10 @@ import { BACKEND_URL } from "./constants/config.js";
 import { useDispatch } from "react-redux";
 import { getUser } from "./redux/actions/user.js";
 import * as apiUser from "./api/user_info";
+import * as apiGroup from "./api/group";
+
 import { useCurrentUser } from "./context/CurrentUserContext.js";
+import { useGroupsOfUser } from "./context/GroupsOfUserContext.js";
 
 const loggedIn = () => {
   const user = JSON.parse(localStorage.getItem("user"));
@@ -56,12 +59,17 @@ function App() {
   const [token, setToken] = useToken();
   const [user] = useLocalStorage("user");
   const [currentUser, setCurrentUser] = useCurrentUser();
+  const groupsOfUser = useGroupsOfUser();
+  const { updateListGroups } = groupsOfUser;
 
   useEffect(() => {
     if (user) {
       apiUser.fetchUserInfo(user?.result?._id).then((res) => {
         setCurrentUser(res.data);
       });
+      apiGroup
+        .fetchUserJoinedGroups()
+        .then((res) => updateListGroups(res.data));
     }
     // console.log("user", currentUser);
   }, [user]);

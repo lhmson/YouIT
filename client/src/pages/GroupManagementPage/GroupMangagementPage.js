@@ -11,6 +11,7 @@ import * as api from "../../api/group";
 import { useLocalStorage } from "../../hooks/useLocalStorage";
 import LoadingSearch from "../../components/Loading/LoadingSearch.js";
 import { SearchOutlined } from "@ant-design/icons";
+import { useGroupsOfUser } from "../../context/GroupsOfUserContext.js";
 
 const { Content } = Layout;
 const { Title, Text } = Typography;
@@ -18,28 +19,29 @@ const { Title, Text } = Typography;
 function GroupManagementPage() {
   const [user, setUser] = useLocalStorage("user");
   const inputRef = useRef();
-  const [listGroup, setListGroup] = useState([]);
+  // const [listGroup, setListGroup] = useState([]);
+  const listGroup = useGroupsOfUser().state.listGroups;
   const [listPending, setlistPending] = useState([]);
   const [txtSearch, setTxtSearch] = useState("");
   const [mode, setMode] = useState("Groups");
   const [update, setUpdate] = useState(false);
-  const [loading1, setLoading1] = useState(false);
+  // const [loading1, setLoading1] = useState(false);
   const [loading2, setLoading2] = useState(false);
 
-  useEffect(() => {
-    setLoading1(false);
-    api
-      .fetchUserJoinedGroups()
-      .then((res) => {
-        console.log("group joined", res.data);
-        if (res.data instanceof Array) setListGroup(res.data);
-        else setListGroup([]);
-        setLoading1(true);
-      })
-      .catch((e) => {
-        console.log(e);
-      });
-  }, [user]);
+  // useEffect(() => {
+  //   setLoading1(false);
+  //   api
+  //     .fetchUserJoinedGroups()
+  //     .then((res) => {
+  //       console.log("group joined", res.data);
+  //       if (res.data instanceof Array) setListGroup(res.data);
+  //       else setListGroup([]);
+  //       setLoading1(true);
+  //     })
+  //     .catch((e) => {
+  //       console.log(e);
+  //     });
+  // }, [user]);
 
   useEffect(() => {
     setLoading2(false);
@@ -90,7 +92,10 @@ function GroupManagementPage() {
   const handleSearch = () => {
     setTxtSearch(inputRef.current.state.value);
   };
-  if (!loading1 || !loading2)
+  if (
+    // !loading1 ||
+    !loading2
+  )
     return (
       <div
         style={{ flex: 1, background: "white", height: 1000, paddingTop: 64 }}

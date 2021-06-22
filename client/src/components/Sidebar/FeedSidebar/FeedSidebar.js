@@ -6,6 +6,7 @@ import { useLocalStorage } from "../../../hooks/useLocalStorage.js";
 import { fetchUserJoinedGroups } from "../../../redux/actions/group";
 import { useSelector, useDispatch } from "react-redux";
 import FeedMenu from "./FeedMenu/FeedMenu.js";
+import { useGroupsOfUser } from "../../../context/GroupsOfUserContext.js";
 
 const { Sider } = Layout;
 
@@ -14,11 +15,12 @@ function FeedSidebar() {
   // const [visible, setVisible] = useState(false);
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    dispatch(fetchUserJoinedGroups());
-  }, []);
+  // useEffect(() => {
+  //   dispatch(fetchUserJoinedGroups());
+  // }, []);
 
-  const groups = useSelector((state) => state.groups);
+  // const groups = useSelector((state) => state.groups);
+  const groups = useGroupsOfUser().state.listGroups;
 
   return (
     <div>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { Modal, Typography, Menu, Tooltip, Tabs, Button, Avatar } from "antd";
 import moment from "moment";
 import COLOR from "../../../constants/colors";
@@ -13,28 +13,30 @@ import {
 const { Text } = Typography;
 const { TabPane } = Tabs;
 
-function NotificationList({
-  handleClickNotificationItem,
-  unseenNotifications,
-}) {
+function NotificationList({ handleClickNotificationItem, notifications }) {
   // const [allNoti, setAllNoti] = useState([]);
   // const [unseenNoti, setUnseenNoti] = useState([]);
-  const [seenNoti, setSeenNoti] = useState([]);
+  // const [seenNoti, setSeenNoti] = useState([]);
   const [isUpdate, setIsUpdate] = useState(false);
 
   const dispatch = useDispatch();
 
-  const handleFetchNoti = () => {
+  const unseenNotifications = useMemo(
+    () => notifications?.filter((item) => !item.seen),
+    [notifications]
+  );
+
+  const handleFetchNoti = useCallback(() => {
     // api.fetchAllNotifications().then((res) => {
     //   setAllNoti(res.data);
     // });
-    api.fetchSeenNotifications().then((res) => {
-      setSeenNoti(res.data);
-    });
+    // api.fetchSeenNotifications().then((res) => {
+    //   setSeenNoti(res.data);
+    // });
     // api.fetchUnseenNotifications().then((res) => {
     //   setUnseenNoti(res.data);
     // });
-  };
+  }, []);
 
   const handleMarkAll = () => {
     unseenNotifications?.forEach((item) => {
@@ -47,14 +49,14 @@ function NotificationList({
 
   useEffect(() => {
     handleFetchNoti();
-  }, []);
+  }, [handleFetchNoti]);
 
   useEffect(() => {
     if (isUpdate) {
       handleFetchNoti();
       setIsUpdate(false);
     }
-  }, [isUpdate]);
+  }, [isUpdate, handleFetchNoti]);
 
   const NotiList = ({ noti }) => {
     return (
@@ -114,12 +116,12 @@ function NotificationList({
             <TabPane tab="Unseen" key="1">
               <NotiList noti={unseenNotifications} />
             </TabPane>
-            <TabPane tab="Seen" key="2">
+            {/* <TabPane tab="Seen" key="2">
               <NotiList noti={seenNoti} />
-            </TabPane>
-            {/* <TabPane tab="All" key="3">
-              <NotiList noti={allNoti} />
             </TabPane> */}
+            <TabPane tab="All" key="3">
+              <NotiList noti={notifications} />
+            </TabPane>
           </Tabs>
           <Button className="green-button" onClick={handleMarkAll}>
             Mark all as read

@@ -2,7 +2,8 @@ import React, { useEffect, useState } from "react";
 import { AutoComplete } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchUserJoinedGroups } from "../../../redux/actions/group.js";
-import createPostStyle from "../styles.js"
+import createPostStyle from "../styles.js";
+import { useGroupsOfUser } from "../../../context/GroupsOfUserContext.js";
 
 function CreatePostSpaceAutoComplete({
   postSpace,
@@ -11,7 +12,8 @@ function CreatePostSpaceAutoComplete({
   initialGroupId,
   disabled = false,
 }) {
-  const groups = useSelector((state) => state.groups);
+  const groups = useGroupsOfUser().state.listGroups;
+  // const groups = useSelector((state) => state.groups);
   const [selectedGroup, setSelectedGroup] = useState(null);
   const dispatch = useDispatch();
 
@@ -20,9 +22,9 @@ function CreatePostSpaceAutoComplete({
   const filterGroupsPredicate = (inputValue, option) =>
     option.value.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1;
 
-  useEffect(() => {
-    dispatch(fetchUserJoinedGroups());
-  }, []);
+  // useEffect(() => {
+  //   dispatch(fetchUserJoinedGroups());
+  // }, []);
 
   useEffect(() => {
     if (!groups) setOptions([]);
