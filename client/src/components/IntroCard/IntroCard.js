@@ -17,6 +17,7 @@ import { Link } from "react-router-dom";
 import moment from "moment";
 import Loading from "../Loading/Loading";
 import { limitNameLength } from "../../utils/limitNameLength.js";
+import { isLoginUser } from "../../utils/user.js";
 
 const { Header, Footer, Sider, Content } = Layout;
 
@@ -26,6 +27,7 @@ const { Text } = Typography;
 const IntroCard = () => {
   //TODO: bug prone like user avatar when get from this so-called user redux
   const user = useSelector((state) => state.user);
+  const isMyProfile = isLoginUser(user);
 
   const dateOfBirth = moment(user?.userInfo?.dateOfBirth).format("DD/MM/YYYY");
   const address = user?.userInfo?.address;
@@ -93,7 +95,9 @@ const IntroCard = () => {
 
       <Row style={{ width: "100%", justifyContent: "center" }}>
         <Button className="green-button" type="primary" style={styles.editBtn}>
-          <Link to={`/userinfo/${user?._id}/about`}>Edit</Link>
+          <Link to={`/userinfo/${user?._id}/about`}>
+            {isMyProfile ? "Edit" : "Show"}
+          </Link>
         </Button>
       </Row>
 
