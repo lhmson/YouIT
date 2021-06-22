@@ -18,7 +18,10 @@ const AvatarView = () => {
   const isMyProfile = isLoginUser(user);
 
   const [avatar, setAvatar] = useState(user?.avatarUrl);
+  const [loadingAvatar, setLoadingAvatar] = useState(false);
+
   const [backgroundImage, setBackgroundImage] = useState(user?.backgroundUrl);
+  const [loadingBackground, setLoadingBackground] = useState(false);
 
   const displayName = user?.name ?? "";
 
@@ -31,6 +34,7 @@ const AvatarView = () => {
   }, [user]);
 
   const handleAvatarChange = async (e) => {
+    setLoadingAvatar(true);
     const fileUploaded = e.target.files[0];
     const base64 = await convertFileToBase64(fileUploaded);
 
@@ -38,13 +42,15 @@ const AvatarView = () => {
       type: "avatarUrl",
       base64: base64,
     };
-    const { data } = await apiUser.editImage(image);
-    setAvatar(data);
-    console.log(data);
-    window.location.reload();
+    await apiUser.editImage(image).then((res) => {
+      setLoadingAvatar(false);
+      setAvatar(res.data);
+      // window.location.reload();
+    });
   };
 
   const handleBackgroundChange = async (e) => {
+    setLoadingBackground(true);
     const fileUploaded = e.target.files[0];
     const base64 = await convertFileToBase64(fileUploaded);
 
@@ -52,9 +58,11 @@ const AvatarView = () => {
       type: "backgroundUrl",
       base64: base64,
     };
-    const { data } = await apiUser.editImage(image);
-    setBackgroundImage(data);
-    window.location.reload();
+    await apiUser.editImage(image).then((res) => {
+      setLoadingBackground(false);
+      setBackgroundImage(res.data);
+      // window.location.reload();
+    });
   };
 
   const EditImageButton = () => {
@@ -113,7 +121,9 @@ const AvatarView = () => {
         className="container justify-content-center"
         style={{ height: "40vh" }}
       >
-        <div>
+        {loadingBackground ? (
+          <Loading />
+        ) : (
           <Image
             src={backgroundImage}
             style={{
@@ -124,15 +134,23 @@ const AvatarView = () => {
               display: "block",
             }}
           ></Image>
-        </div>
+        )}
         <EditImageButton />
         <div
           className="d-flex justify-content-center flex-column align-items-center"
           style={{ position: "absolute", bottom: "-10%" }}
         >
           <div style={{ position: "relative", marginBottom: 8 }}>
-            <Avatar src={avatar} size={150} style={styles.avatar} />
-            <EditAvatarButton />
+            {loadingAvatar ? (
+              <div style={styles.avatar}>
+                <Loading />
+              </div>
+            ) : (
+              <div>
+                <Avatar src={avatar} size={150} style={styles.avatar} />
+                <EditAvatarButton />
+              </div>
+            )}
           </div>
 
           <Title style={styles.displayName}>{displayName}</Title>
