@@ -38,11 +38,11 @@ function WorkEduRow({
     switch (heading) {
       case "Work":
         setData(user?.userInfo?.works);
-        console.log(data);
+        // console.log(data);
         break;
-      case "College":
+      case "Education":
         setData(user?.userInfo?.educations);
-        console.log(data);
+        // console.log(data);
         break;
       default:
         break;

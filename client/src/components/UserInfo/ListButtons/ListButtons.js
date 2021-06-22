@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Button, Menu, message, Row, Modal, Input } from "antd";
-import { MailOutlined } from "@ant-design/icons";
 import { Link, useLocation } from "react-router-dom";
+import Loading from "../../Loading/Loading";
 
 import styles from "./styles.js";
 import { useDispatch, useSelector } from "react-redux";
@@ -26,6 +26,7 @@ import {
 } from "../../../api/user_info.js";
 
 import { createReport } from "../../../api/report.js";
+
 const { TextArea } = Input;
 
 const ListButtons = () => {
@@ -36,6 +37,9 @@ const ListButtons = () => {
   const [isModalReport, setIsModalReport] = useState(false);
   const [contentReport, setContentReport] = useState("");
   const location = useLocation();
+
+  const [loading, setLoading] = useState(true);
+  const [loadingFollow, setLoadingFollow] = useState(false);
 
   const getDefaultSelectedItem = () => {
     switch (location.pathname) {
@@ -60,6 +64,8 @@ const ListButtons = () => {
   useEffect(() => {
     async function act() {
       setMatchingFriendRequest(await getMatchFriendRequest());
+      setLoading(false);
+      setLoadingFollow(false);
     }
     act();
   }, [user]);
@@ -69,34 +75,54 @@ const ListButtons = () => {
   };
 
   const handleAddingFriend = async () => {
+    setLoading(true);
+    setLoadingFollow(true);
     // create friend request
     const friendRequest = {
       userConfirmId: user._id,
       userSendRequestId: loginUser._id,
     };
-    const { data } = await createFriendRequest(friendRequest);
+    await createFriendRequest(friendRequest).then(async (res) => {
+      if (res.status === 403) {
+        setLoading(false);
+        setLoadingFollow(false);
+      } else {
+        dispatch(addFriendRequest(res.data));
+        await addSendingFriendRequest(res.data);
 
-    dispatch(addFriendRequest(data));
-    await addSendingFriendRequest(data);
-
-    dispatch(followUser(user?._id));
+        dispatch(followUser(user?._id));
+      }
+    });
   };
 
   const cancelFriendRequest = async (request) => {
     // const { status } = await deleteFriendRequest(request?._id);
     // console.log(status);
+    setLoading(true);
+    setLoadingFollow(true);
 
-    await deleteFriendRequest(request?._id);
-
-    if (user?._id === request?.userConfirmId) {
-      await removeSendingFriendRequest(request);
-    } else if (user?._id === request?.userSendRequestId) {
-      await removeReceivingFriendRequest(request);
-    }
-    dispatch(removeFriendRequest(request, user));
+    await deleteFriendRequest(request?._id)
+      .then(async (res) => {
+        if (user?._id === request?.userConfirmId) {
+          await removeSendingFriendRequest(request);
+        } else if (user?._id === request?.userSendRequestId) {
+          await removeReceivingFriendRequest(request);
+        }
+        dispatch(removeFriendRequest(request, user));
+      })
+      .catch((error) => {
+        if (error.response?.status === 404) {
+          // cho nay de confirm hay reload trang gi do
+          setLoading(false);
+          setLoadingFollow(false);
+        }
+      });
   };
 
   const acceptFriendRequest = async () => {
+    setLoading(true);
+    setLoadingFollow(true);
+
     if (matchingFriendRequest) {
       const request = matchingFriendRequest[0];
 
@@ -108,6 +134,8 @@ const ListButtons = () => {
   };
 
   const handleUnfriend = () => {
+    setLoading(true);
+    setLoadingFollow(true);
     dispatch(unfriend(loginUser?._id, user?._id));
     dispatch(unfollowUser(user?._id));
   };
@@ -116,24 +144,35 @@ const ListButtons = () => {
   const getMatchFriendRequest = async () => {
     const listFriendRequests = (await fetchAllFriendRequests()).data;
 
-    const friendRequest = listFriendRequests.map((request) => {
+    const friendRequest = listFriendRequests.filter((request) => {
       const listUserId = [request.userConfirmId, request.userSendRequestId];
       if (listUserId.includes(user?._id) && listUserId.includes(loginUser?._id))
         return request;
     });
+
     return friendRequest;
+  };
+
+  const handleFollowUser = () => {
+    setLoadingFollow(true);
+    dispatch(followUser(user?._id));
+  };
+
+  const handleUnfollowUser = () => {
+    setLoadingFollow(true);
+    dispatch(unfollowUser(user?._id));
   };
 
   const FriendButtons = () => {
     return (
       <Row>
-        <Button style={styles.button}>Friends</Button>
         <Button
           className="green-button"
           style={styles.button}
           onClick={handleUnfriend}
+          loading={loading}
         >
-          Unfriend
+          {loading ? "Loading" : "Unfriend"}
         </Button>
       </Row>
     );
@@ -141,20 +180,23 @@ const ListButtons = () => {
 
   const AcceptDenyButtons = () => {
     const friendRequest = matchingFriendRequest[0];
+    // console.log(friendRequest);
     return (
       <Row>
         <Button
           className="green-button"
           style={styles.button}
           onClick={acceptFriendRequest}
+          loading={loading}
         >
-          Accept
+          {loading ? "Loading" : "Accept"}
         </Button>
         <Button
           style={styles.button}
           onClick={() => cancelFriendRequest(friendRequest)}
+          loading={loading}
         >
-          Deny
+          {loading ? "Loading" : "Deny"}
         </Button>
       </Row>
     );
@@ -168,6 +210,7 @@ const ListButtons = () => {
       if (isMyFriend) {
         return <FriendButtons />;
       } else {
+        // console.log(matchingFriendRequest);
         if (matchingFriendRequest) {
           const friendRequest = matchingFriendRequest[0];
           if (loginUser?._id === friendRequest?.userConfirmId) {
@@ -179,8 +222,9 @@ const ListButtons = () => {
                 className="green-button"
                 style={styles.button}
                 onClick={() => cancelFriendRequest(friendRequest)}
+                loading={loading}
               >
-                Cancel Request
+                {loading ? "Loading" : "Cancel Request"}
               </Button>
             );
           }
@@ -192,8 +236,9 @@ const ListButtons = () => {
             className="green-button"
             style={styles.button}
             onClick={handleAddingFriend}
+            loading={loading}
           >
-            Add friend
+            {loading ? "Loading" : "Add friend"}
           </Button>
         );
       }
@@ -213,9 +258,10 @@ const ListButtons = () => {
           <Button
             className="green-button"
             style={styles.button}
-            onClick={() => dispatch(unfollowUser(user?._id))}
+            onClick={handleUnfollowUser}
+            loading={loadingFollow}
           >
-            Unfollow
+            {loadingFollow ? "Loading" : "Unfollow"}
           </Button>
         );
       }
@@ -223,9 +269,10 @@ const ListButtons = () => {
         <Button
           className="green-button"
           style={styles.button}
-          onClick={() => dispatch(followUser(user?._id))}
+          onClick={handleFollowUser}
+          loading={loadingFollow}
         >
-          Follow
+          {loadingFollow ? "Loading" : "Follow"}
         </Button>
       );
     }

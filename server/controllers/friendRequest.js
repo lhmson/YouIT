@@ -3,7 +3,10 @@ import FriendRequest from "../models/friendrequest.js";
 import User from "../models/user.js";
 import { httpStatusCodes } from "../utils/httpStatusCode.js";
 import { sendNotificationUser } from "../businessLogics/notification.js";
-import { isUserA_sendedRequestFriend_UserB } from "../businessLogics/user.js";
+import {
+  haveMatchingFriendRequest,
+  isUserA_sendedRequestFriend_UserB,
+} from "../businessLogics/user.js";
 /**
  * @param {express.Request<ParamsDictionary, any, any, QueryString.ParsedQs, Record<string, any>>} req
  * @param {express.Response<any, Record<string, any>, number>} res
@@ -17,9 +20,19 @@ export const createFriendRequest = async (req, res) => {
     return res.status(400).json("New request mustn't have _id field");
   }
 
-  const newFriendRequest = new FriendRequest(friendRequest);
   try {
+    const isMatchingFriendRequest = await haveMatchingFriendRequest(
+      friendRequest?.userConfirmId,
+      friendRequest?.userSendRequestId
+    );
+
+    if (isMatchingFriendRequest)
+      return res
+        .status(httpStatusCodes.forbidden)
+        .json("Friend request between you and this user has been created.");
+
     // create new friend request
+    const newFriendRequest = new FriendRequest(friendRequest);
     await newFriendRequest.save();
 
     const requestSender = await User.findById(friendRequest.userSendRequestId);
