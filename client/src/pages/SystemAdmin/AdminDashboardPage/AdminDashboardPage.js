@@ -8,11 +8,22 @@ import SystemAdminSidebar from "../../../components/Sidebar/SystemAdminSidebar/S
 import { StatisticsPage } from "../../index.js";
 import UserAdminManagement from "../UserAdminManagement/UserAdminManagement.js";
 import GroupAdminManagement from "../GroupAdminManagement/GroupAdminManagement.js";
+import ErrorPage from "../../ErrorPage/ErrorPage.js";
 
 const { Content } = Layout;
 
 function AdminDashboardPage(props) {
   const { menu } = props.match.params;
+
+  const isAdmin = () => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    //TODO: handle set login admin
+    return user.role === "Admin";
+  };
+
+  if (!isAdmin()) {
+    return <ErrorPage code="403" />;
+  }
 
   const SelectedManagementMenu = () => {
     switch (menu) {

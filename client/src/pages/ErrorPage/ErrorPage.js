@@ -16,7 +16,7 @@ function ErrorPage({ code }) {
     {
       code: "403",
       name: "403 FORBIDDEN",
-      desc: "Access to the resource is forbidden.",
+      desc: "Stop because access to the resource is forbidden.",
     },
     {
       code: "404",

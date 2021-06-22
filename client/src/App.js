@@ -52,7 +52,9 @@ const loggedIn = () => {
 };
 
 const isAdmin = () => {
-  return true; //TODO: handle set login admin
+  const user = JSON.parse(localStorage.getItem("user"));
+  //TODO: handle set login admin
+  return user.role === "Admin";
 };
 
 function App() {
