@@ -70,7 +70,7 @@ function PostRequestsResult() {
           }}
         >
           <div className="col-10 offset-1">
-            {listPostRequest.length ? (
+            {!listPostRequest.length ? (
               <div className="text-center">
                 <Loading />
               </div>

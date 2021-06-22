@@ -312,7 +312,7 @@ export const getListMembers = async (req, res) => {
       path: "listMembers",
       populate: {
         path: "userId",
-        select: "name",
+        select: "name avatarUrl",
         model: "User",
       },
     });
@@ -337,7 +337,7 @@ export const getListPendingMembers = async (req, res) => {
       path: "listPendingMembers",
       populate: {
         path: "userId",
-        select: "name",
+        select: "name avatarUrl",
         model: "User",
       },
     });

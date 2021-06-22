@@ -10,7 +10,7 @@ import styles from "./styles.js";
 
 const { Text } = Typography;
 
-function MemberRequestsResult(props) {
+function MemberRequestsResult() {
   const { group } = useContext(GroupContext);
   const [listMembersRequest, setListMembersRequest] = useState([]);
   const user = JSON.parse(localStorage.getItem("user"))?.result;
@@ -22,6 +22,7 @@ function MemberRequestsResult(props) {
       .then((res) => {
         if (res.data instanceof Array) setListMembersRequest(res.data);
         else setListMembersRequest([]);
+        
       })
       .catch((e) => {
         console.log(e);
@@ -37,6 +38,7 @@ function MemberRequestsResult(props) {
       <MemberRequests
         _id={user.userId._id}
         name={user.userId.name}
+        avatarUrl={user.userId.avatarUrl}
       ></MemberRequests>
     ));
 
@@ -77,7 +79,7 @@ function MemberRequestsResult(props) {
           }}
         >
           <div className="col-10 offset-1">
-            {listMembersRequest.length ? (
+            {!listMembersRequest.length ? (
               <div className="text-center">
                 <Loading />
               </div>

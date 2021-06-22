@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { Button, Row, Typography, Menu, Dropdown, message } from "antd";
+import { Button, Row, Typography, Menu, Dropdown, message,Tooltip } from "antd";
 import { Avatar, Tag, Popover, List } from "antd";
 import styles from "./styles.js";
 import { Link } from "react-router-dom";
@@ -8,7 +8,9 @@ import { useLocalStorage } from "../../../../hooks/useLocalStorage";
 import COLOR from "../../../../constants/colors.js";
 import * as api from "../../../../api/friend";
 import * as apiGroup from "../../../../api/group";
+import * as apiUserInfo from "../../../../api/user_info"
 import { GroupContext } from "../../../../pages/GroupPage/GroupPage.js";
+import { fetchProgrammingHashtags } from "../../../../api/hashtag.js";
 
 const { Text } = Typography;
 const { Item } = Menu;
@@ -23,6 +25,8 @@ function MemberCard(props) {
   const { group } = useContext(GroupContext);
   const [roleUser, setRoleUser] = useState("");
   const { avatarUrl } = props;
+  const [listHashTags, setListHashTags] = useState([]);
+  const [userInfo, setUserInfo] = useState([]);
 
   useEffect(() => {
     api
@@ -63,6 +67,32 @@ function MemberCard(props) {
       if (member?.userId === user?.result?._id) setRoleUser(member?.role);
     });
   }, []);
+
+  useEffect(() => {
+    fetchProgrammingHashtags(_id)
+      .then((res) => {
+        if (res.data) setListHashTags(res.data);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  }, []);
+
+  useEffect(() => {
+    apiUserInfo.fetchUserInfo(_id).then((res) => {
+      setUserInfo(res.data.userInfo);
+    });
+  }, []);
+
+  const renderUserInfo = () => {
+    const education = userInfo.educations?.[userInfo.educations?.length - 1];
+    const work = userInfo.works?.[userInfo.works?.length - 1];
+    const educationInfo = education
+      ? `${education?.moreInfo} at ${education?.schoolName}`
+      : null;
+    const workInfo = work ? `${work?.position} at ${work?.location}` : null;
+    return workInfo || educationInfo;
+  };
 
   const handleRemoveMember = async (groupId, userId) => {
     apiGroup
@@ -250,8 +280,10 @@ function MemberCard(props) {
               <Link to={`/userinfo/${_id}`}>
                 <Text style={styles.textUser}>{name ?? "Lalisa Manobal"}</Text>
               </Link>
-              <div style={{ marginTop: 0 }}></div>
-              <Text>{role}</Text>
+              <div style={{ marginTop: 0 }}>  <Text strong className="green">
+                {renderUserInfo()}
+              </Text></div>
+              <Text  style={{ fontSize: 16, fontWeight: "bold" }}>{role}</Text>
             </div>
             <div
               style={{
@@ -298,7 +330,7 @@ function MemberCard(props) {
                 />
               </Dropdown>
             ) : (
-              ""
+              <></>
             )}
             <div>
               <Popover
@@ -318,10 +350,17 @@ function MemberCard(props) {
         </div>
         <div className="row mt-4">
           <div className="ml-4">
-            <Tag className="tag">C#</Tag>
-            <Tag className="tag">Javascript</Tag>
-            <Tag className="tag">Unity 3D</Tag>
-            <Text style={{ ...styles.text, fontWeight: 600 }}>+ 15 Posts</Text>
+          {listHashTags?.map((item, i) => (
+              <Tooltip
+                title={`Mentioned ${item?.count} time${
+                  item?.count > 1 ? "s" : ""
+                }`}
+              >
+                <Tag key={i} className="mb-2 tag">
+                  {item.name}
+                </Tag>
+              </Tooltip>
+            ))}
           </div>
         </div>
       </div>
