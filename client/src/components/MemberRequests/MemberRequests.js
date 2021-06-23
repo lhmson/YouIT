@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from "react";
-import { Button, Typography, message, Row, Space } from "antd";
+import { Button, Typography, message, Row, Space ,Tooltip} from "antd";
 import { Avatar, Tag } from "antd";
 import styles from "./styles.js";
 import OverviewRow from "../IntroCard/OverviewRow/OverviewRow.js";
@@ -15,6 +15,7 @@ import { Link } from "react-router-dom";
 import { GroupContext } from "../../pages/GroupPage/GroupPage";
 import * as apiUserInfo from "../../api/user_info";
 import moment from "moment";
+import { fetchProgrammingHashtags } from "../../api/hashtag.js";
 
 const { Text } = Typography;
 
@@ -22,7 +23,8 @@ function MemberRequests(props) {
   const { name } = props;
   const { _id } = props;
   const { group } = useContext(GroupContext);
-  const [avatar, setAvatar] = useState("");
+  const { avatarUrl } = props;
+  const [listHashTags, setListHashTags] = useState([]);
 
   const acceptMemberRequest = async (groupId, memberId) => {
     api
@@ -53,6 +55,16 @@ function MemberRequests(props) {
     });
   }, []);
 
+  useEffect(() => {
+    fetchProgrammingHashtags(_id)
+      .then((res) => {
+        if (res.data) setListHashTags(res.data);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  }, []);
+
   const educations = userInfo?.educations;
   const works = userInfo?.works;
   const address = userInfo?.address ?? "Viet Nam";
@@ -68,12 +80,20 @@ function MemberRequests(props) {
     work = works[works.length - 1];
   }
 
+  const renderUserInfo = () => {
+    const educationInfo = education
+      ? `${education?.moreInfo} at ${education?.schoolName}`
+      : null;
+    const workInfo = work ? `${work?.position} at ${work?.location}` : null;
+    return workInfo || educationInfo;
+  };
+
   return (
     <>
       <div style={styles.item}>
         <Row className="pb-2 justify-content-between align-items-center">
           <Row className="align-items-center" style={{ marginBottom: 16 }}>
-            <Avatar className="ml-1 clickable" size={60} src={avatar} />
+            <Avatar className="ml-1 clickable" size={60} src={avatarUrl} />
             <div className="d-inline-flex flex-column ml-3 break-word">
               <Row className="align-items-center">
                 <Space size={4}>
@@ -88,7 +108,9 @@ function MemberRequests(props) {
                   </Link>
                 </Space>
               </Row>
-              <Text>Fullstack Developer</Text>
+              <Text strong className="green">
+                {renderUserInfo()}
+              </Text>
             </div>
           </Row>
           <Row className="align-items-center">
@@ -128,13 +150,20 @@ function MemberRequests(props) {
           </Row>
         </Row>
 
-        <div className="row" style={{ marginTop: 8 }}>
           <div className="col-10">
-            <Tag style={styles.tag}>C#</Tag>
-            <Tag style={styles.tag}>Javascript</Tag>
-            <Tag style={styles.tag}>Unity 3D</Tag>
+          {listHashTags?.map((item, i) => (
+              <Tooltip
+                title={`Mentioned ${item?.count} time${
+                  item?.count > 1 ? "s" : ""
+                }`}
+              >
+                <Tag key={i} className="mb-2 tag">
+                  {item.name}
+                </Tag>
+              </Tooltip>
+            ))}
           </div>
-        </div>
+
 
         <div className="col-md-8" style={{ marginTop: 30, marginLeft: 0 }}>
           <div className="row" style={{ marginTop: 10 }}>

@@ -23,6 +23,7 @@ import { IoMdLock } from "react-icons/all";
 import CreateGroupNameAdmin from "../../components/CreateGroup/CreateGroupNameAdmin/CreateGroupNameAdmin.js";
 import { convertFileToBase64 } from "../../utils/image.js";
 import styles from "./styles.js";
+import { useGroupsOfUser } from "../../context/GroupsOfUserContext.js";
 
 const { Title, Text } = Typography;
 
@@ -40,6 +41,8 @@ const optionsTopic = [
 ];
 
 function CreateGroupPage() {
+  const groupsOfUser = useGroupsOfUser();
+
   const [groupName, setGroupName] = useState("");
   const [groupDescription, setGroupDescription] = useState("");
   const [groupPrivacy, setGroupPrivacy] = useState("Public");
@@ -73,7 +76,10 @@ function CreateGroupPage() {
   const handleCreateGroupButtonClick = async () => {
     const newGroup = Data();
     createGroup(newGroup)
-      .then((res) => history.push(`/group/${res.data._id}/main`))
+      .then((res) => {
+        groupsOfUser.addGroup(res.data);
+        history.push(`/group/${res.data._id}/main`);
+      })
       .catch((error) => {
         console.log(error);
       });
@@ -123,17 +129,17 @@ function CreateGroupPage() {
               <Form
                 name="basic"
                 size="large"
-                // onFinish={handleFinish}
-                // onFinishFailed={handleFinishFailed}
+              // onFinish={handleFinish}
+              // onFinishFailed={handleFinishFailed}
               >
                 <Form.Item
                   name="groupName"
-                  // rules={[
-                  //   {
-                  //     required: true,
-                  //     message: "Group name is required.",
-                  //   },
-                  // ]}
+                // rules={[
+                //   {
+                //     required: true,
+                //     message: "Group name is required.",
+                //   },
+                // ]}
                 >
                   <CreateGroupName name={groupName} setName={setGroupName} />
                 </Form.Item>
@@ -142,12 +148,12 @@ function CreateGroupPage() {
                   <Col span={10}>
                     <Form.Item
                       name="groupPrivacyItem"
-                      // rules={[
-                      //   {
-                      //     required: true,
-                      //     message: "Privacy is required.",
-                      //   },
-                      // ]}
+                    // rules={[
+                    //   {
+                    //     required: true,
+                    //     message: "Privacy is required.",
+                    //   },
+                    // ]}
                     >
                       <Select
                         placeholder="Privacy"
@@ -167,12 +173,12 @@ function CreateGroupPage() {
                   <Col span={14}>
                     <Form.Item
                       name="topic"
-                      // rules={[
-                      //   {
-                      //     required: true,
-                      //     message: "Topic is required.",
-                      //   },
-                      // ]}
+                    // rules={[
+                    //   {
+                    //     required: true,
+                    //     message: "Topic is required.",
+                    //   },
+                    // ]}
                     >
                       <Select
                         placeholder="Topic"
@@ -251,7 +257,7 @@ function CreateGroupPage() {
                           style={styles.editImageBtn}
                           onClick={() => hiddenBackgroundInput.current.click()}
                         >
-                          Edit cover photo
+                          Add cover photo
                         </Button>
                         <input
                           type="file"

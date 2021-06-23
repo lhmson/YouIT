@@ -16,9 +16,10 @@ function AdminDashboardPage(props) {
   const { menu } = props.match.params;
 
   const isAdmin = () => {
-    const user = JSON.parse(localStorage.getItem("user"));
-    //TODO: handle set login admin
-    return user.role === "Admin";
+    // const user = JSON.parse(localStorage.getItem("user"));
+    // //TODO: handle set login admin
+    // return user?.role === "Admin";
+    return true;
   };
 
   if (!isAdmin()) {

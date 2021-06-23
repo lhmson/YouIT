@@ -13,7 +13,7 @@ function groupsOfUserContext(state, action) {
     }
     case "ADD_GROUP":
       const newArr = [action.payload.newGroup, ...state.listGroups];
-      return { ...state, listConversations: newArr };
+      return { ...state, listGroups: newArr };
     case "REMOVE_GROUP":
       return {
         ...state,
