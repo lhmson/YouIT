@@ -100,7 +100,7 @@ export const replyComment = async (req, res) => {
       .catch((error) => {
         res.status(404).json({ message: error.message });
       });
-  } catch (error) {}
+  } catch (error) { }
 };
 
 export const getComments = async (req, res) => {
@@ -239,7 +239,7 @@ export const getMyCommentInteractions = async (req, res) => {
     let filterJson = undefined;
     try {
       filterJson = JSON.parse(filter);
-    } catch {}
+    } catch { }
 
     const interactions = await getInteractionOfAUser(id, userId, filterJson);
     return res.status(httpStatusCodes.ok).json(interactions);
