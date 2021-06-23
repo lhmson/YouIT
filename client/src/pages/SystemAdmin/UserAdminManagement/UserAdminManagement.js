@@ -1,16 +1,14 @@
-import React, { useState, useEffect, useRef, useMemo } from "react";
+import React, { useState, useEffect } from "react";
 import { Layout, Typography, Table, Button, message, Modal } from "antd";
 import styles from "./styles.js";
-import Navbar from "../../../components/Navbar/Navbar";
 import ReportUserCard from "../../../components/ReportUserCard/ReportUserCard";
-import COLOR from "../../../constants/colors";
 import { useLocalStorage } from "../../../hooks/useLocalStorage";
 import * as api from "../../../api/report";
+import { limitNameLength } from "../../../utils/limitNameLength.js";
 
 const { Content } = Layout;
-const { Title, Text } = Typography;
 
-function ReportUserPage() {
+function UserAdminManagement() {
   const [user, setUser] = useLocalStorage("user");
   const [selectedRowkeys, setSelectedRowkeys] = useState([]);
   const [listReports, setListReports] = useState([]);
@@ -20,7 +18,7 @@ function ReportUserPage() {
     api
       .fetchAllReportUser()
       .then((res) => {
-        console.log("report", res.data);
+        // console.log("report", res.data);
         if (res.data instanceof Array) setListReports(res.data);
         else setListReports([]);
       })
@@ -31,8 +29,8 @@ function ReportUserPage() {
 
   const columns = [
     {
-      title: "STT",
-      dataIndex: "stt",
+      title: "ID",
+      dataIndex: "id",
       width: "20%",
     },
     {
@@ -41,12 +39,12 @@ function ReportUserPage() {
       width: "30%",
     },
     {
-      title: "Number of Reports",
+      title: "Reports",
       dataIndex: "numberOfReports",
       width: "20%",
     },
     {
-      title: "Number of Groups",
+      title: "Groups",
       dataIndex: "numberOfGroups",
       width: "20%",
     },
@@ -54,15 +52,15 @@ function ReportUserPage() {
 
   const onSelectChange = (selectedRowKeys) => {
     setSelectedRowkeys(selectedRowKeys);
-    console.log("rows", selectedRowkeys);
+    // console.log("rows", selectedRowkeys);
   };
 
   const data = [];
   for (let i = 0; i < listReports.length; i++) {
     data.push({
       key: i,
-      stt: i + 1,
-      name: listReports[i].name,
+      id: i + 1,
+      name: limitNameLength(listReports[i].name, 40),
       numberOfReports: listReports[i].numberOfReports,
       numberOfGroups: listReports[i].numberOfGroups,
       _id: listReports[i]._id,
@@ -219,28 +217,23 @@ function ReportUserPage() {
   };
   return (
     <>
-      <Layout>
-        <Navbar />
-        <Layout>
-          <Layout style={styles.mainArea}>
-            <Content>
-              <div
-                className="row"
-                style={{
-                  padding: 32,
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <TableReportUser></TableReportUser>
-              </div>
-              <ButtonFooter></ButtonFooter>
-            </Content>
-          </Layout>
-        </Layout>
+      <Layout style={styles.mainArea}>
+        <Content>
+          <div
+            className="row"
+            style={{
+              padding: 32,
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <TableReportUser></TableReportUser>
+          </div>
+          <ButtonFooter></ButtonFooter>
+        </Content>
       </Layout>
     </>
   );
 }
 
-export default ReportUserPage;
+export default UserAdminManagement;

@@ -50,6 +50,7 @@ const SearchGroupResult = ({ txtSearch }) => {
             _id={group._id}
             nameGroup={group.name}
             description={group.description}
+            topic={group.topic}
             totalMembers={group.listMembers?.length}
             status={status}
           ></GroupCard>

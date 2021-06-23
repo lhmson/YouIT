@@ -4,6 +4,8 @@ import styles from "./styles.js";
 
 import Navbar from "../../components/Navbar/Navbar";
 
+import Footer from "../../components/Footer/Footer";
+
 import { Link } from "react-router-dom";
 import { useLocalStorage } from "../../hooks/useLocalStorage.js";
 import HorizontalScroll from "react-scroll-horizontal";
@@ -214,7 +216,7 @@ function HomePage() {
 
           <div
             style={{
-              height: 68,
+              // height: 68,
               textAlign: "center",
             }}
           >
@@ -224,13 +226,14 @@ function HomePage() {
                 height: 400,
                 marginBottom: 32,
                 backgroundColor: "white",
-                flex: 1,
+                // flex: 1,
               }}
             />
             <Title className="boldhover">Explore this tag</Title>
             <div style={{ height: 200 }} />
           </div>
         </div>
+        <Footer />
       </Layout>
     </>
   );

@@ -8,14 +8,17 @@ import {
   LineChartOutlined,
 } from "@ant-design/icons";
 import styles from "../styles.js";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 
 const { SubMenu } = Menu;
 
-function SystemAdminMenu({ user }) {
+function SystemAdminMenu({ selectedMenu }) {
+  const history = useHistory();
+
   return (
     <Menu
       mode="inline"
+      defaultSelectedKeys={[selectedMenu]}
       style={{
         height: "100%",
         borderRight: 0,
@@ -24,39 +27,38 @@ function SystemAdminMenu({ user }) {
       }}
     >
       <Menu.Item
-        key="all"
-        // onClick={() => setModeManage("All")}
+        key="dashboard"
+        onClick={() => history.push("/admin/dashboard")}
         style={styles.item}
         icon={<KeyOutlined style={{ fontSize: "1.4rem" }} />}
       >
-        All
+        Dashboard
       </Menu.Item>
       <Menu.Item
-        key="post"
-        // onClick={() => setModeManage("Post")}
-        style={styles.item}
-        icon={<FileTextOutlined style={{ fontSize: "1.4rem" }} />}
-      >
-        Post
-      </Menu.Item>
-      <Menu.Item
-        // onClick={() => setModeManage("User")}
+        onClick={() => history.push("/admin/user")}
         key="user"
         style={styles.item}
         icon={<TeamOutlined style={{ fontSize: "1.4rem" }} />}
       >
         User
       </Menu.Item>
-
+      {/* <Menu.Item
+        key="post"
+        onClick={() => history.push("/admin/post")}
+        style={styles.item}
+        icon={<FileTextOutlined style={{ fontSize: "1.4rem" }} />}
+      >
+        Post
+      </Menu.Item> */}
       <Menu.Item
-        // onClick={() => setModeManage("Group")}
         key="group"
+        onClick={() => history.push("/admin/group")}
         style={styles.item}
         icon={<LaptopOutlined style={{ fontSize: "1.4rem" }} />}
       >
         Group
       </Menu.Item>
-      <SubMenu
+      {/* <SubMenu
         key="stats"
         icon={<LineChartOutlined style={{ fontSize: "1.4rem" }} />}
         title="Statistics"
@@ -70,7 +72,7 @@ function SystemAdminMenu({ user }) {
         <Menu.Item key="stat_group" style={styles.item}>
           Group
         </Menu.Item>
-      </SubMenu>
+      </SubMenu> */}
     </Menu>
   );
 }

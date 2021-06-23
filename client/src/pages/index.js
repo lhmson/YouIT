@@ -17,8 +17,8 @@ import HomePage from "./HomePage/HomePage";
 import FriendManagementPage from "./FriendManagementPage/FriendManagementPage";
 import MutualFriendPage from "./FriendManagementPage/MutualFriendPage";
 import GroupManagementPage from "./GroupManagementPage/GroupMangagementPage";
-import ReportUserPage from "./ReportPage/ReportUserPage/ReportUserPage";
-import ReportGroupPage from "./ReportPage/ReportGroupPage/ReportGroupPage";
+import UserAdminManagement from "./SystemAdmin/UserAdminManagement/UserAdminManagement";
+import GroupAdminManagement from "./SystemAdmin/GroupAdminManagement/GroupAdminManagement";
 
 import AuthAdminPage from "./SystemAdmin/AuthAdminPage/AuthAdminPage";
 import StatisticsPage from "./StatisticsPage/StatisticsPage";
@@ -42,8 +42,8 @@ export {
   FriendManagementPage,
   MutualFriendPage,
   GroupManagementPage,
-  ReportUserPage,
+  UserAdminManagement,
   AuthAdminPage,
   StatisticsPage,
-  ReportGroupPage,
+  GroupAdminManagement,
 };

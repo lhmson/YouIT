@@ -9,7 +9,7 @@ import SystemAdminMenu from "./SystemAdminMenu/SystemAdminMenu.js";
 
 const { Sider } = Layout;
 
-function SystemAdminSidebar() {
+function SystemAdminSidebar({ selectedMenu }) {
   const [user] = useLocalStorage("user");
   // const [visible, setVisible] = useState(false);
   const dispatch = useDispatch();
@@ -26,7 +26,7 @@ function SystemAdminSidebar() {
           ...styles.fixedSider,
         }}
       >
-        <SystemAdminMenu user={user} />
+        <SystemAdminMenu user={user} selectedMenu={selectedMenu} />
       </Sider>
     </div>
   );

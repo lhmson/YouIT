@@ -677,11 +677,22 @@ export const getAllGroupsForReport = async (req, res) => {
 
       const posts = await Post.find();
       let countPost = 0;
-      posts.forEach((post) => {
-        const groupPostId = post?.groupPostInfo?.groupId;
-        const groupStatus = post?.groupPostInfo?.status;
-        if (groupPostId === groupId && groupStatus !== "Pending") countPost++;
-      });
+      try {
+        posts.forEach((post) => {
+          const groupPostInfo = post?.groupPostInfo;
+          if (groupPostInfo) {
+            const groupPostId = groupPostInfo.groupId;
+            const groupStatus = groupPostInfo.status;
+            if (groupPostId === group._id && groupStatus !== "Pending")
+              countPost++;
+            console.log("item", post);
+          }
+        });
+      } catch (error) {
+        console.log(error);
+      }
+
+      console.log("posts", posts);
 
       const groupReport = {
         _id: group?._id,

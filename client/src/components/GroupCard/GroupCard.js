@@ -13,6 +13,7 @@ function GroupCard({
   _id,
   description,
   totalMembers,
+  topic,
   status,
   backgroundUrl,
 }) {
@@ -79,7 +80,9 @@ function GroupCard({
               // minWidth: 600,
             }}
           >
-            <Avatar size={72} src={backgroundUrl} />
+            <div style={{ width: 72, height: 72 }}>
+              <Avatar size={72} src={backgroundUrl} />
+            </div>
 
             <div className="ml-3 break-word">
               <div className="break-word">
@@ -91,6 +94,9 @@ function GroupCard({
               </div>
               <div>
                 <Text>{description ?? "Blackpink in your area"}</Text>
+              </div>
+              <div className="break-word">
+                <Text strong>{`#${topic ?? "General"}`}</Text>
               </div>
             </div>
           </div>
