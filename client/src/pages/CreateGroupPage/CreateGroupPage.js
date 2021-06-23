@@ -251,7 +251,7 @@ function CreateGroupPage() {
                           style={styles.editImageBtn}
                           onClick={() => hiddenBackgroundInput.current.click()}
                         >
-                          Edit cover photo
+                          Add cover photo
                         </Button>
                         <input
                           type="file"
