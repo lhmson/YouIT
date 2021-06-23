@@ -192,8 +192,6 @@ export const addFriend = async (req, res) => {
     sendNotificationUser({
       userId: friendRequest?.userSendRequestId,
       content: {
-        acceptingUserId: userId,
-        acceptedUserId: friendRequest?.userSendRequestId,
         description: `${acceptingUser.name} accepted your friend request!`,
       },
       link: `/userinfo/${acceptingUser._id}`,

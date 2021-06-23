@@ -43,7 +43,6 @@ export const createFriendRequest = async (req, res) => {
       userId: friendRequest.userConfirmId,
       kind: "FriendRequest_RequestReceiver",
       content: {
-        requestReceiver,
         description: `${requestSender?.name} has sent you a friend request`,
       },
       link: `/userinfo/${requestSender._id}`,
@@ -63,7 +62,7 @@ export const createFriendRequest = async (req, res) => {
  * @param {express.Response<any, Record<string, any>, number>} res
  * @param {express.NextFunction} next
  */
-export const getAFriendRequest = async (req, res) => {};
+export const getAFriendRequest = async (req, res) => { };
 
 /**
  * @param {express.Request<ParamsDictionary, any, any, QueryString.ParsedQs, Record<string, any>>} req

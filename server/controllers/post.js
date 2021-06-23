@@ -740,10 +740,10 @@ export const declineGroupPost = async (req, res, next) => {
     const { post, group } = req.groupPost;
     const { postId } = req.params;
 
-    const backUpContent = post?.toObject?.()?.content;
-    delete backUpContent.createdAt;
-    delete backUpContent.updatedAt;
-    delete backUpContent._id;
+    // const backUpContent = post?.toObject?.()?.content;
+    // delete backUpContent.createdAt;
+    // delete backUpContent.updatedAt;
+    // delete backUpContent._id;
 
     if (post?.hashtags)
       await handleDeleteHashtags(post.hashtags)
@@ -755,9 +755,10 @@ export const declineGroupPost = async (req, res, next) => {
       kind: "DeclinedPost_PostOwner",
       content: {
         description: `Your post "${post?.title}" in group "${group?.name}" has been declined.`,
-        postBackUp: backUpContent,
+        // postBackUp: backUpContent,
       },
-      link: `/?postBackUp=${JSON.stringify(backUpContent)}`,
+      // link: `/?postBackUp=${JSON.stringify(backUpContent)}`,
+      link: `/`
     });
 
     return res.status(httpStatusCodes.ok).send("Post declined and deleted");
