@@ -1,6 +1,9 @@
 import React, { useMemo, } from "react";
 import SimpleMDE from "react-simplemde-editor";
 import "easymde/dist/easymde.min.css";
+import MarkdownRenderer from '../MarkdownRenderer/MarkdownRenderer'
+
+import ReactDOMServer from 'react-dom/server';
 
 /**
  * @param {{style: React.CSSProperties, text: string, setText, placeholder: string, maxHeight: number}} param0 
@@ -29,6 +32,11 @@ function MarkdownEditor({ text, setText, style, placeholder, maxHeight }) {
         'redo', 'undo', 'guide',
       ],
       maxHeight,
+      previewRender: (text) => {
+        return ReactDOMServer.renderToStaticMarkup(
+          <MarkdownRenderer text={text} />
+        )
+      },
     };
   }, [])
 
