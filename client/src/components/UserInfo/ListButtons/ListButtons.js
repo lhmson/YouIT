@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Button, Menu, message, Row, Modal, Input } from "antd";
+import { Button, Menu, message, Row, Modal, Input, Alert } from "antd";
 import { Link, useLocation } from "react-router-dom";
 import Loading from "../../Loading/Loading";
 
@@ -82,17 +82,25 @@ const ListButtons = () => {
       userConfirmId: user._id,
       userSendRequestId: loginUser._id,
     };
-    await createFriendRequest(friendRequest).then(async (res) => {
-      if (res.status === 403) {
-        setLoading(false);
-        setLoadingFollow(false);
-      } else {
+    await createFriendRequest(friendRequest)
+      .then(async (res) => {
         dispatch(addFriendRequest(res.data));
         await addSendingFriendRequest(res.data);
 
         dispatch(followUser(user?._id));
-      }
-    });
+      })
+      .catch((error) => {
+        if (error.response?.status === 403) {
+          message.warning(
+            "This user sent you friend request. Accept or deny only.",
+            2000,
+            window.location.reload()
+          );
+
+          // setLoading(false);
+          // setLoadingFollow(false);
+        }
+      });
   };
 
   const cancelFriendRequest = async (request) => {
@@ -113,8 +121,15 @@ const ListButtons = () => {
       .catch((error) => {
         if (error.response?.status === 404) {
           // cho nay de confirm hay reload trang gi do
-          setLoading(false);
-          setLoadingFollow(false);
+
+          message.warning(
+            "This request was removed. You can't cancle it.",
+            2000,
+            window.location.reload()
+          );
+
+          // setLoading(false);
+          // setLoadingFollow(false);
         }
       });
   };
