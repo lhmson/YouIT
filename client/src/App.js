@@ -54,7 +54,7 @@ const loggedIn = () => {
 const isAdmin = () => {
   const user = JSON.parse(localStorage.getItem("user"));
   //TODO: handle set login admin
-  return user.role === "Admin";
+  return user?.role === "Admin";
 };
 
 function App() {

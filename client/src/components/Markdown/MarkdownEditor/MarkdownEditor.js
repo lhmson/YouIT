@@ -1,7 +1,6 @@
 import React, { useMemo, } from "react";
 import SimpleMDE from "react-simplemde-editor";
 import "easymde/dist/easymde.min.css";
-import hljs from "highlight.js"
 
 /**
  * @param {{style: React.CSSProperties, text: string, setText, placeholder: string, maxHeight: number}} param0 
@@ -15,10 +14,8 @@ function MarkdownEditor({ text, setText, style, placeholder, maxHeight }) {
       renderingConfig: {
         singleLineBreaks: false,
         codeSyntaxHighlighting: true,
-        hljs,
       },
       parsingConfig: {
-        allowAtxHeaderWithoutSpace: true,
         strikethrough: true,
       },
       previewImagesInEditor: true,
