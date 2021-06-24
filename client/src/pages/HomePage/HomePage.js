@@ -14,17 +14,11 @@ import AOS from "aos";
 import "aos/dist/aos.css";
 import "./styles.css";
 import * as apiHashtag from "../../api/hashtag";
+import * as apiSearch from "../../api/search";
+import FeedPost from "../../components/Posts/FeedPosts/FeedPost/FeedPost";
+import LoadingSearch from "../../components/Loading/LoadingSearch";
 
 const { Title, Text } = Typography;
-
-const BigTag = ({ title }) => {
-  return (
-    <Text className="boldhover" style={{ fontSize: 40, marginRight: 32 }}>
-      {title}
-    </Text>
-  );
-};
-
 const pagePadding = 148;
 function HomePage() {
   const [user] = useLocalStorage("user");
@@ -32,6 +26,24 @@ function HomePage() {
 
   const history = useHistory();
 
+  const [listPostsOfTags, setListPostsOfTags] = useState({});
+  const [loadingTags, setLoadingTags] = useState(false);
+  const [loadingAll, setLoadingAll] = useState(false);
+  const [selectedTag, setSelectedTag] = useState();
+  const fetchAllDataOfTags = async () => {
+    let tempData = {};
+    let tempTags = [];
+    for (let i = 0; i < hashtags.length; i++) {
+      const { data } = await apiSearch.fetchSearchPostByTag(hashtags[i].name);
+      tempData[hashtags[i].name] = data;
+      if (data.length >= 1)
+        tempTags.push({ name: hashtags[i].name, _id: hashtags[i]._id });
+    }
+    setHashtags(tempTags);
+    setListPostsOfTags(tempData);
+    setLoadingAll(true);
+    setSelectedTag(tempTags[0].name);
+  };
   useEffect(() => {
     AOS.init({
       duration: 2000,
@@ -39,14 +51,22 @@ function HomePage() {
   }, []);
 
   useEffect(() => {
+    setLoadingTags(false);
     apiHashtag
-      .fetchHashtagsTop(8)
-      .then((res) => setHashtags(res.data))
+      .fetchHashtagsTop(20)
+      .then((res) => {
+        setHashtags(res.data);
+        setLoadingTags(true);
+      })
       .catch((error) => {
         alert("Cannot get hashtags of system");
         console.log("Error when getting top hashtags", error);
       });
   }, []);
+
+  useEffect(() => {
+    if (hashtags.length !== 0 && loadingTags) fetchAllDataOfTags();
+  }, [loadingTags]);
 
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
@@ -68,6 +88,63 @@ function HomePage() {
     }
   }, []);
 
+  const BigTag = ({ title }) => {
+    return (
+      <div
+        onMouseEnter={() => {
+          if (!listPostsOfTags || !title) return;
+          setSelectedTag(title);
+          console.log("selected", title);
+        }}
+        // style={{ background: "red" }}
+      >
+        <Text className="boldhover" style={{ fontSize: 40, marginRight: 32 }}>
+          {title}
+        </Text>
+      </div>
+    );
+  };
+
+  const HashTagsSelection = () => {
+    return (
+      <div>
+        <div
+          style={{
+            flex: 1,
+            height: 68,
+            marginBottom: 50,
+          }}
+        >
+          <HorizontalScroll>
+            {hashtags.map((item) => (
+              <BigTag key={item._id} title={item.name} />
+            ))}
+          </HorizontalScroll>
+        </div>
+
+        <div
+          style={{
+            // height: 68,
+            textAlign: "center",
+          }}
+        >
+          <div
+            data-aos="zoom-in-up"
+            style={{
+              marginBottom: 32,
+              backgroundColor: "white",
+            }}
+          >
+            {listPostsOfTags[selectedTag]?.map((post, i) => {
+              return <FeedPost key={post._id} post={post}></FeedPost>;
+            })}
+          </div>
+          {/* <Title className="boldhover">Explore this tag</Title> */}
+          <div style={{ height: 200 }} />
+        </div>
+      </div>
+    );
+  };
   return (
     <>
       <Layout>
@@ -231,39 +308,13 @@ function HomePage() {
               </Text>
             </div>
           </div>
-
-          <div
-            style={{
-              flex: 1,
-              height: 68,
-              marginBottom: 50,
-            }}
-          >
-            <HorizontalScroll>
-              {hashtags.map((item) => (
-                <BigTag key={item._id} title={item.name} />
-              ))}
-            </HorizontalScroll>
-          </div>
-
-          <div
-            style={{
-              // height: 68,
-              textAlign: "center",
-            }}
-          >
-            <div
-              data-aos="zoom-in-up"
-              style={{
-                height: 400,
-                marginBottom: 32,
-                backgroundColor: "white",
-                // flex: 1,
-              }}
-            />
-            <Title className="boldhover">Save, Share and Suffer</Title>
-            <div style={{ height: 200 }} />
-          </div>
+          {loadingAll ? (
+            <HashTagsSelection />
+          ) : (
+            <div style={{ marginBottom: 18 }}>
+              <LoadingSearch />
+            </div>
+          )}
         </div>
         <Footer />
       </Layout>
