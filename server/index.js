@@ -31,6 +31,7 @@ import hashtagRouter from "./routes/hashtag.js";
 import UsersStatusManager from "./businessLogics/userStatus.js";
 import { notifyUserStatusToFriendsFunc } from "./businessLogics/user.js";
 import { setAllDatabaseCleaners } from "./businessLogics/setAllDatabaseCleaners.js";
+import User from "./models/user.js";
 
 dotenv.config();
 
@@ -81,6 +82,27 @@ app.use("/conversation", conversationRouter);
 // app.use("/groupPendingMember", groupPendingMemberRouter);
 app.use("/hashtag", hashtagRouter);
 app.use("/report", reportUserRouter);
+
+app.get("/dev/buggyFriendship", async (req, res) => {
+  const users = await User.find();
+  const result = [];
+
+  for (let i = 0; i < users.length; i++)
+    for (let j = 0; j < users.length; j++) {
+      if (
+        users[i]?.listFriends?.filter(id => id?.equals(users[j]._id)).length
+        &&
+        !users[j]?.listFriends?.filter(id => id?.equals(users[i]._id)).length
+      )
+        result.push({
+          "yesFriend": users[i]._id,
+          "noFriend": users[j]._id
+        });
+    }
+
+  res.status(200).send(result);
+});
+
 
 const PORT = process.env.PORT || 5000;
 
