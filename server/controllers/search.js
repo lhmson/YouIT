@@ -34,6 +34,7 @@ const isHagtagsInclude = (hashtags, nameTag) => {
     }
   return false;
 };
+
 // GET search/post
 export const getSearchPosts = async (req, res) => {
   // auth
