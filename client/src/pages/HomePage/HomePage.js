@@ -352,7 +352,7 @@ function HomePage() {
             <div
               data-aos="fade-left"
               className="col-lg-5 offset-1"
-              style={{ textAlign: "left" }}
+              style={{ textAlign: "left", paddingLeft: isMobile ? 0 : 90 }}
             >
               <Text strong style={{ fontSize: 40 }}>
                 Share experiences

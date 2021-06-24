@@ -47,7 +47,7 @@ function AboutPage() {
             }}
           >
             <AboutCard></AboutCard>
-            <FriendManager></FriendManager>
+            {/* <FriendManager></FriendManager> */}
           </Content>
         </Layout>
       </Layout>
