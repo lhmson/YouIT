@@ -25,6 +25,15 @@ export const getSearchUsers = async (req, res) => {
   }
 };
 
+const isHagtagsInclude = (hashtags, nameTag) => {
+  if (!nameTag) return false;
+  for (let i = 0; i < hashtags.length; i++)
+    if (hashtags[i]?.name === nameTag) {
+      console.log(hashtags[i].name);
+      return true;
+    }
+  return false;
+};
 // GET search/post
 export const getSearchPosts = async (req, res) => {
   // auth
@@ -48,10 +57,11 @@ export const getSearchPosts = async (req, res) => {
         select: "name count",
       });
     asyncFilter(posts, async (post) => {
-      // console.log(post.title, await isPostVisibleByUser(post, req.userId));
+      // console.log("post", post);
       return (
-        (await isPostVisibleByUser(post, userId)) &&
-        post?.title?.toLowerCase().includes(q.toLowerCase())
+        ((await isPostVisibleByUser(post, userId)) &&
+          post?.title?.toLowerCase().includes(q.toLowerCase())) ||
+        isHagtagsInclude(post?.hashtags, q)
       );
     }).then((data) => res.status(200).json(data));
   } catch (error) {
