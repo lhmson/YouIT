@@ -9,9 +9,7 @@ import {
   deleteFriendRequest,
   fetchAllFriendRequests,
 } from "../../api/friendRequest";
-import {
-  removeFriendRequest,
-} from "../../redux/actions/user";
+import { removeFriendRequest } from "../../redux/actions/user";
 import {
   addFriend,
   removeReceivingFriendRequest,
@@ -20,7 +18,7 @@ import {
 import { fetchProgrammingHashtags } from "../../api/hashtag";
 import { useDispatch } from "react-redux";
 
-const {Text } = Typography;
+const { Text } = Typography;
 
 function UserRequestCard(props) {
   const dispatch = useDispatch();
@@ -33,7 +31,7 @@ function UserRequestCard(props) {
   const [listMutual, setListMutual] = useState([]);
   const [matchingFriendRequest, setMatchingFriendRequest] = useState(null);
   const [listHashTags, setListHashTags] = useState([]);
-
+  const { userInfo } = props;
   const getMatchFriendRequest = async () => {
     const listFriendRequests = (await fetchAllFriendRequests()).data;
 
@@ -76,7 +74,15 @@ function UserRequestCard(props) {
     message.success("You deny this request successfully");
     setUpdateData(!updateData);
   };
-
+  const renderUserInfo = () => {
+    const education = userInfo?.educations?.[userInfo.educations?.length - 1];
+    const work = userInfo?.works?.[userInfo.works?.length - 1];
+    const educationInfo = education
+      ? `${education?.moreInfo} at ${education?.schoolName}`
+      : null;
+    const workInfo = work ? `${work?.position} at ${work?.location}` : null;
+    return workInfo || educationInfo;
+  };
   useEffect(() => {
     async function act() {
       setMatchingFriendRequest(await getMatchFriendRequest());
@@ -150,20 +156,19 @@ function UserRequestCard(props) {
             style={{
               display: "flex",
               justifyContent: "center",
-              minWidth : 600,
+              minWidth: 600,
             }}
           >
-            <Avatar
-              size={72}
-              src={avatarUrl}
-            />
+            <Avatar size={72} src={avatarUrl} />
 
             <div className="col-8" style={{ alignSelf: "center" }}>
               <Link to={`/userinfo/${_id}`}>
                 <Text style={styles.textUser}>{name ?? "Lalisa Manobal"}</Text>
               </Link>
               <div style={{ marginTop: 0 }}></div>
-              <Text>React Native Developer</Text>
+              <Text strong className="green">
+                {renderUserInfo()}
+              </Text>
             </div>
             <div
               style={{
@@ -218,9 +223,11 @@ function UserRequestCard(props) {
                 content={popupListMutualFriend(listMutual ?? [])}
                 trigger="hover"
               >
-                <Text style={styles.text}>
-                  {numberMutual} mutual friend{numberMutual >= 2 ? "s" : ""}
-                </Text>
+                <Link to={`/mutualFriends/${_id}`}>
+                  <Text style={styles.text}>
+                    {numberMutual} mutual friend{numberMutual >= 2 ? "s" : ""}
+                  </Text>
+                </Link>
               </Popover>
             </div>
           </div>

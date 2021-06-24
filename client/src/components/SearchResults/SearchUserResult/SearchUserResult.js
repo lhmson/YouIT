@@ -30,10 +30,12 @@ function SearchUserResult({ userNameSearch }) {
       listUser?.map((user, i) => {
         return (
           <UserCard
-            key={i}
+            key={user._id}
             _id={user._id}
             name={user.name}
             relationship="Add Friend"
+            avatarUrl={user.avatarUrl}
+            userInfo = {user.userInfo}
           ></UserCard>
         );
       }),

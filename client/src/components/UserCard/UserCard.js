@@ -41,7 +41,7 @@ function UserCard(props) {
   );
   const [listMutual, setListMutual] = useState([]);
   const [listHashTags, setListHashTags] = useState([]);
-
+  const { userInfo } = props;
   const isMobile = useMobile();
 
   const handleAddingFriend = async (confirmId, senderId) => {
@@ -112,6 +112,16 @@ function UserCard(props) {
     } else if (txtButton === "Waiting you accept") {
       message.info("You can go to the user profile to accept or deny");
     }
+  };
+
+  const renderUserInfo = () => {
+    const education = userInfo?.educations?.[userInfo.educations?.length - 1];
+    const work = userInfo?.works?.[userInfo.works?.length - 1];
+    const educationInfo = education
+      ? `${education?.moreInfo} at ${education?.schoolName}`
+      : null;
+    const workInfo = work ? `${work?.position} at ${work?.location}` : null;
+    return workInfo || educationInfo;
   };
 
   useEffect(() => {
@@ -225,7 +235,9 @@ function UserCard(props) {
                 <Title style={styles.textUser}>{name ?? "Anonymous"}</Title>
               </Link>
 
-              <Text>React Native Developer</Text>
+              <Text strong className="green">
+                {renderUserInfo()}
+              </Text>
             </div>
           </div>
 
@@ -256,9 +268,11 @@ function UserCard(props) {
                 content={popupListMutualFriend(listMutual ?? [])}
                 trigger="hover"
               >
-                <Text style={styles.text}>
-                  {numberMutual} mutual friend{numberMutual >= 2 ? "s" : ""}
-                </Text>
+                <Link to={`/mutualFriends/${_id}`}>
+                  <Text style={styles.text}>
+                    {numberMutual} mutual friend{numberMutual >= 2 ? "s" : ""}
+                  </Text>
+                </Link>
               </Popover>
             </div>
           </div>

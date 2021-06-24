@@ -77,6 +77,7 @@ function FriendManagementPage() {
               name={user.name}
               relationship="Add Friend"
               avatarUrl={user.avatarUrl}
+              userInfo={user.userInfo}
             ></FriendCard>
           );
         else
@@ -88,6 +89,7 @@ function FriendManagementPage() {
               setUpdateData={setUpdateData}
               updateData={updateData}
               avatarUrl={user.avatarUrl}
+              userInfo={user.userInfo}
             ></UserRequestCard>
           );
       }),

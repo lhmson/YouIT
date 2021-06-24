@@ -52,6 +52,7 @@ function MutualFriendPage({ props }) {
             name={user.name}
             relationship="Add Friend"
             avatarUrl={user.avatarUrl}
+            userInfo={user.userInfo}
           ></FriendCard>
         );
       }),

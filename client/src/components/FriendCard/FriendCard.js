@@ -18,8 +18,18 @@ function FriendCard(props) {
   const [numberMutual, setNumberMutual] = useState(0);
   const [listMutual, setListMutual] = useState([]);
   const [listHashTags, setListHashTags] = useState([]);
-
+  const { userInfo } = props;
   const isMobile = useMobile();
+
+  const renderUserInfo = () => {
+    const education = userInfo?.educations?.[userInfo.educations?.length - 1];
+    const work = userInfo?.works?.[userInfo.works?.length - 1];
+    const educationInfo = education
+      ? `${education?.moreInfo} at ${education?.schoolName}`
+      : null;
+    const workInfo = work ? `${work?.position} at ${work?.location}` : null;
+    return workInfo || educationInfo;
+  };
 
   useEffect(() => {
     api
@@ -103,7 +113,9 @@ function FriendCard(props) {
                 <Title style={styles.textUser}>{name ?? "Anonymous"}</Title>
               </Link>
 
-              <Text>React Native Developer</Text>
+              <Text strong className="green">
+                {renderUserInfo()}
+              </Text>
             </div>
           </div>
 
