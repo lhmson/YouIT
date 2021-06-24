@@ -160,7 +160,13 @@ function HomePage() {
         >
           <div className="row" style={{ marginBottom: 100 }}>
             <img
-              style={{ position: "absolute", right: 100, opacity: 0.4 }}
+              style={{
+                position: "absolute",
+                left: 0,
+                right: 0,
+                opacity: 0.4,
+                width: isMobile ? 400 : "100%",
+              }}
               alt="bg-home"
               src="https://lh3.google.com/u/1/d/1WQ1JClChA69tfaRwMlAI6oXX1KKfo0JR=w1920-h870-iv1"
             />
@@ -310,7 +316,7 @@ function HomePage() {
                 <div
                   style={{
                     display: "flex",
-                    height: isMobile ? 270 : 400,
+                    height: isMobile ? 270 : 350,
                     alignItems: "center",
                     justifyContent: "center",
                   }}
@@ -336,7 +342,7 @@ function HomePage() {
                 <div
                   style={{
                     display: "flex",
-                    height: isMobile ? 180 : 400,
+                    height: isMobile ? 180 : 350,
                     alignItems: "center",
                     justifyContent: "center",
                   }}
