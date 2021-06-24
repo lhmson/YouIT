@@ -82,7 +82,8 @@ function RegisterPage() {
         dob: form.dob,
       };
       setDisableReg(true);
-      dispatch(signup(data, setResend, setDisableReg));
+      //TODO: unable to register for demo
+      // dispatch(signup(data, setResend, setDisableReg));
     }
   };
 

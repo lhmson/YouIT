@@ -24,7 +24,7 @@ const GeneralTab = () => {
     apiUser
       .updateUserInfo(updatedUser)
       .then((res) => {
-        console.log(res.data);
+        // console.log(res.data);
         setCurrentUser(res.data);
         message.success("Update info successfully");
       })

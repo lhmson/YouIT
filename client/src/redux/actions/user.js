@@ -25,7 +25,7 @@ export const getUser = (uid, history) => async (dispatch) => {
 export const updateUser = (updatedUser) => async (dispatch) => {
   try {
     const { data } = await api.updateUserInfo(updatedUser);
-    console.log(data);
+    // console.log(data);
     dispatch({ type: UPDATE_USER, payload: data });
   } catch (error) {
     console.log(error);
