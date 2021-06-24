@@ -5,6 +5,7 @@ import ReportUserCard from "../../../components/ReportUserCard/ReportUserCard";
 import { useLocalStorage } from "../../../hooks/useLocalStorage";
 import * as api from "../../../api/report";
 import { limitNameLength } from "../../../utils/limitNameLength.js";
+import LoadingSearch from "../../../components/Loading/LoadingSearch";
 
 const { Content } = Layout;
 
@@ -13,14 +14,16 @@ function UserAdminManagement() {
   const [selectedRowkeys, setSelectedRowkeys] = useState([]);
   const [listReports, setListReports] = useState([]);
   const [update, setUpdate] = useState(false);
-
+  const [loading, setLoading] = useState(false);
   useEffect(() => {
+    setLoading(false);
     api
       .fetchAllReportUser()
       .then((res) => {
         // console.log("report", res.data);
         if (res.data instanceof Array) setListReports(res.data);
         else setListReports([]);
+        setLoading(true);
       })
       .catch((e) => {
         console.log(e);
@@ -122,6 +125,7 @@ function UserAdminManagement() {
         },
       ],
     };
+
     return (
       <Table
         onRow={(record, rowIndex) => {
@@ -215,6 +219,32 @@ function UserAdminManagement() {
       </div>
     );
   };
+
+  if (!loading)
+    return (
+      <Layout
+        style={{
+          ...styles.mainArea,
+          background: "white",
+          marginTop: -32,
+          height: "120%",
+        }}
+      >
+        <Content>
+          <div
+            className="row"
+            style={{
+              padding: 32,
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <LoadingSearch></LoadingSearch>
+          </div>
+        </Content>
+      </Layout>
+    );
+
   return (
     <>
       <Layout style={styles.mainArea}>
