@@ -28,12 +28,75 @@ function GroupMember() {
       });
   }, [group]);
 
-  let listFilter = listMembers.filter((user) =>
+  const listAdmin = [];
+
+  for (let i = 0; i < listMembers.length; i++) {
+    if (listMembers[i]?.role === "Owner" || listMembers[i]?.role === "Admin")
+      listAdmin.push({
+        userId: listMembers[i].userId,
+        role: listMembers[i].role,
+        _id: listMembers[i]._id,
+      });
+  }
+
+  const listModerator = [];
+
+  for (let i = 0; i < listMembers.length; i++) {
+    if (listMembers[i]?.role === "Moderator")
+      listModerator.push({
+        userId: listMembers[i].userId,
+        role: listMembers[i].role,
+        _id: listMembers[i]._id,
+      });
+  }
+
+  const listMem = [];
+
+  for (let i = 0; i < listMembers.length; i++) {
+    if (listMembers[i]?.role === "Member")
+      listMem.push({
+        userId: listMembers[i].userId,
+        role: listMembers[i].role,
+        _id: listMembers[i]._id,
+      });
+  }
+
+  let listFilterAdmin = listAdmin.filter((user) =>
     user.userId.name.toLowerCase().includes(txtSearch.toLowerCase())
   );
 
-  const listMembersCard = () =>
-    listFilter?.map((user, i) => (
+  let listFilterModerator = listModerator.filter((user) =>
+    user.userId.name.toLowerCase().includes(txtSearch.toLowerCase())
+  );
+
+  let listFilterMem = listMem.filter((user) =>
+    user.userId.name.toLowerCase().includes(txtSearch.toLowerCase())
+  );
+
+  const listAdminsCard = () =>
+    listFilterAdmin?.map((user, i) => (
+      <MemberCard
+        _id={user.userId._id}
+        name={user.userId.name}
+        role={user.role}
+        relationship="Add Friend"
+        avatarUrl={user.userId.avatarUrl}
+      ></MemberCard>
+    ));
+
+  const listModeratorsCard = () =>
+    listFilterModerator?.map((user, i) => (
+      <MemberCard
+        _id={user.userId._id}
+        name={user.userId.name}
+        role={user.role}
+        relationship="Add Friend"
+        avatarUrl={user.userId.avatarUrl}
+      ></MemberCard>
+    ));
+
+  const listMemsCard = () =>
+    listFilterMem?.map((user, i) => (
       <MemberCard
         _id={user.userId._id}
         name={user.userId.name}
@@ -108,7 +171,9 @@ function GroupMember() {
               }}
               className={`${!isMobile && "col-12"}`}
             >
-              {listMembersCard()}
+              {listAdminsCard()}
+              {listModeratorsCard()}
+              {listMemsCard()}
             </div>
           )
         ) : (
