@@ -383,8 +383,6 @@ export const deleteGroup = async (req, res) => {
 
 export const deleteMember = async (req, res) => {
   const { groupId, deletedUserId } = req.params;
-  console.log("groupid", groupId);
-  console.log("userid", deletedUserId);
 
   try {
     const group = await Group.findById(groupId);
@@ -685,14 +683,11 @@ export const getAllGroupsForReport = async (req, res) => {
             const groupStatus = groupPostInfo.status;
             if (groupPostId === group._id && groupStatus !== "Pending")
               countPost++;
-            console.log("item", post);
           }
         });
       } catch (error) {
         console.log(error);
       }
-
-      console.log("posts", posts);
 
       const groupReport = {
         _id: group?._id,
