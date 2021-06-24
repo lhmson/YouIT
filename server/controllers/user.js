@@ -38,8 +38,8 @@ export const signin = async (req, res) => {
           _id: user._id,
           name: user.name,
         },
-        token
-      }
+        token,
+      };
       cuteIO.sendToBrowser(browserId, "System-SignedIn", sendData);
     }
 

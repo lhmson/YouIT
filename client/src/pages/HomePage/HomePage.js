@@ -7,7 +7,7 @@ import Navbar from "../../components/Navbar/Navbar";
 
 import Footer from "../../components/Footer/Footer";
 
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import { useLocalStorage } from "../../hooks/useLocalStorage.js";
 import HorizontalScroll from "react-scroll-horizontal";
 import AOS from "aos";
@@ -29,6 +29,8 @@ const pagePadding = 148;
 function HomePage() {
   const [user] = useLocalStorage("user");
   const [hashtags, setHashtags] = useState([]);
+
+  const history = useHistory();
 
   useEffect(() => {
     AOS.init({
@@ -75,9 +77,14 @@ function HomePage() {
           style={{ marginTop: 64, padding: 24, alignItems: "center" }}
         >
           <div className="row" style={{ marginBottom: 100 }}>
+            <img
+              style={{ position: "absolute", right: 100, opacity: 0.4 }}
+              alt="bg-home"
+              src="https://lh4.googleusercontent.com/IO_m6yHbVGCB7nqSYiSzwFaThaC26FaAngtHwVrvgLctAgBfL7dMP3EiVKLsHvhn1Y8eAtgQWxWyhWgYTY6U=w1366-h625-rw"
+            />
             <div
               className="col-lg-6 align-items-center justify-content-center"
-              style={{ zIndex: 1 }}
+              // style={{ zIndex: 1 }}
             >
               <Text
                 style={{
@@ -112,7 +119,9 @@ function HomePage() {
                   className="green-button mr-4"
                   size="large"
                   style={{ fontFamily: "Consolas", fontSize: 18 }}
-                  onClick="/group/60d08c234088f200159fc6db"
+                  onClick={() =>
+                    history.push("/group/60d08c234088f200159fc6db/main")
+                  }
                 >
                   Interview preparation
                 </Button>
@@ -120,7 +129,9 @@ function HomePage() {
                   className="green-button"
                   size="large"
                   style={{ fontFamily: "Consolas", fontSize: 18 }}
-                  onClick="/group/60d0c3b380bc9b4f44217c30"
+                  onClick={() =>
+                    history.push("/group/60d0c3b380bc9b4f44217c30/main")
+                  }
                 >
                   Hello World
                 </Button>
@@ -134,11 +145,7 @@ function HomePage() {
               }}
             >
               <div style={{ flex: 1, height: 480 }}> */}
-            <img
-              style={{ position: "absolute", right: 100, opacity: 0.4 }}
-              alt="bg-home"
-              src="https://lh4.googleusercontent.com/IO_m6yHbVGCB7nqSYiSzwFaThaC26FaAngtHwVrvgLctAgBfL7dMP3EiVKLsHvhn1Y8eAtgQWxWyhWgYTY6U=w1366-h625-rw"
-            />
+
             {/* </div>
             </div> */}
           </div>
@@ -154,7 +161,7 @@ function HomePage() {
 
             <div data-aos="fade-up" style={{ textAlign: "center" }}>
               <Text strong style={{ fontSize: 40 }}>
-                Something 1
+                Connect to the programming world
               </Text>
               <br />
               <div style={{ height: 16 }} />
@@ -175,7 +182,7 @@ function HomePage() {
           >
             <div className="col-lg-6 mb-4" style={{ textAlign: "left" }}>
               <Text strong style={{ fontSize: 40 }}>
-                Something 2
+                Keep up-to-date
               </Text>
               <br />
               <div style={{ height: 16 }} />
@@ -211,7 +218,7 @@ function HomePage() {
               style={{ textAlign: "left" }}
             >
               <Text strong style={{ fontSize: 40 }}>
-                Something 3
+                Share experiences
               </Text>
               <br />
               <div style={{ height: 16 }} />
@@ -254,7 +261,7 @@ function HomePage() {
                 // flex: 1,
               }}
             />
-            <Title className="boldhover">Explore this tag</Title>
+            <Title className="boldhover">Save, Share and Suffer</Title>
             <div style={{ height: 200 }} />
           </div>
         </div>
