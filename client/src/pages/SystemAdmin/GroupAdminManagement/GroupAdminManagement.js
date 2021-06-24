@@ -102,7 +102,7 @@ function GroupAdminManagement() {
           console.log(e);
         });
     }
-    message.success("Delete reports successfully");
+    message.success("Delete groups successfully");
     // setUpdate(!update);
   };
 
