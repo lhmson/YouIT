@@ -28,6 +28,7 @@ body {
 .boldhover:hover {
   font-weight: bold;
   cursor: pointer;
+  color: #219653;
 }
 
 .bold {
