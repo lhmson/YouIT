@@ -49,7 +49,7 @@ function CreateGroupPage() {
   const [groupTopic, setGroupTopic] = useState("General");
   const [groupMembers, setGroupMembers] = useState();
   const [groupCover, setGroupCover] = useState(
-    "https://vnn-imgs-f.vgcloud.vn/2020/09/07/15/.jpg"
+    "https://scontent.fsgn4-1.fna.fbcdn.net/v/t1.15752-9/120898995_347531066521259_6824380020926465874_n.png?_nc_cat=105&ccb=1-3&_nc_sid=ae9488&_nc_ohc=QbdFIeieLjgAX9JoQuk&_nc_oc=AQkDKJjz25pmirjN94vzbtmnSQbPgaqusZRGj5cSBu43xvQoaNLPtyBDG5HPRoexCQuO0lNStfofFNQaJj6SdCVa&_nc_ht=scontent.fsgn4-1.fna&oh=ab92bec342d2a85297dc6d3bf6a01cbb&oe=60D9E6AC"
   );
   const history = useHistory();
 
@@ -129,17 +129,17 @@ function CreateGroupPage() {
               <Form
                 name="basic"
                 size="large"
-              // onFinish={handleFinish}
-              // onFinishFailed={handleFinishFailed}
+                // onFinish={handleFinish}
+                // onFinishFailed={handleFinishFailed}
               >
                 <Form.Item
                   name="groupName"
-                // rules={[
-                //   {
-                //     required: true,
-                //     message: "Group name is required.",
-                //   },
-                // ]}
+                  // rules={[
+                  //   {
+                  //     required: true,
+                  //     message: "Group name is required.",
+                  //   },
+                  // ]}
                 >
                   <CreateGroupName name={groupName} setName={setGroupName} />
                 </Form.Item>
@@ -148,12 +148,12 @@ function CreateGroupPage() {
                   <Col span={10}>
                     <Form.Item
                       name="groupPrivacyItem"
-                    // rules={[
-                    //   {
-                    //     required: true,
-                    //     message: "Privacy is required.",
-                    //   },
-                    // ]}
+                      // rules={[
+                      //   {
+                      //     required: true,
+                      //     message: "Privacy is required.",
+                      //   },
+                      // ]}
                     >
                       <Select
                         placeholder="Privacy"
@@ -173,12 +173,12 @@ function CreateGroupPage() {
                   <Col span={14}>
                     <Form.Item
                       name="topic"
-                    // rules={[
-                    //   {
-                    //     required: true,
-                    //     message: "Topic is required.",
-                    //   },
-                    // ]}
+                      // rules={[
+                      //   {
+                      //     required: true,
+                      //     message: "Topic is required.",
+                      //   },
+                      // ]}
                     >
                       <Select
                         placeholder="Topic"

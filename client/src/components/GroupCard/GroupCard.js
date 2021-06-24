@@ -93,7 +93,7 @@ function GroupCard({
                 </Link>
               </div>
               <div>
-                <Text>{description ?? "Blackpink in your area"}</Text>
+                <Text>{description ?? "IT community"}</Text>
               </div>
               <div className="break-word">
                 <Text strong>{`#${topic ?? "General"}`}</Text>

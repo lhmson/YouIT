@@ -34,7 +34,7 @@ export const getUserInfo = async (req, res) => {
   }
 };
 
-// PUT userinfo/:id
+// PUT userinfo/
 export const updateUserInfo = async (req, res) => {
   const { userId } = req;
   if (!userId) {

@@ -20,11 +20,12 @@ const GeneralTab = () => {
 
   const saveName = () => {
     const updatedUser = { ...currentUser, name };
-    //console.log(updatedUser);
+
     apiUser
       .updateUserInfo(updatedUser)
-      .then(() => {
-        setCurrentUser(updatedUser);
+      .then((res) => {
+        console.log(res.data);
+        setCurrentUser(res.data);
         message.success("Update info successfully");
       })
       .catch((error) => {
