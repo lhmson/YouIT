@@ -1,5 +1,13 @@
 import React, { useState, useEffect, useContext } from "react";
-import { Button, Row, Typography, Menu, Dropdown, message,Tooltip } from "antd";
+import {
+  Button,
+  Row,
+  Typography,
+  Menu,
+  Dropdown,
+  message,
+  Tooltip,
+} from "antd";
 import { Avatar, Tag, Popover, List } from "antd";
 import styles from "./styles.js";
 import { Link } from "react-router-dom";
@@ -8,7 +16,7 @@ import { useLocalStorage } from "../../../../hooks/useLocalStorage";
 import COLOR from "../../../../constants/colors.js";
 import * as api from "../../../../api/friend";
 import * as apiGroup from "../../../../api/group";
-import * as apiUserInfo from "../../../../api/user_info"
+import * as apiUserInfo from "../../../../api/user_info";
 import { GroupContext } from "../../../../pages/GroupPage/GroupPage.js";
 import { fetchProgrammingHashtags } from "../../../../api/hashtag.js";
 
@@ -32,8 +40,6 @@ function MemberCard(props) {
     api
       .fetchCountMutualFriends(user?.result?._id, _id)
       .then((res) => {
-        console.log("List mutual friends");
-        console.log(res.data);
         if (res.data) setNumberMutual(res.data);
       })
       .catch((e) => {
@@ -280,10 +286,13 @@ function MemberCard(props) {
               <Link to={`/userinfo/${_id}`}>
                 <Text style={styles.textUser}>{name ?? "Lalisa Manobal"}</Text>
               </Link>
-              <div style={{ marginTop: 0 }}>  <Text strong className="green">
-                {renderUserInfo()}
-              </Text></div>
-              <Text  style={{ fontSize: 16, fontWeight: "bold" }}>{role}</Text>
+              <div style={{ marginTop: 0 }}>
+                {" "}
+                <Text strong className="green">
+                  {renderUserInfo()}
+                </Text>
+              </div>
+              <Text style={{ fontSize: 16, fontWeight: "bold" }}>{role}</Text>
             </div>
             <div
               style={{
@@ -350,7 +359,7 @@ function MemberCard(props) {
         </div>
         <div className="row mt-4">
           <div className="ml-4">
-          {listHashTags?.map((item, i) => (
+            {listHashTags?.map((item, i) => (
               <Tooltip
                 title={`Mentioned ${item?.count} time${
                   item?.count > 1 ? "s" : ""

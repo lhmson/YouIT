@@ -25,7 +25,7 @@ function CreateGroupMembers({ onChange }) {
   const listYourFriend = useMemo(
     () =>
       listFriend?.map((user, i) => {
-        return <Option key={user._id}>{user.name}</Option>;
+        return <Option key={user?._id}>{user.name}</Option>;
       }),
     [listFriend]
   );
