@@ -17,13 +17,15 @@ import * as apiHashtag from "../../api/hashtag";
 import * as apiSearch from "../../api/search";
 import FeedPost from "../../components/Posts/FeedPosts/FeedPost/FeedPost";
 import LoadingSearch from "../../components/Loading/LoadingSearch";
+import { useMobile } from "../../utils/responsiveQuery";
+import COLOR from "../../constants/colors.js";
 
 const { Title, Text } = Typography;
 const pagePadding = 148;
 function HomePage() {
   const [user] = useLocalStorage("user");
   const [hashtags, setHashtags] = useState([]);
-
+  const isMobile = useMobile();
   const history = useHistory();
 
   const [listPostsOfTags, setListPostsOfTags] = useState({});
@@ -98,7 +100,10 @@ function HomePage() {
         }}
         // style={{ background: "red" }}
       >
-        <Text className="boldhover" style={{ fontSize: 40, marginRight: 32 }}>
+        <Text
+          className="boldhover"
+          style={{ fontSize: isMobile ? 14 : 40, marginRight: 32 }}
+        >
           {title}
         </Text>
       </div>
@@ -157,7 +162,7 @@ function HomePage() {
             <img
               style={{ position: "absolute", right: 100, opacity: 0.4 }}
               alt="bg-home"
-              src="https://lh4.googleusercontent.com/IO_m6yHbVGCB7nqSYiSzwFaThaC26FaAngtHwVrvgLctAgBfL7dMP3EiVKLsHvhn1Y8eAtgQWxWyhWgYTY6U=w1366-h625-rw"
+              src="https://lh3.google.com/u/1/d/1WQ1JClChA69tfaRwMlAI6oXX1KKfo0JR=w1920-h870-iv1"
             />
             <div
               className="col-lg-6 align-items-center justify-content-center"
@@ -165,10 +170,11 @@ function HomePage() {
             >
               <Text
                 style={{
-                  fontSize: 60,
+                  fontSize: isMobile ? 30 : 60,
                   fontWeight: "bolder",
                   marginBottom: 0,
                   padding: 0,
+                  paddingLeft: isMobile ? 64 : 0,
                 }}
               >
                 YouIT, share our
@@ -178,7 +184,11 @@ function HomePage() {
                 programming skills
               </Text> */}
               <RotatingText
-                style={{ fontWeight: 500, fontSize: "2.5rem" }}
+                style={{
+                  fontWeight: 500,
+                  fontSize: "2.5rem",
+                  color: COLOR.green,
+                }}
                 deletingInterval={16}
                 items={["programming skills", "tiny bugs", "code experience"]}
               />
@@ -195,17 +205,24 @@ function HomePage() {
                 <Button
                   className="green-button mr-4"
                   size="large"
-                  style={{ fontFamily: "Consolas", fontSize: 18 }}
+                  style={{
+                    fontFamily: "Consolas",
+                    fontSize: isMobile ? 12 : 18,
+                  }}
                   onClick={() =>
                     history.push("/group/60d08c234088f200159fc6db/main")
                   }
                 >
                   Interview preparation
                 </Button>
+
                 <Button
                   className="green-button"
                   size="large"
-                  style={{ fontFamily: "Consolas", fontSize: 18 }}
+                  style={{
+                    fontFamily: "Consolas",
+                    fontSize: isMobile ? 12 : 18,
+                  }}
                   onClick={() =>
                     history.push("/group/60d0c3b380bc9b4f44217c30/main")
                   }
@@ -232,7 +249,20 @@ function HomePage() {
             }}
           >
             <div data-aos="zoom-in">
-              <div className="pink" style={{ height: 350 }} />
+              <div
+                style={{
+                  display: "flex",
+                  height: isMobile ? 300 : 600,
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <img
+                  style={{ height: "100%" }}
+                  alt="bg-connect"
+                  src="https://lh3.googleusercontent.com/fife/AAWUweVuX0JVVDZ_ZQAbYkX0MsfVsuLQ_QC0Mkn5cu3HDEfcXEGYdDRBZhcueinL29kCLL1WR6NXQRdydqDHEESqfN7ksMc7G-c1-YMkOecfkcr84KEpnDCe0L4uEEKvlPlBfPbS2ZfApleT08GKb0rnw5FDtkltgN6azvSi1683nNCgc0Nd8l7HKamn9cMEH2rmo03AdmhkruZRSopGFi5dHAr_KmsHNrzYqCnLA-pyqEV8ECuMVE8g51u9mBQT25AT8CpG7xqus_Fht5v0e0FMu4LzCMXlNW0wLZKpvIFJ92LAP1u7bQr0weR7Y4JmDFPkC8QTcF4Fa_akBSthdop1PDb98zm1a9a1ASktFjJzHNKwyX0fRvUkqTTjcuUNXpzKNvuv7d1xaRd8gINRusEBxqkkVj8BrZ1s7gyR7UC-tjojR49tKFsxZi2zlfW77JsLw7cavk4GiXFSPTt-MQgsKZK3nAIOUF_uBEGPi_U68LzMnvhc-UXPhU6lNUUZxVxuraLB1JsjVKFdjeStWGBaHqDbBp7Ih8Ky9iGilZnlt9HiBXEisaCZk8fDOODkzw2NB2wRlF6yYt3buFdTpNwcrl-vwXxap__VLK4rFe0Xkzct-0qpzJ160NJwW0puXBW92N4_ypi4QcylU8L0PKXvywIydVqXw4FLOVFFJUVyAYWb2C_Pq6_kJ9p_05LkHtd3be02FC4Z3ZNAv-YuEqidIogib1ftWEcNBz0=w1920-h942-ft"
+                />
+              </div>
             </div>
             <div style={{ height: 24 }} />
 
@@ -276,7 +306,22 @@ function HomePage() {
               className="col-lg-6"
               style={{ textAlign: "left" }}
             >
-              <div className="pink" style={{ height: 400 }} />
+              <div>
+                <div
+                  style={{
+                    display: "flex",
+                    height: isMobile ? 270 : 400,
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <img
+                    style={{ height: "100%" }}
+                    alt="bg-share"
+                    src="https://lh3.google.com/u/1/d/1X2SKAo8AH2PpQG7HWnBySYccJptLFtaD=w1920-h870-iv1"
+                  />
+                </div>
+              </div>
             </div>
           </div>
           <div
@@ -287,11 +332,26 @@ function HomePage() {
             }}
           >
             <div data-aos="flip-right" className="col-lg-6 mb-4">
-              <div className="pink" style={{ height: 400 }} />
+              <div>
+                <div
+                  style={{
+                    display: "flex",
+                    height: isMobile ? 180 : 400,
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <img
+                    style={{ height: "100%" }}
+                    alt="bg-group"
+                    src="https://lh3.google.com/u/1/d/1vPhZ8hGJauL4X7EKmKJIkac11qatYsry=w1330-h870-iv2"
+                  />
+                </div>
+              </div>
             </div>
             <div
               data-aos="fade-left"
-              className="col-lg-6"
+              className="col-lg-5 offset-1"
               style={{ textAlign: "left" }}
             >
               <Text strong style={{ fontSize: 40 }}>
@@ -316,7 +376,7 @@ function HomePage() {
             </div>
           )}
         </div>
-        <Footer />
+        {!isMobile ? <Footer /> : null}
       </Layout>
     </>
   );
