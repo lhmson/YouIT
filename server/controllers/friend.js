@@ -10,7 +10,9 @@ export const getNumberofFriends = async (req, res) => {
   try {
     const user = await User.findById(id);
     const { listFriends } = user;
-    res.status(200).json(listFriends.length);
+    let count = 0;
+    for (let i = 0; i < listFriends.length; i++) if (listFriends[i]) count++;
+    res.status(200).json(count);
   } catch (error) {
     res.status(404).json({ message: error.message });
   }
