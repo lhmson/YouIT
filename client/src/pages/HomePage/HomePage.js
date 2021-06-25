@@ -164,7 +164,7 @@ function HomePage() {
                 position: "absolute",
                 left: 0,
                 right: 0,
-                opacity: 0.4,
+                opacity: 0.3,
                 width: isMobile ? 400 : "100%",
               }}
               alt="bg-home"
@@ -196,15 +196,13 @@ function HomePage() {
                   color: COLOR.green,
                 }}
                 deletingInterval={16}
-                items={["programming skills", "tiny bugs", "code experience"]}
+                items={["programming skills", "tiny bugs", "coding experience"]}
               />
               <br />
               <div className="mt-4" />
-              <Text style={{ fontSize: 24 }}>
-                "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-                eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-                enim ad minim veniam, quis nostrud exercitation ullamco laboris
-                nisi ut aliquip ex ea commodo consequat."
+              <Text style={{ fontSize: 28 }}>
+                Hello world! YouIT is more than just a website. Our goal is to
+                build a strong and ever - growing geeks community.
               </Text>
               <br />
               <div className="row ml-1 mt-5 mb-5">
@@ -279,8 +277,8 @@ function HomePage() {
               <br />
               <div style={{ height: 16 }} />
               <Text style={{ fontSize: 24 }}>
-                "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-                eiusmod tempor incididunt ut labore et dolore magna aliqua."
+                Easily reach out to other coders and gain your opportunity to
+                seek new companions.
               </Text>
             </div>
           </div>
@@ -301,10 +299,8 @@ function HomePage() {
               <div style={{ height: 16 }} />
 
               <Text style={{ fontSize: 24 }}>
-                "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-                eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-                enim ad minim veniam, quis nostrud exercitation ullamco laboris
-                nisi ut aliquip ex ea commodo consequat."
+                Quickly catch up trendy technologies coming everyday and expand
+                your own knowledge.
               </Text>
             </div>
             <div
@@ -367,10 +363,8 @@ function HomePage() {
               <div style={{ height: 16 }} />
 
               <Text style={{ fontSize: 24 }}>
-                "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-                eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-                enim ad minim veniam, quis nostrud exercitation ullamco laboris
-                nisi ut aliquip ex ea commodo consequat."
+                Openly show people your piece of code and tell them about your
+                programming stories.
               </Text>
             </div>
           </div>
