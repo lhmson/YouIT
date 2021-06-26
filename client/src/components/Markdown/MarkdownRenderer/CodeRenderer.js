@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { Button, Input, } from 'antd';
+import { Button, Input, message, } from 'antd';
 
 // code highlighter 
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
@@ -68,7 +68,7 @@ export const CodeRenderer = ({ node, inline, className, children, ...props }) =>
   const match = /language-(\w+)/.exec(className || '');
 
   const [input, setInput] = useState("");
-  const [runDetail, setRunDetail] = useState(null);
+  const [runDetail, setRunDetail] = useState(runnerApis.RUN_DETAIL_NULL);
 
   const renderedOutput = useMemo(
     /**
@@ -110,14 +110,14 @@ export const CodeRenderer = ({ node, inline, className, children, ...props }) =>
     }, [runDetail])
 
   const handleExecuteCode = (sourceCode, language, input) => {
-    runnerApis.createRunnerSection(sourceCode, language, input).then(
-      (res) => {
-        const { id } = res.data;
-        runnerApis.getSectionDetail(id).then((runRes) => {
-          setRunDetail(runRes.data);
-        })
-      }
-    );
+    if (language && sourceCode) {
+      const hideMessage = message.loading("Please wait for code execution...");
+      runnerApis.runCode(sourceCode, language, input).then(
+        (runDetail) => {
+          setRunDetail(runDetail);
+          hideMessage?.();
+        });
+    }
   }
 
   return (
