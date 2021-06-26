@@ -98,7 +98,7 @@ export const CodeRenderer = ({ node, inline, className, children, ...props }) =>
       if (runDetail.result === "timeout")
         return {
           state: "Timeout",
-          text: "Limited time for each execution is 1 second. Donate us for more :)",
+          text: runDetail.stdout + "\n...\nLimited time for each execution is 1 second. Donate us for more :)",
           code: runDetail.exit_code,
         }
 
