@@ -5,14 +5,12 @@ import { Image, Input, message } from 'antd'
 // markdown plugin: strikethrough, table, tasklists,...
 import gfm from 'remark-gfm'
 
-// code highlighter 
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
-import { materialDark } from 'react-syntax-highlighter/dist/esm/styles/prism'
-
 // Latex support
 import remarkMath from 'remark-math'
 import rehypeKatex from 'rehype-katex'
 import 'katex/dist/katex.min.css' // `rehype-katex` does not import the CSS for you
+
+import { CodeRenderer } from "./CodeRenderer";
 
 const CuteEasterEgg = () => {
   const [text, setText] = React.useState("");
@@ -74,14 +72,13 @@ function MarkdownRenderer({ text, maxImgWidth = "100%" }) {
       if (className === "language-cute-love")
         return <CuteEasterEgg />
 
-      const match = /language-(\w+)/.exec(className || '')
-      return !inline && match ? (
-        <SyntaxHighlighter style={materialDark} language={match[1]} PreTag="div" children={String(children).replace(/\n$/, '')} {...props} />
-      ) : (
-        <code className={className} {...props}>
-          {children}
-        </code>
-      )
+      return <CodeRenderer
+        node={node}
+        inline={inline}
+        className={className}
+        children={children}
+        {...props}
+      />
     },
 
     img: ({ src, title }) => {
