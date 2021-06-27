@@ -60,11 +60,7 @@ function UserInfoPage() {
                 <IntroCard />
               </div>
               <div className="col-md-8">
-                <FeedPosts
-                  space="user_profile"
-                  limitPagination={5}
-                  ownerId={id}
-                />
+                <FeedPosts space="user_profile" ownerId={id} />
               </div>
             </Row>
           </Content>

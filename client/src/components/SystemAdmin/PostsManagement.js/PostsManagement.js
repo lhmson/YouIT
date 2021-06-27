@@ -15,7 +15,7 @@ const { Text } = Typography;
 
 function PostsManagement({
   setCurrentId,
-  limitPagination = 2,
+  limitPagination = 5,
   space,
   ownerId,
   groupId,

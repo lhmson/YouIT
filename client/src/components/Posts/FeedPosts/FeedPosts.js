@@ -17,7 +17,7 @@ const { Text } = Typography;
 
 function FeedPosts({
   setCurrentId,
-  limitPagination = 2,
+  limitPagination = 5,
   space,
   ownerId,
   groupId,

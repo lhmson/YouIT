@@ -140,11 +140,7 @@ function GroupPage(props) {
               <Content>
                 <Layout className="container">
                   {location.pathname === `/group/${group?._id}/main` ? (
-                    <FeedPosts
-                      limitPagination={5}
-                      space="group"
-                      groupId={group?._id}
-                    />
+                    <FeedPosts space="group" groupId={group?._id} />
                   ) : location.pathname === `/group/${group?._id}/about` ? (
                     <GroupAboutCard />
                   ) : (
