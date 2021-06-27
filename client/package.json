@@ -14,6 +14,7 @@
     "chart.js": "^3.3.2",
     "easymde": "^2.15.0",
     "jwt-decode": "^3.1.2",
+    "mermaid": "^8.11.0",
     "moment": "^2.29.1",
     "node-sass": "^6.0.0",
     "react": "^17.0.2",

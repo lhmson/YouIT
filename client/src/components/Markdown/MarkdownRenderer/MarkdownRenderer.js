@@ -12,6 +12,9 @@ import 'katex/dist/katex.min.css' // `rehype-katex` does not import the CSS for 
 
 import { CodeRenderer } from "./CodeRenderer";
 
+import MermaidAPI from "mermaid"
+MermaidAPI.initialize({ theme: "default", startOnLoad: true });
+
 const CuteEasterEgg = () => {
   const [text, setText] = React.useState("");
   const [matched, setMatched] = React.useState(false);
@@ -71,6 +74,19 @@ function MarkdownRenderer({ text, maxImgWidth = "100%" }) {
     code: ({ node, inline, className, children, ...props }) => {
       if (className === "language-cute-love")
         return <CuteEasterEgg />
+
+      if (className === "language-mermaid") {
+        try {
+          const htmlString = MermaidAPI.render("mermaidElementId", String(children))
+          // return HtmlToReactParser().parse(htmlString);
+          return <div
+            dangerouslySetInnerHTML={{
+              __html: htmlString
+            }} />
+        } catch {
+          // if there is an error, it will render regular code
+        }
+      }
 
       return <CodeRenderer
         node={node}
