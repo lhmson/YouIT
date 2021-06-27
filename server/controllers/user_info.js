@@ -37,19 +37,38 @@ export const getUserInfo = async (req, res) => {
 // PUT userinfo/
 export const updateUserInfo = async (req, res) => {
   const { userId } = req;
+  const updatedFields = req.body;
+
+  if (!updatedFields)
+    return res.status(400).send(`New user information is required`);
+
+  const updatedUserInfoFields = updatedFields?.userInfo ?? {};
+  delete updatedFields?.userInfo;
+
   if (!userId) {
-    return res.json({ message: "Unauthenticated" });
+    return res.status(401).json({ message: "Unauthenticated" });
   }
 
   try {
-    const updatedUser = req.body;
-    //const { userInfo } = updatedUser;
-    if (!updatedUser)
-      return res.status(400).send(`New user information is required`);
+    const oldUser = (await User.findById(userId))?.toObject();
+
+    if (!oldUser)
+      return res.status(404).send(`User not found`);
+
+    const oldUserInfo = oldUser?.userInfo ?? {};
+
+    const updatedUser = {
+      ...oldUser,
+      ...updatedFields,
+
+      userInfo: {
+        ...oldUserInfo,
+        ...updatedUserInfoFields,
+      }
+    }
 
     await User.findByIdAndUpdate(userId, updatedUser);
-
-    res.status(200).json(updatedUser);
+    return res.status(200).json(updatedUser);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

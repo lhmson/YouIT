@@ -22,9 +22,10 @@ export const getUser = (uid, history) => async (dispatch) => {
   }
 };
 
-export const updateUser = (updatedUser) => async (dispatch) => {
+export const updateUser = (updatedUser, onDone) => async (dispatch) => {
   try {
     const { data } = await api.updateUserInfo(updatedUser);
+    onDone?.();
     // console.log(data);
     dispatch({ type: UPDATE_USER, payload: data });
   } catch (error) {

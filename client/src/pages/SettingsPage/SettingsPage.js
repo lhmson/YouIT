@@ -19,18 +19,21 @@ const GeneralTab = () => {
   const [name, setName] = useState(currentUser?.name);
 
   const saveName = () => {
-    const updatedUser = { ...currentUser, name };
+    const key = "updateUserInfo"
+    message.loading({ content: "Saving your information...", key })
+
+    const updatedFields = { name };
 
     apiUser
-      .updateUserInfo(updatedUser)
+      .updateUserInfo(updatedFields)
       .then((res) => {
         // console.log(res.data);
         setCurrentUser(res.data);
-        message.success("Update info successfully");
+        message.success({ content: "Your information has been updated!", key });
       })
       .catch((error) => {
         console.log("Error updating user setting", error);
-        message.error("Error updating user info");
+        message.error({ content: "Error updating user info", key });
       });
   };
 

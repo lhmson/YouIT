@@ -11,10 +11,11 @@ import EditableTime from "./EditableTime/EditableTime.js";
 
 import { updateUser } from "../../../../redux/actions/user";
 import { isLoginUser } from "../../../../utils/user.js";
+import { message } from "antd";
 
 const OverviewPane = () => {
   const user = useSelector((state) => state.user);
-  console.log("user", user);
+  // console.log("user", user);
   const dispatch = useDispatch();
 
   const isMyProfile = isLoginUser(user);
@@ -42,38 +43,20 @@ const OverviewPane = () => {
 
   //const saveSchool = () => {};
 
-  const saveAddress = () => {
-    const updatedUser = { ...user, userInfo: { ...user.userInfo, address } };
-    //console.log(updatedUser);
-    dispatch(updateUser(updatedUser));
-  };
+  const saveUserInfo = (updatedFields) => () => {
+    const key = "updateUserInfo"
+    message.loading({ content: "Saving your information...", key })
 
-  const saveWorkLocation = () => {
-    const updatedUser = {
-      ...user,
-      userInfo: { ...user.userInfo, workLocation },
-    };
-    //console.log(updatedUser);
-    dispatch(updateUser(updatedUser));
-  };
+    const callback = () => {
+      message.success({ content: "Your information has been updated!", key });
+    }
+    dispatch(updateUser(updatedFields, callback));
+  }
 
-  const saveGender = () => {
-    const updatedUser = {
-      ...user,
-      userInfo: { ...user.userInfo, gender },
-    };
-    //console.log(updatedUser);
-    dispatch(updateUser(updatedUser));
-  };
-
-  const saveBirthday = () => {
-    const updatedUser = {
-      ...user,
-      userInfo: { ...user.userInfo, dateOfBirth },
-    };
-    //console.log(updatedUser);
-    dispatch(updateUser(updatedUser));
-  };
+  const saveAddress = saveUserInfo({ userInfo: { address } });
+  const saveWorkLocation = saveUserInfo({ userInfo: { workLocation } });
+  const saveGender = saveUserInfo({ userInfo: { gender } });
+  const saveBirthday = saveUserInfo({ userInfo: { dateOfBirth } });
 
   return (
     <div>
