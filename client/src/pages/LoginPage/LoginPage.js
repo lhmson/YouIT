@@ -11,8 +11,8 @@ import {
   message,
 } from "antd";
 
-import { ReactComponent as ReactLogo } from "../../assets/login-bro.svg";
 import logo from "../../assets/lightlogo.png";
+import loginImage from "../../assets/login.png";
 import { GoogleLogin } from "react-google-login";
 import { GrGoogle, GrFacebook } from "react-icons/gr";
 import { SiGithub } from "react-icons/si";
@@ -276,7 +276,14 @@ function LoginPage() {
               style={{ justifyItems: "center" }}
             >
               <div>
-                <ReactLogo />
+                <img
+                  src={loginImage}
+                  alt="Register"
+                  height="400"
+                  // className="object-fit"
+                  // height="58"
+                  // className="mr-2"
+                />
               </div>
             </div>
           </Row>

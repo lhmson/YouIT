@@ -12,8 +12,9 @@ import {
   message,
 } from "antd";
 
-import { ReactComponent as ReactLogo } from "../../assets/add-user.svg";
+// import { ReactComponent as ReactLogo } from "../../assets/add-user.svg";
 import logo from "../../assets/lightlogo.png";
+import addUserImage from "../../assets/add-user.png";
 
 import styles from "./styles";
 import { Link } from "react-router-dom";
@@ -329,7 +330,14 @@ function RegisterPage() {
               style={{ marginTop: 0 }}
             >
               <div>
-                <ReactLogo />
+                <img
+                  src={addUserImage}
+                  alt="Register"
+                  height="450"
+                  // className="object-fit"
+                  // height="58"
+                  // className="mr-2"
+                />
               </div>
             </div>
           </Row>
