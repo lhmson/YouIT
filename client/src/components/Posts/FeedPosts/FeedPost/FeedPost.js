@@ -46,6 +46,7 @@ import { useLocalStorage } from "../../../../hooks/useLocalStorage";
 import { limitNameLength } from "../../../../utils/limitNameLength";
 import ShareButton from "../../ShareButton";
 import { BACKEND_URL, FRONTEND_URL } from "../../../../constants/config";
+import Loading from "../../../Loading/Loading";
 
 const { Title, Text, Paragraph } = Typography;
 
@@ -85,6 +86,8 @@ function FeedPost({ post, setCurrentId }) {
     }
   );
 
+  const [loading, setLoading] = useState(false);
+
   //#region menu more
   const showConfirmDeletePost = (id) => {
     confirm({
@@ -113,17 +116,17 @@ function FeedPost({ post, setCurrentId }) {
     });
   };
 
-  // still in construction
+  //TODO: still in construction
   const handleHidePost = (id) => {
     hidePost(id).then((res) => message.success("Hide post successfully"));
   };
 
-  // still in construction
+  //TODO: still in construction
   const handleFollowPost = (id) => {
     followPost(id).then((res) => message.success("Follow post successfully"));
   };
 
-  // still in construction
+  //TODO: still in construction
   const handleReportPost = (id) => {
     // followPost(id).then((res) => message.success("Report post successfully"));
   };
@@ -191,11 +194,15 @@ function FeedPost({ post, setCurrentId }) {
   }, []);
 
   const handleUpvoteClick = async (id) => {
+    if (loading) {
+      return;
+    }
     if (!user) {
       message.info("You need to log in to upvote this post!");
       return;
     }
 
+    setLoading(true);
     if (myInteractions?.upvote) {
       unvotePost(id)
         .then((res) => {
@@ -206,6 +213,9 @@ function FeedPost({ post, setCurrentId }) {
         .catch((error) => {
           message.error("Something goes wrong with post unvote");
           console.log(error);
+        })
+        .finally(() => {
+          setLoading(false);
         });
     } else {
       upvotePost(id)
@@ -220,16 +230,23 @@ function FeedPost({ post, setCurrentId }) {
         .catch((error) => {
           message.error("Something goes wrong with post upvote");
           console.log(error);
+        })
+        .finally(() => {
+          setLoading(false);
         });
     }
   };
 
   const handleDownvoteClick = async (id) => {
+    if (loading) {
+      return;
+    }
     if (!user) {
       message.info("You need to log in to downvote this post!");
       return;
     }
 
+    setLoading(true);
     if (myInteractions?.downvote) {
       unvotePost(id)
         .then((res) => {
@@ -240,6 +257,9 @@ function FeedPost({ post, setCurrentId }) {
         .catch((error) => {
           message.error("Something goes wrong with post unvote");
           console.log(error);
+        })
+        .finally(() => {
+          setLoading(false);
         });
     } else {
       downvotePost(id)
@@ -254,13 +274,15 @@ function FeedPost({ post, setCurrentId }) {
         .catch((error) => {
           message.error("Something goes wrong with post downvote");
           console.log(error);
+        })
+        .finally(() => {
+          setLoading(false);
         });
     }
   };
 
   const fetchMyInteractions = () => {
-    if (!user)
-      return;
+    if (!user) return;
 
     const interactions = getMyInteractions(post._id)
       .then((res) => {
@@ -433,22 +455,33 @@ function FeedPost({ post, setCurrentId }) {
                 <Text strong style={{ fontSize: "1.5rem" }}>
                   {allInteractions.upvotes}
                 </Text>
-                <Tooltip title="Upvote">
-                  <ArrowUpOutlined
-                    className={`clickable icon ${
-                      myInteractions?.upvote ? "green" : "black"
-                    }`}
-                    onClick={() => handleUpvoteClick(post._id)}
-                  />
-                </Tooltip>
-                <Tooltip title="Downvote">
-                  <ArrowDownOutlined
-                    className={`clickable icon ${
-                      myInteractions?.downvote ? "green" : "black"
-                    }`}
-                    onClick={() => handleDownvoteClick(post._id)}
-                  />
-                </Tooltip>
+
+                {loading ? (
+                  <Loading size="small" />
+                ) : (
+                  <Tooltip title="Upvote">
+                    <ArrowUpOutlined
+                      className={`clickable icon ${
+                        myInteractions?.upvote ? "green" : "black"
+                      }`}
+                      onClick={() => handleUpvoteClick(post._id)}
+                    />
+                  </Tooltip>
+                )}
+
+                {loading ? (
+                  <Loading size="small" />
+                ) : (
+                  <Tooltip title="Downvote">
+                    <ArrowDownOutlined
+                      className={`clickable icon ${
+                        myInteractions?.downvote ? "green" : "black"
+                      }`}
+                      onClick={() => handleDownvoteClick(post._id)}
+                    />
+                  </Tooltip>
+                )}
+
                 <Text strong style={{ fontSize: "1.5rem" }}>
                   {allInteractions.downvotes}
                 </Text>

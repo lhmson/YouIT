@@ -30,7 +30,8 @@ function CreatePostForm({
   const [listHashtagNames, setListHashtagNames] = useState([]);
 
   const [safeToLeave, setSafeToLeave] = useState(false);
-  const [loaded, setLoaded] = useState(false);
+  const [postLoaded, setPostLoaded] = useState(false);
+  const [saveLoading, setSaveLoading] = useState(false);
 
   const history = useHistory();
 
@@ -48,7 +49,7 @@ function CreatePostForm({
       message.loading({
         content: "Loading your post...",
         key,
-      })
+      });
       api
         .fetchAPost(postId)
         .then((res) => {
@@ -59,13 +60,13 @@ function CreatePostForm({
             });
           }
 
-          setLoaded(true);
+          setPostLoaded(true);
           setEditingPost(res.data);
           message.success({
             content: "Your post is now ready to edit!",
             key,
             duration: 1,
-          })
+          });
         })
         .catch((reason) => {
           message.error("Something went wrong.", 1, () => {
@@ -147,6 +148,7 @@ function CreatePostForm({
       return;
     }
 
+    setSaveLoading(true);
     if (!postId) {
       api
         .createPost(newPost)
@@ -157,6 +159,9 @@ function CreatePostForm({
         .catch((error) => {
           message.error("Something goes wrong. Check all fields", 2);
           console.log(error);
+        })
+        .finally(() => {
+          setSaveLoading(false);
         });
     } else {
       api
@@ -168,6 +173,9 @@ function CreatePostForm({
         .catch((error) => {
           message.error("Something goes wrong. Check all fields", 2);
           console.log(error);
+        })
+        .finally(() => {
+          setSaveLoading(false);
         });
     }
   };
@@ -176,93 +184,90 @@ function CreatePostForm({
     setSelectedGroup(group);
   };
 
-  return (postId && !loaded) ?
-    (
-      <div className="container-fluid" />
-    )
-    :
-    (
-      <div className="container-fluid">
-        <Prompt
-          message="Your post may not be saved. Are you sure you want to leave?"
-          when={!safeToLeave}
-        />
+  return postId && !postLoaded ? (
+    <div className="container-fluid" />
+  ) : (
+    <div className="container-fluid">
+      <Prompt
+        message="Your post may not be saved. Are you sure you want to leave?"
+        when={!safeToLeave}
+      />
 
-        <div className="d-flex justify-content-start py-2">
-          <div className="col-8">
-            <CreatePostTitleInput title={postTitle} setTitle={setPostTitle} />
-          </div>
-          <div className="col-4">
-            <CreatePostSpaceAutoComplete
-              postSpace={postSpace}
-              setPostSpace={setPostSpace}
-              onSelectedGroupChange={handleSelectedGroupChange}
-              initialGroupId={
-                postId ? editingPost?.groupPostInfo?.groupId?._id : initialGroupId
-              }
-              disabled={Boolean(postId) || Boolean(initialGroupId)}
-            />
-          </div>
+      <div className="d-flex justify-content-start py-2">
+        <div className="col-8">
+          <CreatePostTitleInput title={postTitle} setTitle={setPostTitle} />
         </div>
-
-        <div className="d-flex justify-content-start py-2">
-          <div className="col-8">
-            <CreatePostTagSelect
-              onChange={setListHashtagNames}
-              defaultTags={listHashtagNames ?? []}
-            />
-          </div>
-          <div className="col-2">
-            <CreatePostPrivacySelect
-              postSpace={postSpace}
-              postPrivacy={postPrivacy}
-              setPostPrivacy={setPostPrivacy}
-            />
-          </div>
-
-          <div className="col-2">
-            <Button
-              className="green-button"
-              onClick={handleSavePostButtonClick}
-              style={{ width: "100%", fontWeight: "bold" }}
-            >
-              PUBLISH
-            </Button>
-          </div>
-
-          {/* <div className="col-1">
-          <Button onClick={unSubNotification}>stop notif</Button>
-        </div> */}
-        </div>
-
-        <div className="d-flex justify-content-start py-2">
-          <div className="col-12">
-            <CreatePostOverviewInput
-              overview={postContentOverview}
-              setOverview={setPostContentOverview}
-            />
-          </div>
-        </div>
-
-        <div className="d-flex justify-content-start py-2">
-          <div className="col-12">
-            <PostEditor
-              postContentText={postContentText}
-              setPostContentText={setPostContentText}
-            />
-          </div>
-        </div>
-        <div className="d-flex justify-content-start py-2">
-          <div className="col-12">
-            <CreatePostContentPinnedUrlInput
-              contentPinnedUrl={postContentPinnedUrl}
-              setContentPinnedUrl={setPostContentPinnedUrl}
-            />
-          </div>
+        <div className="col-4">
+          <CreatePostSpaceAutoComplete
+            postSpace={postSpace}
+            setPostSpace={setPostSpace}
+            onSelectedGroupChange={handleSelectedGroupChange}
+            initialGroupId={
+              postId ? editingPost?.groupPostInfo?.groupId?._id : initialGroupId
+            }
+            disabled={Boolean(postId) || Boolean(initialGroupId)}
+          />
         </div>
       </div>
-    )
-    ;
+
+      <div className="d-flex justify-content-start py-2">
+        <div className="col-8">
+          <CreatePostTagSelect
+            onChange={setListHashtagNames}
+            defaultTags={listHashtagNames ?? []}
+          />
+        </div>
+        <div className="col-2">
+          <CreatePostPrivacySelect
+            postSpace={postSpace}
+            postPrivacy={postPrivacy}
+            setPostPrivacy={setPostPrivacy}
+          />
+        </div>
+
+        <div className="col-2">
+          <Button
+            className="green-button"
+            onClick={handleSavePostButtonClick}
+            style={{ width: "100%", fontWeight: "bold" }}
+            disabled={saveLoading}
+          >
+            {saveLoading ? "LOADING" : "PUBLISH"}
+          </Button>
+        </div>
+
+        {/* <div className="col-1">
+          <Button onClick={unSubNotification}>stop notif</Button>
+        </div> */}
+      </div>
+
+      <div className="d-flex justify-content-start py-2">
+        <div className="col-12">
+          <CreatePostOverviewInput
+            overview={postContentOverview}
+            setOverview={setPostContentOverview}
+          />
+        </div>
+      </div>
+
+      <div className="d-flex justify-content-start py-2">
+        <div className="col-12">
+          <PostEditor
+            postContentText={postContentText}
+            setPostContentText={setPostContentText}
+          />
+        </div>
+      </div>
+      <div className="d-flex justify-content-start py-2">
+        <div className="col-12">
+          <CreatePostContentPinnedUrlInput
+            contentPinnedUrl={postContentPinnedUrl}
+            setContentPinnedUrl={setPostContentPinnedUrl}
+          />
+        </div>
+      </div>
+    </div>
+  );
 }
 
 export default CreatePostForm;
