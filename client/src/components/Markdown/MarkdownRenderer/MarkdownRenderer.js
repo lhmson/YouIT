@@ -85,6 +85,7 @@ function MarkdownRenderer({ text }) {
               style={{
                 display: "flex",
                 justifyContent: "center",
+                borderRadius: "20px"
               }}
               dangerouslySetInnerHTML={{
                 __html: htmlString,

@@ -301,3 +301,7 @@ input:-webkit-autofill:active {
 .ant-menu.ant-menu-dark > .ant-menu-item-selected.notpickitem {
   background-color: transparent; /*Overriden property*/
 }
+
+.object-fit {
+  object-fit: scale-down;
+}

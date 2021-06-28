@@ -27,12 +27,8 @@ const WorkAndEducationPane = () => {
   }, [user]);
 
   const saveWorks = () => {
-    const updatedUser = {
-      ...user,
-      userInfo: { ...user.userInfo, works: works },
-    };
-    console.log(updatedUser);
-    dispatch(updateUser(updatedUser));
+    const updatedFields = { userInfo: { works } };
+    dispatch(updateUser(updatedFields));
   };
 
   // add new work
@@ -79,12 +75,8 @@ const WorkAndEducationPane = () => {
   };
 
   const saveEducations = () => {
-    const updatedUser = {
-      ...user,
-      userInfo: { ...user.userInfo, educations: educations },
-    };
-    console.log(updatedUser);
-    dispatch(updateUser(updatedUser));
+    const updatedFields = { userInfo: { educations } };
+    dispatch(updateUser(updatedFields));
   };
 
   // add new education
