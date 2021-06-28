@@ -5,6 +5,7 @@ import { Button, Input, message } from "antd";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { materialDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 import * as runnerApis from "../../../api/compiler";
+import COLOR from "../../../constants/colors";
 
 /**
  * 28 languages are supported :)
@@ -87,6 +88,7 @@ export const CodeRenderer = ({
       if (runDetail.build_stderr)
         return {
           state: "Compile error",
+          color: COLOR.blue,
           text: runDetail.build_stderr,
           code: runDetail.build_exit_code,
         };
@@ -94,6 +96,7 @@ export const CodeRenderer = ({
       if (runDetail.stderr)
         return {
           state: "Runtime error",
+          color: COLOR.red,
           text: runDetail.stderr,
           code: runDetail.exit_code,
         };
@@ -101,6 +104,7 @@ export const CodeRenderer = ({
       if (runDetail.result === "timeout")
         return {
           state: "Timeout",
+          color: COLOR.yellow,
           text:
             runDetail.stdout +
             "\n...\nLimited time for each execution is 1 second. Donate us for more :)",
@@ -109,6 +113,7 @@ export const CodeRenderer = ({
 
       return {
         state: "Success",
+        color: COLOR.green,
         text: runDetail.stdout,
         code: runDetail.exit_code,
       };
@@ -162,7 +167,15 @@ export const CodeRenderer = ({
 
           {renderedOutput.state !== "Unavailable" && (
             <p>
-              <div style={{ color: "blue" }}>{renderedOutput.state}</div>
+              <div
+                style={{
+                  color: renderedOutput.color,
+                  fontWeight: 500,
+                  fontSize: 20,
+                }}
+              >
+                {renderedOutput.state}
+              </div>
               <br />
               {renderedOutput.state === "Success"
                 ? renderedOutput.text
