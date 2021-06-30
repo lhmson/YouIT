@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import { Image, Input, message } from "antd";
 
@@ -13,6 +13,7 @@ import "katex/dist/katex.min.css"; // `rehype-katex` does not import the CSS for
 import { CodeRenderer } from "./CodeRenderer";
 
 import MermaidAPI from "mermaid";
+import { fetchMarkdown } from "../utils/fetchMarkdown";
 MermaidAPI.initialize({ theme: "default", startOnLoad: true });
 
 const CuteEasterEgg = () => {
@@ -67,18 +68,34 @@ const CuteEasterEgg = () => {
     );
 };
 
-function MarkdownRenderer({ text }) {
+const parseJSON = (text) => {
+  let result = null;
+
+  try {
+    result = JSON.parse(text);
+  } catch { }
+
+  return result;
+}
+
+function MarkdownRenderer({ text, promiseText, previewMode = false }) {
+  const [renderedText, setRenderedText] = useState();
+
+  useEffect(() => {
+    if (promiseText)
+      promiseText.then?.(text => setRenderedText(text));
+  }, []);
+
   const CustomMarkdownRendererComponents = {
     code: ({ node, inline, className, children, ...props }) => {
-      if (className === "language-cute-love") return <CuteEasterEgg />;
+      if (className === "language-cute-love" && !previewMode) return <CuteEasterEgg />;
 
       if (className === "language-mermaid") {
         try {
           const htmlString = MermaidAPI.render(
-            "mermaidElementId",
+            "mermaidElementId" + Date.now(),
             String(children)
           );
-          // return HtmlToReactParser().parse(htmlString);
           return (
             <div
               className="bg-green-smoke"
@@ -97,7 +114,30 @@ function MarkdownRenderer({ text }) {
         }
       }
 
-      return (
+      if (className === "language-import") {
+        if (previewMode)
+          return <></>;
+
+        try {
+          const importOption = parseJSON(String(children).trim());
+          const importedMd = fetchMarkdown(importOption);
+          return <MarkdownRenderer promiseText={importedMd} previewMode />
+        } catch {
+          return <></>
+        }
+      }
+
+      if (className === "language-embed") {
+        try {
+          const embedProps = parseJSON(String(children).trim());
+          return <iframe title={embedProps?.title ?? `Embed_${Date.now}`} {...embedProps} />
+        } catch {
+          return <></>
+        }
+
+      }
+
+      return !inline ? (
         <CodeRenderer
           node={node}
           inline={inline}
@@ -105,7 +145,13 @@ function MarkdownRenderer({ text }) {
           children={children}
           {...props}
         />
-      );
+      )
+        :
+        (
+          <code className={className} {...props}>
+            {children}
+          </code>
+        );
     },
 
     img: ({ src, title }) => {
@@ -124,13 +170,13 @@ function MarkdownRenderer({ text }) {
 
   return (
     <div>
-      {text && (
+      {(text || renderedText) && (
         <ReactMarkdown
           components={CustomMarkdownRendererComponents}
           remarkPlugins={[remarkMath, gfm]}
           rehypePlugins={[rehypeKatex]}
         >
-          {text}
+          {(text || renderedText)}
         </ReactMarkdown>
       )}
     </div>

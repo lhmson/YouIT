@@ -14,7 +14,7 @@ import COLOR from "../../../constants/colors";
 const toApiLanguage = (className) => {
   if (!className) return null;
 
-  const classLang = className.replace("language-", "");
+  const classLang = className.replace("language-", "").trim();
 
   // languages that keeps their names
   const sameNameLangs = [

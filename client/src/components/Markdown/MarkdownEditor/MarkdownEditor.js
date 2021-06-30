@@ -34,7 +34,7 @@ function MarkdownEditor({ text, setText, style, placeholder, maxHeight }) {
       maxHeight,
       previewRender: (text) => {
         return ReactDOMServer.renderToStaticMarkup(
-          <MarkdownRenderer text={text} />
+          <MarkdownRenderer text={text} previewMode />
         )
       },
     };
