@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import ReactMarkdown from "react-markdown";
-import { Image, Input, message } from "antd";
+import { Image, Input, message, Select } from "antd";
 
 // markdown plugin: strikethrough, table, tasklists,...
 import gfm from "remark-gfm";
@@ -14,7 +14,9 @@ import { CodeRenderer } from "./CodeRenderer";
 
 import MermaidAPI from "mermaid";
 import { fetchMarkdown } from "../utils/fetchMarkdown";
+import { HackRenderer } from "./HackRenderer";
 MermaidAPI.initialize({ theme: "default", startOnLoad: true });
+const { Option } = Select;
 
 const CuteEasterEgg = () => {
   const [text, setText] = React.useState("");
@@ -73,22 +75,22 @@ const parseJSON = (text) => {
 
   try {
     result = JSON.parse(text);
-  } catch { }
+  } catch {}
 
   return result;
-}
+};
 
 function MarkdownRenderer({ text, promiseText, previewMode = false }) {
   const [renderedText, setRenderedText] = useState();
 
   useEffect(() => {
-    if (promiseText)
-      promiseText.then?.(text => setRenderedText(text));
+    if (promiseText) promiseText.then?.((text) => setRenderedText(text));
   }, []);
 
   const CustomMarkdownRendererComponents = {
     code: ({ node, inline, className, children, ...props }) => {
-      if (className === "language-cute-love" && !previewMode) return <CuteEasterEgg />;
+      if (className === "language-cute-love" && !previewMode)
+        return <CuteEasterEgg />;
 
       if (className === "language-mermaid") {
         try {
@@ -102,7 +104,7 @@ function MarkdownRenderer({ text, promiseText, previewMode = false }) {
               style={{
                 display: "flex",
                 justifyContent: "center",
-                borderRadius: "20px"
+                borderRadius: "20px",
               }}
               dangerouslySetInnerHTML={{
                 __html: htmlString,
@@ -115,26 +117,40 @@ function MarkdownRenderer({ text, promiseText, previewMode = false }) {
       }
 
       if (className === "language-import") {
-        if (previewMode)
-          return <></>;
+        if (previewMode) return <></>;
 
         try {
           const importOption = parseJSON(String(children).trim());
           const importedMd = fetchMarkdown(importOption);
-          return <MarkdownRenderer promiseText={importedMd} previewMode />
+          return <MarkdownRenderer promiseText={importedMd} previewMode />;
         } catch {
-          return <></>
+          return <></>;
+        }
+      }
+
+      if (className === "language-hack") {
+        if (previewMode) return <p>Challenge section</p>;
+
+        try {
+          const hackInfo = parseJSON(String(children).trim());
+          return <HackRenderer />;
+        } catch {
+          return <></>;
         }
       }
 
       if (className === "language-embed") {
         try {
           const embedProps = parseJSON(String(children).trim());
-          return <iframe title={embedProps?.title ?? `Embed_${Date.now}`} {...embedProps} />
+          return (
+            <iframe
+              title={embedProps?.title ?? `Embed_${Date.now}`}
+              {...embedProps}
+            />
+          );
         } catch {
-          return <></>
+          return <></>;
         }
-
       }
 
       return !inline ? (
@@ -145,13 +161,11 @@ function MarkdownRenderer({ text, promiseText, previewMode = false }) {
           children={children}
           {...props}
         />
-      )
-        :
-        (
-          <code className={className} {...props}>
-            {children}
-          </code>
-        );
+      ) : (
+        <code className={className} {...props}>
+          {children}
+        </code>
+      );
     },
 
     img: ({ src, title }) => {
@@ -176,7 +190,7 @@ function MarkdownRenderer({ text, promiseText, previewMode = false }) {
           remarkPlugins={[remarkMath, gfm]}
           rehypePlugins={[rehypeKatex]}
         >
-          {(text || renderedText)}
+          {text || renderedText}
         </ReactMarkdown>
       )}
     </div>
