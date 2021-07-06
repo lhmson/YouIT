@@ -21,7 +21,7 @@ function MarkdownEditor({ text, setText, style, placeholder, maxHeight }) {
       parsingConfig: {
         strikethrough: true,
       },
-      previewImagesInEditor: true,
+      // previewImagesInEditor: true,
       placeholder: placeholder,
       spellChecker: false,
       // uploadImage: true,
