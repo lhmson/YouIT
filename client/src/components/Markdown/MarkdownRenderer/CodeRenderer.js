@@ -11,7 +11,7 @@ import COLOR from "../../../constants/colors";
  * 28 languages are supported :)
  * @param {string} className
  */
-const toApiLanguage = (className) => {
+export const toApiLanguage = (className) => {
   if (!className) return null;
 
   const classLang = className.replace("language-", "").trim();

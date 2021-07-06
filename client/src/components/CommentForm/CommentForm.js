@@ -1,7 +1,7 @@
 import { Form, Input, Button, Select, Row, Space, Typography } from "antd";
 import { useState } from "react";
 import RequireLogin from "../RequireLogin/RequireLogin";
-import { MarkdownEditor } from "../"
+import { MarkdownEditor } from "../";
 
 const { Text } = Typography;
 const { TextArea } = Input;
@@ -14,7 +14,9 @@ const loggedIn = () => {
 };
 
 function CommentForm({ onSubmit, label, onDiscard, initContent = "" }) {
-  const [inputComment, setInputComment] = useState({ content: initContent ?? "" });
+  const [inputComment, setInputComment] = useState({
+    content: initContent ?? "",
+  });
   // const [errors, setErrors] = useState({});
   const [form] = Form.useForm();
 
@@ -53,15 +55,15 @@ function CommentForm({ onSubmit, label, onDiscard, initContent = "" }) {
           <Form.Item
             name="userComment"
             label={label}
-          // doesn't work, why? idk. idc.
-          // rules={[
-          //   {
-          //     required: true,
-          //     whitespace: true,
-          //     message: "Please write something.",
-          //   },
-          // ]}
-          // initialValue={initContent}
+            // doesn't work, why? idk. idc.
+            // rules={[
+            //   {
+            //     required: true,
+            //     whitespace: true,
+            //     message: "Please write something.",
+            //   },
+            // ]}
+            // initialValue={initContent}
           >
             {/* <TextArea
               style={{ height: 200 }}
@@ -72,7 +74,7 @@ function CommentForm({ onSubmit, label, onDiscard, initContent = "" }) {
             <MarkdownEditor
               text={inputComment?.content}
               setText={(text) =>
-                setInputComment(prev => ({ ...prev, content: text }))
+                setInputComment((prev) => ({ ...prev, content: text }))
               }
               placeholder="// What do you think?"
               // style={{ height: 200 }}
@@ -92,10 +94,16 @@ function CommentForm({ onSubmit, label, onDiscard, initContent = "" }) {
                 className="white-button mr-3"
                 size="large"
                 onClick={onReset}
+                disabled={!inputComment?.content?.trim()}
               >
                 Reset
               </Button>
-              <Button className="green-button" size="large" htmlType="submit">
+              <Button
+                className="green-button"
+                size="large"
+                htmlType="submit"
+                disabled={!inputComment?.content?.trim()}
+              >
                 Submit
               </Button>
             </Row>

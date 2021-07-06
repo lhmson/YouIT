@@ -305,3 +305,15 @@ input:-webkit-autofill:active {
 .object-fit {
   object-fit: scale-down;
 }
+
+.disable-horizontal-scroll {
+  overflow-x: hidden;
+}
+
+.enable-horizontal-scroll {
+  overflow-x: auto;
+}
+
+.box-shadow {
+  box-shadow: 20px 40px #888888;
+}
