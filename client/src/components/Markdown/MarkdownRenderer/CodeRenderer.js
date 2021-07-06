@@ -122,11 +122,25 @@ export const CodeRenderer = ({
   );
 
   const handleExecuteCode = (sourceCode, language, input) => {
+    // ms
+    const RESPONSE_TIME_LIMIT = 5000;
+
     if (language && sourceCode) {
-      const hideMessage = message.loading("Please wait for code execution...");
+      const messageKey = "compiler_" + Date.now();
+      const hideMessage = message.loading({
+        key: messageKey,
+        content: "Please wait for code execution...",
+        duration: RESPONSE_TIME_LIMIT / 1000,
+      });
+
+      const responseTimeout = setTimeout(() => {
+        message.error({ key: messageKey, content: "It takes too long to get code result." })
+      }, RESPONSE_TIME_LIMIT)
+
       runnerApis.runCode(sourceCode, language, input).then((runDetail) => {
         setRunDetail(runDetail);
         hideMessage?.();
+        clearTimeout(responseTimeout);
       });
     }
   };

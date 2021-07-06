@@ -27,10 +27,16 @@ export const getSectionDetail = async (id) =>
  * @returns {Promise<RunDetail>} runDetail
  */
 export const runCode = async (sourceCode, language, input) => {
-  const { id } = (await createRunnerSection(sourceCode, language, input))?.data ?? {};
-  const runDetail = (await getSectionDetail(id)).data;
+  const { data } = (await createRunnerSection(sourceCode, language, input)) ?? {};
+  const { id } = data;
 
-  // return runDetail;
+  let runDetail = null;
+  try {
+    runDetail = (await getSectionDetail(id)).data;
+  } catch (err) {
+    console.log(err);
+  }
+
   return runDetail;
 }
 
