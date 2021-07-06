@@ -10,6 +10,14 @@ import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
 import "katex/dist/katex.min.css"; // `rehype-katex` does not import the CSS for you
 
+// html support
+import rehypeRaw from "rehype-raw";
+// import rehypeSanitize from "rehype-sanitize" // clean up dangerous html things. incompatiple with cusstom components
+
+// table of content
+import remarkToc from "remark-toc";
+import rehypeSlug from "rehype-slug"
+
 import { CodeRenderer } from "./CodeRenderer";
 
 import MermaidAPI from "mermaid";
@@ -173,8 +181,8 @@ function MarkdownRenderer({ text, promiseText, previewMode = false }) {
       {(text || renderedText) && (
         <ReactMarkdown
           components={CustomMarkdownRendererComponents}
-          remarkPlugins={[remarkMath, gfm]}
-          rehypePlugins={[rehypeKatex]}
+          remarkPlugins={[remarkMath, gfm, remarkToc]}
+          rehypePlugins={[rehypeKatex, rehypeRaw, rehypeSlug]}
         >
           {(text || renderedText)}
         </ReactMarkdown>
