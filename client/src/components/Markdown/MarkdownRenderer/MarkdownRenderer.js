@@ -132,8 +132,34 @@ function MarkdownRenderer({ text, promiseText, previewMode = false }) {
         if (previewMode) return <p>Challenge section</p>;
 
         try {
-          const hackInfo = parseJSON(String(children).trim());
-          return <HackRenderer />;
+          const dataset = parseJSON(String(children).trim());
+          let validate = true;
+          if (dataset?.sample?.length <= 0 || dataset?.cases?.length <= 0)
+            validate = false;
+          dataset?.sample?.forEach((element) => {
+            if (
+              !element.hasOwnProperty("input") ||
+              !element.hasOwnProperty("output")
+            ) {
+              validate = false;
+            }
+          });
+          dataset?.cases?.forEach((element) => {
+            if (
+              !element.hasOwnProperty("input") ||
+              !element.hasOwnProperty("output")
+            ) {
+              validate = false;
+            }
+          });
+          if (!validate)
+            return (
+              <div>
+                <p>Invalid dataset.</p>
+                <br />
+              </div>
+            );
+          return <HackRenderer dataset={dataset} />;
         } catch {
           return <></>;
         }

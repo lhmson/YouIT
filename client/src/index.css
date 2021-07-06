@@ -313,3 +313,7 @@ input:-webkit-autofill:active {
 .enable-horizontal-scroll {
   overflow-x: auto;
 }
+
+.box-shadow {
+  box-shadow: 20px 40px #888888;
+}
