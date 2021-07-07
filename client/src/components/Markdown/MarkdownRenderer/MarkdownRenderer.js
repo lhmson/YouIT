@@ -165,6 +165,20 @@ function MarkdownRenderer({ text, promiseText, previewMode = false }) {
         }
       }
 
+      if (className === "language-note") {
+        return (
+          <div
+            style={{
+              backgroundColor: "whitesmoke",
+              padding: 12,
+              alignSelf: "flex-start",
+            }}
+          >
+            {String(children).trim()}
+          </div>
+        );
+      }
+
       if (className === "language-embed") {
         try {
           const embedProps = parseJSON(String(children).trim());
