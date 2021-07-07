@@ -174,7 +174,7 @@ export const HackRenderer = ({ dataset }) => {
     const countChecked = useRef(0);
 
     const handlePreResult = (r) => {
-      if (r.state === "Compile error" || r.state === "Unavailable") {
+      if (r.state && r.state !== "Success") {
         setStatus({ heading: r.state, color: "red", errorText: r.text });
       } else {
         setStatus({ heading: "Running...", color: "green" });
