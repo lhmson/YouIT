@@ -8,6 +8,7 @@ import { limitNameLength } from "../../../utils/limitNameLength.js";
 import LoadingSearch from "../../../components/Loading/LoadingSearch";
 
 const { Content } = Layout;
+const { Title } = Typography;
 
 function UserAdminManagement() {
   const [user, setUser] = useLocalStorage("user");
@@ -34,22 +35,32 @@ function UserAdminManagement() {
     {
       title: "ID",
       dataIndex: "id",
-      width: "20%",
+      width: "5%",
+      align: "center",
     },
     {
       title: "Name",
       dataIndex: "name",
       width: "30%",
+      align: "left",
     },
     {
       title: "Reports",
       dataIndex: "numberOfReports",
       width: "20%",
+      align: "center",
     },
     {
       title: "Groups",
       dataIndex: "numberOfGroups",
       width: "20%",
+      align: "center",
+    },
+    {
+      title: "Posts",
+      dataIndex: "numberOfGroups",
+      width: "20%",
+      align: "center",
     },
   ];
 
@@ -127,26 +138,37 @@ function UserAdminManagement() {
     };
 
     return (
-      <Table
-        onRow={(record, rowIndex) => {
-          return {
-            onDoubleClick: (event) => {
-              api
-                .fetchAllReportOfAnUser(data[rowIndex]._id)
-                .then((res) => {
-                  info(data[rowIndex].name, res.data);
-                })
-                .catch((e) => {
-                  console.log(e);
-                });
-            }, // double click row
-          };
+      <div
+        style={{
+          alignSelf: "center",
+          justifyContent: "center",
+          width: "100%",
         }}
-        style={{ width: "80%" }}
-        rowSelection={rowSelection}
-        columns={columns}
-        dataSource={data}
-      />
+      >
+        <Table
+          onRow={(record, rowIndex) => {
+            return {
+              onDoubleClick: (event) => {
+                api
+                  .fetchAllReportOfAnUser(data[rowIndex]._id)
+                  .then((res) => {
+                    info(data[rowIndex].name, res.data);
+                  })
+                  .catch((e) => {
+                    console.log(e);
+                  });
+              }, // double click row
+            };
+          }}
+          style={{ margin: 32 }}
+          rowSelection={rowSelection}
+          columns={columns}
+          dataSource={data}
+          scroll={{ x: "false" }}
+          size="small"
+          title={() => <Title level={5}>User</Title>}
+        />
+      </div>
     );
   };
 
@@ -183,7 +205,9 @@ function UserAdminManagement() {
         style={{
           justifyContent: "flex-end",
           alignItems: "center",
-          width: "80%",
+          width: "100%",
+          marginBottom: 16,
+          marginTop: -16,
         }}
       >
         <Button
@@ -252,14 +276,25 @@ function UserAdminManagement() {
           <div
             className="row"
             style={{
-              padding: 32,
+              padding: 16,
               alignItems: "center",
               justifyContent: "center",
             }}
           >
-            <TableReportUser></TableReportUser>
+            <div
+              style={{
+                background: "white",
+                borderRadius: 20,
+                justifyContent: "center",
+                alignItems: "center",
+                width: "80%",
+                boxShadow: "10px 10px #27AE60",
+              }}
+            >
+              <TableReportUser></TableReportUser>
+              <ButtonFooter></ButtonFooter>
+            </div>
           </div>
-          <ButtonFooter></ButtonFooter>
         </Content>
       </Layout>
     </>
