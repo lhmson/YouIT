@@ -24,7 +24,7 @@ import {
   EllipsisOutlined,
   SettingOutlined,
   PicLeftOutlined,
-  StarFilled,
+  GlobalOutlined,
 } from "@ant-design/icons";
 import { useMobile } from "../../utils/responsiveQuery";
 import { useMediaQuery } from "react-responsive";
@@ -166,7 +166,7 @@ function Navbar({ selectedMenu, setTxtSearch, txtInitSearch }) {
           onClick={handleFeed}
         >
           <Tooltip title="Feed" placement="bottom">
-            <StarFilled spin style={{ fontSize: 24, color: COLOR.white }} />
+            <GlobalOutlined style={{ fontSize: 24, color: COLOR.white }} />
           </Tooltip>
         </Menu.Item>
 
