@@ -16,6 +16,7 @@ function UserAdminManagement() {
   const [listReports, setListReports] = useState([]);
   const [update, setUpdate] = useState(false);
   const [loading, setLoading] = useState(false);
+
   useEffect(() => {
     setLoading(false);
     api
@@ -58,7 +59,7 @@ function UserAdminManagement() {
     },
     {
       title: "Posts",
-      dataIndex: "numberOfGroups",
+      dataIndex: "numberOfPosts",
       width: "20%",
       align: "center",
     },
@@ -77,9 +78,11 @@ function UserAdminManagement() {
       name: limitNameLength(listReports[i].name, 40),
       numberOfReports: listReports[i].numberOfReports,
       numberOfGroups: listReports[i].numberOfGroups,
+      numberOfPosts : listReports[i].numberOfPosts,
       _id: listReports[i]._id,
     });
   }
+
   function info(name, listReports) {
     Modal.info({
       title: `List Reports of ${name}`,
@@ -98,6 +101,7 @@ function UserAdminManagement() {
       onOk() {},
     });
   }
+
   const TableReportUser = () => {
     const rowSelection = {
       selectedRowKeys: selectedRowkeys,

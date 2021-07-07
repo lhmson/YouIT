@@ -4,6 +4,7 @@ import User from "../models/user.js";
 import Report from "../models/report.js";
 import Group from "../models/group.js";
 import { httpStatusCodes } from "../utils/httpStatusCode.js";
+import Post from "../models/post.js";
 
 const isMemberOfGroup = (userId, group) => {
   if (group.listMembers.find((member) => member.userId.equals(userId)))
@@ -26,6 +27,14 @@ const countReport = async (userId) => {
     itemId: userId,
   });
   const count = reports.length;
+  return count;
+};
+
+const countPost = async (userId) => {
+  const posts = await Post.find({
+    userId: userId,
+  });
+  const count = posts.length;
   return count;
 };
 
@@ -78,11 +87,14 @@ export const getAllReportUserRequests = async (req, res) => {
       if (!users[i].isReported) {
         const countGroups = await countJoinedGroup(users[i]._id);
         const countReports = await countReport(users[i]._id);
+        const countPosts = await countPost(users[i]._id);
+
         const infoUser = {
           name: users[i].name,
           _id: users[i]._id,
           numberOfGroups: countGroups,
           numberOfReports: countReports,
+          numberOfPosts: countPosts,
         };
         pendingReports.push(infoUser);
       }
