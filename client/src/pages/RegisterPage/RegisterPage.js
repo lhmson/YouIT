@@ -84,7 +84,7 @@ function RegisterPage() {
       };
       setDisableReg(true);
       //TODO: unable to register for demo
-      // dispatch(signup(data, setResend, setDisableReg));
+      dispatch(signup(data, setResend, setDisableReg));
     }
   };
 

@@ -1,10 +1,6 @@
 import React from "react";
 import { Menu, Tooltip } from "antd";
-import {
-  RocketOutlined,
-  LaptopOutlined,
-  TeamOutlined,
-} from "@ant-design/icons";
+import { UserOutlined, CoffeeOutlined, TeamOutlined } from "@ant-design/icons";
 import styles from "../styles.js";
 import { Link } from "react-router-dom";
 import { limitNameLength } from "../../../../utils/limitNameLength";
@@ -25,7 +21,7 @@ function FeedMenu({ user, groups }) {
       <Menu.Item
         key="username"
         style={styles.item}
-        icon={<RocketOutlined spin style={{ fontSize: "1.4rem" }} />}
+        icon={<UserOutlined style={{ fontSize: "1.4rem" }} />}
       >
         <Link to={`/userinfo/${user?.result._id}`}>My Profile</Link>
       </Menu.Item>
@@ -39,7 +35,7 @@ function FeedMenu({ user, groups }) {
       </Menu.Item>
       <SubMenu
         key="groups"
-        icon={<LaptopOutlined style={{ fontSize: "1.4rem" }} />}
+        icon={<CoffeeOutlined style={{ fontSize: "1.4rem" }} />}
         title="Groups"
       >
         <Menu.Item key="groups-all" style={styles.item}>

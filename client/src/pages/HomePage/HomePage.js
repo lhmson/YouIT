@@ -168,7 +168,7 @@ function HomePage() {
                 width: isMobile ? 400 : "100%",
               }}
               alt="bg-home"
-              src="https://lh3.google.com/u/1/d/1WQ1JClChA69tfaRwMlAI6oXX1KKfo0JR=w1920-h870-iv1"
+              src="https://i.ibb.co/KhP9yq3/programming.png"
             />
             <div
               className="col-lg-6 align-items-center justify-content-center"
