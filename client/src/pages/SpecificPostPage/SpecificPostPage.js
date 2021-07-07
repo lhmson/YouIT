@@ -19,6 +19,26 @@ import { useHistory } from "react-router-dom";
 import Loading from "../../components/Loading/Loading.js";
 import { FRONTEND_URL } from "../../constants/config.js";
 
+export function shuffle(array) {
+  var currentIndex = array.length,
+    randomIndex;
+
+  // While there remain elements to shuffle...
+  while (0 !== currentIndex) {
+    // Pick a remaining element...
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex--;
+
+    // And swap it with the current element.
+    [array[currentIndex], array[randomIndex]] = [
+      array[randomIndex],
+      array[currentIndex],
+    ];
+  }
+
+  return array;
+}
+
 const { Title, Text } = Typography;
 
 function SpecificPostPage(props) {
@@ -43,12 +63,14 @@ function SpecificPostPage(props) {
   const [post, setPost] = useState(null);
   const [comments, setComments] = useState([]);
   const [otherPosts, setOtherPosts] = useState([]);
+  const [relatedPosts, setRelatedPosts] = useState([]);
   const [sort, setSort] = useState(sorts[0]);
   const [focusedCommentIndex, setFocusedCommentIndex] = useState(-1);
 
   const fetchPageContent = () => {
     fetchPost();
     fetchOtherPosts();
+    fetchRelatedPosts();
     fetchComments();
   };
   useEffect(() => {
@@ -82,6 +104,12 @@ function SpecificPostPage(props) {
   const fetchOtherPosts = async () => {
     const { data } = await postsApi.fetchOtherPosts(id);
     setOtherPosts(data);
+  };
+
+  const fetchRelatedPosts = async () => {
+    const { data } = await postsApi.fetchPostsPagination(0, 5, "news_feed");
+    shuffle(data);
+    setRelatedPosts(data);
   };
 
   const fetchComments = async () => {
@@ -244,7 +272,7 @@ function SpecificPostPage(props) {
           </div>
           <div className="col-md-4">
             <RelatedCard title="From this user" posts={otherPosts} />
-            <RelatedCard title="Related posts" posts={otherPosts} />
+            <RelatedCard title="Related posts" posts={relatedPosts} />
           </div>
         </div>
       </Layout>
