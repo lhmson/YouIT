@@ -15,14 +15,16 @@ function MemberRequestsResult() {
   const [listMembersRequest, setListMembersRequest] = useState([]);
   const user = JSON.parse(localStorage.getItem("user"))?.result;
   const history = useHistory();
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    setLoading(false);
     api
       .getListPendingMembers(group?._id)
       .then((res) => {
         if (res.data instanceof Array) setListMembersRequest(res.data);
         else setListMembersRequest([]);
-        
+        setLoading(true);
       })
       .catch((e) => {
         console.log(e);
@@ -55,7 +57,7 @@ function MemberRequestsResult() {
     group?.listMembers.forEach((member) => {
       if (
         member?.userId === user?._id &&
-        (member?.role === "Member" || member?.role === "Owner")
+        (member?.role === "Admin" || member?.role === "Owner")
       ) {
         isJoined = true;
       }
@@ -79,7 +81,7 @@ function MemberRequestsResult() {
           }}
         >
           <div className="col-10 offset-1">
-            {!listMembersRequest.length ? (
+            {!loading ? (
               <div className="text-center">
                 <Loading />
               </div>

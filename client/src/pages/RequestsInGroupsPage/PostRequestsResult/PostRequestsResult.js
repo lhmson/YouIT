@@ -13,14 +13,17 @@ function PostRequestsResult() {
   const { group } = useContext(GroupContext);
   const [listPostRequest, setListPostRequest] = useState([]);
   const user = JSON.parse(localStorage.getItem("user"))?.result;
+  const [loading, setLoading] = useState(false);
   const history = useHistory();
 
   useEffect(() => {
+    setLoading(false);
     api
       .fetchPostsPagination(0, 10082000, "pending_in_group", null, group?._id)
       .then((res) => {
         if (res.data instanceof Array) setListPostRequest(res.data);
         else setListPostRequest([]);
+        setLoading(true);
       })
       .catch((e) => {
         console.log(e);
@@ -70,7 +73,7 @@ function PostRequestsResult() {
           }}
         >
           <div className="col-10 offset-1">
-            {!listPostRequest.length ? (
+            {!loading ? (
               <div className="text-center">
                 <Loading />
               </div>

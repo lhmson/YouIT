@@ -287,7 +287,6 @@ function MemberCard(props) {
                 <Text style={styles.textUser}>{name ?? "Lalisa Manobal"}</Text>
               </Link>
               <div style={{ marginTop: 0 }}>
-                {" "}
                 <Text strong className="green">
                   {renderUserInfo()}
                 </Text>

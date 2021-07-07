@@ -51,7 +51,6 @@ function FriendCard(props) {
           for (let i = 0; i < res.data.length; i++)
             tempList.push({ name: res.data[i].name, id: res.data[i]._id });
           setListMutual(tempList);
-          console.log(tempList);
         }
       })
       .catch((e) => {

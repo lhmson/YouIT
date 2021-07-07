@@ -13,7 +13,6 @@ function CreateGroupMembers({ onChange }) {
     api
       .fetchListMyFriends(user?.result?._id)
       .then((res) => {
-        console.log(res.data);
         if (res.data instanceof Array) setListFriend(res.data);
         else setListFriend([]);
       })
