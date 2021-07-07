@@ -20,6 +20,14 @@ const countJoinedGroup = async (userId) => {
   return count;
 };
 
+const getListGroupsJoined = async (userId) => {
+  const groups = await Group.find();
+  let results = [];
+  for (let i = 0; i < groups.length; i++)
+    if (isMemberOfGroup(userId, groups[i])) results.push(groups[i]);
+  return results;
+};
+
 const countReport = async (userId) => {
   const reports = await Report.find({
     status: "pending",
@@ -170,6 +178,18 @@ export const denyReport = async (req, res) => {
     res.status(httpStatusCodes.ok).json({});
   } catch (error) {
     res
+      .status(httpStatusCodes.internalServerError)
+      .json({ message: error.message });
+  }
+};
+
+export const getAllGroupsOfUserId = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const groups = await getListGroupsJoined(userId);
+    return res.status(httpStatusCodes.ok).json(groups);
+  } catch (error) {
+    return res
       .status(httpStatusCodes.internalServerError)
       .json({ message: error.message });
   }

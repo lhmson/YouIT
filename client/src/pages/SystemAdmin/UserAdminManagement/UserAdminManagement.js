@@ -4,11 +4,14 @@ import styles from "./styles.js";
 import ReportUserCard from "../../../components/ReportUserCard/ReportUserCard";
 import { useLocalStorage } from "../../../hooks/useLocalStorage";
 import * as api from "../../../api/report";
+import * as apiGroup from "../../../api/group";
 import { limitNameLength } from "../../../utils/limitNameLength.js";
 import LoadingSearch from "../../../components/Loading/LoadingSearch";
-
+import COLOR from "../../../constants/colors.js";
+import { useHistory } from "react-router-dom";
+import GroupJoinedCard from "../../../components/GroupCard/GroupJoinedCard";
 const { Content } = Layout;
-const { Title } = Typography;
+const { Title, Text } = Typography;
 
 function UserAdminManagement() {
   const [user, setUser] = useLocalStorage("user");
@@ -16,6 +19,7 @@ function UserAdminManagement() {
   const [listReports, setListReports] = useState([]);
   const [update, setUpdate] = useState(false);
   const [loading, setLoading] = useState(false);
+  const history = useHistory();
 
   useEffect(() => {
     setLoading(false);
@@ -43,19 +47,56 @@ function UserAdminManagement() {
       title: "Name",
       dataIndex: "name",
       width: "30%",
-      align: "left",
+      align: "center",
+      onCell: function (record, rowIndex) {
+        return {
+          onClick: (event) => {
+            console.log("record", record);
+            history.push(`/userinfo/${record._id}`);
+          },
+        };
+      },
     },
     {
       title: "Reports",
       dataIndex: "numberOfReports",
       width: "20%",
       align: "center",
+      onCell: function (record, rowIndex) {
+        return {
+          onClick: (event) => {
+            api
+              .fetchAllReportOfAnUser(record._id)
+              .then((res) => {
+                info(record.name, res.data);
+              })
+              .catch((e) => {
+                console.log(e);
+              });
+          },
+        };
+      },
     },
     {
       title: "Groups",
       dataIndex: "numberOfGroups",
       width: "20%",
       align: "center",
+      onCell: function (record, rowIndex) {
+        return {
+          onClick: (event) => {
+            api
+              .fetchAllGroupsOfAnUser(record._id)
+              .then((res) => {
+                console.log(res.data);
+                infoGroup(record.name, res.data);
+              })
+              .catch((e) => {
+                console.log(e);
+              });
+          },
+        };
+      },
     },
     {
       title: "Posts",
@@ -78,7 +119,7 @@ function UserAdminManagement() {
       name: limitNameLength(listReports[i].name, 40),
       numberOfReports: listReports[i].numberOfReports,
       numberOfGroups: listReports[i].numberOfGroups,
-      numberOfPosts : listReports[i].numberOfPosts,
+      numberOfPosts: listReports[i].numberOfPosts,
       _id: listReports[i]._id,
     });
   }
@@ -87,7 +128,7 @@ function UserAdminManagement() {
     Modal.info({
       title: `List Reports of ${name}`,
       footer: null,
-      width: "70%",
+      width: "50%",
       content: (
         <div>
           {listReports.map((report) => (
@@ -96,6 +137,35 @@ function UserAdminManagement() {
               nameReportedBy={report.nameUserReport}
             ></ReportUserCard>
           ))}
+        </div>
+      ),
+      onOk() {},
+    });
+  }
+
+  function infoGroup(name, listGroups) {
+    Modal.info({
+      title: `List Groups of ${name}`,
+      footer: null,
+      width: "70%",
+      content: (
+        <div>
+          {listGroups?.map((group, i) => {
+            return (
+              <GroupJoinedCard
+                _id={group._id}
+                nameGroup={group.name}
+                description={group.description}
+                topic={group.topic}
+                totalMembers={group.listMembers?.length}
+                joined={true}
+                update={update}
+                setUpdate={setUpdate}
+                backgroundUrl={group.backgroundUrl}
+                isAdmin={true}
+              ></GroupJoinedCard>
+            );
+          })}
         </div>
       ),
       onOk() {},
@@ -150,20 +220,21 @@ function UserAdminManagement() {
         }}
       >
         <Table
-          onRow={(record, rowIndex) => {
-            return {
-              onDoubleClick: (event) => {
-                api
-                  .fetchAllReportOfAnUser(data[rowIndex]._id)
-                  .then((res) => {
-                    info(data[rowIndex].name, res.data);
-                  })
-                  .catch((e) => {
-                    console.log(e);
-                  });
-              }, // double click row
-            };
-          }}
+          // onRow={(record, rowIndex) => {
+          //   return {
+          //     onDoubleClick: (event) => {
+          //       alert("row", rowIndex);
+          //       api
+          //         .fetchAllReportOfAnUser(data[rowIndex]._id)
+          //         .then((res) => {
+          //           info(data[rowIndex].name, res.data);
+          //         })
+          //         .catch((e) => {
+          //           console.log(e);
+          //         });
+          //     }, // double click row
+          //   };
+          // }}
           style={{ margin: 32 }}
           rowSelection={rowSelection}
           columns={columns}

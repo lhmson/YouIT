@@ -7,7 +7,10 @@ const styles = {
     marginBottom: 16,
     flex: 1,
     borderRadius: 30,
-    evaluation: 80,
+    width: "100%",
+    alignSelf: "center",
+    alignItems: "center",
+    boxShadow: "4px 4px #27AE60",
   },
   tag: {
     color: "#219653",
