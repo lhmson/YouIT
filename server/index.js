@@ -11,6 +11,8 @@ import createError from "http-errors";
 import path, { dirname } from "path";
 import cookieParser from "cookie-parser";
 import logger from "morgan";
+import cloudinary from "cloudinary";
+const cloudinaryv2 = cloudinary.v2;
 import { fileURLToPath } from "url";
 
 import indexRouter from "./routes/index.js";
@@ -26,8 +28,10 @@ import conversationRouter from "./routes/conversation.js";
 import reportUserRouter from "./routes/report.js";
 import CuteServerIO from "./socket/CuteServerIO.js";
 import friendRouter from "./routes/friend.js";
-import { setUpCuteIO } from "./socket/handlers/allHandlers.js";
 import hashtagRouter from "./routes/hashtag.js";
+import uploadRouter from "./routes/upload.js";
+
+import { setUpCuteIO } from "./socket/handlers/allHandlers.js";
 import UsersStatusManager from "./businessLogics/userStatus.js";
 import { notifyUserStatusToFriendsFunc } from "./businessLogics/user.js";
 import { setAllDatabaseCleaners } from "./businessLogics/setAllDatabaseCleaners.js";
@@ -66,6 +70,12 @@ app.use(cookieParser());
 // );
 // app.use(express.static(path.join(__dirname, "public")));
 
+cloudinaryv2.config({
+  cloud_name: process.env.CLOUDINARY_NAME || "",
+  api_key: process.env.CLOUDINARY_API_KEY || "",
+  api_secret: process.env.CLOUDINARY_API_SECRET || "",
+});
+
 // router
 app.use("/", indexRouter);
 app.use("/user", userRouter);
@@ -80,6 +90,7 @@ app.use("/friend", friendRouter);
 app.use("/conversation", conversationRouter);
 // app.use("/groupPendingMember", groupPendingMemberRouter);
 app.use("/hashtag", hashtagRouter);
+app.use("/upload", uploadRouter);
 app.use("/report", reportUserRouter);
 
 const PORT = process.env.PORT || 5000;

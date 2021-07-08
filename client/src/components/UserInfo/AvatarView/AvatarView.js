@@ -1,15 +1,16 @@
 import React, { useEffect, useState } from "react";
-import { Avatar, Button, Image, Typography, Row } from "antd";
+import { Avatar, Button, Image, Typography, message, Row } from "antd";
 import { FaCamera } from "react-icons/fa";
 
 import styles from "./styles.js";
 
-import * as api from "../../../api/user_info";
 import { useSelector } from "react-redux";
+import * as apiUpload from "../../../api/upload";
 import { isLoginUser } from "../../../utils/user.js";
 import * as apiUser from "../../../api/user_info";
 import { convertFileToBase64 } from "../../../utils/image.js";
 import Loading from "../../Loading/Loading";
+import { createFormData } from "../../../utils/upload.js";
 
 const { Title } = Typography;
 
@@ -33,35 +34,71 @@ const AvatarView = () => {
     setBackgroundImage(user?.backgroundUrl);
   }, [user]);
 
+  const handleUploadPhoto = async (img, type) => {
+    const data = createFormData(img);
+
+    try {
+      const res = await apiUpload.uploadImage(data, type);
+
+      if (res) {
+        return res.data.data.avatar;
+      } else {
+        return null;
+      }
+    } catch (error) {
+      console.log("Error when upload img", error.message);
+    }
+  };
+
   const handleAvatarChange = async (e) => {
     setLoadingAvatar(true);
     const fileUploaded = e.target.files[0];
-    const base64 = await convertFileToBase64(fileUploaded);
+    // const base64 = await convertFileToBase64(fileUploaded);
+    // console.log("file upload", fileUploaded);
+
+    const resAvatar = await handleUploadPhoto(fileUploaded, "avatar");
+    // console.log("res ava", resAvatar);
+
+    if (!resAvatar) {
+      message.error("Cannot upload image");
+      return;
+    }
 
     const image = {
       type: "avatarUrl",
-      base64: base64,
+      base64: resAvatar,
     };
     await apiUser.editImage(image).then((res) => {
       setLoadingAvatar(false);
-      setAvatar(res.data);
-      // window.location.reload();
+      // setAvatar(res.data);
+      window.location.reload();
     });
   };
 
   const handleBackgroundChange = async (e) => {
     setLoadingBackground(true);
     const fileUploaded = e.target.files[0];
-    const base64 = await convertFileToBase64(fileUploaded);
+    // const base64 = await convertFileToBase64(fileUploaded);
+
+    const resBackground = await handleUploadPhoto(
+      fileUploaded,
+      "userBackground"
+    );
+    // console.log("res ava", resAvatar);
+
+    if (!resBackground) {
+      message.error("Cannot upload image");
+      return;
+    }
 
     const image = {
       type: "backgroundUrl",
-      base64: base64,
+      base64: resBackground,
     };
     await apiUser.editImage(image).then((res) => {
       setLoadingBackground(false);
-      setBackgroundImage(res.data);
-      // window.location.reload();
+      // setBackgroundImage(res.data);
+      window.location.reload();
     });
   };
 
