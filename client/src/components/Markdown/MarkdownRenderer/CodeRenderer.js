@@ -1,13 +1,11 @@
 import React, { useMemo, useState } from "react";
-import { Button, Input, message } from "antd";
+import { Button, Input, message, Tooltip } from "antd";
 
 // code highlighter
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-import { materialDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 import * as runnerApis from "../../../api/compiler";
 import COLOR from "../../../constants/colors";
-import { materialLight } from "react-syntax-highlighter/dist/esm/styles/prism";
-import { materialOceanic } from "react-syntax-highlighter/dist/esm/styles/prism";
+import { materialLight, materialOceanic } from "react-syntax-highlighter/dist/esm/styles/prism";
 import TextArea from "antd/lib/input/TextArea";
 import Text from "antd/lib/typography/Text";
 
@@ -70,6 +68,7 @@ export const CodeRenderer = ({
   inline,
   className,
   children,
+  previewMode = false,
   ...props
 }) => {
   const apiLanguage = toApiLanguage(className);
@@ -165,11 +164,13 @@ export const CodeRenderer = ({
     >
       {!inline && match ? (
         <div
-          style={{
-            backgroundColor: isDarkTheme ? "#263238" : "#fafafa",
-            paddingRight: 12,
-            paddingBottom: 12,
-          }}
+          style={
+            {
+              backgroundColor: isDarkTheme ? "#263238" : "#fafafa",
+              paddingBottom: (!previewMode) ? 12 : 0, // this code can be improved
+              paddingRight: (!previewMode) ? 12 : 0 // this code can be improved
+            }
+          }
         >
           <SyntaxHighlighter
             style={theme}
@@ -178,31 +179,37 @@ export const CodeRenderer = ({
             children={String(children).replace(/\n$/, "")}
             {...props}
           />
-          <div
-            style={{
-              flexDirection: "row-reverse",
-              display: "flex",
-            }}
-          >
-            <Button
-              className="green-button"
-              style={{ alignSelf: "flex-end" }}
-              onClick={() =>
-                handleExecuteCode(String(children), apiLanguage, input)
-              }
-            >
-              Run
-            </Button>
-            <Button
-              className="green-button mr-3"
-              style={{ alignSelf: "flex-end" }}
-              onClick={() => {
-                switchTheme();
+          {(!previewMode) &&
+            <div
+              style={{
+                flexDirection: "row-reverse",
+                display: "flex",
               }}
             >
-              Switch theme
-            </Button>
-          </div>
+              {apiLanguage &&
+                <Tooltip title={apiLanguage}>
+                  <Button
+                    className="green-button"
+                    style={{ alignSelf: "flex-end" }}
+                    onClick={() =>
+                      handleExecuteCode(String(children), apiLanguage, input)
+                    }
+                  >
+                    Run
+                  </Button>
+                </Tooltip>
+              }
+              <Button
+                className="green-button mr-3"
+                style={{ alignSelf: "flex-end" }}
+                onClick={() => {
+                  switchTheme();
+                }}
+              >
+                Switch theme
+              </Button>
+            </div>
+          }
         </div>
       ) : (
         <code className={className} {...props}>
@@ -210,7 +217,7 @@ export const CodeRenderer = ({
         </code>
       )}
 
-      {apiLanguage && (
+      {apiLanguage && (!previewMode) && (
         <div>
           {/* sorry but this is the only way */}
           <div style={{ height: 4 }} />
