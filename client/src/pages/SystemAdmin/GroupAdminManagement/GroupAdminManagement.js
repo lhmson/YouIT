@@ -8,6 +8,7 @@ import { limitNameLength } from "../../../utils/limitNameLength.js";
 import LoadingSearch from "../../../components/Loading/LoadingSearch";
 import FriendCard from "../../../components/FriendCard/FriendCard";
 import { useHistory } from "react-router-dom";
+import COLOR from "../../../constants/colors.js";
 
 const { Content } = Layout;
 const { Title, Text } = Typography;
@@ -35,21 +36,44 @@ function GroupAdminManagement() {
   }, []);
 
   function infoMember(name, listMembers) {
+    const CardMember = ({ avatarUrl, name }) => {
+      return (
+        <div
+          className="row"
+          style={{
+            width: "100%",
+            borderRadius: 20,
+            alignItems: "center",
+            background: COLOR.greenSmoke,
+            margin: 8,
+            paddingLeft: 16,
+            height: 80,
+          }}
+        >
+          <img
+            src={avatarUrl}
+            width={50}
+            height={50}
+            alt={"avt"}
+            style={{ borderRadius: 50, marginRight: 16, objectFit: "cover" }}
+          ></img>
+          <Title level={5}>{name}</Title>
+        </div>
+      );
+    };
     Modal.info({
-      title: `List Groups of ${name}`,
+      title: `List members of ${name}`,
       footer: null,
-      width: "70%",
+      width: "50%",
       content: (
         <div>
           {listMembers?.map((member, i) => {
+            console.log("member", member);
             return (
-              <FriendCard
-                _id={member._id}
-                name={member.name}
-                relationship="Add Friend"
-                avatarUrl={member.avatarUrl}
-                userInfo={member.userInfo}
-              ></FriendCard>
+              <CardMember
+                name={member.userId?.name}
+                avatarUrl={member.userId?.avatarUrl}
+              ></CardMember>
             );
           })}
         </div>
@@ -85,6 +109,20 @@ function GroupAdminManagement() {
       width: "15%",
       align: "center",
       render: (text) => <div className="clickable">{text}</div>,
+      onCell: function (record, rowIndex) {
+        return {
+          onClick: (event) => {
+            apiGroup
+              .getListMembers(record._id)
+              .then((res) => {
+                infoMember(record.name, res.data);
+              })
+              .catch((e) => {
+                console.log(e);
+              });
+          },
+        };
+      },
     },
     {
       title: "Posts",
