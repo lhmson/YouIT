@@ -252,21 +252,6 @@ function UserAdminManagement() {
         }}
       >
         <Table
-          // onRow={(record, rowIndex) => {
-          //   return {
-          //     onDoubleClick: (event) => {
-          //       alert("row", rowIndex);
-          //       api
-          //         .fetchAllReportOfAnUser(data[rowIndex]._id)
-          //         .then((res) => {
-          //           info(data[rowIndex].name, res.data);
-          //         })
-          //         .catch((e) => {
-          //           console.log(e);
-          //         });
-          //     }, // double click row
-          //   };
-          // }}
           style={{ margin: 32 }}
           rowSelection={rowSelection}
           columns={columns}
