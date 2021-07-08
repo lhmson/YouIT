@@ -85,6 +85,12 @@ export const replyComment = async (req, res) => {
   const { postId, commentId } = req.params;
   const { userId } = req;
   try {
+    const user = await User.findById(req.userId);
+
+    if (!user) {
+      return res.status(httpStatusCodes.notFound).send("User not found.");
+    }
+
     const comment = new Comment(req.body);
     comment.userId = userId;
     comment.quotedCommentId = commentId;
@@ -95,6 +101,24 @@ export const replyComment = async (req, res) => {
       .then(async (post) => {
         post.comments.push(comment._id);
         await post.save();
+
+        if (comment.quotedCommentId) {
+          const quotedComment = await Comment.findById(comment.quotedCommentId);
+          const quotedUserId = quotedComment?.userId;
+          if (quotedUserId) {
+            if (!quotedUserId.equals(req.userId)) {
+              sendNotificationUser({
+                userId: quotedUserId,
+                kind: "ReplyToComment_OriginalCommentOwner",
+                content: {
+                  description: `${user.name} has just replied to your comment in post "${post.title}".`,
+                },
+                link: `/post/${post?._id}/${comment._id}`,
+              });
+            }
+          }
+        }
+
         res.status(201).json(comment);
       })
       .catch((error) => {
