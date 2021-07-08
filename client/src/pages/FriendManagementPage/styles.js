@@ -10,7 +10,8 @@ const styles = {
   mainArea: {
     marginTop: 64,
     marginLeft: 0,
-    minWidth: "180vh",
+    minWidth: "100vh",
+    background: COLOR.greenSmoke,
   },
 };
 

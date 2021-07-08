@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useMemo } from "react";
-import { Layout, Typography, Input } from "antd";
+import { Layout, Typography, Input, Image } from "antd";
 import styles from "./styles.js";
 import Navbar from "../../components/Navbar/Navbar";
 import { Button } from "antd";
@@ -13,7 +13,7 @@ import { SearchOutlined } from "@ant-design/icons";
 import LoadingSearch from "../../components/Loading/LoadingSearch.js";
 
 const { Content } = Layout;
-const { Title } = Typography;
+const { Title, Text } = Typography;
 
 function FriendManagementPage() {
   const [user, setUser] = useLocalStorage("user");
@@ -108,6 +108,204 @@ function FriendManagementPage() {
         <LoadingSearch></LoadingSearch>
       </div>
     );
+
+  const CardSuggestion = () => {
+    return (
+      <div
+        style={{
+          background: COLOR.greenSmoke,
+          borderRadius: 20,
+          width: 220,
+          height: 350,
+          alignItems: "center",
+          justifyContent: "center",
+          padding: 10,
+          boxShadow: "1px 1px #F2F2F2",
+        }}
+      >
+        <img
+          alt={"avt"}
+          src={
+            "https://i.pinimg.com/originals/a1/62/89/a16289ed246af75e6199f0df99f7dbdf.gif"
+          }
+          style={{
+            width: 200,
+            objectFit: "cover",
+            height: 200,
+            alignSelf: "center",
+            borderRadius: 20,
+            marginBottom: 10,
+          }}
+        ></img>
+
+        <Title level={5}>Phạm Liên Sanh</Title>
+        <div
+          className="row"
+          style={{
+            padding: 16,
+            alignItems: "center",
+            marginTop: -16,
+          }}
+        >
+          <img
+            alt={"avt1"}
+            src={
+              "https://i.pinimg.com/564x/8f/0f/05/8f0f05ffe99debfbeef4cb83f87cad95.jpg"
+            }
+            style={{
+              width: 30,
+              objectFit: "cover",
+              height: 30,
+              borderRadius: 20,
+            }}
+          ></img>
+
+          <img
+            alt={"avt1"}
+            src={
+              "https://i.pinimg.com/236x/bf/f5/46/bff5462f324fa7aa5ca617e0912fa688.jpg"
+            }
+            style={{
+              width: 30,
+              objectFit: "cover",
+              height: 30,
+              borderRadius: 20,
+              marginLeft: -15,
+              marginRight: 8,
+            }}
+          ></img>
+
+          <Text>14 mutual friends</Text>
+        </div>
+        <Button
+          onClick={() => {}}
+          type="primary"
+          style={{
+            background: COLOR.green,
+            borderColor: COLOR.green,
+            color: "white",
+            fontWeight: 500,
+            width: "100%",
+            borderRadius: 20,
+          }}
+        >
+          Profile
+        </Button>
+      </div>
+    );
+  };
+
+  const Suggestion = () => {
+    return (
+      <div
+        className="row"
+        style={{ padding: 32, justifyContent: "space-between" }}
+      >
+        <CardSuggestion></CardSuggestion>
+        <CardSuggestion></CardSuggestion>
+        <CardSuggestion></CardSuggestion>
+        <CardSuggestion></CardSuggestion>
+      </div>
+    );
+  };
+  const FriendScrollView = () => {
+    return (
+      <div
+        className="col-8 offset-2 "
+        style={{
+          marginTop: 64,
+          alignItems: "center",
+          background: "whitesmoke",
+          borderRadius: 20,
+          marginBottom: 32,
+          boxShadow: "5px 5px #27AE60",
+        }}
+      >
+        <div className="row" style={{ paddingTop: 16 }}>
+          <div
+            className="col-3"
+            style={{
+              display: "flex",
+              justifyContent: "center",
+            }}
+          >
+            <Title>Friends</Title>
+          </div>
+          <div className="offset-5 col-2">
+            <Button
+              onClick={() => setMode("Requests")}
+              type="primary"
+              style={{
+                background: COLOR.green,
+                borderColor: COLOR.green,
+                color: "white",
+                fontWeight: 500,
+                display: "flex",
+                justifyContent: "center",
+              }}
+            >
+              Requests ({listRequest.length})
+            </Button>
+          </div>
+
+          <div className="col-2">
+            <Button
+              onClick={() => setMode("Friends")}
+              type="primary"
+              style={{
+                background: "#27AE60",
+                borderColor: "#27AE60",
+                color: "white",
+                fontWeight: 500,
+                display: "flex",
+                justifyContent: "center",
+              }}
+            >
+              Friends ({numberTotalFriend})
+            </Button>
+          </div>
+        </div>
+
+        <div
+          className="row"
+          style={{
+            marginTop: 8,
+            marginBottom: 16,
+            paddingLeft: 32,
+            paddingRight: 32,
+          }}
+        >
+          <Input
+            onPressEnter={handleSearch}
+            allowClear
+            suffix={
+              <SearchOutlined
+                onClick={() => {}}
+                style={{ fontSize: 24, color: COLOR.white }}
+              />
+            }
+            ref={inputRef}
+            bordered={false}
+            style={{
+              backgroundColor: COLOR.lightGreen,
+            }}
+            defaultValue={""}
+          />
+        </div>
+
+        <div className="row" style={{ padding: 32 }}>
+          {listUserCard}
+        </div>
+
+        <div style={{ marginLeft: 32 }}>
+          <Title level={3}>People you may know</Title>
+        </div>
+
+        <Suggestion></Suggestion>
+      </div>
+    );
+  };
+
   return (
     <>
       <Layout>
@@ -115,89 +313,7 @@ function FriendManagementPage() {
         <Layout>
           <Layout style={styles.mainArea}>
             <Content>
-              <div
-                className="col-8 offset-2 "
-                style={{
-                  marginTop: 64,
-                  alignItems: "center",
-                }}
-              >
-                <div className="row" style={{ paddingTop: 16 }}>
-                  <div
-                    className="col-3"
-                    style={{
-                      display: "flex",
-                      justifyContent: "center",
-                    }}
-                  >
-                    <Title>Friends</Title>
-                  </div>
-                  <div className="offset-5 col-2">
-                    <Button
-                      onClick={() => setMode("Requests")}
-                      type="primary"
-                      style={{
-                        background: COLOR.green,
-                        borderColor: COLOR.green,
-                        color: "white",
-                        fontWeight: 500,
-                        display: "flex",
-                        justifyContent: "center",
-                      }}
-                    >
-                      Requests ({listRequest.length})
-                    </Button>
-                  </div>
-
-                  <div className="col-2">
-                    <Button
-                      onClick={() => setMode("Friends")}
-                      type="primary"
-                      style={{
-                        background: "#27AE60",
-                        borderColor: "#27AE60",
-                        color: "white",
-                        fontWeight: 500,
-                        display: "flex",
-                        justifyContent: "center",
-                      }}
-                    >
-                      Friends ({numberTotalFriend})
-                    </Button>
-                  </div>
-                </div>
-
-                <div
-                  className="row"
-                  style={{
-                    marginTop: 8,
-                    marginBottom: 16,
-                    paddingLeft: 32,
-                    paddingRight: 32,
-                  }}
-                >
-                  <Input
-                    onPressEnter={handleSearch}
-                    allowClear
-                    suffix={
-                      <SearchOutlined
-                        onClick={() => {}}
-                        style={{ fontSize: 24, color: COLOR.white }}
-                      />
-                    }
-                    ref={inputRef}
-                    bordered={false}
-                    style={{
-                      backgroundColor: COLOR.lightGreen,
-                    }}
-                    defaultValue={""}
-                  />
-                </div>
-
-                <div className="row" style={{ padding: 32 }}>
-                  {listUserCard}
-                </div>
-              </div>
+              <FriendScrollView></FriendScrollView>
             </Content>
           </Layout>
         </Layout>
