@@ -58,6 +58,7 @@ function Comment({
   onCopyCommentLink,
   isFocus,
   postId,
+  interactionCallback,
 }) {
   const [myInteractions, setMyInteractions] = useState({});
   const [isReply, setIsReply] = useState(false);
@@ -95,6 +96,8 @@ function Comment({
     if (myInteractions?.upvote) {
       unvoteComment(id, postId)
         .then((res) => {
+          interactionCallback();
+
           fetchMyInteractions().then(() =>
             dispatchInteractions({ type: "unupvote" })
           );
@@ -106,6 +109,8 @@ function Comment({
     } else {
       upvoteComment(id, postId)
         .then((res) => {
+          interactionCallback();
+
           if (myInteractions?.downvote) {
             dispatchInteractions({ type: "undownvote" });
           }
@@ -129,6 +134,8 @@ function Comment({
     if (myInteractions?.downvote) {
       unvoteComment(id, postId)
         .then((res) => {
+          interactionCallback();
+
           fetchMyInteractions().then(() =>
             dispatchInteractions({ type: "undownvote" })
           );
@@ -140,6 +147,8 @@ function Comment({
     } else {
       downvoteComment(id, postId)
         .then((res) => {
+          interactionCallback();
+
           if (myInteractions?.upvote) {
             dispatchInteractions({ type: "unupvote" });
           }
@@ -383,7 +392,7 @@ function Comment({
               <Space size="large">
                 <Space>
                   <Text strong style={{ fontSize: "1.5rem" }}>
-                    {allInteractions.upvotes}
+                    {comment?.interactionInfo?.listUpvotes?.length}
                   </Text>
                   <Tooltip title="Upvote">
                     <ArrowUpOutlined
@@ -402,7 +411,7 @@ function Comment({
                     />
                   </Tooltip>
                   <Text strong style={{ fontSize: "1.5rem" }}>
-                    {allInteractions.downvotes}
+                    {comment?.interactionInfo?.listDownvotes?.length}
                   </Text>
                 </Space>
                 <Text onClick={toggleReply} className="clickable" strong>
