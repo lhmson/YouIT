@@ -45,7 +45,7 @@ export const Chart = ({
   let styledData = data;
 
   useEffect(() => {
-    onFetchData(range.current, time.current.format());
+    onFetchData(range.current, time?.current?.format());
   }, []);
 
   const countDataItems = () => {
@@ -68,12 +68,12 @@ export const Chart = ({
   const handleChangeRange = (value) => {
     range.current = value;
     time.current = moment();
-    onFetchData(range.current, time.current.format());
+    onFetchData(range.current, time?.current?.format());
   };
 
   const handleChangeTime = (value) => {
     time.current = value;
-    onFetchData(range.current, time.current.format());
+    onFetchData(range.current, time?.current?.format());
   };
 
   const chart = () => {
