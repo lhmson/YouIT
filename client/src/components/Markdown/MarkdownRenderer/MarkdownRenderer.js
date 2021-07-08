@@ -83,7 +83,7 @@ const parseJSON = (text) => {
 
   try {
     result = JSON.parse(text);
-  } catch {}
+  } catch { }
 
   return result;
 };
@@ -207,6 +207,7 @@ function MarkdownRenderer({ text, promiseText, previewMode = false }) {
           inline={inline}
           className={className}
           children={children}
+          previewMode={previewMode}
           {...props}
         />
       ) : (
@@ -230,13 +231,23 @@ function MarkdownRenderer({ text, promiseText, previewMode = false }) {
     },
   };
 
+  // can be cleaner
+  const remarkPlugins = React.useRef(
+    previewMode ?
+      [remarkMath, gfm]
+      :
+      [remarkMath, gfm, remarkToc]
+  ).current;
+
+  const rehypePlugins = React.useRef([rehypeKatex, rehypeRaw, rehypeSlug]).current;
+
   return (
     <div>
       {(text || renderedText) && (
         <ReactMarkdown
           components={CustomMarkdownRendererComponents}
-          remarkPlugins={[remarkMath, gfm, remarkToc]}
-          rehypePlugins={[rehypeKatex, rehypeRaw, rehypeSlug]}
+          remarkPlugins={remarkPlugins}
+          rehypePlugins={rehypePlugins}
         >
           {text || renderedText}
         </ReactMarkdown>
