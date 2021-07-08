@@ -5,6 +5,8 @@ export const fetchAllReportOfAnUser = (userId) =>
   API.get(`/report/${userId}/list/pending`);
 export const fetchAllGroupsOfAnUser = (userId) =>
   API.get(`/report/${userId}/list/groups`);
+export const fetchAllPostsOfAnUser = (userId) =>
+  API.get(`/report/${userId}/list/posts`);
 
 export const createReport = (report) => API.post(`/report/create`, report);
 

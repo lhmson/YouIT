@@ -10,6 +10,8 @@ import LoadingSearch from "../../../components/Loading/LoadingSearch";
 import COLOR from "../../../constants/colors.js";
 import { useHistory } from "react-router-dom";
 import GroupJoinedCard from "../../../components/GroupCard/GroupJoinedCard";
+import FeedPost from "../../../components/Posts/FeedPosts/FeedPost/FeedPost";
+
 const { Content } = Layout;
 const { Title, Text } = Typography;
 
@@ -103,6 +105,21 @@ function UserAdminManagement() {
       dataIndex: "numberOfPosts",
       width: "20%",
       align: "center",
+      // onCell: function (record, rowIndex) {
+      //   return {
+      //     onClick: (event) => {
+      //       api
+      //         .fetchAllPostsOfAnUser(record._id)
+      //         .then((res) => {
+      //           console.log(res.data);
+      //           infoPost(record.name, res.data);
+      //         })
+      //         .catch((e) => {
+      //           console.log(e);
+      //         });
+      //     },
+      //   };
+      // },
     },
   ];
 
@@ -172,6 +189,21 @@ function UserAdminManagement() {
     });
   }
 
+  function infoPost(name, listPosts) {
+    Modal.info({
+      title: `List Posts of ${name}`,
+      footer: null,
+      width: "70%",
+      content: (
+        <div>
+          {listPosts?.map((post, i) => {
+            return <FeedPost key={post._id} post={post}></FeedPost>;
+          })}
+        </div>
+      ),
+      onOk() {},
+    });
+  }
   const TableReportUser = () => {
     const rowSelection = {
       selectedRowKeys: selectedRowkeys,

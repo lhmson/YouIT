@@ -194,3 +194,17 @@ export const getAllGroupsOfUserId = async (req, res) => {
       .json({ message: error.message });
   }
 };
+
+export const getAllPostsOfUserId = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const posts = await Post.find({
+      userId: userId,
+    });
+    return res.status(httpStatusCodes.ok).json(posts);
+  } catch (error) {
+    return res
+      .status(httpStatusCodes.internalServerError)
+      .json({ message: error.message });
+  }
+};
