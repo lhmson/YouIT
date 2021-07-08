@@ -18,6 +18,7 @@ function GroupJoinedCard({
   update,
   setUpdate,
   backgroundUrl,
+  isAdmin,
 }) {
   const [user, setUser] = useLocalStorage("user");
   const history = useHistory();
@@ -57,11 +58,17 @@ function GroupJoinedCard({
 
             <div className="mx-2" style={{ alignSelf: "center" }}>
               <div className="break-word">
-                <Link to={`/group/${_id}/main`}>
+                {isAdmin ? (
                   <Text style={styles.textUser}>
                     {nameGroup ?? "Name Group"}
                   </Text>
-                </Link>
+                ) : (
+                  <Link to={`/group/${_id}/main`}>
+                    <Text style={styles.textUser}>
+                      {nameGroup ?? "Name Group"}
+                    </Text>
+                  </Link>
+                )}
               </div>
 
               <div className="break-word">
@@ -91,19 +98,21 @@ function GroupJoinedCard({
               }
             }
           >
-            <Button
-              onClick={onPressButton}
-              className="mb-2"
-              type="primary"
-              style={{
-                background: "#27AE60",
-                borderColor: "#27AE60",
-                color: "white",
-                fontWeight: 500,
-              }}
-            >
-              {txtButton}
-            </Button>
+            {isAdmin ?? (
+              <Button
+                onClick={onPressButton}
+                className="mb-2"
+                type="primary"
+                style={{
+                  background: "#27AE60",
+                  borderColor: "#27AE60",
+                  color: "white",
+                  fontWeight: 500,
+                }}
+              >
+                {txtButton}
+              </Button>
+            )}
             <div>
               <Text style={styles.text}>
                 {(totalMembers ?? 0) +
