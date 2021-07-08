@@ -116,12 +116,13 @@ function FriendManagementPage() {
         style={{
           background: COLOR.greenSmoke,
           borderRadius: 20,
-          width: 220,
+          width: 200,
           height: 380,
           alignItems: "center",
           justifyContent: "center",
           padding: 10,
           boxShadow: "1px 1px #F2F2F2",
+          marginBottom: 8,
         }}
       >
         <img
@@ -131,7 +132,7 @@ function FriendManagementPage() {
             "https://i.pinimg.com/originals/a1/62/89/a16289ed246af75e6199f0df99f7dbdf.gif"
           }
           style={{
-            width: 200,
+            width: 180,
             objectFit: "cover",
             height: 200,
             alignSelf: "center",
@@ -250,17 +251,17 @@ function FriendManagementPage() {
           boxShadow: "5px 5px #27AE60",
         }}
       >
-        <div className="row" style={{ paddingTop: 16 }}>
-          <div
-            className="col-3"
-            style={{
-              display: "flex",
-              justifyContent: "center",
-            }}
-          >
-            <Title>Friends</Title>
-          </div>
-          <div className="offset-5 col-2">
+        <div
+          className="row"
+          style={{
+            justifyContent: "space-between",
+            alignItems: "center",
+            padding: 32,
+            paddingBottom: 8,
+          }}
+        >
+          <Title>Friends</Title>
+          <div className="row">
             <Button
               onClick={() => setMode("Requests")}
               type="primary"
@@ -271,13 +272,11 @@ function FriendManagementPage() {
                 fontWeight: 500,
                 display: "flex",
                 justifyContent: "center",
+                marginRight: 16,
               }}
             >
               Requests ({listRequest.length})
             </Button>
-          </div>
-
-          <div className="col-2">
             <Button
               onClick={() => setMode("Friends")}
               type="primary"

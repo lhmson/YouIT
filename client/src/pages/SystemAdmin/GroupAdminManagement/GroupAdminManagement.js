@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { Layout, Typography, Table, Button, message } from "antd";
+import { Layout, Typography, Table, Button, message, Modal } from "antd";
 import styles from "./styles.js";
 import Navbar from "../../../components/Navbar/Navbar";
 import ReportUserCard from "../../../components/ReportUserCard/ReportUserCard";
 import * as apiGroup from "../../../api/group";
 import { limitNameLength } from "../../../utils/limitNameLength.js";
 import LoadingSearch from "../../../components/Loading/LoadingSearch";
+import FriendCard from "../../../components/FriendCard/FriendCard";
+import { useHistory } from "react-router-dom";
 
 const { Content } = Layout;
 const { Title, Text } = Typography;
@@ -15,6 +17,7 @@ function GroupAdminManagement() {
   const [listReports, setListReports] = useState([]);
   // const [update, setUpdate] = useState(false);
   const [loading, setLoading] = useState(false);
+  const history = useHistory();
 
   useEffect(() => {
     setLoading(false);
@@ -31,6 +34,30 @@ function GroupAdminManagement() {
       });
   }, []);
 
+  function infoMember(name, listMembers) {
+    Modal.info({
+      title: `List Groups of ${name}`,
+      footer: null,
+      width: "70%",
+      content: (
+        <div>
+          {listMembers?.map((member, i) => {
+            return (
+              <FriendCard
+                _id={member._id}
+                name={member.name}
+                relationship="Add Friend"
+                avatarUrl={member.avatarUrl}
+                userInfo={member.userInfo}
+              ></FriendCard>
+            );
+          })}
+        </div>
+      ),
+      onOk() {},
+    });
+  }
+
   const columns = [
     {
       title: "ID",
@@ -42,25 +69,36 @@ function GroupAdminManagement() {
       title: "Group Name",
       dataIndex: "name",
       width: "40%",
-      align: "center",
-    },
-    {
-      title: "Reports",
-      dataIndex: "reports",
-      width: "15%",
-      align: "center",
+      align: "left",
+      render: (text) => <div className="clickable">{text}</div>,
+      onCell: function (record, rowIndex) {
+        return {
+          onClick: (event) => {
+            history.push(`/group/${record._id}/main`);
+          },
+        };
+      },
     },
     {
       title: "Members",
       dataIndex: "members",
       width: "15%",
       align: "center",
+      render: (text) => <div className="clickable">{text}</div>,
     },
     {
       title: "Posts",
       dataIndex: "posts",
       width: "15%",
       align: "center",
+      render: (text) => <div className="clickable">{text}</div>,
+    },
+    {
+      title: "Reports",
+      dataIndex: "reports",
+      width: "15%",
+      align: "center",
+      render: (text) => <div className="clickable">{text}</div>,
     },
   ];
 
