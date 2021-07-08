@@ -11,6 +11,8 @@ const styles = {
     marginTop: 64,
     marginLeft: 0,
     minWidth: "180vh",
+    background: COLOR.greenSmoke,
+    minHeight: "100vh",
   },
 };
 

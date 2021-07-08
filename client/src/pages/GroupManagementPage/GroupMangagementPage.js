@@ -117,6 +117,10 @@ function GroupManagementPage() {
                 style={{
                   marginTop: 64,
                   alignItems: "center",
+                  background: "whitesmoke",
+                  borderRadius: 20,
+                  marginBottom: 32,
+                  boxShadow: "5px 5px #27AE60",
                 }}
               >
                 <div className="row" style={{ paddingTop: 16 }}>

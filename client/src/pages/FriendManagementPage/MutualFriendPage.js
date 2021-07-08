@@ -77,14 +77,16 @@ function MutualFriendPage({ props }) {
         <Navbar />
         <Layout>
           <Layout style={styles.mainArea}>
-            <Content
-              style={{ background: numberTotalFriend === 0 ? "white" : "" }}
-            >
+            <Content style={{ background: COLOR.greenSmoke }}>
               <div
                 className="col-8 offset-2 "
                 style={{
                   marginTop: 64,
                   alignItems: "center",
+                  background: numberTotalFriend === 0 ? "white" : "whitesmoke",
+                  borderRadius: 20,
+                  marginBottom: 32,
+                  boxShadow: "5px 5px #27AE60",
                 }}
               >
                 <div className="row" style={{ paddingTop: 16 }}>

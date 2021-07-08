@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useMemo } from "react";
-import { Layout, Typography, Input, Image } from "antd";
+import { Layout, Typography, Input, Image, Tooltip, Tag } from "antd";
 import styles from "./styles.js";
 import Navbar from "../../components/Navbar/Navbar";
 import { Button } from "antd";
@@ -8,7 +8,7 @@ import UserRequestCard from "../../components/FriendCard/UserRequestCard";
 import COLOR from "../../constants/colors";
 import * as api from "../../api/friend";
 import { useLocalStorage } from "../../hooks/useLocalStorage";
-
+import { Link } from "react-router-dom";
 import { SearchOutlined } from "@ant-design/icons";
 import LoadingSearch from "../../components/Loading/LoadingSearch.js";
 
@@ -109,14 +109,15 @@ function FriendManagementPage() {
       </div>
     );
 
-  const CardSuggestion = () => {
+  const CardSuggestion = ({ item }) => {
+    console.log("card", item);
     return (
       <div
         style={{
           background: COLOR.greenSmoke,
           borderRadius: 20,
           width: 220,
-          height: 350,
+          height: 380,
           alignItems: "center",
           justifyContent: "center",
           padding: 10,
@@ -126,6 +127,7 @@ function FriendManagementPage() {
         <img
           alt={"avt"}
           src={
+            item.avatarUrl ??
             "https://i.pinimg.com/originals/a1/62/89/a16289ed246af75e6199f0df99f7dbdf.gif"
           }
           style={{
@@ -138,7 +140,7 @@ function FriendManagementPage() {
           }}
         ></img>
 
-        <Title level={5}>Phạm Liên Sanh</Title>
+        <Title level={5}>{item.name ?? "Phạm Sanh"}</Title>
         <div
           className="row"
           style={{
@@ -150,6 +152,7 @@ function FriendManagementPage() {
           <img
             alt={"avt1"}
             src={
+              item.avatarUrl1 ??
               "https://i.pinimg.com/564x/8f/0f/05/8f0f05ffe99debfbeef4cb83f87cad95.jpg"
             }
             style={{
@@ -163,6 +166,7 @@ function FriendManagementPage() {
           <img
             alt={"avt1"}
             src={
+              item.avatarUrl2 ??
               "https://i.pinimg.com/236x/bf/f5/46/bff5462f324fa7aa5ca617e0912fa688.jpg"
             }
             style={{
@@ -175,36 +179,61 @@ function FriendManagementPage() {
             }}
           ></img>
 
-          <Text>14 mutual friends</Text>
+          <Text>{item.numberMutualFriends} mutual friends</Text>
         </div>
-        <Button
-          onClick={() => {}}
-          type="primary"
-          style={{
-            background: COLOR.green,
-            borderColor: COLOR.green,
-            color: "white",
-            fontWeight: 500,
-            width: "100%",
-            borderRadius: 20,
-          }}
+        <Link to={`/userinfo/${item.userId}`}>
+          <Button
+            onClick={() => {}}
+            type="primary"
+            style={{
+              background: COLOR.green,
+              borderColor: COLOR.green,
+              color: "white",
+              fontWeight: 500,
+              width: "100%",
+              borderRadius: 20,
+            }}
+          >
+            Profile
+          </Button>
+        </Link>
+        <div
+          className="row"
+          style={{ alignItems: "center", justifyContent: "center", padding: 8 }}
         >
-          Profile
-        </Button>
+          <Tooltip
+            title={`Mentioned ${item?.hashtag?.count ?? 0} time${
+              item?.hashtag?.count > 1 ? "s" : ""
+            }`}
+          >
+            <Tag className="mb-2 tag">{item?.hashtag?.name}</Tag>
+          </Tooltip>
+        </div>
       </div>
     );
   };
 
   const Suggestion = () => {
+    const [listSuggestion, setListSuggestion] = useState([]);
+    useEffect(() => {
+      api
+        .getSuggestion(user?.result?._id)
+        .then((res) => {
+          if (res.data instanceof Array) setListSuggestion(res.data);
+          else setListSuggestion([]);
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+    }, []);
     return (
       <div
         className="row"
         style={{ padding: 32, justifyContent: "space-between" }}
       >
-        <CardSuggestion></CardSuggestion>
-        <CardSuggestion></CardSuggestion>
-        <CardSuggestion></CardSuggestion>
-        <CardSuggestion></CardSuggestion>
+        {listSuggestion?.map((item, index) => (
+          <CardSuggestion item={item} key={index.toString()}></CardSuggestion>
+        ))}
       </div>
     );
   };
