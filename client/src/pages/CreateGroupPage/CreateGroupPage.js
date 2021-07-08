@@ -16,6 +16,7 @@ import COLOR from "../../constants/colors.js";
 import { useHistory } from "react-router";
 import { createGroup } from "../../api/group";
 import Navbar from "../../components/Navbar/Navbar";
+import * as apiUpload from "../../api/upload";
 import CreateGroupName from "../../components/CreateGroup/CreateGroupName/CreateGroupName";
 import CreateGroupDescription from "../../components/CreateGroup/CreateGroupDescription/CreateGroupDescription";
 import CreateGroupMembers from "../../components/CreateGroup/CreateGroupMembers/CreateGroupMembers";
@@ -24,6 +25,7 @@ import CreateGroupNameAdmin from "../../components/CreateGroup/CreateGroupNameAd
 import { convertFileToBase64 } from "../../utils/image.js";
 import styles from "./styles.js";
 import { useGroupsOfUser } from "../../context/GroupsOfUserContext.js";
+import { createFormData } from "../../utils/upload.js";
 
 const { Title, Text } = Typography;
 
@@ -85,12 +87,37 @@ function CreateGroupPage() {
       });
   };
 
+  const handleUploadPhoto = async (img, type) => {
+    const data = createFormData(img);
+
+    try {
+      const res = await apiUpload.uploadImage(data, type);
+
+      if (res) {
+        return res.data.data.avatar;
+      } else {
+        return null;
+      }
+    } catch (error) {
+      console.log("Error when upload img", error.message);
+    }
+  };
+
   const hiddenBackgroundInput = useRef(null);
 
   const handleBackgroundChange = async (e) => {
     const fileUploaded = e.target.files[0];
-    const base64 = await convertFileToBase64(fileUploaded);
-    setGroupCover(base64);
+    // const base64 = await convertFileToBase64(fileUploaded);
+
+    const resBackground = await handleUploadPhoto(fileUploaded, "group");
+    // console.log("res ava", resBackground);
+
+    if (!resBackground) {
+      message.error("Cannot upload image");
+      return;
+    }
+
+    setGroupCover(resBackground);
   };
 
   const privacyDescription =

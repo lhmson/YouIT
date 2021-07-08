@@ -539,7 +539,7 @@ export const getPostsPagination = async (req, res) => {
           /** unpopulate userId */
           const stdPostObj = {
             ...p,
-            userId: p?.userId?._id,
+            userId: p?.userId?._id, //TODO: review null error
           };
           let visible = await isPostVisibleByUser(stdPostObj, userId);
 

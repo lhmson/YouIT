@@ -272,7 +272,7 @@ function SpecificPostPage(props) {
           </div>
           <div className="col-md-4">
             <RelatedCard title="From this user" posts={otherPosts} />
-            <RelatedCard title="Related posts" posts={relatedPosts} />
+            <RelatedCard title="Recommended posts" posts={relatedPosts} />
           </div>
         </div>
       </Layout>

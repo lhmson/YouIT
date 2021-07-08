@@ -6,6 +6,10 @@ import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { materialDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 import * as runnerApis from "../../../api/compiler";
 import COLOR from "../../../constants/colors";
+import { materialLight } from "react-syntax-highlighter/dist/esm/styles/prism";
+import { materialOceanic } from "react-syntax-highlighter/dist/esm/styles/prism";
+import TextArea from "antd/lib/input/TextArea";
+import Text from "antd/lib/typography/Text";
 
 /**
  * 28 languages are supported :)
@@ -145,16 +149,61 @@ export const CodeRenderer = ({
     }
   };
 
+  const [theme, setTheme] = useState(materialOceanic);
+  const isDarkTheme = useMemo(() => theme === materialOceanic, [theme]);
+
+  const switchTheme = () => {
+    setTheme((prev) =>
+      prev === materialOceanic ? materialLight : materialOceanic
+    );
+  };
+
   return (
-    <div style={{ border: "2px solid black" }}>
+    <div
+      className="disable-horizontal-scroll"
+      style={{ backgroundColor: "whitesmoke", padding: 12 }}
+    >
       {!inline && match ? (
-        <SyntaxHighlighter
-          style={materialDark}
-          language={match[1]}
-          PreTag="div"
-          children={String(children).replace(/\n$/, "")}
-          {...props}
-        />
+        <div
+          style={{
+            backgroundColor: isDarkTheme ? "#263238" : "#fafafa",
+            paddingRight: 12,
+            paddingBottom: 12,
+          }}
+        >
+          <SyntaxHighlighter
+            style={theme}
+            language={match[1]}
+            PreTag="div"
+            children={String(children).replace(/\n$/, "")}
+            {...props}
+          />
+          <div
+            style={{
+              flexDirection: "row-reverse",
+              display: "flex",
+            }}
+          >
+            <Button
+              className="green-button"
+              style={{ alignSelf: "flex-end" }}
+              onClick={() =>
+                handleExecuteCode(String(children), apiLanguage, input)
+              }
+            >
+              Run
+            </Button>
+            <Button
+              className="green-button mr-3"
+              style={{ alignSelf: "flex-end" }}
+              onClick={() => {
+                switchTheme();
+              }}
+            >
+              Switch theme
+            </Button>
+          </div>
+        </div>
       ) : (
         <code className={className} {...props}>
           {children}
@@ -163,21 +212,20 @@ export const CodeRenderer = ({
 
       {apiLanguage && (
         <div>
-          <Button
-            className={"green-button"}
-            onClick={() =>
-              handleExecuteCode(String(children), apiLanguage, input)
-            }
-          >
-            Run
-          </Button>
+          {/* sorry but this is the only way */}
+          <div style={{ height: 4 }} />
+          <Text className="bold">Input</Text>
 
-          <Input
+          <br />
+          <TextArea
+            className="mr-4 mb-2"
             value={input}
             onChange={(event) => {
               setInput(event.target.value);
             }}
+            autoSize={{ minRows: 3, maxRows: 5 }}
           />
+          <br />
 
           {renderedOutput.state !== "Unavailable" && (
             <p>
