@@ -1,6 +1,11 @@
 import React from "react";
 import { Menu, Tooltip } from "antd";
-import { UserOutlined, CoffeeOutlined, TeamOutlined } from "@ant-design/icons";
+import {
+  UserOutlined,
+  CoffeeOutlined,
+  TeamOutlined,
+  LaptopOutlined,
+} from "@ant-design/icons";
 import styles from "../styles.js";
 import { Link } from "react-router-dom";
 import { limitNameLength } from "../../../../utils/limitNameLength";
@@ -35,7 +40,7 @@ function FeedMenu({ user, groups }) {
       </Menu.Item>
       <SubMenu
         key="groups"
-        icon={<CoffeeOutlined style={{ fontSize: "1.4rem" }} />}
+        icon={<LaptopOutlined style={{ fontSize: "1.4rem" }} />}
         title="Groups"
       >
         <Menu.Item key="groups-all" style={styles.item}>
@@ -51,6 +56,13 @@ function FeedMenu({ user, groups }) {
           </Menu.Item>
         ))}
       </SubMenu>
+      <Menu.Item
+        key="hack"
+        style={styles.item}
+        icon={<CoffeeOutlined style={{ fontSize: "1.4rem" }} />}
+      >
+        <Link to="/group/60e51aa16054b10818319aed/main">Code contests</Link>
+      </Menu.Item>
     </Menu>
   );
 }
