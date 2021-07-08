@@ -91,13 +91,13 @@ function MutualFriendPage({ props }) {
               >
                 <div className="row" style={{ paddingTop: 16 }}>
                   <div
-                    className="col-4"
+                    className="col-12"
                     style={{
                       display: "flex",
-                      justifyContent: "center",
+                      justifyContent: "flex-start",
                     }}
                   >
-                    <Title>
+                    <Title level={3}>
                       ({numberTotalFriend}) Mutual Friend
                       {numberTotalFriend >= 2 ? "s" : ""}
                     </Title>

@@ -8,9 +8,10 @@ const styles = {
     background: COLOR.green,
   },
   mainArea: {
-    marginTop: 16,
+    paddingTop: 16,
     marginLeft: 0,
     minWidth: "180vh",
+    background: COLOR.greenSmoke,
   },
 };
 
