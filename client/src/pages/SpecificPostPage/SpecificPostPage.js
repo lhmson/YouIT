@@ -165,7 +165,6 @@ function SpecificPostPage(props) {
 
   const handleSubmitComment = async (newComment) => {
     await commentsApi.createComment(post._id, newComment);
-
     if (focusedCommentId) {
       history.push(`/post/${id}`);
       history.go(0);
@@ -216,6 +215,11 @@ function SpecificPostPage(props) {
       });
   };
 
+  const handleInteractionCallback = () => {
+    console.log("interaction call back");
+    fetchComments();
+  };
+
   return (
     <>
       <Layout>
@@ -263,6 +267,7 @@ function SpecificPostPage(props) {
                         onCopyCommentLink={handleCopyCommentLink}
                         isFocus={focusedCommentIndex > -1 && i === 0}
                         postId={post?._id}
+                        interactionCallback={() => handleInteractionCallback()}
                       />
                     </div>
                   ))}
