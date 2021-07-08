@@ -10,6 +10,7 @@ import {
   getFriendsStatus,
   setUserStatus,
   getUserStatus,
+  checkAdminSystem,
   countNewUsers,
   redirectGithubCallback,
   signinWithGithub,
@@ -22,6 +23,7 @@ router.get("/newUsers/:range/:timeString", countNewUsers);
 router.get("/password/check/:password", auth, checkPassword);
 router.get("/login/github", signinWithGithub);
 router.get("/login/github/callback", redirectGithubCallback);
+router.get("/checkAdminSystem", auth, checkAdminSystem);
 
 router.post("/signin", signin);
 router.post("/signup", signup);

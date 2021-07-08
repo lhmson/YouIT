@@ -350,7 +350,7 @@ function FeedPost({ post, setCurrentId }) {
             <div className="d-inline-flex flex-column ml-3 break-word">
               <Row className="align-items-center">
                 <Space size={4}>
-                  <Link to={`/userinfo/${post?.userId._id}`} target="_blank">
+                  <Link to={`/userinfo/${post?.userId?._id}`} target="_blank">
                     <Text
                       className="clickable"
                       strong
