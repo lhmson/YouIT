@@ -43,6 +43,7 @@ function FeedPosts({
   }, []);
 
   useEffect(() => {
+    console.log("feed posts info", limitPagination, space, ownerId, groupId);
     api
       .fetchPostsPagination(0, limitPagination, space, ownerId, groupId) // very good
       .then((res) => {

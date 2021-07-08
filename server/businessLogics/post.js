@@ -140,7 +140,7 @@ export const isPostVisibleByUser = async (post, userId) => {
 
     if (post?.groupPostInfo?.status !== "Approved") {
       // the user can still see post from herself/himself even if it's not approved
-      if (postOwnerId.equals(userId)) return true;
+      if (postOwnerId?.equals(userId)) return true;
 
       // only group moderator, admin and owner can see this post
       // Gonna refactor later: use function in bussiness logic / group
