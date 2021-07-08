@@ -7,6 +7,7 @@ import * as apiGroup from "../../../api/group";
 import { limitNameLength } from "../../../utils/limitNameLength.js";
 import LoadingSearch from "../../../components/Loading/LoadingSearch";
 import FriendCard from "../../../components/FriendCard/FriendCard";
+import { useHistory } from "react-router-dom";
 
 const { Content } = Layout;
 const { Title, Text } = Typography;
@@ -16,6 +17,7 @@ function GroupAdminManagement() {
   const [listReports, setListReports] = useState([]);
   // const [update, setUpdate] = useState(false);
   const [loading, setLoading] = useState(false);
+  const history = useHistory();
 
   useEffect(() => {
     setLoading(false);
@@ -68,6 +70,13 @@ function GroupAdminManagement() {
       dataIndex: "name",
       width: "40%",
       align: "left",
+      onCell: function (record, rowIndex) {
+        return {
+          onClick: (event) => {
+            history.push(`/group/${record._id}/main`);
+          },
+        };
+      },
     },
     {
       title: "Reports",
