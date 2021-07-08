@@ -77,7 +77,7 @@ function MutualFriendPage({ props }) {
         <Navbar />
         <Layout>
           <Layout style={styles.mainArea}>
-            <Content style={{ background: COLOR.greenSmoke, height: "100%" }}>
+            <Content style={{ background: COLOR.greenSmoke }}>
               <div
                 className="col-8 offset-2 "
                 style={{

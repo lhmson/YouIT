@@ -12,6 +12,7 @@ const styles = {
     marginLeft: 0,
     minWidth: "100vh",
     background: COLOR.greenSmoke,
+    minHeight: "100vh",
   },
 };
 
