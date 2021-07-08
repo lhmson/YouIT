@@ -70,6 +70,7 @@ function GroupAdminManagement() {
       dataIndex: "name",
       width: "40%",
       align: "left",
+      render: (text) => <div className="clickable">{text}</div>,
       onCell: function (record, rowIndex) {
         return {
           onClick: (event) => {
@@ -79,22 +80,25 @@ function GroupAdminManagement() {
       },
     },
     {
-      title: "Reports",
-      dataIndex: "reports",
-      width: "15%",
-      align: "center",
-    },
-    {
       title: "Members",
       dataIndex: "members",
       width: "15%",
       align: "center",
+      render: (text) => <div className="clickable">{text}</div>,
     },
     {
       title: "Posts",
       dataIndex: "posts",
       width: "15%",
       align: "center",
+      render: (text) => <div className="clickable">{text}</div>,
+    },
+    {
+      title: "Reports",
+      dataIndex: "reports",
+      width: "15%",
+      align: "center",
+      render: (text) => <div className="clickable">{text}</div>,
     },
   ];
 

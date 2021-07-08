@@ -12,9 +12,10 @@ function NoDataSearch() {
       style={{ backgroundColor: "white", minHeight: 400 }}
     >
       <Col align="center" style={{ paddingBottom: 32 }}>
-        <Image
+        <img
           src="https://i.pinimg.com/564x/17/58/de/1758de784df9b2827b3431f0c6c4f162.jpg"
           width={300}
+          alt={"no result"}
         />
         <Title level={3}>We didn't find any results</Title>
         <Text>

@@ -50,6 +50,7 @@ function UserAdminManagement() {
       dataIndex: "name",
       width: "30%",
       align: "center",
+      render: (text) => <div className="clickable">{text}</div>,
       onCell: function (record, rowIndex) {
         return {
           onClick: (event) => {
@@ -60,30 +61,11 @@ function UserAdminManagement() {
       },
     },
     {
-      title: "Reports",
-      dataIndex: "numberOfReports",
-      width: "20%",
-      align: "center",
-      onCell: function (record, rowIndex) {
-        return {
-          onClick: (event) => {
-            api
-              .fetchAllReportOfAnUser(record._id)
-              .then((res) => {
-                info(record.name, res.data);
-              })
-              .catch((e) => {
-                console.log(e);
-              });
-          },
-        };
-      },
-    },
-    {
       title: "Groups",
       dataIndex: "numberOfGroups",
       width: "20%",
       align: "center",
+      render: (text) => <div className="clickable">{text}</div>,
       onCell: function (record, rowIndex) {
         return {
           onClick: (event) => {
@@ -105,6 +87,7 @@ function UserAdminManagement() {
       dataIndex: "numberOfPosts",
       width: "20%",
       align: "center",
+      render: (text) => <div className="clickable">{text}</div>,
       // onCell: function (record, rowIndex) {
       //   return {
       //     onClick: (event) => {
@@ -120,6 +103,27 @@ function UserAdminManagement() {
       //     },
       //   };
       // },
+    },
+    {
+      title: "Reports",
+      dataIndex: "numberOfReports",
+      width: "20%",
+      align: "center",
+      render: (text) => <div className="clickable">{text}</div>,
+      onCell: function (record, rowIndex) {
+        return {
+          onClick: (event) => {
+            api
+              .fetchAllReportOfAnUser(record._id)
+              .then((res) => {
+                info(record.name, res.data);
+              })
+              .catch((e) => {
+                console.log(e);
+              });
+          },
+        };
+      },
     },
   ];
 
