@@ -264,7 +264,7 @@ function HomePage() {
                 <img
                   style={{ height: "100%" }}
                   alt="bg-connect"
-                  src="https://lh3.googleusercontent.com/fife/AAWUweVuX0JVVDZ_ZQAbYkX0MsfVsuLQ_QC0Mkn5cu3HDEfcXEGYdDRBZhcueinL29kCLL1WR6NXQRdydqDHEESqfN7ksMc7G-c1-YMkOecfkcr84KEpnDCe0L4uEEKvlPlBfPbS2ZfApleT08GKb0rnw5FDtkltgN6azvSi1683nNCgc0Nd8l7HKamn9cMEH2rmo03AdmhkruZRSopGFi5dHAr_KmsHNrzYqCnLA-pyqEV8ECuMVE8g51u9mBQT25AT8CpG7xqus_Fht5v0e0FMu4LzCMXlNW0wLZKpvIFJ92LAP1u7bQr0weR7Y4JmDFPkC8QTcF4Fa_akBSthdop1PDb98zm1a9a1ASktFjJzHNKwyX0fRvUkqTTjcuUNXpzKNvuv7d1xaRd8gINRusEBxqkkVj8BrZ1s7gyR7UC-tjojR49tKFsxZi2zlfW77JsLw7cavk4GiXFSPTt-MQgsKZK3nAIOUF_uBEGPi_U68LzMnvhc-UXPhU6lNUUZxVxuraLB1JsjVKFdjeStWGBaHqDbBp7Ih8Ky9iGilZnlt9HiBXEisaCZk8fDOODkzw2NB2wRlF6yYt3buFdTpNwcrl-vwXxap__VLK4rFe0Xkzct-0qpzJ160NJwW0puXBW92N4_ypi4QcylU8L0PKXvywIydVqXw4FLOVFFJUVyAYWb2C_Pq6_kJ9p_05LkHtd3be02FC4Z3ZNAv-YuEqidIogib1ftWEcNBz0=w1920-h942-ft"
+                  src="https://i.ibb.co/3vK8Tcx/getconnected.jpg"
                 />
               </div>
             </div>
@@ -320,7 +320,7 @@ function HomePage() {
                   <img
                     style={{ height: "100%" }}
                     alt="bg-share"
-                    src="https://lh3.google.com/u/1/d/1X2SKAo8AH2PpQG7HWnBySYccJptLFtaD=w1920-h870-iv1"
+                    src="https://i.ibb.co/bWpRkNt/sharepost.png"
                   />
                 </div>
               </div>
@@ -346,7 +346,7 @@ function HomePage() {
                   <img
                     style={{ height: "100%" }}
                     alt="bg-group"
-                    src="https://lh3.google.com/u/1/d/1vPhZ8hGJauL4X7EKmKJIkac11qatYsry=w1330-h870-iv2"
+                    src="https://i.ibb.co/QKFYSHm/group.png"
                   />
                 </div>
               </div>
