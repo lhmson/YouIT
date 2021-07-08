@@ -15,3 +15,6 @@ export const fetchListRequestFriends = (userId) =>
 
 export const checkFriends = (userId1, userId2) =>
   API.get(`/friend/checkFriends/${userId1}/${userId2}`);
+
+export const getSuggestion = (userId) =>
+  API.get(`/friend/${userId}/getSuggestion`);

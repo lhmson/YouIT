@@ -21,7 +21,10 @@ import {
   checkRoleHasPermissionOfRole,
 } from "../businessLogics/group.js";
 import moment from "moment";
-import { handleCreateHashtag, handleDeleteHashtags } from "../businessLogics/hashtag.js";
+import {
+  handleCreateHashtag,
+  handleDeleteHashtags,
+} from "../businessLogics/hashtag.js";
 import { extractToken } from "../businessLogics/auth.js";
 
 //#region CRUD
@@ -221,8 +224,7 @@ export const updatePost = async (req, res) => {
         .status(httpStatusCodes.notFound)
         .send(`Cannot find a post with id: ${id}`);
 
-    if (post?.hashtags)
-      await handleDeleteHashtags(post.hashtags)
+    if (post?.hashtags) await handleDeleteHashtags(post.hashtags);
 
     if (!userId || !post.userId.equals(userId)) {
       return res
@@ -330,8 +332,7 @@ export const deletePost = async (req, res) => {
         .json({ message: `You don't have permission to delete this post` });
     }
 
-    if (post?.hashtags)
-      await handleDeleteHashtags(post.hashtags)
+    if (post?.hashtags) await handleDeleteHashtags(post.hashtags);
 
     await Post.findByIdAndRemove(id);
     res
@@ -362,7 +363,7 @@ export const getMyPostInteractions = async (req, res) => {
     let filterJson = undefined;
     try {
       filterJson = JSON.parse(filter);
-    } catch { }
+    } catch {}
 
     const interactions = await getInteractionOfAUser(id, userId, filterJson);
     return res.status(httpStatusCodes.ok).json(interactions);
@@ -494,14 +495,14 @@ export const getPostsPagination = async (req, res) => {
       .status(httpStatusCodes.ok)
       .send(
         `space query:\n` +
-        ` - (empty): All visible posts\n` +
-        ` - news_feed: All posts from other users and posts in joined group\n` +
-        ` - user_profile: All posts of a user which are not in group (ownerId query is required)\n` +
-        ` - pending_in_group: All posts that's currently pending in a group (groupId query is required)\n` +
-        ` - group: All approved posts in the same group (groupId query is required)\n` +
-        `\n` +
-        `ownerId query: Filter out all posts of just 1 user\n` +
-        `groupId query: Filter out all posts of just 1 group\n`
+          ` - (empty): All visible posts\n` +
+          ` - news_feed: All posts from other users and posts in joined group\n` +
+          ` - user_profile: All posts of a user which are not in group (ownerId query is required)\n` +
+          ` - pending_in_group: All posts that's currently pending in a group (groupId query is required)\n` +
+          ` - group: All approved posts in the same group (groupId query is required)\n` +
+          `\n` +
+          `ownerId query: Filter out all posts of just 1 user\n` +
+          `groupId query: Filter out all posts of just 1 group\n`
       );
   }
 
@@ -538,7 +539,7 @@ export const getPostsPagination = async (req, res) => {
           /** unpopulate userId */
           const stdPostObj = {
             ...p,
-            userId: p.userId._id,
+            userId: p?.userId?._id,
           };
           let visible = await isPostVisibleByUser(stdPostObj, userId);
 
@@ -745,8 +746,7 @@ export const declineGroupPost = async (req, res, next) => {
     // delete backUpContent.updatedAt;
     // delete backUpContent._id;
 
-    if (post?.hashtags)
-      await handleDeleteHashtags(post.hashtags)
+    if (post?.hashtags) await handleDeleteHashtags(post.hashtags);
 
     await Post.findByIdAndDelete(postId);
 
@@ -758,7 +758,7 @@ export const declineGroupPost = async (req, res, next) => {
         // postBackUp: backUpContent,
       },
       // link: `/?postBackUp=${JSON.stringify(backUpContent)}`,
-      link: `/`
+      link: `/`,
     });
 
     return res.status(httpStatusCodes.ok).send("Post declined and deleted");
