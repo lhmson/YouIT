@@ -40,6 +40,7 @@ import { FriendsStatusProvider } from "./context/FriendsStatusContext.js";
 import { BACKEND_URL } from "./constants/config.js";
 import { useDispatch } from "react-redux";
 import { getUser } from "./redux/actions/user.js";
+import * as apiAuth from "./api/auth";
 import * as apiUser from "./api/user_info";
 import * as apiGroup from "./api/group";
 
@@ -49,13 +50,6 @@ import { useGroupsOfUser } from "./context/GroupsOfUserContext.js";
 const loggedIn = () => {
   const user = JSON.parse(localStorage.getItem("user"));
   return user;
-};
-
-const isAdmin = () => {
-  // const user = JSON.parse(localStorage.getItem("user"));
-  // //TODO: handle set login admin
-  // return user?.role === "Admin";
-  return true;
 };
 
 function App() {
@@ -141,11 +135,7 @@ function App() {
             {/* <Route path="/group/:id/about" component={GroupPage} />
             <Route path="/group/:id/members" component={GroupPage} /> */}
             <PrivateRoute exact path="/admin">
-              {isAdmin() ? (
-                <Redirect to="/admin/dashboard" />
-              ) : (
-                <AuthAdminPage />
-              )}
+              <Redirect to="/admin/dashboard" />
             </PrivateRoute>
             <PrivateRoute
               exact

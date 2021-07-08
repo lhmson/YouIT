@@ -151,7 +151,7 @@ function FeedPost({ post, setCurrentId }) {
               <Text>Edit post</Text>
             </Row>
           </Menu.Item>
-          <Menu.Item key="delete" onClick={() => handleDeletePost(post._id)}>
+          <Menu.Item key="delete" onClick={() => handleDeletePost(post?._id)}>
             <Row align="middle">
               <DeleteFilled className="red mr-2" />
               <Text className="red">Delete post</Text>
@@ -160,13 +160,13 @@ function FeedPost({ post, setCurrentId }) {
         </>
       ) : (
         <>
-          <Menu.Item key="follow" onClick={() => handleFollowPost(post._id)}>
+          <Menu.Item key="follow" onClick={() => handleFollowPost(post?._id)}>
             <Row align="middle">
               <BellOutlined className="mr-2" />
               <Text>Follow post</Text>
             </Row>
           </Menu.Item>
-          <Menu.Item key="report" onClick={() => handleReportPost(post._id)}>
+          <Menu.Item key="report" onClick={() => handleReportPost(post?._id)}>
             <Row align="middle">
               <FlagOutlined className="mr-2" />
               <Text>Report post</Text>
@@ -350,7 +350,7 @@ function FeedPost({ post, setCurrentId }) {
             <div className="d-inline-flex flex-column ml-3 break-word">
               <Row className="align-items-center">
                 <Space size={4}>
-                  <Link to={`/userinfo/${post?.userId._id}`} target="_blank">
+                  <Link to={`/userinfo/${post?.userId?._id}`} target="_blank">
                     <Text
                       className="clickable"
                       strong
@@ -365,7 +365,7 @@ function FeedPost({ post, setCurrentId }) {
                       <CaretRightOutlined
                         style={{ fontSize: 18, paddingBottom: 5 }}
                       />
-                      <Link to={`/group/${groupId._id}/main`} target="_blank">
+                      <Link to={`/group/${groupId?._id}/main`} target="_blank">
                         <Text
                           className="clickable"
                           strong
@@ -392,7 +392,7 @@ function FeedPost({ post, setCurrentId }) {
             </Tooltip>
 
             <div className="mr-4">
-              <Link to={`/post/${post._id}`} target="_blank">
+              <Link to={`/post/${post?._id}`} target="_blank">
                 <Tooltip title={`Created ${moment(post?.createdAt).fromNow()}`}>
                   <Text className="clickable" underline type="secondary">
                     Last edited {moment(post?.contentUpdatedAt).fromNow()}
@@ -443,7 +443,7 @@ function FeedPost({ post, setCurrentId }) {
               </Row>
             )}
 
-            <Link to={`/post/${post._id}`} target="_blank">
+            <Link to={`/post/${post?._id}`} target="_blank">
               <Text className="clickable bold">Click here to read more</Text>
             </Link>
           </div>
@@ -464,7 +464,7 @@ function FeedPost({ post, setCurrentId }) {
                       className={`clickable icon ${
                         myInteractions?.upvote ? "green" : "black"
                       }`}
-                      onClick={() => handleUpvoteClick(post._id)}
+                      onClick={() => handleUpvoteClick(post?._id)}
                     />
                   </Tooltip>
                 )}
@@ -477,7 +477,7 @@ function FeedPost({ post, setCurrentId }) {
                       className={`clickable icon ${
                         myInteractions?.downvote ? "green" : "black"
                       }`}
-                      onClick={() => handleDownvoteClick(post._id)}
+                      onClick={() => handleDownvoteClick(post?._id)}
                     />
                   </Tooltip>
                 )}
@@ -492,7 +492,7 @@ function FeedPost({ post, setCurrentId }) {
                   className=" clickable bold mx-2"
                 >{`Comment (${post?.comments.length})`}</Text>
               </HashLink> */}
-              <Link to={`/post/${post._id}#comments`} target="_blank">
+              <Link to={`/post/${post?._id}#comments`} target="_blank">
                 <Text
                   style={{ fontSize: "1.2rem" }}
                   className=" clickable bold mx-2"
@@ -505,7 +505,7 @@ function FeedPost({ post, setCurrentId }) {
               <Tooltip title="Copy link">
                 <LinkOutlined
                   className="clickable icon"
-                  onClick={() => copyLink(post._id)}
+                  onClick={() => copyLink(post?._id)}
                 />
               </Tooltip>
               <ShareButton post={post} />

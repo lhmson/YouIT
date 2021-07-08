@@ -35,27 +35,32 @@ function GroupAdminManagement() {
     {
       title: "ID",
       dataIndex: "id",
-      width: "20%",
+      width: "10%",
+      align: "center",
     },
     {
       title: "Group Name",
       dataIndex: "name",
-      width: "30%",
+      width: "40%",
+      align: "center",
     },
     {
       title: "Reports",
       dataIndex: "reports",
-      width: "20%",
+      width: "15%",
+      align: "center",
     },
     {
       title: "Members",
       dataIndex: "members",
-      width: "20%",
+      width: "15%",
+      align: "center",
     },
     {
       title: "Posts",
       dataIndex: "posts",
-      width: "20%",
+      width: "15%",
+      align: "center",
     },
   ];
 
@@ -76,25 +81,6 @@ function GroupAdminManagement() {
     setSelectedRowkeys(selectedRowKeys);
     console.log("rows", selectedRowkeys);
   };
-
-  // const getReportInfo = (name, listReports) => {
-  //   Modal.info({
-  //     title: `List Reports of ${name}`,
-  //     footer: null,
-  //     width: "70%",
-  //     content: (
-  //       <div>
-  //         {listReports.map((report) => (
-  //           <ReportUserCard
-  //             contentReport={report.content}
-  //             nameReportedBy={report.nameUserReport}
-  //           ></ReportUserCard>
-  //         ))}
-  //       </div>
-  //     ),
-  //     onOk() {},
-  //   });
-  // };
 
   const deleteSelectedGroups = async () => {
     // nho check admin web o api
@@ -150,24 +136,13 @@ function GroupAdminManagement() {
     };
     return (
       <Table
-        // onRow={(record, rowIndex) => {
-        //   return {
-        //     onDoubleClick: (event) => {
-        //       api
-        //         .fetchAllReportOfAnUser(data[rowIndex]._id)
-        //         .then((res) => {
-        //           getReportInfo(data[rowIndex].name, res.data);
-        //         })
-        //         .catch((e) => {
-        //           console.log(e);
-        //         });
-        //     }, // double click row
-        //   };
-        // }}
-        style={{ width: "80%" }}
+        style={{ margin: 32 }}
         rowSelection={rowSelection}
         columns={columns}
         dataSource={data}
+        scroll={{ x: "false" }}
+        size="small"
+        title={() => <Title level={5}>Group</Title>}
       />
     );
   };
@@ -204,34 +179,47 @@ function GroupAdminManagement() {
           <div
             className="row"
             style={{
-              padding: 32,
+              padding: 16,
               alignItems: "center",
               justifyContent: "center",
             }}
           >
-            <TableReportUser></TableReportUser>
-          </div>
-          {/* <ButtonFooter></ButtonFooter> */}
-          <div
-            className="row"
-            style={{
-              justifyContent: "flex-end",
-              alignItems: "center",
-              width: "90%",
-            }}
-          >
-            <Button
-              className="green-button"
-              onClick={deleteSelectedGroups}
-              type="primary"
+            <div
               style={{
-                color: "white",
-                fontWeight: 500,
-                width: 120,
+                background: "white",
+                borderRadius: 20,
+                justifyContent: "center",
+                alignItems: "center",
+                width: "80%",
+                boxShadow: "10px 10px #27AE60",
               }}
             >
-              Delete
-            </Button>
+              <TableReportUser></TableReportUser>
+
+              <div
+                className="row"
+                style={{
+                  justifyContent: "flex-end",
+                  alignItems: "center",
+                  width: "100%",
+                  marginBottom: 16,
+                  marginTop: -16,
+                }}
+              >
+                <Button
+                  className="green-button"
+                  onClick={deleteSelectedGroups}
+                  type="primary"
+                  style={{
+                    color: "white",
+                    fontWeight: 500,
+                    width: 120,
+                  }}
+                >
+                  Delete
+                </Button>
+              </div>
+            </div>
           </div>
         </Content>
       </Layout>

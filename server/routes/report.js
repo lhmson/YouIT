@@ -8,6 +8,8 @@ import {
   banUserReports,
   deleteUserReports,
   getAllReportsOfUser,
+  getAllGroupsOfUserId,
+  getAllPostsOfUserId,
 } from "../controllers/report.js";
 
 import auth from "../middleware/auth.js";
@@ -16,6 +18,8 @@ const router = express.Router();
 
 router.get("/user/list/all", auth, getAllReportUserRequests);
 router.get("/:userId/list/pending", auth, getAllReportsOfUser);
+router.get("/:userId/list/groups", auth, getAllGroupsOfUserId);
+router.get("/:userId/list/posts", auth, getAllPostsOfUserId);
 
 router.post("/create", auth, createReport);
 

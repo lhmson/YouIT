@@ -6,8 +6,10 @@ import { GroupContext } from "../../../pages/GroupPage/GroupPage.js";
 import { convertFileToBase64 } from "../../../utils/image.js";
 import * as apiGroup from "../../../api/group";
 import { isOwner } from "../../../utils/user.js";
+import * as apiUpload from "../../../api/upload";
 import { useLocalStorage } from "../../../hooks/useLocalStorage.js";
 import Loading from "../../Loading/Loading.js";
+import { createFormData } from "../../../utils/upload.js";
 
 function CoverPhoto() {
   const { group } = useContext(GroupContext);
@@ -22,14 +24,38 @@ function CoverPhoto() {
 
   const hiddenBackgroundInput = useRef(null);
 
+  const handleUploadPhoto = async (img, type) => {
+    const data = createFormData(img);
+
+    try {
+      const res = await apiUpload.uploadImage(data, type);
+
+      if (res) {
+        return res.data.data.avatar;
+      } else {
+        return null;
+      }
+    } catch (error) {
+      console.log("Error when upload img", error.message);
+    }
+  };
+
   const handleBackgroundChange = async (e) => {
     setLoadingBackground(true);
     const fileUploaded = e.target.files[0];
-    const base64 = await convertFileToBase64(fileUploaded);
+    // const base64 = await convertFileToBase64(fileUploaded);
+
+    const resBackground = await handleUploadPhoto(fileUploaded, "group");
+    // console.log("res ava", resAvatar);
+
+    if (!resBackground) {
+      message.error("Cannot upload image");
+      return;
+    }
 
     const updatedGroup = {
       ...group,
-      backgroundUrl: base64,
+      backgroundUrl: resBackground,
     };
     await apiGroup.updateGroup(updatedGroup).then((res) => {
       setLoadingBackground(false);
@@ -40,7 +66,7 @@ function CoverPhoto() {
   const handleEditBackground = () => {
     hiddenBackgroundInput.current.click();
   };
-  console.log(loadingBackground);
+  // console.log(loadingBackground);
   return (
     <div style={{ position: "relative" }}>
       <Layout

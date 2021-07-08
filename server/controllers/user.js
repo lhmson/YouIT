@@ -430,3 +430,22 @@ export const redirectGithubCallback = async (req, res) => {
     console.log(error);
   }
 };
+
+export const checkAdminSystem = async (req, res) => {
+  const { userId } = req;
+  console.log("user", userId);
+
+  try {
+    const user = await User.findById(userId);
+    const role = user.role;
+    console.log("role", role);
+    if (role === "Admin") {
+      return res.status(httpStatusCodes.accepted).json({ isAdmin: true });
+    }
+    return res.status(httpStatusCodes.unauthorized).json({ isAdmin: false });
+  } catch (error) {
+    res
+      .status(httpStatusCodes.internalServerError)
+      .json({ message: error.message });
+  }
+};

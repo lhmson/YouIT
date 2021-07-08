@@ -12,4 +12,6 @@ export const resendVerificationMail = (email) =>
   API.post(`/user/resend`, { email: email });
 export const signOut = (browserId) => API.post("/user/signout", { browserId });
 
+export const checkAdminSystem = () => API.get("/user/checkAdminSystem");
+
 // export const signinWithGithub = () => API.get("/user/login/github");
