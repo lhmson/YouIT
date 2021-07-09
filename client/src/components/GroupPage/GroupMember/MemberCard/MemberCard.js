@@ -19,6 +19,22 @@ import * as apiGroup from "../../../../api/group";
 import * as apiUserInfo from "../../../../api/user_info";
 import { GroupContext } from "../../../../pages/GroupPage/GroupPage.js";
 import { fetchProgrammingHashtags } from "../../../../api/hashtag.js";
+import {
+  createFriendRequest,
+  deleteFriendRequest,
+  fetchAllFriendRequests,
+} from "../../../../api/friendRequest.js";
+import {
+  removeSendingFriendRequest,
+  removeReceivingFriendRequest,
+  addSendingFriendRequest,
+} from "../../../../api/user_info";
+import { useDispatch } from "react-redux";
+import {
+  removeFriendRequest,
+  addFriendRequest,
+} from "../../../../redux/actions/user.js";
+import { checkUserASendedUserB } from "../../../../api/friendRequest.js";
 
 const { Text } = Typography;
 const { Item } = Menu;
@@ -27,7 +43,9 @@ function MemberCard(props) {
   const [listMutual, setListMutual] = useState([]);
   const [numberMutual, setNumberMutual] = useState(0);
   const { name } = props;
-  const [txtButton, setTxtButton] = React.useState("Message");
+  const [txtButton, setTxtButton] = useState(
+    props.relationship ?? "Add Friend"
+  );
   const { _id } = props;
   const { role } = props;
   const { group } = useContext(GroupContext);
@@ -35,6 +53,7 @@ function MemberCard(props) {
   const { avatarUrl } = props;
   const [listHashTags, setListHashTags] = useState([]);
   const [userInfo, setUserInfo] = useState([]);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     api
@@ -90,6 +109,76 @@ function MemberCard(props) {
     });
   }, []);
 
+  const changeStateButton = async () => {
+    const key = "updatable";
+    if (txtButton === "Add Friend") {
+      const openMessage = () => {
+        message.loading({ content: "Sending request...", key });
+        setTimeout(() => {
+          message.success({
+            content: "You sended request successfully!",
+            key,
+            duration: 2,
+          });
+        }, 3000);
+      };
+      openMessage();
+      await handleAddingFriend(_id, user?.result?._id);
+      setTxtButton("Cancel Request");
+    } else if (txtButton === "Cancel Request") {
+      const openMessage = () => {
+        message.loading({ content: "Sending request...", key });
+        setTimeout(() => {
+          message.success({
+            content: "You cancel request successfully!",
+            key,
+            duration: 2,
+          });
+        }, 3000);
+      };
+      openMessage();
+      await cancelFriendRequest(await getMatchFriendRequest());
+      setTxtButton("Add Friend");
+    } else if (txtButton === "Waiting you accept") {
+      message.info("You can go to the user profile to accept or deny");
+    }
+  };
+
+  const handleAddingFriend = async (confirmId, senderId) => {
+    // create friend request
+    const friendRequest = {
+      userConfirmId: confirmId,
+      userSendRequestId: senderId,
+    };
+    const { data } = await createFriendRequest(friendRequest);
+
+    dispatch(addFriendRequest(data));
+    await addSendingFriendRequest(data);
+  };
+
+  const cancelFriendRequest = async (request) => {
+    deleteFriendRequest(request?._id);
+
+    if (user?._id === request?.userConfirmId) {
+      await removeSendingFriendRequest(request);
+    } else if (user?._id === request?.userSendRequestId) {
+      await removeReceivingFriendRequest(request);
+    }
+    dispatch(removeFriendRequest(request, user));
+  };
+
+  const getMatchFriendRequest = async () => {
+    const listFriendRequests = (await fetchAllFriendRequests()).data;
+
+    const friendRequest = listFriendRequests.map((request) => {
+      const listUserId = [request.userConfirmId, request.userSendRequestId];
+      if (listUserId.includes(_id) && listUserId.includes(user?.result?._id))
+        return request;
+    });
+    console.log("friend req", friendRequest[0]);
+    return friendRequest[0];
+  };
+
   const renderUserInfo = () => {
     const education = userInfo.educations?.[userInfo.educations?.length - 1];
     const work = userInfo.works?.[userInfo.works?.length - 1];
@@ -141,6 +230,35 @@ function MemberCard(props) {
       })
       .catch((error) => message.success(error.message));
   };
+
+  useEffect(() => {
+    api
+      .checkFriends(user?.result?._id, _id)
+      .then((res) => {
+        if (res.data) setTxtButton("Friends");
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  }, []);
+
+  useEffect(() => {
+    checkUserASendedUserB(user?.result?._id, _id)
+      .then((res) => {
+        if (res.data) setTxtButton("Cancel Request");
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+
+    checkUserASendedUserB(_id, user?.result?._id)
+      .then((res) => {
+        if (res.data) setTxtButton("Waiting you accept");
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  }, []);
 
   const removeAdminMenuItem = () => {
     return (
@@ -270,6 +388,8 @@ function MemberCard(props) {
       </>
     );
   };
+
+  const changeStateButtonabc = () => {};
   return (
     <>
       <div style={styles.card}>
@@ -312,6 +432,7 @@ function MemberCard(props) {
             }}
           >
             <Button
+              onClick={changeStateButtonabc}
               className="mb-2"
               type="primary"
               style={{
