@@ -98,14 +98,8 @@ function HomePage() {
           setSelectedTag(title);
           console.log("selected", title);
         }}
-        // style={{ background: "red" }}
       >
-        <Text
-          className="boldhover"
-          style={{ fontSize: isMobile ? 14 : 40, marginRight: 32 }}
-        >
-          {title}
-        </Text>
+        <p className="boldhover feature-text mr-5 no-wrap">{title}</p>
       </div>
     );
   };
@@ -113,10 +107,11 @@ function HomePage() {
   const HashTagsSelection = () => {
     return (
       <div>
+        <div style={{ height: 40 }} />
         <div
           style={{
             flex: 1,
-            height: 68,
+            height: 100,
             marginBottom: 50,
           }}
         >
@@ -129,7 +124,6 @@ function HomePage() {
 
         <div
           style={{
-            // height: 68,
             textAlign: "center",
           }}
         >
@@ -154,229 +148,179 @@ function HomePage() {
     <>
       <Layout>
         <Navbar />
-        <div
-          className="main"
-          style={{ marginTop: 64, padding: 24, alignItems: "center" }}
-        >
-          <div className="row" style={{ marginBottom: 100 }}>
+        <div className="main-container">
+          <section className="section">
             <img
-              style={{
-                position: "absolute",
-                left: 0,
-                right: 0,
-                opacity: 0.3,
-                width: isMobile ? 400 : "100%",
-              }}
-              alt="bg-home"
+              alt="youit background"
               src="https://i.ibb.co/KhP9yq3/programming.png"
+              className="background-img"
             />
-            <div
-              className="col-lg-6 align-items-center justify-content-center"
-              // style={{ zIndex: 1 }}
-            >
-              <Text
-                style={{
-                  fontSize: isMobile ? 30 : 60,
-                  fontWeight: "bolder",
-                  marginBottom: 0,
-                  padding: 0,
-                  paddingLeft: isMobile ? 64 : 0,
-                }}
-              >
-                YouIT, share our
-              </Text>
-              <br />
-              {/* <Text style={{ fontSize: 60, fontWeight: "bolder" }}>
-                programming skills
-              </Text> */}
-              <RotatingText
-                style={{
-                  fontWeight: 500,
-                  fontSize: "2.5rem",
-                  color: COLOR.green,
-                }}
-                deletingInterval={16}
-                items={["programming skills", "tiny bugs", "coding experience"]}
-              />
-              <br />
-              <div className="mt-4" />
-              <Text style={{ fontSize: 28 }}>
-                Hello world! YouIT is more than just a website. Our goal is to
-                build a strong and ever - growing geeks community.
-              </Text>
-              <br />
-              <div className="row ml-1 mt-5 mb-5">
-                <Button
-                  className="green-button mr-4"
-                  size="large"
+            <div className="avoid-nav pt-4 pt-lg-0 d-lg-flex intro-section text-center text-lg-left align-items-center">
+              <div>
+                <Text className="slogan">YouIT, share our</Text>
+                <br />
+                <RotatingText
                   style={{
-                    fontFamily: "Consolas",
-                    fontSize: isMobile ? 12 : 18,
+                    fontWeight: "bold",
+                    fontSize: "max(2rem,4vw)",
+                    color: COLOR.green,
                   }}
-                  onClick={() =>
-                    history.push("/group/60d08c234088f200159fc6db/main")
-                  }
-                >
-                  Interview preparation
-                </Button>
+                  deletingInterval={16}
+                  items={[
+                    "programming skills",
+                    "tiny bugs",
+                    "coding experience",
+                  ]}
+                />
+                <br />
+                <div className="mt-4" />
+                <Text className="intro-desc">
+                  Hello world! YouIT is more than just a website. Our goal is to
+                  build a strong and ever - growing geeks community.
+                </Text>
+                <br />
+                <div className="mt-4 mb-4 mb-lg-0">
+                  <Button
+                    className="green-button mr-4"
+                    size="large"
+                    onClick={() =>
+                      history.push("/group/60d08c234088f200159fc6db/main")
+                    }
+                  >
+                    Interview preparation
+                  </Button>
 
-                <Button
-                  className="green-button"
-                  size="large"
-                  style={{
-                    fontFamily: "Consolas",
-                    fontSize: isMobile ? 12 : 18,
-                  }}
-                  onClick={() =>
-                    history.push("/group/60d0c3b380bc9b4f44217c30/main")
-                  }
-                >
-                  Hello World
-                </Button>
+                  <Button
+                    className="green-button"
+                    size="large"
+                    onClick={() =>
+                      history.push("/group/60d0c3b380bc9b4f44217c30/main")
+                    }
+                  >
+                    Hello World
+                  </Button>
+                </div>
+              </div>
+              <div className="video-container">
+                <iframe
+                  className="video "
+                  src="https://streamable.com/e/h799qa?autoplay=1"
+                  frameborder="0"
+                  width="100%"
+                  height="100%"
+                  allowfullscreen
+                  // allow="autoplay"
+                ></iframe>
               </div>
             </div>
-            {/* <div
-              className="col-lg-6"
-              style={{
-                alignItems: "stretch",
-                justifyContent: "stretch",
-              }}
-            >
-              <div style={{ flex: 1, height: 480 }}> */}
-
-            {/* </div>
-            </div> */}
-          </div>
-          <div
-            style={{
-              marginBottom: 100,
-            }}
-          >
-            <div data-aos="zoom-in">
-              <div
-                style={{
-                  display: "flex",
-                  height: isMobile ? 300 : 600,
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
+          </section>
+          <section className="section bg-white justify-content-center">
+            <div className=" container d-lg-flex flex-lg-row-reverse col-gap justify-content-center align-items-center  text-center text-lg-left">
+              <div className="pic-container " data-aos="zoom-in">
                 <img
-                  style={{ height: "100%" }}
-                  alt="bg-connect"
-                  src="https://i.ibb.co/3vK8Tcx/getconnected.jpg"
+                  className="pic shadow-lg"
+                  alt="youit conversation"
+                  src="https://i.ibb.co/ByKHNZd/getconnected.jpg"
                 />
               </div>
-            </div>
-            <div style={{ height: 24 }} />
-
-            <div data-aos="fade-up" style={{ textAlign: "center" }}>
-              <Text strong style={{ fontSize: 40 }}>
-                Connect to the programming world
-              </Text>
-              <br />
-              <div style={{ height: 16 }} />
-              <Text style={{ fontSize: 24 }}>
-                Easily reach out to other coders and gain your opportunity to
-                seek new companions.
-              </Text>
-            </div>
-          </div>
-
-          <div
-            data-aos="fade-right"
-            className="row"
-            style={{
-              alignItems: "center",
-              marginBottom: 100,
-            }}
-          >
-            <div className="col-lg-6 mb-4" style={{ textAlign: "left" }}>
-              <Text strong style={{ fontSize: 40 }}>
-                Keep up-to-date
-              </Text>
-              <br />
-              <div style={{ height: 16 }} />
-
-              <Text style={{ fontSize: 24 }}>
-                Quickly catch up trendy technologies coming everyday and expand
-                your own knowledge.
-              </Text>
-            </div>
-            <div
-              data-aos="flip-left"
-              className="col-lg-6"
-              style={{ textAlign: "left" }}
-            >
-              <div>
-                <div
-                  style={{
-                    display: "flex",
-                    height: isMobile ? 270 : 350,
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                >
-                  <img
-                    style={{ height: "100%" }}
-                    alt="bg-share"
-                    src="https://i.ibb.co/bWpRkNt/sharepost.png"
-                  />
-                </div>
+              <div
+                className=" d-flex flex-column justify-content-center"
+                data-aos="fade-up"
+              >
+                <p className="feature-heading mt-4 mb-0">
+                  Connect to the programming world
+                </p>
+                <br />
+                <p className="feature-text ">
+                  Easily reach out to other coders and seek new companions.
+                </p>
               </div>
             </div>
-          </div>
-          <div
-            className="row"
-            style={{
-              alignItems: "center",
-              marginBottom: 100,
-            }}
-          >
-            <div data-aos="flip-right" className="col-lg-6 mb-4">
-              <div>
-                <div
-                  style={{
-                    display: "flex",
-                    height: isMobile ? 180 : 350,
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                >
-                  <img
-                    style={{ height: "100%" }}
-                    alt="bg-group"
-                    src="https://i.ibb.co/QKFYSHm/group.png"
-                  />
-                </div>
+          </section>
+
+          <section className="section bg-team justify-content-center ">
+            <div className="d-lg-flex  col-gap align-items-center container text-center text-lg-left">
+              <div className="pic-container" data-aos="fade-right">
+                <img
+                  className="pic shadow-lg"
+                  alt="youit share post"
+                  src="https://i.ibb.co/bWpRkNt/sharepost.png"
+                />
+              </div>
+              <div
+                className=" d-flex flex-column justify-content-center col-lg-5 "
+                data-aos="fade-up"
+              >
+                <p className="feature-heading mt-4 mb-0">Keep up-to-date</p>
+                <br />
+                <p className="feature-text ">
+                  Quickly catch up with trendy technologies coming everyday and
+                  expand your knowledge.
+                </p>
               </div>
             </div>
-            <div
-              data-aos="fade-left"
-              className="col-lg-5 offset-1"
-              style={{ textAlign: "left", paddingLeft: isMobile ? 0 : 90 }}
-            >
-              <Text strong style={{ fontSize: 40 }}>
-                Share experiences
-              </Text>
-              <br />
-              <div style={{ height: 16 }} />
+          </section>
 
-              <Text style={{ fontSize: 24 }}>
-                Openly show people your piece of code and tell them about your
-                programming stories.
-              </Text>
+          <section className="section bg-white justify-content-center">
+            <div className=" container row justify-content-center align-items-center flex-lg-row-reverse  text-left">
+              <div
+                className="pic-container col-lg-7  flex-grow-1"
+                data-aos="zoom-out"
+              >
+                {/* <img
+                  className="pic act1"
+                  alt="youit group"
+                  src="https://i.ibb.co/QKFYSHm/group.png"
+                /> */}
+                <img
+                  className="pic act2 shadow-lg"
+                  alt="youit chart"
+                  src="https://i.ibb.co/JRnddv6/chart.jpg"
+                />
+                <img
+                  className="pic act3 shadow-lg"
+                  alt="youit maths"
+                  src="https://i.ibb.co/HNhjzbB/maths.jpg"
+                />
+                <img
+                  className="pic act1"
+                  alt="youit maths"
+                  src="https://i.ibb.co/m5R7NMK/Untitled-4.png"
+                />
+              </div>
+              <div
+                className="col-lg-5 d-flex flex-column justify-content-center align-items-center align-items-lg-start "
+                data-aos="fade-up"
+              >
+                <p className="feature-heading mt-4 mb-0">Many activities</p>
+                <br />
+                <ul className=" d-none d-lg-block feature-text">
+                  <li>Create group</li>
+                  <li>Play with the editor</li>
+                  <li>Host a code contest</li>
+                  <li>And more...</li>
+                </ul>
+                <p className="d-block d-lg-none feature-text text-center">
+                  Create group, play with the editor, host a code contest, and
+                  more...
+                </p>
+              </div>
             </div>
-          </div>
-          {loadingAll ? (
-            <HashTagsSelection />
-          ) : (
-            <div style={{ marginBottom: 18 }}>
-              <LoadingSearch />
+          </section>
+          <section className="bg-white">
+            <div className="container">
+              {loadingAll ? (
+                <HashTagsSelection />
+              ) : (
+                <div>
+                  <LoadingSearch />
+                </div>
+              )}
             </div>
-          )}
+          </section>
         </div>
-        {!isMobile ? <Footer /> : null}
+
+        <Footer />
       </Layout>
     </>
   );

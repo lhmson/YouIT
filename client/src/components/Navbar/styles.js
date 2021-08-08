@@ -22,7 +22,7 @@ const styles = {
   },
   fixedHeader: {
     position: "fixed",
-    zIndex: 1,
+    zIndex: 2,
     width: "100%",
   },
   greenBackground: {
