@@ -14,8 +14,6 @@ import "../styles.css";
 import "../styles.css";
 import { useLocalStorage } from "../../../hooks/useLocalStorage.js";
 
-import { useMobile } from "../../../utils/responsiveQuery";
-
 import * as apiFriend from "../../../api/friend";
 import * as apiConversation from "../../../api/conversation";
 import { useFriendsStatus } from "../../../context/FriendsStatusContext";
@@ -56,7 +54,7 @@ function MessageHeader({ setOpenSidebar, currentId, listSeenMembers }) {
       if (msg.res.conversationId === currentId) {
         handleConversationDeleted();
       }
-    })
+    });
 
     return messageHandle.cleanUpAll;
   }, [currentId]);
@@ -83,7 +81,7 @@ function MessageHeader({ setOpenSidebar, currentId, listSeenMembers }) {
     message.warn("You are no longer in this conversation!", 2, () =>
       window.location.reload()
     );
-  }
+  };
 
   const handleLoadConversationData = () => {
     if (!currentId) return;
@@ -203,24 +201,26 @@ function MessageHeader({ setOpenSidebar, currentId, listSeenMembers }) {
       onOk() {
         const key = `delete_conversation_${currentId}`;
         message.loading({ content: "Deleting conversation...", key });
-        apiConversation.deleteConversation(currentId)
+        apiConversation
+          .deleteConversation(currentId)
           .then(() =>
             message.success({
               content: "Conversation deleted.",
-              key, duration: 1,
-              onClose: () => window.location.reload()
+              key,
+              duration: 1,
+              onClose: () => window.location.reload(),
             })
           )
           .catch(() =>
             message.error({
               content: "Something went wrong.",
-              key, duration: 1
+              key,
+              duration: 1,
             })
           );
       },
-      onCancel() {
-      },
-    })
+      onCancel() {},
+    });
   };
 
   return (

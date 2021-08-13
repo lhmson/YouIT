@@ -1,9 +1,11 @@
 import React from "react";
-import styles from "./styles.js";
 import { Input } from "antd";
-import createPostStyle from "../styles.js"
+import createPostStyle from "../styles.js";
 
-function CreatePostContentPinnedUrlInput({ contentPinnedUrl, setContentPinnedUrl }) {
+function CreatePostContentPinnedUrlInput({
+  contentPinnedUrl,
+  setContentPinnedUrl,
+}) {
   const handleTextChange = (value) => {
     setContentPinnedUrl(value.target.value);
   };

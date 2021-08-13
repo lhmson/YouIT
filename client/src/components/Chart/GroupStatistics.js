@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import * as groupAPI from "../../api/group";
 import { Chart } from "./Chart";
 

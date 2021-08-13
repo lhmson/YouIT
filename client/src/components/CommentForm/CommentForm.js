@@ -4,9 +4,6 @@ import RequireLogin from "../RequireLogin/RequireLogin";
 import { MarkdownEditor } from "../";
 
 const { Text } = Typography;
-const { TextArea } = Input;
-
-const { Option } = Select;
 
 const loggedIn = () => {
   const user = JSON.parse(localStorage.getItem("user"));
