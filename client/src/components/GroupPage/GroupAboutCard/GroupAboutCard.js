@@ -1,9 +1,8 @@
-import { Button, Divider, Layout, Row, Typography } from "antd";
+import { Divider, Layout, Row, Typography } from "antd";
 import moment from "moment";
 import React, { useContext } from "react";
 import { AiOutlineFieldTime, IoMdLock } from "react-icons/all";
 import { GroupContext } from "../../../pages/GroupPage/GroupPage.js";
-import { limitNameLength } from "../../../utils/limitNameLength.js";
 import { OverviewRow } from "../../UserInfo/AboutCard/index.js";
 import styles from "./styles.js";
 
@@ -18,7 +17,7 @@ function GroupAboutCard() {
   };
 
   const privacyDescription =
-    group?.privacy == "Public"
+    group?.privacy === "Public"
       ? "Anyone can see who's in the group and what they post."
       : "Only members can see who's in the group and what they post.";
 

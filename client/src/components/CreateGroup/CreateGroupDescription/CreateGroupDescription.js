@@ -1,5 +1,4 @@
 import React from "react";
-import styles from "./styles.js";
 import { Input } from "antd";
 
 function CreateGroupDescription({ description, setDescription }) {
