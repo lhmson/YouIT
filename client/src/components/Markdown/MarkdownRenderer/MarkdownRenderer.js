@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import ReactMarkdown from "react-markdown";
-import { Image, Input, message, Select } from "antd";
+import { Image, Input, message } from "antd";
 
 // markdown plugin: strikethrough, table, tasklists,...
 import gfm from "remark-gfm";
@@ -16,7 +16,7 @@ import rehypeRaw from "rehype-raw";
 
 // table of content
 import remarkToc from "remark-toc";
-import rehypeSlug from "rehype-slug"
+import rehypeSlug from "rehype-slug";
 
 import { CodeRenderer } from "./CodeRenderer";
 
@@ -24,7 +24,6 @@ import MermaidAPI from "mermaid";
 import { fetchMarkdown } from "../utils/fetchMarkdown";
 import { HackRenderer } from "./HackRenderer";
 MermaidAPI.initialize({ theme: "default", startOnLoad: true });
-const { Option } = Select;
 
 const CuteEasterEgg = () => {
   const [text, setText] = React.useState("");
@@ -83,7 +82,7 @@ const parseJSON = (text) => {
 
   try {
     result = JSON.parse(text);
-  } catch { }
+  } catch {}
 
   return result;
 };
@@ -233,13 +232,14 @@ function MarkdownRenderer({ text, promiseText, previewMode = false }) {
 
   // can be cleaner
   const remarkPlugins = React.useRef(
-    previewMode ?
-      [remarkMath, gfm]
-      :
-      [remarkMath, gfm, remarkToc]
+    previewMode ? [remarkMath, gfm] : [remarkMath, gfm, remarkToc]
   ).current;
 
-  const rehypePlugins = React.useRef([rehypeKatex, rehypeRaw, rehypeSlug]).current;
+  const rehypePlugins = React.useRef([
+    rehypeKatex,
+    rehypeRaw,
+    rehypeSlug,
+  ]).current;
 
   return (
     <div>

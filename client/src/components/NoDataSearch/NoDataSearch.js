@@ -1,9 +1,6 @@
-import React, { useEffect, useState } from "react";
-import { Button, Typography, Col, Image } from "antd";
-import { Link } from "react-router-dom";
-const { Title, Text, Paragraph } = Typography;
-
-const buttonSize = 150;
+import React, { useEffect } from "react";
+import { Typography, Col } from "antd";
+const { Title, Text } = Typography;
 
 function NoDataSearch() {
   return (

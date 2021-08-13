@@ -4,8 +4,6 @@ import { Link } from "react-router-dom";
 import styles from "./styles.js";
 import * as api from "../../api/post";
 
-import { limitNameLength } from "../../utils/limitNameLength.js";
-
 const { Title, Text, Paragraph } = Typography;
 
 function PostRequests(props) {

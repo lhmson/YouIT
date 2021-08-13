@@ -1,7 +1,6 @@
-import { Col, Layout, Row, Tag, Typography } from "antd";
+import { Col, Typography } from "antd";
 import React, { useContext } from "react";
 import { GroupContext } from "../../../pages/GroupPage/GroupPage.js";
-import styles from "./styles.js";
 
 const { Text } = Typography;
 

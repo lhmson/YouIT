@@ -5,7 +5,6 @@ import { useSelector } from "react-redux";
 import {
   IoSchoolSharp,
   IoHome,
-  MdLocationOn,
   FaMale,
   FaBirthdayCake,
   MdWork,
@@ -18,8 +17,6 @@ import moment from "moment";
 import Loading from "../Loading/Loading";
 import { limitNameLength } from "../../utils/limitNameLength.js";
 import { isLoginUser } from "../../utils/user.js";
-
-const { Header, Footer, Sider, Content } = Layout;
 
 // function InfoCard() {
 //   const [selectedItem, setSelectedItem] = useState("1");
