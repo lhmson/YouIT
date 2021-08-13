@@ -681,7 +681,7 @@ export const getAllGroupsForReport = async (req, res) => {
           if (groupPostInfo) {
             const groupPostId = groupPostInfo.groupId;
             const groupStatus = groupPostInfo.status;
-            if (groupPostId === group._id && groupStatus !== "Pending")
+            if (groupPostId.equals(group._id) && groupStatus !== "Pending")
               countPost++;
           }
         });
