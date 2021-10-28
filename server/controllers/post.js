@@ -363,7 +363,7 @@ export const getMyPostInteractions = async (req, res) => {
     let filterJson = undefined;
     try {
       filterJson = JSON.parse(filter);
-    } catch { }
+    } catch {}
 
     const interactions = await getInteractionOfAUser(id, userId, filterJson);
     return res.status(httpStatusCodes.ok).json(interactions);
@@ -495,14 +495,14 @@ export const getPostsPagination = async (req, res) => {
       .status(httpStatusCodes.ok)
       .send(
         `space query:\n` +
-        ` - (empty): All visible posts\n` +
-        ` - news_feed: All posts from other users and posts in joined group\n` +
-        ` - user_profile: All posts of a user which are not in group (ownerId query is required)\n` +
-        ` - pending_in_group: All posts that's currently pending in a group (groupId query is required)\n` +
-        ` - group: All approved posts in the same group (groupId query is required)\n` +
-        `\n` +
-        `ownerId query: Filter out all posts of just 1 user\n` +
-        `groupId query: Filter out all posts of just 1 group\n`
+          ` - (empty): All visible posts\n` +
+          ` - news_feed: All posts from other users and posts in joined group\n` +
+          ` - user_profile: All posts of a user which are not in group (ownerId query is required)\n` +
+          ` - pending_in_group: All posts that's currently pending in a group (groupId query is required)\n` +
+          ` - group: All approved posts in the same group (groupId query is required)\n` +
+          `\n` +
+          `ownerId query: Filter out all posts of just 1 user\n` +
+          `groupId query: Filter out all posts of just 1 group\n`
       );
   }
 
@@ -536,8 +536,7 @@ export const getPostsPagination = async (req, res) => {
         const posts = rawPosts.map((p) => p.toObject());
 
         asyncFilter(posts, async (p) => {
-          if (!p.userId)
-            return false;
+          if (!p.userId) return false;
 
           /** unpopulate userId */
           const stdPostObj = {
