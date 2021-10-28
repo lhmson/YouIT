@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState } from 'react'
 import {
   Card,
   Button,
@@ -10,50 +10,50 @@ import {
   Select,
   DatePicker,
   message,
-} from "antd";
+} from 'antd'
 
 // import { ReactComponent as ReactLogo } from "../../assets/add-user.svg";
-import logo from "../../assets/lightlogo.png";
-import addUserImage from "../../assets/add-user.png";
+import logo from '../../assets/lightlogo.png'
+import addUserImage from '../../assets/add-user.png'
 
-import styles from "./styles";
-import { Link } from "react-router-dom";
-import { signup } from "../../redux/actions/auth";
-import { useDispatch } from "react-redux";
-import moment from "moment";
-import COLOR from "../../constants/colors";
-import { resendVerificationMail } from "../../api/auth";
+import styles from './styles'
+import { Link } from 'react-router-dom'
+import { signup } from '../../redux/actions/auth'
+import { useDispatch } from 'react-redux'
+import moment from 'moment'
+import COLOR from '../../constants/colors'
+import { resendVerificationMail } from '../../api/auth'
 
-const { Title, Text } = Typography;
+const { Title, Text } = Typography
 
-const { Option } = Select;
+const { Option } = Select
 
-const dateFormat = "DD/MM/YYYY";
+const dateFormat = 'DD/MM/YYYY'
 
 const initialState = {
-  newEmail: "",
-  newPassword: "",
-  confirmPassword: "",
-  firstName: "",
-  lastName: "",
-  gender: "",
-  dob: "",
-};
+  newEmail: '',
+  newPassword: '',
+  confirmPassword: '',
+  firstName: '',
+  lastName: '',
+  gender: '',
+  dob: '',
+}
 
 function RegisterPage() {
-  const [form, setForm] = useState(initialState);
-  const dispatch = useDispatch();
-  const [resend, setResend] = useState(false);
-  const disableReg = useRef(false);
+  const [form, setForm] = useState(initialState)
+  const dispatch = useDispatch()
+  const [resend, setResend] = useState(false)
+  const disableReg = useRef(false)
 
   const setDisableReg = (b) => {
-    disableReg.current = b;
-  };
+    disableReg.current = b
+  }
 
   const handleChange = (e) => {
-    setForm({ ...form, [e?.target.name]: e?.target.value });
-    if (resend) setResend(false);
-  };
+    setForm({ ...form, [e?.target.name]: e?.target.value })
+    if (resend) setResend(false)
+  }
 
   const handleChangeDob = (date) => {
     // var now = moment();
@@ -64,16 +64,16 @@ function RegisterPage() {
     //   setDobError(null);
     //   setForm({ ...form, dob: date });
     // }
-    setForm({ ...form, dob: date });
-  };
+    setForm({ ...form, dob: date })
+  }
 
   const handleChangeGender = (value) => {
-    setForm({ ...form, gender: value });
-  };
+    setForm({ ...form, gender: value })
+  }
 
   const handleFinish = (values) => {
     if (disableReg.current === false) {
-      console.log("fuckfuck");
+      console.log('fuckfuck')
       const data = {
         email: form.newEmail,
         password: form.newPassword,
@@ -81,23 +81,23 @@ function RegisterPage() {
         lastName: form.lastName,
         gender: form.gender,
         dob: form.dob,
-      };
-      setDisableReg(true);
+      }
+      setDisableReg(true)
       //TODO: unable to register for demo
-      dispatch(signup(data, setResend, setDisableReg));
+      dispatch(signup(data, setResend, setDisableReg))
     }
-  };
+  }
 
   const handleResend = () => {
-    resendVerificationMail(form.newEmail);
-    message.success("Verification mail sent!");
-  };
+    resendVerificationMail(form.newEmail)
+    message.success('Verification mail sent!')
+  }
 
   const handleFinishFailed = (errorInfo) => {
     errorInfo.errorFields.map((err) => {
-      message.error(err.errors[0]);
-    });
-  };
+      message.error(err.errors[0])
+    })
+  }
 
   return (
     <div
@@ -110,9 +110,9 @@ function RegisterPage() {
           paddingBottom: 0,
         }}
       >
-        <Row style={{ justifyContent: "center" }}> </Row>
+        <Row style={{ justifyContent: 'center' }}> </Row>
         <Card className="shadow-lg rounded" bordered={false}>
-          <Row style={{ alignItems: "center" }}>
+          <Row style={{ alignItems: 'center' }}>
             <div
               className="col-md-6"
               style={{ paddingRight: 24, marginBottom: 0 }}
@@ -125,7 +125,7 @@ function RegisterPage() {
               </Row>
               <div style={{ marginBottom: 16 }}>
                 <Text>
-                  Already have an account?{" "}
+                  Already have an account?{' '}
                   <Link to="/login">
                     <Text className="clickable green bold">Log in</Text>
                   </Link>
@@ -141,24 +141,13 @@ function RegisterPage() {
                   name="newEmail"
                   rules={[
                     {
-                      type: "email",
-                      message: "Invalid email.",
+                      type: 'email',
+                      message: 'Invalid email.',
                     },
                     {
                       required: true,
-                      message: "Email is required.",
+                      message: 'Email is required.',
                     },
-                    ({ getFieldValue }) => ({
-                      validator(_, value) {
-                        // console.log("value", value.length);
-                        if (value.length >= 6) {
-                          return Promise.resolve();
-                        }
-                        return Promise.reject(
-                          new Error("Password must be at least 6 characters.")
-                        );
-                      },
-                    }),
                   ]}
                 >
                   <Input
@@ -173,17 +162,17 @@ function RegisterPage() {
                   rules={[
                     {
                       required: true,
-                      message: "Password is required.",
+                      message: 'Password is required.',
                     },
                     ({ getFieldValue }) => ({
                       validator(_, value) {
                         // console.log("value", value.length);
                         if (value.length >= 6) {
-                          return Promise.resolve();
+                          return Promise.resolve()
                         }
                         return Promise.reject(
-                          new Error("Password must be at least 6 characters.")
-                        );
+                          new Error('Password must be at least 6 characters.')
+                        )
                       },
                     }),
                   ]}
@@ -198,20 +187,20 @@ function RegisterPage() {
 
                 <Form.Item
                   name="confirmPassword"
-                  dependencies={["newPassword"]}
+                  dependencies={['newPassword']}
                   rules={[
                     {
                       required: true,
-                      message: "Password confirm is required.",
+                      message: 'Password confirm is required.',
                     },
                     ({ getFieldValue }) => ({
                       validator(_, value) {
-                        if (!value || getFieldValue("newPassword") === value) {
-                          return Promise.resolve();
+                        if (!value || getFieldValue('newPassword') === value) {
+                          return Promise.resolve()
                         }
                         return Promise.reject(
-                          new Error("Password does not match!")
-                        );
+                          new Error('Password does not match!')
+                        )
                       },
                     }),
                   ]}
@@ -228,7 +217,7 @@ function RegisterPage() {
                       rules={[
                         {
                           required: true,
-                          message: "First name is required.",
+                          message: 'First name is required.',
                         },
                       ]}
                     >
@@ -245,7 +234,7 @@ function RegisterPage() {
                       rules={[
                         {
                           required: true,
-                          message: "Last name is required.",
+                          message: 'Last name is required.',
                         },
                       ]}
                     >
@@ -264,7 +253,7 @@ function RegisterPage() {
                       rules={[
                         {
                           required: true,
-                          message: "Gender is required.",
+                          message: 'Gender is required.',
                         },
                       ]}
                     >
@@ -272,7 +261,7 @@ function RegisterPage() {
                         placeholder="Gender"
                         name="gender"
                         onChange={handleChangeGender}
-                        style={{ width: "100%" }}
+                        style={{ width: '100%' }}
                       >
                         <Option value="Male">Male</Option>
                         <Option value="Female">Female</Option>
@@ -286,19 +275,19 @@ function RegisterPage() {
                       rules={[
                         {
                           required: true,
-                          message: "Date of birth is required.",
+                          message: 'Date of birth is required.',
                         },
                         ({ getFieldValue }) => ({
                           validator(_, value) {
-                            var now = moment();
-                            var input = moment(value);
+                            var now = moment()
+                            var input = moment(value)
                             // console.log("dob valid", now.diff(input, "years"));
-                            if (!value || now.diff(input, "years") >= 13) {
-                              return Promise.resolve();
+                            if (!value || now.diff(input, 'years') >= 13) {
+                              return Promise.resolve()
                             }
                             return Promise.reject(
-                              new Error("You must be at least 13 years old.")
-                            );
+                              new Error('You must be at least 13 years old.')
+                            )
                           },
                         }),
                       ]}
@@ -307,7 +296,7 @@ function RegisterPage() {
                         name="dob"
                         placeholder="Date of birth"
                         onChange={handleChangeDob}
-                        style={{ width: "100%" }}
+                        style={{ width: '100%' }}
                         format={dateFormat}
                       />
                     </Form.Item>
@@ -316,11 +305,11 @@ function RegisterPage() {
 
                 <Form.Item style={{}}>
                   <Button
-                    style={{ width: "100%" }}
+                    style={{ width: '100%' }}
                     className="green-button"
                     htmlType="submit"
                   >
-                    {resend ? "Resend verification mail" : "Create account"}
+                    {resend ? 'Resend verification mail' : 'Create account'}
                   </Button>
                 </Form.Item>
               </Form>
@@ -344,7 +333,7 @@ function RegisterPage() {
         </Card>
       </div>
     </div>
-  );
+  )
 }
 
-export default RegisterPage;
+export default RegisterPage
