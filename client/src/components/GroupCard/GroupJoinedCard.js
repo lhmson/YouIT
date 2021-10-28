@@ -1,7 +1,7 @@
 import React from "react";
 import { Button, Avatar, Tag, Typography, message } from "antd";
 import styles from "./styles.js";
-import { Link, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useHistory } from "react-router";
 import * as apiGroup from "../../api/group";
 import { useLocalStorage } from "../../hooks/useLocalStorage";

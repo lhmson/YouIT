@@ -79,88 +79,87 @@ export const HackRenderer = ({ dataset }) => {
       <div className="mb-3">
         {result.text?.toString().trim() === expect?.toString().trim()
           ? [
-            <h5 className="bold">{`✔️ Sample test case ${no}`}</h5>,
-            <div
-              style={{
-                backgroundColor: "white",
-                boxShadow: "0px 7px 21px 0px rgba(36, 36, 36, 0.12)",
-                padding: 14,
-                paddingRight: 20,
-                marginBottom: 12,
-              }}
-              className="enable-horizontal-scroll"
-            >
-              <Text strong style={{ color: COLOR.darkGreen }}>
-                Input
-              </Text>
-              <br />
-              <Text>{input}</Text>
-            </div>,
-            <div
-              className="shadow"
-              style={{
-                backgroundColor: "white",
-                boxShadow: "0px 7px 21px 0px rgba(36, 36, 36, 0.12)",
-                padding: 14,
-                paddingRight: 20,
-                marginBottom: 12,
-              }}
-              className="enable-horizontal-scroll"
-            >
-              <Text strong style={{ color: COLOR.darkGreen }}>
-                Ouput
-              </Text>
-              <br />
-              <Text>{result.text}</Text>
-            </div>,
-          ]
-          : [
-            <h5 className="bold">{`❌ Sample test case ${no}`}</h5>,
-            <div
-              style={{
-                backgroundColor: "white",
-                padding: 14,
-                paddingRight: 20,
-                marginBottom: 12,
-                boxShadow: "0px 7px 21px 0px rgba(36, 36, 36, 0.12)",
-              }}
-              className="enable-horizontal-scroll"
-            >
-              <Text strong style={{ color: COLOR.darkGreen }}>
-                Input
-              </Text>
-              <br />
-              <Text>{input}</Text>
-            </div>,
-
-            <div
-              style={{
-                backgroundColor: "white",
-                padding: 14,
-                paddingRight: 20,
-                marginBottom: 12,
-                boxShadow: "0px 7px 21px 0px rgba(36, 36, 36, 0.12)",
-              }}
-              className="enable-horizontal-scroll"
-            >
-              <Text strong style={{ color: COLOR.darkGreen }}>
-                Expected ouput
-              </Text>
-              <br />
-              <Text>{expect}</Text>
-              <br />
-              <Text
-                strong
+              <h5 className="bold">{`✔️ Sample test case ${no}`}</h5>,
+              <div
                 style={{
-                  color: COLOR.red,
+                  backgroundColor: "white",
+                  boxShadow: "0px 7px 21px 0px rgba(36, 36, 36, 0.12)",
+                  padding: 14,
+                  paddingRight: 20,
+                  marginBottom: 12,
+                }}
+                className="enable-horizontal-scroll"
+              >
+                <Text strong style={{ color: COLOR.darkGreen }}>
+                  Input
+                </Text>
+                <br />
+                <Text>{input}</Text>
+              </div>,
+              <div
+                className="shadow enable-horizontal-scroll"
+                style={{
+                  backgroundColor: "white",
+                  boxShadow: "0px 7px 21px 0px rgba(36, 36, 36, 0.12)",
+                  padding: 14,
+                  paddingRight: 20,
+                  marginBottom: 12,
                 }}
               >
-                Your ouput
-              </Text>
-              <br />
-              <Text>{result.text}</Text>
-            </div>,
-          ]}
+                <Text strong style={{ color: COLOR.darkGreen }}>
+                  Ouput
+                </Text>
+                <br />
+                <Text>{result.text}</Text>
+              </div>,
+            ]
+          : [
+              <h5 className="bold">{`❌ Sample test case ${no}`}</h5>,
+              <div
+                style={{
+                  backgroundColor: "white",
+                  padding: 14,
+                  paddingRight: 20,
+                  marginBottom: 12,
+                  boxShadow: "0px 7px 21px 0px rgba(36, 36, 36, 0.12)",
+                }}
+                className="enable-horizontal-scroll"
+              >
+                <Text strong style={{ color: COLOR.darkGreen }}>
+                  Input
+                </Text>
+                <br />
+                <Text>{input}</Text>
+              </div>,
+
+              <div
+                style={{
+                  backgroundColor: "white",
+                  padding: 14,
+                  paddingRight: 20,
+                  marginBottom: 12,
+                  boxShadow: "0px 7px 21px 0px rgba(36, 36, 36, 0.12)",
+                }}
+                className="enable-horizontal-scroll"
+              >
+                <Text strong style={{ color: COLOR.darkGreen }}>
+                  Expected ouput
+                </Text>
+                <br />
+                <Text>{expect}</Text>
+                <br />
+                <Text
+                  strong
+                  style={{
+                    color: COLOR.red,
+                  }}
+                >
+                  Your ouput
+                </Text>
+                <br />
+                <Text>{result.text}</Text>
+              </div>,
+            ]}
       </div>
     );
   };

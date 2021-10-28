@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { AutoComplete } from "antd";
-import { useDispatch, useSelector } from "react-redux";
-import { fetchUserJoinedGroups } from "../../../redux/actions/group.js";
 import createPostStyle from "../styles.js";
 import { useGroupsOfUser } from "../../../context/GroupsOfUserContext.js";
 
@@ -15,7 +13,6 @@ function CreatePostSpaceAutoComplete({
   const groups = useGroupsOfUser().state.listGroups;
   // const groups = useSelector((state) => state.groups);
   const [selectedGroup, setSelectedGroup] = useState(null);
-  const dispatch = useDispatch();
 
   const [options, setOptions] = useState([]);
 

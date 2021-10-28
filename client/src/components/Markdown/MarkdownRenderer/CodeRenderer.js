@@ -1,11 +1,14 @@
 import React, { useMemo, useState } from "react";
-import { Button, Input, message, Tooltip } from "antd";
+import { Button, message, Tooltip } from "antd";
 
 // code highlighter
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import * as runnerApis from "../../../api/compiler";
 import COLOR from "../../../constants/colors";
-import { materialLight, materialOceanic } from "react-syntax-highlighter/dist/esm/styles/prism";
+import {
+  materialLight,
+  materialOceanic,
+} from "react-syntax-highlighter/dist/esm/styles/prism";
 import TextArea from "antd/lib/input/TextArea";
 import Text from "antd/lib/typography/Text";
 
@@ -137,8 +140,11 @@ export const CodeRenderer = ({
       });
 
       const responseTimeout = setTimeout(() => {
-        message.error({ key: messageKey, content: "It takes too long to get code result." })
-      }, RESPONSE_TIME_LIMIT)
+        message.error({
+          key: messageKey,
+          content: "It takes too long to get code result.",
+        });
+      }, RESPONSE_TIME_LIMIT);
 
       runnerApis.runCode(sourceCode, language, input).then((runDetail) => {
         setRunDetail(runDetail);
@@ -164,13 +170,11 @@ export const CodeRenderer = ({
     >
       {!inline && match ? (
         <div
-          style={
-            {
-              backgroundColor: isDarkTheme ? "#263238" : "#fafafa",
-              paddingBottom: (!previewMode) ? 12 : 0, // this code can be improved
-              paddingRight: (!previewMode) ? 12 : 0 // this code can be improved
-            }
-          }
+          style={{
+            backgroundColor: isDarkTheme ? "#263238" : "#fafafa",
+            paddingBottom: !previewMode ? 12 : 0, // this code can be improved
+            paddingRight: !previewMode ? 12 : 0, // this code can be improved
+          }}
         >
           <SyntaxHighlighter
             style={theme}
@@ -179,14 +183,14 @@ export const CodeRenderer = ({
             children={String(children).replace(/\n$/, "")}
             {...props}
           />
-          {(!previewMode) &&
+          {!previewMode && (
             <div
               style={{
                 flexDirection: "row-reverse",
                 display: "flex",
               }}
             >
-              {apiLanguage &&
+              {apiLanguage && (
                 <Tooltip title={apiLanguage}>
                   <Button
                     className="green-button"
@@ -198,7 +202,7 @@ export const CodeRenderer = ({
                     Run
                   </Button>
                 </Tooltip>
-              }
+              )}
               <Button
                 className="green-button mr-3"
                 style={{ alignSelf: "flex-end" }}
@@ -209,7 +213,7 @@ export const CodeRenderer = ({
                 Switch theme
               </Button>
             </div>
-          }
+          )}
         </div>
       ) : (
         <code className={className} {...props}>
@@ -217,7 +221,7 @@ export const CodeRenderer = ({
         </code>
       )}
 
-      {apiLanguage && (!previewMode) && (
+      {apiLanguage && !previewMode && (
         <div>
           {/* sorry but this is the only way */}
           <div style={{ height: 4 }} />
